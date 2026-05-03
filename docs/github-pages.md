@@ -95,12 +95,41 @@ The universal HTML shell. Every page uses this layout directly or extends it.
 - [ ] Canonical URL: `<link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url }}">`
 - [ ] Favicon: emoji SVG data URI (`<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,...">`)
 - [ ] Font preconnects: `<link rel="preconnect" href="https://fonts.googleapis.com">` and `fonts.gstatic.com` with `crossorigin`
-- [ ] Font stylesheet: Inter (body) + JetBrains Mono (code)
-- [ ] `font-display: swap` on the font stylesheet URL or in an inline `<style>` for the `@font-face`
-- [ ] Site stylesheet: `<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.scss">`
+- [ ] Font stylesheet: Inter (body) + JetBrains Mono (code) with `&display=swap` parameter for `font-display: swap`
+- [ ] Open Graph image: `og:image` and `twitter:image` meta tags pointing to `{{ site.url }}{{ site.baseurl }}/assets/img/og-image.png`
+- [ ] **OG image generation**: Create a 1200×630 PNG with the document title on a gradient background matching the hero. Place at `assets/img/og-image.png`. For multi-page sites, each chapter can override with `og-image: /path/to/chapter-image.png` in frontmatter. Minimum viable OG image: a solid accent-colored rectangle with the site title in white text — can be created with any image editor or a simple script.
+- [ ] Site stylesheet: `<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.scss?v={{ site.time | date: '%s' }}">`
+- [ ] **Cache busting**: Append `?v={{ site.time | date: '%s' }}` to ALL stylesheet and script `href`/`src` URLs. The `site.time` variable updates on every Jekyll build, forcing browsers to fetch fresh files. No manual version increment needed.
 - [ ] Conditional KaTeX CSS: `{% if page.katex %}<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">{% endif %}`
 - [ ] Conditional MathJax config + script: `{% if page.math %}` — inline config (BEFORE the CDN script), then `<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">`
 - [ ] Conditional KaTeX autorender: `{% if page.katex %}<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js">`
+- [ ] MathJax config: `inlineMath: [['$','$'],['\\(','\\)']]`, `displayMath: [['$$','$$'],['\\[','\\]']]`, `processEscapes: true`
+- [ ] MathJax config is wrapped in `{% raw %}...{% endraw %}` to prevent Liquid from escaping backslashes
+- [ ] `options: { ignoreHtmlClass: 'no-mathjax' }` — apply `no-mathjax` class to code blocks and diagram blocks to prevent false `$` parsing
+
+**Math rendering: KaTeX vs MathJax selection:**
+
+| Use KaTeX when… | Use MathJax when… |
+|---|---|
+| Document uses standard LaTeX (`\frac`, `\sum`, `\int`, `\sqrt`) | Document uses AMSmath extensions (`\begin{align}`, `\usepackage`) |
+| Speed matters (KaTeX is ~5× faster) | Full LaTeX compatibility is required |
+| Bundle size matters (KaTeX is ~250KB vs MathJax ~1.5MB) | Complex commutative diagrams or XY-pic are needed |
+| Server-side pre-rendering is desired | The document author uses `\newcommand` or custom macros |
+
+**Single-dollar-sign protection:** Documents with constructs like `$p$-adic` (a single `$` in prose followed later by another `$`) will break math parsing. Two defenses:
+
+1. `processEscapes: true` in the MathJax config — dollar signs preceded by `\` are treated as literal text.
+2. Wrap code blocks and diagram blocks in `<div class="no-mathjax">` — MathJax ignores everything inside.
+3. If persistent, switch the document's inline math delimiter from `$...$` to `\(...\)` using a pre-processing step.
+
+**Debugging checklist — if math shows as raw `\(...\)` or `$...$` text:**
+- [ ] MathJax config `<script>` block comes BEFORE the CDN `<script async>` tag
+- [ ] `processHtmlClass` is NOT set in the MathJax config (it restricts processing to only that class)
+- [ ] `ignoreHtmlClass: 'no-mathjax'` only blocks intentional exclusions
+- [ ] The config is wrapped in `{% raw %}...{% endraw %}` (check: backslashes are single `\`, not doubled `\\`)
+- [ ] CDN URL is correct: `https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js`
+- [ ] No JavaScript console errors from MathJax
+
 - [ ] Conditional clipboard.js: `{% if page.clipboard %}<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js">`
 - [ ] Conditional Google Analytics: `{% if page.analytics and page.no-tracking != true %}{% include google-analytics.html %}{% endif %}`
 
@@ -500,14 +529,66 @@ Run every check locally before pushing:
 - [ ] 404: visit `/nonexistent` → shows 404 page with search
 - [ ] Sitemap: visit `/sitemap.xml` → valid XML with all page URLs
 - [ ] Performance: Lighthouse audit → ≥ 90 Performance, ≥ 90 Accessibility, ≥ 90 SEO
+- [ ] Performance budget: total page weight ≤ 200KB, Largest Contentful Paint ≤ 2s
+- [ ] No render-blocking CSS; all CDN scripts `async` or `defer`; images `loading="lazy"`; fonts `font-display: swap`
 
-**Performance targets:**
-- [ ] Total page weight ≤ 200KB (HTML + CSS + JS + fonts)
-- [ ] Largest Contentful Paint ≤ 2 seconds
-- [ ] No render-blocking CSS (all stylesheets loaded with `<link>` or inlined critical CSS)
-- [ ] All CDN scripts loaded with `async` or `defer`
-- [ ] Images have `loading="lazy"` and explicit `width`/`height`
-- [ ] Fonts use `font-display: swap`
+### 5.5 — Accessibility Compliance Checklist
+
+Every site must pass these checks. Research-adjacent sites are held to a higher standard:
+
+**Structure and landmarks:**
+- [ ] `<main>`, `<nav>`, `<aside>`, `<footer>` all have `aria-label` or `aria-labelledby`
+- [ ] Exactly one `<h1>` per page (the document or chapter title)
+- [ ] Heading hierarchy is sequential: no h1 → h3 skip without an h2 in between
+- [ ] Lists are marked up with `<ul>`, `<ol>`, or `<dl>` — never simulated with `<br>` or `<div>`
+
+**Keyboard access:**
+- [ ] All interactive elements reachable via Tab key
+- [ ] No keyboard traps: every modal and overlay has an Escape-dismiss and a close button
+- [ ] Focus order follows visual order (tabbing moves left-to-right, top-to-bottom)
+- [ ] `:focus-visible` styles are visible on all interactive elements (minimum: 2px outline, 3:1 contrast against background)
+
+**Screen reader support:**
+- [ ] Icon-only buttons have `aria-label` (e.g., theme toggle, menu button, search button)
+- [ ] Collapsible sections have `aria-expanded="true/false"` updated by JavaScript
+- [ ] Search results container has `aria-live="polite"` so screen readers announce result count changes
+- [ ] Sidebar navigation has `aria-label="Table of Contents"` and the search input has `aria-label="Search document"`
+- [ ] Decorative images have `alt=""`; content images have descriptive `alt` text
+
+**Contrast and readability:**
+- [ ] Body text contrast ratio ≥ 4.5:1 against background (light AND dark modes)
+- [ ] Large text (≥18px bold or ≥24px) contrast ratio ≥ 3:1
+- [ ] Focus indicators contrast ≥ 3:1 against adjacent colors
+- [ ] Links are distinguishable from surrounding text by more than color alone (underline, weight, or icon)
+
+**Skip link:**
+- [ ] `<a href="#main-content" class="skip-link">` is the first focusable element
+- [ ] Visible on `:focus` (not permanently hidden with `opacity: 0` or `display: none`)
+
+### 5.6 — Graceful Degradation
+
+The site must remain readable even when external resources fail:
+
+**No-JavaScript fallback:**
+- [ ] `<noscript>` banner: "JavaScript enhances this page. All content is readable without it."
+- [ ] Core content (text, headings, tables, blockquotes) renders without JavaScript
+- [ ] Code blocks and diagrams are visible without JavaScript (they're preformatted in `<pre>` tags)
+- [ ] Sidebar and search are non-functional without JS — that is acceptable
+
+**CDN failure handling:**
+- [ ] If MathJax CDN fails to load within 5 seconds: raw LaTeX is displayed as-is (still readable). Add a script after the MathJax `<script async>` tag: `<script>setTimeout(function(){if(typeof MathJax==='undefined'){document.querySelectorAll('.MathJax_Preview').forEach(function(e){e.style.display='inline';});}},5000);</script>`
+- [ ] If clipboard.js fails: copy buttons simply do not appear. No error, no broken UI.
+- [ ] If fonts fail: the fallback system font stack (`-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`) renders the page legibly.
+
+**Progressive rendering:**
+- [ ] Apply `content-visibility: auto` to sections below the initial viewport — the browser skips rendering them until needed
+- [ ] Apply `contain-intrinsic-size: 500px` as an estimated placeholder to prevent scroll jank
+- [ ] The hero and first content section render immediately; deeper sections render on-demand
+
+**Loading states:**
+- [ ] Sidebar shows a skeleton placeholder while `sidebar.json` loads (a few pulsing grey lines)
+- [ ] Search input is disabled until `search-data.json` is fetched
+- [ ] Math rendering shows a subtle "Rendering equations…" indicator that disappears when MathJax completes
 
 ---
 
