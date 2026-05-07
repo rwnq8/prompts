@@ -7,8 +7,8 @@
 | `DEFAULT.md` | 16 KB | **Daily driver** — brainstorming, research, writing (v1.1-NO-WEB-SEARCH) |
 | `META-PROMPT-DEEPSEEK.md` | 8 KB | **Tier 1 compiler** — creates & audits system prompts (v3.1-NO-WEB-SEARCH) |
 | `README.md` | — | This file |
-| `SOCIAL-BROADCAST-v1.0.md` | 32 KB | Publication-to-social (v1.0) — deprecated, superseded by v2.0 orchestrator |
-| `SOCIAL-ORCHESTRATOR-v2.0.md` | 35 KB | **SOCIAL-BROADCAST Orchestrator** — 5-platform publication-to-social pipeline |
+| `SOCIAL-v1.0.md` | 32 KB | Publication-to-social (v1.0) — deprecated, superseded by v2.0 orchestrator |
+| `SOCIAL-ORCHESTRATOR-v2.0.md` | 35 KB | **SOCIAL Orchestrator** — 5-platform publication-to-social pipeline |
 | `scholar/STAGE-1-SETUP.md` | 13 KB | OMEGA-SCHOLAR Stage 1: Context + Search Manifest + Blueprint |
 | `scholar/STAGE-2-DRAFT.md` | 9 KB | Stage 2: Python-only evidence + narrative |
 | `scholar/STAGE-3-REVIEW.md` | 9 KB | Stage 3: File-backed audit + anti-fabrication |
@@ -18,7 +18,7 @@
 | `social/LINKEDIN-v2.0.md` | 22 KB | LinkedIn specialist (professional posts + longform articles) |
 | `social/SUBSTACK-v2.0.md` | 22 KB | Substack specialist (newsletter + Notes promotion) |
 
-## SOCIAL-BROADCAST Pipeline (v2.0)
+## SOCIAL Pipeline (v2.0)
 
 **Purpose:** Transform publication releases from `G:\My Drive\Obsidian\releases\` into platform-optimized social media content for 5 platforms.
 
@@ -57,7 +57,7 @@ SOCIAL-ORCHESTRATOR-v2.0.md  (main entry point)
 
 - **Active system prompt**: DEFAULT-DEEPSEEK (v1.1-NO-WEB-SEARCH)
 - **Available prompts**: DEFAULT, META-PROMPT (in system_prompts.json)
-- **Templates**: 10+ (DEFAULT + META-PROMPT + 4 OMEGA-SCHOLAR stages + 5 SOCIAL-BROADCAST prompts)
+- **Templates**: 10+ (DEFAULT + META-PROMPT + 4 OMEGA-SCHOLAR stages + 5 SOCIAL prompts)
 - **Default for all agents**: DEFAULT-DEEPSEEK v1.1
 
 ## Archives
