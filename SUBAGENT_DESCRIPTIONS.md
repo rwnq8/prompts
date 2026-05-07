@@ -51,7 +51,7 @@ TARGET: Configure with write access to project directories
 
 WRITE TARGETS:
   • Project working directories under G:\My Drive\ (user's active project spaces)
-  • G:\My Drive\prompts\ — ONLY when the Prompts agent is specifically being used
+  • G:\My Drive\prompts\ — delegate to PROMPTS subagent (this agent reads only)
   • NEVER write to G:\My Drive\Archive\ — archive is historical, read-only
   • NEVER write to G:\My Drive\Obsidian\releases\ — releases are publication source files, read-only
 
@@ -177,6 +177,69 @@ READ-ONLY WARNING: The Archive is NOT a working directory. Do not attempt to sav
 
 ---
 
+## 5. PROMPTS
+
+**Name:** `PROMPTS AGENT — Tier 1 & Tier 2 Prompt Engineering Workspace`
+
+**Description:**
+```
+Dedicated agent for the G:\My Drive\prompts\ directory — the prompt engineering workspace. This is where Tier 1 meta-prompts, Tier 2 system prompts, agent configurations, sub-prompt libraries (social/, scholar/), and prompt dispatch reference files live.
+
+TARGET: Configure with read/write access to G:\My Drive\prompts\
+
+DIRECTORY STRUCTURE:
+  G:\My Drive\prompts\
+    • DEFAULT.md                     — main agent system prompt
+    • META-PROMPT-DEEPSEEK.md        — Tier 1 prompt compiler meta-prompt
+    • SOCIAL-ORCHESTRATOR-v2.0.md    — Tier 2 social media orchestration prompt
+    • SOCIAL-v1.0.md                 — standalone social media agent prompt
+    • AGENT_DEFAULTS.conf            — immutable Tier 2 agent defaults
+    • SUBAGENT_DESCRIPTIONS.md       — this file (subagent dispatch reference)
+    • README.md                      — workspace documentation
+    • social/                        — platform-specific sub-prompts (Twitter, Mastodon, LinkedIn, Substack)
+    • scholar/                       — scholar pipeline prompts (STAGE-1 to STAGE-4)
+
+WRITE ACCESS:
+  • This is the ONLY subagent authorized to write/edit files within G:\My Drive\prompts\
+  • Other subagents (PROJECTS, SELF CLONE) may read prompts files but MUST NOT write here
+  • The PROJECTS subagent should delegate any prompt-related writes to this agent
+
+READ ACCESS:
+  • Other agents and processes MAY access this directory READ-ONLY
+  • ARCHIVE, RELEASES, and SELF CLONE agents can read prompt files for reference
+  • PROJECTS agent can read prompt files but must route prompt edits to this agent
+
+CAPABILITIES:
+  - Python execution (standard library only)
+  - File read from all accessible directories
+  - File write/edit (STRICTLY to G:\My Drive\prompts\ only)
+  - Prompt generation, compilation, auditing, and patching
+  - Documentation generation for agent workflows
+
+USE THIS SUBAGENT FOR:
+  • Creating new Tier 2 system prompts from requirements
+  • Auditing existing prompts for Constitutional compliance
+  • Patching/modifying existing prompt files
+  • Generating or updating sub-prompt libraries (social/, scholar/)
+  • Writing agent configuration files (AGENT_DEFAULTS.conf, etc.)
+  • Documenting prompt architectures and dispatch patterns
+  • Any file write operation whose target is G:\My Drive\prompts\
+  • Answering questions about prompt structure, versioning, or agent capabilities
+
+DO NOT USE FOR:
+  • Writing files outside G:\My Drive\prompts\ (use PROJECTS instead)
+  • Reading archived historical prompts (use ARCHIVE — Archive/prompts/)
+  • Reading current publications (use RELEASES)
+  • Pure parallel computation with no prompt engineering (use SELF CLONE)
+  • Reading-only prompt files from within another agent (other agents can read directly)
+
+DELEGATION NOTE: When another subagent (especially PROJECTS) needs to write or modify a file in G:\My Drive\prompts\, it should hand off that specific write task to the PROMPTS agent. This maintains a single source of truth for all prompt modifications.
+
+HARD CONSTRAINT: NEVER write outside G:\My Drive\prompts\. This agent's write scope is strictly limited to the prompts directory. All other file writes belong to PROJECTS.
+```
+
+---
+
 ## Quick Dispatch Decision Matrix
 
 | Task Requires... | Use This Subagent |
@@ -194,4 +257,8 @@ READ-ONLY WARNING: The Archive is NOT a working directory. Do not attempt to sav
 | Cross-referencing against past work | `ARCHIVE` |
 | Templates from Archive/templates/ | `ARCHIVE` |
 | Archived publication copies (Archive/releases/) | `ARCHIVE` |
-| Retrieving old prompts or agent configurations | `ARCHIVE` |
+| Retrieving old prompts or configurations (Archive/prompts/) | `ARCHIVE` |
+| Writing or editing prompt files in G:\My Drive\prompts\ | `PROMPTS` |
+| Creating Tier 2 system prompts, sub-prompt libraries | `PROMPTS` |
+| Auditing/patching existing prompt files | `PROMPTS` |
+| Documenting agent workflows and dispatch patterns | `PROMPTS` |
