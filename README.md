@@ -1,36 +1,36 @@
 # prompts/ — DeepSeek System Prompt Library
 
-## Active Prompts (13 files)
+## Active Files (8)
 
-### Root
-| File | Purpose |
-|:-----|:--------|
-| `DEFAULT.md` | **All-purpose default prompt** — brainstorming, research, writing, analysis |
-| `META-PROMPT-DEEPSEEK.md` | **Tier 1 prompt compiler (v3.0)** — generates Tier 2 system prompts |
+| File | Size | Purpose |
+|:-----|:-----|:--------|
+| `DEFAULT.md` | 16 KB | **Daily driver** — brainstorming, research, writing (v1.1-NO-WEB-SEARCH) |
+| `META-PROMPT-DEEPSEEK.md` | 8 KB | **Tier 1 compiler** — creates & audits system prompts (v3.1-NO-WEB-SEARCH) |
+| `README.md` | — | This file |
+| `scholar/STAGE-1-SETUP.md` | 13 KB | OMEGA-SCHOLAR Stage 1: Context + Search Manifest + Blueprint |
+| `scholar/STAGE-2-DRAFT.md` | 9 KB | Stage 2: Python-only evidence + narrative |
+| `scholar/STAGE-3-REVIEW.md` | 9 KB | Stage 3: File-backed audit + anti-fabrication |
+| `scholar/STAGE-4-PUBLISH.md` | 7 KB | Stage 4: Final assembly with source labels |
 
-### scholar/ — OMEGA-SCHOLAR v5.3 (10-stage scholarly pipeline)
-| Stage | File | Role |
-|:------|:-----|:-----|
-| S1 | `scholar/S1.md` | Context & Domain Definition |
-| S2 | `scholar/S2.md` | Bibliometric Grounding (VRO) |
-| S3 | `scholar/S3.md` | Structural Architecture |
-| S4 | `scholar/S4.md` | Evidence Execution |
-| S5 | `scholar/S5.md` | Narrative Generation |
-| S6 | `scholar/S6.md` | Adversarial Peer Review |
-| S7 | `scholar/S7.md` | Revision & Assembly |
-| S8 | `scholar/S8.md` | Forensic Audit |
-| S9 | `scholar/S9.md` | Purification & Finalization |
-| S10 | `scholar/S10.md` | Final Assembly & Publication |
+## Key Constraints
+
+- **NO Web Search** in DeepChat — MCP/skills not enabled
+- **Python is the ONLY source of quantitative truth** (Article V: Anti-Fabrication Mandate)
+- **All citations must be file-backed** (`[EXTERNAL-SOURCE: filename]`)
+- **All claims labeled**: `[LLM-INFERRED]`, `[EXTERNAL-SOURCE]`, or `[CODE-EXECUTED]`
+- **Search Manifest Protocol** — when external search needed, agent outputs queries for external execution
+
+## DeepChat Settings
+
+- **Active system prompt**: DEFAULT-DEEPSEEK (v1.1-NO-WEB-SEARCH)
+- **Available prompts**: DEFAULT, META-PROMPT (in system_prompts.json)
+- **Templates**: 6 total (DEFAULT + META-PROMPT + 4 OMEGA-SCHOLAR stages)
+- **Default for all agents**: DEFAULT-DEEPSEEK v1.1
 
 ## Archives
-All deprecated/specialized prompts archived to `G:\My Drive\Archive\prompts\`:
-- `dev/` — Software & technology development prompts
-- `quant/` — Topological materials discovery
-- `patent/` — Patent writing system
-- `explore/` — Research exploration methodology
-- `docs/` — Document generation system
-- Historical Tier 1 compilers (M1, STABILITY, TIER-1)
-- Standalone utilities (GA, DA, OMEGA-CRITIC)
+
+All deprecated/specialized content at `G:\My Drive\Archive\prompts\`
 
 ## Git
-Full audit trail with standardized commit annotations. Rollback via `git revert`.
+
+Branch: `main`. Full audit trail. Pushed to GitHub.
