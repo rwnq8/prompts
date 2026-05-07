@@ -8,15 +8,15 @@
 | `META-PROMPT-DEEPSEEK.md` | 8 KB | **Tier 1 compiler** — creates & audits system prompts (v3.1-NO-WEB-SEARCH) |
 | `README.md` | — | This file |
 | `SOCIAL-BROADCAST-v1.0.md` | 32 KB | Publication-to-social (v1.0) — deprecated, superseded by v2.0 orchestrator |
-| `SOCIAL-BROADCAST-ORCHESTRATOR-v2.0.md` | 35 KB | **SOCIAL-BROADCAST Orchestrator** — 5-platform publication-to-social pipeline |
+| `SOCIAL-ORCHESTRATOR-v2.0.md` | 35 KB | **SOCIAL-BROADCAST Orchestrator** — 5-platform publication-to-social pipeline |
 | `scholar/STAGE-1-SETUP.md` | 13 KB | OMEGA-SCHOLAR Stage 1: Context + Search Manifest + Blueprint |
 | `scholar/STAGE-2-DRAFT.md` | 9 KB | Stage 2: Python-only evidence + narrative |
 | `scholar/STAGE-3-REVIEW.md` | 9 KB | Stage 3: File-backed audit + anti-fabrication |
 | `scholar/STAGE-4-PUBLISH.md` | 7 KB | Stage 4: Final assembly with source labels |
-| `social-broadcast/TWITTER-BLUESKY-v2.0.md` | 15 KB | Short-form microblogging specialist (Twitter/X + Bluesky) |
-| `social-broadcast/MASTODON-v2.0.md` | 16 KB | Mastodon specialist (hashtag-optimized fediverse posts) |
-| `social-broadcast/LINKEDIN-v2.0.md` | 22 KB | LinkedIn specialist (professional posts + longform articles) |
-| `social-broadcast/SUBSTACK-v2.0.md` | 22 KB | Substack specialist (newsletter + Notes promotion) |
+| `social/TWITTER-BLUESKY-v2.0.md` | 15 KB | Short-form microblogging specialist (Twitter/X + Bluesky) |
+| `social/MASTODON-v2.0.md` | 16 KB | Mastodon specialist (hashtag-optimized fediverse posts) |
+| `social/LINKEDIN-v2.0.md` | 22 KB | LinkedIn specialist (professional posts + longform articles) |
+| `social/SUBSTACK-v2.0.md` | 22 KB | Substack specialist (newsletter + Notes promotion) |
 
 ## SOCIAL-BROADCAST Pipeline (v2.0)
 
@@ -25,12 +25,12 @@
 **Architecture:** Orchestrator + 4 platform-specific sub-prompts
 
 ```
-SOCIAL-BROADCAST-ORCHESTRATOR-v2.0.md  (main entry point)
+SOCIAL-ORCHESTRATOR-v2.0.md  (main entry point)
   |
-  +-- social-broadcast/TWITTER-BLUESKY-v2.0.md  (Twitter/X + Bluesky)
-  +-- social-broadcast/MASTODON-v2.0.md          (Mastodon)
-  +-- social-broadcast/LINKEDIN-v2.0.md          (LinkedIn posts + articles)
-  +-- social-broadcast/SUBSTACK-v2.0.md          (Substack newsletter + Notes)
+  +-- social/TWITTER-BLUESKY-v2.0.md  (Twitter/X + Bluesky)
+  +-- social/MASTODON-v2.0.md          (Mastodon)
+  +-- social/LINKEDIN-v2.0.md          (LinkedIn posts + articles)
+  +-- social/SUBSTACK-v2.0.md          (Substack newsletter + Notes)
 ```
 
 **Platform coverage:**
