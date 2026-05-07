@@ -73,8 +73,8 @@ Transform recent publication releases from G:\My Drive\Obsidian\releases\ (organ
 |:----------------|:-------------|:---------------------------------------|
 | X/Twitter       | Buffer       | Post (280 chars), reply tweet, thread  |
 | Mastodon        | Buffer       | Post (500+ chars), thread              |
-| LinkedIn        | Buffer       | Feed post + Article teaser             |
-| LinkedIn        | Direct/Native| Longform article (800-2000 words)      |
+| LinkedIn        | Buffer       | Feed post                              |
+| LinkedIn        | Direct/Native| Longform article + article teaser      |
 | Bluesky         | Direct/Native| Post (300 chars), thread               |
 | Substack        | Direct/Native| Newsletter + Notes promotion           |
 
@@ -215,7 +215,7 @@ RULE L9: Document carousels (PDF uploads) get 3-5x higher engagement
   -> If publication has compelling figures, suggest creating a PDF carousel in the output notes
 RULE L10: Best posting times: Tue-Thu 8-10 AM, 12-1 PM (business hours, audience timezone)
 
-#### LINKEDIN LONGFORM ARTICLE STRATEGY (direct publish, teaser via Buffer)
+#### LINKEDIN LONGFORM ARTICLE STRATEGY (direct publish + teaser, both natively on LinkedIn)
 RULE LA1: Article length: 800-2000 words [CODE-EXECUTED validate]
 RULE LA2: Structure:
   - Compelling headline (derived from publication title, but optimized for clicks)
@@ -229,10 +229,10 @@ RULE LA3: Article tone: Accessible to educated non-specialists. Assume reader ha
 RULE LA4: Use section headers, bullet points, and short paragraphs (3-4 sentences max) for readability
 RULE LA5: Include the DOI/link to original publication prominently
 RULE LA6: Generate a TEASER POST (100-200 chars) that promotes the article
-  -> Teaser goes in Buffer queue as a LinkedIn post pointing to the article
+  -> Teaser is posted natively on LinkedIn as a feed post pointing to the article
   -> Article content saved separately for manual publishing on LinkedIn
 RULE LA7: LinkedIn articles have SEO value (indexed by Google). Include relevant keywords naturally.
-RULE LA8: Article publishing: user publishes natively on LinkedIn, then schedules teaser post via Buffer
+RULE LA8: Article publishing: user publishes natively on LinkedIn, then posts teaser natively on LinkedIn as a follow-up feed post
 
 #### BLUESKY STRATEGY (direct post on bsky.app)
 RULE B1: Post body: 300 characters hard limit [CODE-EXECUTED validate]
@@ -307,12 +307,11 @@ CONTENT SCHEDULED VIA BUFFER:
   - X/Twitter posts and reply tweets
   - Mastodon posts
   - LinkedIn feed posts
-  - LinkedIn article teaser posts
 
 CONTENT POSTED DIRECTLY (not through Buffer):
   - Bluesky posts (posted on bsky.app)
   - Substack newsletter + Notes (posted on Substack dashboard)
-  - LinkedIn longform articles (published natively on LinkedIn)
+  - LinkedIn longform articles + article teaser (published/posted natively on LinkedIn)
 
 The output document MUST clearly separate these two categories with distinct sections and copy/paste instructions for each.
 
@@ -395,11 +394,11 @@ STEP 2.3: Generate LinkedIn feed post [BUFFER]
   End with question or call-to-discussion
   Python: [CODE-EXECUTED] Validate character count + hook zone check
 
-STEP 2.4: Generate LinkedIn article + teaser [DIRECT + BUFFER]
+STEP 2.4: Generate LinkedIn article + teaser [DIRECT]
   [LLM-INFERRED] Draft article (800-2000 words)
   Apply LinkedIn article strategy (Rules LA1-LA8)
   Structure: headline -> subtitle -> intro -> body -> conclusion -> references
-  [LLM-INFERRED] Draft teaser post (100-200 chars) -> BUFFER
+  [LLM-INFERRED] Draft teaser post (100-200 chars) -> DIRECT (posted natively on LinkedIn after article is published)
   Python: [CODE-EXECUTED] Validate word count, teaser char count
 
 STEP 2.5: Generate Bluesky content [DIRECT]
@@ -444,8 +443,8 @@ All posts validated? Any violations found?
 
 ### PHASE 4: FINAL OUTPUT ASSEMBLY
 STEP 4.1: Separate Buffer vs direct-post content
-  Buffer section: Twitter, Mastodon, LinkedIn posts, LinkedIn teasers
-  Direct section: Bluesky posts, Substack newsletter, LinkedIn articles
+  Buffer section: Twitter, Mastodon, LinkedIn posts
+  Direct section: Bluesky posts, Substack newsletter, LinkedIn articles + teasers
   Each section with clear copy/paste instructions
 
 STEP 4.2: Assign optimal posting schedule
@@ -638,12 +637,6 @@ Metadata: [FULL / PARTIAL: missing fields]
   POST (copy this):
   [linkedin post text]
 
-  --- BUFFER: LINKEDIN ARTICLE TEASER ---
-  Character count: [N] chars [CODE-EXECUTED]
-  
-  TEASER POST (copy this; promotes the article below):
-  [teaser text]
-
 ================================================================================
 DIRECT-POST CONTENT
 ================================================================================
@@ -664,6 +657,12 @@ DIRECT-POST CONTENT
   
   REFERENCE:
   [DOI link]
+
+  --- DIRECT: LINKEDIN ARTICLE TEASER ---
+  Character count: [N] chars [CODE-EXECUTED]
+  
+  TEASER POST (copy to LinkedIn; post natively after article is published):
+  [teaser text, promoting the article above]
 
   --- DIRECT: BLUESKY ---
   Character count: [N]/300 [CODE-EXECUTED]
@@ -707,7 +706,7 @@ Day 1 ([DAY], [DATE]):
 
 Day 2 ([DAY], [DATE]):
   [TIME] - LinkedIn post [BUFFER]
-  [TIME] - LinkedIn article teaser [BUFFER]
+  [TIME] - LinkedIn article + teaser [DIRECT — publish article first, then post teaser]
   [TIME] - Substack newsletter [DIRECT]
 
 [... repeat for each publication in batch, spreading across days ...]
@@ -738,8 +737,8 @@ LINKEDIN ARTICLES (linkedin.com):
 3. Add any images or figures from the publication manually
 4. Publish the article
 5. After publishing: copy the article URL
-6. Update the LinkedIn article teaser post in Buffer with the actual article URL
-7. Schedule the teaser post
+6. Copy the teaser post text and post it natively on LinkedIn
+   as a feed update linking to the published article
 
 SUBSTACK (substack.com):
 1. Go to your Substack dashboard, click "New post"

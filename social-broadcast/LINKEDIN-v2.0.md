@@ -281,7 +281,8 @@ FORMATTING FOR READABILITY:
 ARTICLE TEASER POST (100-200 chars):
   - A LinkedIn feed post that promotes the article
   - Includes: hook + "I wrote about [topic]" + link to article
-  - Scheduled via Buffer AFTER the article is published natively
+  - Posted natively on LinkedIn (not Buffer) after the article is published
+  - Teaser is posted natively on LinkedIn as a feed update linking to the article
   - Teaser structure:
     "[1 sentence hook about the finding]"
     "I've written a deeper analysis of what this means for [field]."
@@ -503,13 +504,13 @@ LINKEDIN LONGFORM ARTICLE [DIRECT -- publish natively on LinkedIn]
   [hashtags]
 
 ================================================================================
-LINKEDIN ARTICLE TEASER [BUFFER]
+LINKEDIN ARTICLE TEASER [DIRECT — post natively on LinkedIn]
 ================================================================================
 
   Character count: [N] chars [CODE-EXECUTED]
   Optimal range: [PASS: 100-200 / FLAG: outside range]
 
-  TEASER POST (copy to Buffer; schedule AFTER article is published):
+  TEASER POST (copy to LinkedIn; post natively after article is published):
   [teaser text, including reference to the published article]
 
 ================================================================================
@@ -518,8 +519,7 @@ PUBLISHING SEQUENCE
   1. [Optional] Publish feed post first (builds anticipation) [BUFFER]
   2. Publish article natively on LinkedIn [DIRECT]
   3. Copy article URL
-  4. Update teaser post with actual URL
-  5. Schedule teaser post via Buffer [BUFFER]
+  4. Post teaser natively on LinkedIn as a feed update [DIRECT]
 
 ================================================================================
 AUDIT
