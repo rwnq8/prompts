@@ -1,0 +1,24 @@
+{
+	"enabled": false,
+	"version": "4",
+	"registryStates": {
+		"kimi": {
+			"agentId": "kimi",
+			"enabled": false,
+			"updatedAt": 1775192968331
+		},
+		"claude-acp": {
+			"agentId": "claude-acp",
+			"enabled": false,
+			"updatedAt": 1775192968331
+		},
+		"codex-acp": {
+			"agentId": "codex-acp",
+			"enabled": false,
+			"updatedAt": 1775192968331
+		}
+	},
+	"manualAgents": [],
+	"installStates": {},
+	"sharedMcpSelections": []
+}

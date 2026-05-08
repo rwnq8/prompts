@@ -1,0 +1,196 @@
+{
+	"mcpServers": {
+		"Artifacts": {
+			"args": [],
+			"descriptions": "DeepChat内置 artifacts mcp服务",
+			"icons": "🎨",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "artifacts",
+			"env": {},
+			"disable": false,
+			"enabled": false
+		},
+		"bochaSearch": {
+			"args": [],
+			"descriptions": "DeepChat内置博查搜索服务",
+			"icons": "🔍",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "bochaSearch",
+			"env": {
+				"apiKey": "YOUR_BOCHA_API_KEY"
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"braveSearch": {
+			"args": [],
+			"descriptions": "DeepChat内置Brave搜索服务",
+			"icons": "🦁",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "braveSearch",
+			"env": {
+				"apiKey": "YOUR_BRAVE_API_KEY"
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"difyKnowledge": {
+			"args": [],
+			"descriptions": "DeepChat内置Dify知识库检索服务",
+			"icons": "📚",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "difyKnowledge",
+			"env": {
+				"configs": [
+					{
+						"description": "this is a description for the current knowledge base",
+						"apiKey": "YOUR_DIFY_API_KEY",
+						"datasetId": "YOUR_DATASET_ID",
+						"endpoint": "http://localhost:3000/v1"
+					}
+				]
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"ragflowKnowledge": {
+			"args": [],
+			"descriptions": "DeepChat内置RAGFlow知识库检索服务",
+			"icons": "📚",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "ragflowKnowledge",
+			"env": {
+				"configs": [
+					{
+						"description": "默认RAGFlow知识库",
+						"apiKey": "YOUR_RAGFLOW_API_KEY",
+						"datasetIds": [
+							"YOUR_DATASET_ID"
+						],
+						"endpoint": "http://localhost:8000"
+					}
+				]
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"fastGptKnowledge": {
+			"args": [],
+			"descriptions": "DeepChat内置FastGPT知识库检索服务",
+			"icons": "📚",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "fastGptKnowledge",
+			"env": {
+				"configs": [
+					{
+						"description": "this is a description for the current knowledge base",
+						"apiKey": "YOUR_FastGPT_API_KEY",
+						"datasetId": "YOUR_DATASET_ID",
+						"endpoint": "http://localhost:3000/api"
+					}
+				]
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"builtinKnowledge": {
+			"args": [],
+			"descriptions": "DeepChat内置知识库检索服务",
+			"icons": "📚",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "builtinKnowledge",
+			"env": {
+				"configs": []
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"deepchat-inmemory/deep-research-server": {
+			"args": [],
+			"descriptions": "DeepChat内置深度研究服务，使用博查搜索(注意该服务需要较长的上下文模型，请勿在短上下文的模型中使用)",
+			"icons": "🔬",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "deepchat-inmemory/deep-research-server",
+			"env": {
+				"BOCHA_API_KEY": "YOUR_BOCHA_API_KEY"
+			},
+			"disable": false,
+			"enabled": false
+		},
+		"deepchat-inmemory/auto-prompting-server": {
+			"args": [],
+			"descriptions": "DeepChat内置自动模板提示词服务",
+			"icons": "📜",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "deepchat-inmemory/auto-prompting-server",
+			"env": {},
+			"disable": false,
+			"enabled": true
+		},
+		"deepchat-inmemory/conversation-search-server": {
+			"args": [],
+			"descriptions": "DeepChat built-in conversation history search service",
+			"icons": "🔍",
+			"autoApprove": [
+				"all"
+			],
+			"type": "inmemory",
+			"command": "deepchat-inmemory/conversation-search-server",
+			"env": {},
+			"disable": false,
+			"enabled": true
+		},
+		"nowledge-mem": {
+			"command": "",
+			"args": [],
+			"env": {},
+			"descriptions": "Nowledge Mem MCP",
+			"icons": "🧠",
+			"autoApprove": [
+				"all"
+			],
+			"disable": true,
+			"type": "http",
+			"baseUrl": "http://localhost:14242/mcp",
+			"customHeaders": {
+				"APP": "DeepChat"
+			},
+			"enabled": false
+		}
+	},
+	"mcpEnabled": true,
+	"autoDetectNpmRegistry": true,
+	"npmRegistryCache": {
+		"registry": "https://r.cnpmjs.org/",
+		"lastChecked": 1778145154025,
+		"isAutoDetect": true
+	},
+	"removedBuiltInServers": []
+}

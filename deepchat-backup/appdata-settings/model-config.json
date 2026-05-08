@@ -1,0 +1,93 @@
+{
+	"__meta__": {
+		"lastRefreshVersion": "1.0.3",
+		"userConfigKeys": [
+			"deepseek-_-deepseek-reasoner",
+			"deepseek-_-deepseek-chat",
+			"deepseek-_-deepseek-v4-pro",
+			"deepseek-_-deepseek-v4-flash"
+		]
+	},
+	"deepseek-_-deepseek-reasoner": {
+		"id": "deepseek-reasoner",
+		"providerId": "deepseek",
+		"config": {
+			"maxTokens": 16000,
+			"contextLength": 128000,
+			"temperature": 0,
+			"vision": true,
+			"functionCall": true,
+			"reasoning": true,
+			"type": "chat",
+			"enableSearch": false,
+			"forcedSearch": false,
+			"searchStrategy": "turbo",
+			"isUserDefined": true
+		},
+		"source": "user"
+	},
+	"deepseek-_-deepseek-chat": {
+		"id": "deepseek-chat",
+		"providerId": "deepseek",
+		"config": {
+			"maxTokens": 8192,
+			"contextLength": 128000,
+			"temperature": 0,
+			"vision": true,
+			"functionCall": true,
+			"reasoning": false,
+			"type": "chat",
+			"enableSearch": false,
+			"forcedSearch": false,
+			"searchStrategy": "turbo",
+			"isUserDefined": true
+		},
+		"source": "user"
+	},
+	"deepseek-_-deepseek-v4-pro": {
+		"id": "deepseek-v4-pro",
+		"providerId": "deepseek",
+		"config": {
+			"maxTokens": 64000,
+			"contextLength": 1048576,
+			"temperature": 0.6,
+			"vision": false,
+			"functionCall": true,
+			"reasoning": true,
+			"type": "chat",
+			"isUserDefined": true,
+			"forceInterleavedThinkingCompat": true,
+			"reasoningEffort": "max",
+			"reasoningVisibility": "summary",
+			"apiEndpoint": "chat",
+			"enableSearch": false,
+			"forcedSearch": false,
+			"searchStrategy": "turbo",
+			"timeout": 1800000
+		},
+		"source": "user"
+	},
+	"deepseek-_-deepseek-v4-flash": {
+		"id": "deepseek-v4-flash",
+		"providerId": "deepseek",
+		"config": {
+			"maxTokens": 64000,
+			"contextLength": 1048576,
+			"temperature": 0.6,
+			"vision": false,
+			"functionCall": true,
+			"reasoning": true,
+			"type": "chat",
+			"isUserDefined": true,
+			"forceInterleavedThinkingCompat": true,
+			"reasoningEffort": "max",
+			"reasoningVisibility": "summary",
+			"apiEndpoint": "chat",
+			"enableSearch": false,
+			"forcedSearch": false,
+			"searchStrategy": "turbo",
+			"timeout": 1200000
+		},
+		"source": "user"
+	}
+}
