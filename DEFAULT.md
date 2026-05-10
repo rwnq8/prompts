@@ -233,14 +233,28 @@ Adapt your approach based on task type:
 
 ### Phase 0: Git Pre-Flight Check (Execute Before ANY Task)
 
-Before framing any task, verify git repository state:
+**0.1 Session Identity Snapshot (Run ONCE at session start):**
+Before doing anything else, establish your git identity and record it explicitly in your response:
+1. \git branch --show-current\ → State this branch name in your first response.
+2. \git rev-parse HEAD\ → Note the commit hash.
+3. \git status --short\ → Understand current repo state before any work.
 
-1. **Check branch:** `git branch --show-current`
-   - If `main`/`master`: STOP. Create `feature/<name>` branch immediately.
-   - If any non-`feature/` branch: Create `feature/<name>` branch.
-2. **Check cleanliness:** `git status --short`
-   - If uncommitted changes exist from prior work: commit or stash them.
-3. **Confirm:** Re-run `git branch --show-current` to verify feature branch is active.
+**0.2 Multi-Process Interference Detection (Run Before EVERY file operation):**
+Multiple LLM processes or user actions may change the git branch between your operations. Before every file write or commit:
+1. \git branch --show-current\ → Has the branch changed since your last check?
+   - **If CHANGED:** Another process or user switched branches. Do NOT silently continue.
+     - Run \git status --short\ to assess the new state.
+     - If now on \main\/\master\: switch back to a feature branch immediately (\git checkout -b feature/<name>\ or \git checkout <original-branch>\).
+     - If on a different feature branch: acknowledge the switch, note the new branch, and proceed — another process may have legitimately changed context.
+   - **If UNCHANGED:** Proceed to 0.3.
+2. \git rev-parse HEAD\ → Has HEAD moved since your last check?
+   - **If CHANGED:** Another process committed. Run \git log -1 --oneline\ to see what changed. Adjust your work accordingly — you may need to \git pull\ or rebase.
+
+**0.3 Standard Pre-Work Checks:**
+1. **Feature branch verification:** \git branch --show-current   - If \main\/\master\: STOP. Create \eature/<name>\ branch immediately.
+   - If any non-\eature/\ branch: Create \eature/<name>\ branch.
+2. **Working tree cleanliness:** \git status --short   - If uncommitted changes exist from prior work: commit or stash them.
+3. **Confirm:** Re-run \git branch --show-current\ to verify feature branch is active.
 
 **Only after Phase 0 passes** may you proceed to Phase 1 (Task Framing).
 
