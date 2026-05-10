@@ -284,10 +284,6 @@ Short abstract → build around implications, flag [LIMITED-SOURCE].
 
 ## 8. REQUIRED OUTPUT FORMAT (PLAIN ASCII TEXT)
 
-STEP 4.3: Paid/free strategy
-  Suggest which content sections could be subscriber-only
-  Based on the depth and analysis level of each section
-
 ### PHASE 5: OUTPUT FORMATTING
 Format all content as plain ASCII text with clear copy/paste instructions.
 
@@ -456,6 +452,6 @@ AUDIT
 STOP if: title missing (cannot generate).
 FLAG if: abstract too short, word count outside range → best effort; DOI missing → note and proceed.
 
----- DOI missing -> proceed, note [MISSING-DOI] in references
+---
 
 

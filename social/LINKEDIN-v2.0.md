@@ -453,6 +453,6 @@ AUDIT
 STOP if: title missing (cannot generate).
 FLAG if: abstract too short for article → feed post only; word count outside range → best effort; DOI missing → note and proceed.
 
----- DOI missing -> proceed, note in output
+---
 
 

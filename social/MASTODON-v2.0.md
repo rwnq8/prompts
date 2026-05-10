@@ -260,6 +260,6 @@ AUDIT
 STOP if: title missing (cannot generate).
 FLAG if: abstract too short, no clear domain, hashtag fatigue.
 
----- Hashtag fatigue detected across batch -> flag, suggest rotation
+---
 
 
