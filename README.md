@@ -1,14 +1,13 @@
 # prompts/ — DeepSeek System Prompt Library
 
-## Active Files (12)
+## Active Files (11)
 
 | File | Size | Purpose |
 |:-----|:-----|:--------|
 | `DEFAULT.md` | 16 KB | **Daily driver** — brainstorming, research, writing (v1.1-NO-WEB-SEARCH) |
 | `META-PROMPT-DEEPSEEK.md` | 8 KB | **Tier 1 compiler** — creates & audits system prompts (v3.1-NO-WEB-SEARCH) |
 | `README.md` | — | This file |
-| `SOCIAL-v1.0.md` | 32 KB | Publication-to-social (v1.0) — deprecated, superseded by v2.0 orchestrator |
-| `SOCIAL-ORCHESTRATOR-v2.0.md` | 35 KB | **SOCIAL Orchestrator** — 5-platform publication-to-social pipeline |
+| `social/SOCIAL-ORCHESTRATOR-v2.0.md` | 35 KB | **SOCIAL Orchestrator** — 5-platform publication-to-social pipeline |
 | `scholar/STAGE-1-SETUP.md` | 13 KB | OMEGA-SCHOLAR Stage 1: Context + Search Manifest + Blueprint |
 | `scholar/STAGE-2-DRAFT.md` | 9 KB | Stage 2: Python-only evidence + narrative |
 | `scholar/STAGE-3-REVIEW.md` | 9 KB | Stage 3: File-backed audit + anti-fabrication |
@@ -22,15 +21,16 @@
 
 **Purpose:** Transform publication releases from `G:\My Drive\Obsidian\releases\` into platform-optimized social media content for 5 platforms.
 
-**Architecture:** Orchestrator + 4 platform-specific sub-prompts
+**Architecture:** All social prompts consolidated in `social/` — 1 orchestrator + 4 platform-specific Tier 2 prompts.
 
 ```
-SOCIAL-ORCHESTRATOR-v2.0.md  (main entry point)
+social/
   |
-  +-- social/TWITTER-BLUESKY-v2.0.md  (Twitter/X + Bluesky)
-  +-- social/MASTODON-v2.0.md          (Mastodon)
-  +-- social/LINKEDIN-v2.0.md          (LinkedIn posts + articles)
-  +-- social/SUBSTACK-v2.0.md          (Substack newsletter + Notes)
+  +-- SOCIAL-ORCHESTRATOR-v2.0.md      (Tier 1 — main entry point, dispatches to Tier 2)
+  +-- TWITTER-BLUESKY-v2.0.md          (Tier 2 — Twitter/X + Bluesky)
+  +-- MASTODON-v2.0.md                 (Tier 2 — Mastodon)
+  +-- LINKEDIN-v2.0.md                 (Tier 2 — LinkedIn posts + articles)
+  +-- SUBSTACK-v2.0.md                 (Tier 2 — Substack newsletter + Notes)
 ```
 
 **Platform coverage:**
@@ -43,7 +43,7 @@ SOCIAL-ORCHESTRATOR-v2.0.md  (main entry point)
 | Bluesky | Direct | Post (300 chars), thread |
 | Substack | Direct | Newsletter + Notes promotion |
 
-**Output format:** Plain ASCII text only — no markdown tables, no special formatting. Optimized for direct copy/paste into Buffer, Bluesky, Substack, and LinkedIn.
+**Output format:** Plain ASCII text only — no markdown tables, no special formatting. **ALL POST TEXT IS SINGLE CONTINUOUS LINE — ZERO LINE BREAKS.** Every Tier 2 prompt enforces `\n`/`\r` detection via Python validation before delivery (Section 10). Optimized for direct copy/paste into Buffer, Bluesky, Substack, and LinkedIn.
 
 ## Key Constraints
 
@@ -52,18 +52,19 @@ SOCIAL-ORCHESTRATOR-v2.0.md  (main entry point)
 - **All citations must be file-backed** (`[EXTERNAL-SOURCE: filename]`)
 - **All claims labeled**: `[LLM-INFERRED]`, `[EXTERNAL-SOURCE]`, or `[CODE-EXECUTED]`
 - **Search Manifest Protocol** — when external search needed, agent outputs queries for external execution
+- **NO LINE BREAKS** — all social media post text is single continuous line (enforced by Python `validate_no_newlines()` in every Tier 2 prompt)
 
 ## DeepChat Settings
 
 - **Active system prompt**: DEFAULT-DEEPSEEK (v1.1-NO-WEB-SEARCH)
 - **Available prompts**: DEFAULT, META-PROMPT (in system_prompts.json)
-- **Templates**: 10+ (DEFAULT + META-PROMPT + 4 OMEGA-SCHOLAR stages + 5 SOCIAL prompts)
+- **Templates**: 10+ (DEFAULT + META-PROMPT + 4 OMEGA-SCHOLAR stages + 5 SOCIAL prompts in `social/`)
 - **Default for all agents**: DEFAULT-DEEPSEEK v1.1
 
 ## Archives
 
-All deprecated/specialized content at `G:\My Drive\Archive\prompts\`
+All deprecated content (including old `SOCIAL-v1.0.md`) at `G:\My Drive\Archive\prompts\`
 
 ## Git
 
-Branch: `main`. Full audit trail. Pushed to GitHub.
+Branch: `feature/fix-social-media-line-breaks`. Full audit trail. Pushed to GitHub.

@@ -1,3 +1,0 @@
-M_H. In a sigma model with (2,2) supersymmetry, branes come in two fundamental types with respect to the topological twists (A-model and B-model):
-
-- **B-branes** are complex submanifolds (or, more generally, objects in the derived category of coherent sheaves) on M_H in **complex structure I**. They are boundary conditions that preserve the B-model topological twist. In complex structure I, M_H is the moduli space of Higgs bundles, and the critical fact for Kapustin–Witten is that M_H ≅ T* Bun_G (the cotangent bundle to the moduli space of stable G-bundles). B-branes on a cotangent bundle are
