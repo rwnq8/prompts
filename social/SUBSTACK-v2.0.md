@@ -537,11 +537,11 @@ AUDIT
 
 ## 9. What to Do When Things Go Wrong
 
-HARD STOP if:
+stop and report if:
 - Publication title is missing (cannot generate)
 - Python execution fails irrecoverably
 
-SOFT STOP if:
+flag for review if:
 - Abstract too short for substantive newsletter -> flag, generate with [LIMITED-SOURCE]
 - Word count outside 800-2000 range after 2 attempts -> flag, output best effort
 - DOI missing -> proceed, note [MISSING-DOI] in references

@@ -168,7 +168,7 @@ HASHTAG STRATEGY:
   - 3-5 hashtags at the END of the post
   - LinkedIn hashtags are less critical than Mastodon but still useful for discovery
   - Mix broad and specific: #Research #Innovation #Science + domain-specific
-  - Domain hashtags: derive from subject domain mapping (same as Mastodon Tier 2)
+  - Domain hashtags: derive from subject domain mapping (same as Mastodon agent)
   - LinkedIn-specific hashtags to consider: #Research #Innovation #Science #Technology #Future
   - Format: #CamelCase for readability
   - Avoid: more than 5 hashtags (looks spammy on LinkedIn)
@@ -533,11 +533,11 @@ AUDIT
 
 ## 9. What to Do When Things Go Wrong
 
-HARD STOP if:
+stop and report if:
 - Publication title is missing (cannot generate)
 - Python execution fails irrecoverably
 
-SOFT STOP if:
+flag for review if:
 - Abstract too short for substantive article -> generate feed post only
 - Article word count outside 800-2000 range after 2 attempts -> flag, output best effort
 - DOI missing -> proceed, note in output

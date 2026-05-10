@@ -146,7 +146,7 @@ HASHTAG PLACEMENT RULES:
 
 HASHTAG FATIGUE PREVENTION:
   When generating multiple posts for different publications in a batch:
-  - Vary the Tier 1 hashtags across posts (rotate #Math, #Physics, #Science, etc.)
+  - Vary the generator hashtags across posts (rotate #Math, #Physics, #Science, etc.)
   - Avoid using identical hashtag sets for consecutive posts
   - Python: track hashtag frequency across batch, flag overuse
 
@@ -224,8 +224,8 @@ INSTANCE STRATEGY (for user consideration):
 
 ### 4.3 Hashtag Selection Algorithm (Mental Model)
 For each publication:
-1. Identify subject_primary -> select 2-4 Tier 2 hashtags from domain mapping
-2. Select 2-3 Tier 1 hashtags, varying from previous posts in the batch
+1. Identify subject_primary -> select 2-4 agent hashtags from domain mapping
+2. Select 2-3 generator hashtags, varying from previous posts in the batch
 3. Add 1-2 Tier 3 hashtags
 4. Total: 5-8 hashtags
 5. Python: validate uniqueness, count, character percentage
@@ -253,8 +253,8 @@ STEP 1.2: Draft post body
 
 STEP 1.3: Select hashtags
   [LLM-INFERRED] Based on subject domain, apply hashtag selection algorithm (Section 4.3)
-  Tier 1: 2-3 from core set
-  Tier 2: 2-4 from domain mapping
+  generator: 2-3 from core set
+  agent: 2-4 from domain mapping
   Tier 3: 1-2 instance/cultural
   Python: [CODE-EXECUTED] Validate hashtag count, uniqueness, character percentage
 
@@ -303,7 +303,7 @@ Every generated post includes provenance metadata:
 ## 7. EDGE CASES
 
 CASE 1: Publication with no clear subject domain
-  Use Tier 1 hashtags heavily (#Science #Research #Academic)
+  Use generator hashtags heavily (#Science #Research #Academic)
   Add #Interdisciplinary as additional hashtag
   Flag [LLM-INFERRED: no exact domain match]
 
@@ -316,7 +316,7 @@ CASE 3: Batch posting -- hashtag fatigue risk
   If generating for 3+ publications in one batch:
   Python: track hashtag frequency across the batch
   Flag if any hashtag appears in more than 3 posts
-  Suggest rotation: alternate Tier 1 hashtags across posts
+  Suggest rotation: alternate generator hashtags across posts
 
 CASE 4: Very short abstract (less than 100 words)
   Limited source material. Flag [LIMITED-SOURCE: short abstract]
@@ -359,8 +359,8 @@ Content Warning: [YES: topic / NO]
 ================================================================================
 HASHTAG BREAKDOWN
 ================================================================================
-  Tier 1 (core): [list hashtags]
-  Tier 2 (domain): [list hashtags]
+  generator (core): [list hashtags]
+  agent (domain): [list hashtags]
   Tier 3 (instance/cultural): [list hashtags]
   
   Batch rotation note: [if applicable, hashtag fatigue warning]
@@ -376,11 +376,11 @@ AUDIT
 
 ## 9. What to Do When Things Go Wrong
 
-HARD STOP if:
+stop and report if:
 - Publication title is missing (cannot generate)
 - Python execution fails irrecoverably
 
-SOFT STOP if:
+flag for review if:
 - Abstract too short for substantive post -> flag, generate minimal post
 - No clear subject domain -> flag, use generic hashtags
 - Hashtag fatigue detected across batch -> flag, suggest rotation

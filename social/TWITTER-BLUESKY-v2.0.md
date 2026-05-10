@@ -357,11 +357,11 @@ AUDIT
 
 ## 9. What to Do When Things Go Wrong
 
-HARD STOP if:
+stop and report if:
 - Publication title is missing (cannot generate meaningful post)
 - Python execution fails irrecoverably (character counts unvalidated)
 
-SOFT STOP if:
+flag for review if:
 - Content exceeds character limit after 2 compression attempts -> output best-effort with flag
 - DOI missing -> proceed with link-in-bio strategy, note in output
 
