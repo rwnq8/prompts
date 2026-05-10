@@ -68,7 +68,7 @@ All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ex
 
 ## 3. Step-by-Step Workflow
 
-### PHASE 1: ADVERSARIAL PEER REVIEW `[LLM-INFERRED + Python validation]`
+### PHASE 1: CRITICAL MULTI-PERSPECTIVE REVIEW `[LLM-INFERRED + Python validation]`
 
 **Step 1.1: Persona Selection** (3 reviewers)
 - **STEM:** The Methodologist (reproducibility), The Theorist (coherence), The Statistician (data integrity)
@@ -104,7 +104,7 @@ Execute revisions in priority order. Every fix must preserve source traceability
 - Process MEDIUM/LOW issues as feasible
 - Generate complete reference list from source catalog source files
 
-### PHASE 3: FORENSIC AUDIT `[CODE-EXECUTED where quantitative]`
+### PHASE 3: DETAILED VERIFICATION `[CODE-EXECUTED where quantitative]`
 
 **Step 3.1: Citation Source Audit** `[CODE-EXECUTED + File Read]`
 Using Python:

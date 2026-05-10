@@ -226,7 +226,7 @@ INSTANCE STRATEGY (for user consideration):
 For each publication:
 1. Identify subject_primary -> select 2-4 agent hashtags from domain mapping
 2. Select 2-3 generator hashtags, varying from previous posts in the batch
-3. Add 1-2 Tier 3 hashtags
+3. Add 1-2 Priority 3 hashtags
 4. Total: 5-8 hashtags
 5. Python: validate uniqueness, count, character percentage
 
@@ -255,7 +255,7 @@ STEP 1.3: Select hashtags
   [LLM-INFERRED] Based on subject domain, apply hashtag selection algorithm (Section 4.3)
   generator: 2-3 from core set
   agent: 2-4 from domain mapping
-  Tier 3: 1-2 instance/cultural
+  Priority 3: 1-2 instance/cultural
   Python: [CODE-EXECUTED] Validate hashtag count, uniqueness, character percentage
 
 STEP 1.4: Assemble final post
@@ -361,7 +361,7 @@ HASHTAG BREAKDOWN
 ================================================================================
   generator (core): [list hashtags]
   agent (domain): [list hashtags]
-  Tier 3 (instance/cultural): [list hashtags]
+  Priority 3 (instance/cultural): [list hashtags]
   
   Batch rotation note: [if applicable, hashtag fatigue warning]
 

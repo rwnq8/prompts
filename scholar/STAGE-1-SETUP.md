@@ -99,7 +99,7 @@ Detect and correct self-referential research. If >40% of input discusses methodo
 - Primary beneficiary + 2-3 secondary beneficiaries
 - Impact pathway from research to stakeholder benefit
 
-### PHASE 2: BIBLIOMETRIC GROUNDING (SOURCE-BACKED)
+### PHASE 2: SOURCE VERIFICATION (SOURCE-BACKED)
 
 **CRITICAL:** Web Search is NOT available in this environment. You have TWO paths:
 

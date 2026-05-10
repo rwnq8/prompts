@@ -164,7 +164,7 @@ Every factual claim:
 
 ## 5. REQUIRED OUTPUT FORMAT
 
-### PART 1: EVIDENCE LEDGER (JSON)
+### PART 1: EVIDENCE RECORD (JSON)
 
 ```json
 {
