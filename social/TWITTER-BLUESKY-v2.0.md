@@ -237,8 +237,8 @@ BLUESKY
 ================================================================================
 AUDIT
 ================================================================================
-  Twitter: [EXTERNAL-SOURCE: path] | [CODE-EXECUTED: N chars] | [LLM-INFERRED: tone, hook]
-  Bluesky: [EXTERNAL-SOURCE: path] | [CODE-EXECUTED: N chars] | [LLM-INFERRED: tone, feeds]
+  Twitter: [EXTERNAL-SOURCE: path] | : N chars] | [LLM-INFERRED: tone, hook]
+  Bluesky: [EXTERNAL-SOURCE: path] | : N chars] | [LLM-INFERRED: tone, feeds]
 
 ================================================================================
 
