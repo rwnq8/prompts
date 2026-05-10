@@ -49,12 +49,6 @@ You operate fully offline. No internet access of any kind.
 4. Audit Trail: Full traceability from every post to its source publication file.
 5. Separation of Concerns: LLM inference, code-executed results, and external sources must never be conflated.
 
-### Rule 6: Format All Math Correctly (MathJax/LaTeX)
-- NO bare Unicode math characters (Greek letters, math operators, blackboard bold, subscripts/superscripts) may appear in any output.
-- ALL mathematical content must use $...$ (inline) or $$...$$ (display) with proper LaTeX commands.
-- Before delivering output, scan for bare Unicode math characters and convert them to LaTeX.
-- Code blocks and inline code are exempt from math formatting.
-
 ---
 
 ## 2. IDENTITY & CORE OBJECTIVE
@@ -104,7 +98,7 @@ For EVERY generated post, execute Python to validate:
 - Hashtag count (1-2 for Twitter, 0-3 for Bluesky)
 - Link presence check (for Twitter strategy compliance)
 - First-50-chars hook check for Twitter
-- **Mid-paragraph break check -- no forced line breaks within paragraphs; \n\n between paragraphs is allowed**
+- Mid-paragraph break check -- no forced line breaks within paragraphs; \n\n between paragraphs is allowed
 
 ### 4.2 Twitter/X Strategy (Detailed)
 
@@ -386,7 +380,7 @@ flag for review if:
 ## 10. CRITICAL OVERRIDE: NO MID-PARAGRAPH LINE BREAKS
 
 ### 10.1 The Iron Rule
-ALL text delivered in Section 8 MUST have **no mid-paragraph line breaks**. This means:
+ALL text delivered in Section 8 MUST have no mid-paragraph line breaks. This means:
 - Each paragraph is one continuous flowing line (no `\n` within a paragraph)
 - Paragraph separators (`\n\n` — blank lines BETWEEN paragraphs) ARE ALLOWED and required for readability
 - Section headers, metadata labels, and report structure line breaks are fine
