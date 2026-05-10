@@ -53,6 +53,12 @@ All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ex
 4. **Audit Trail:** Full traceability from every claim to its source.
 5. **Separation of Concerns:** LLM inference, code-executed results, and external sources must never be conflated.
 
+### Rule 6: Format All Math Correctly (LaTeX/MathJax)
+- NO bare Unicode math characters in ANY manuscript output.
+- ALL mathematical content must use $...$ (inline) or $$...$$ (display) with proper LaTeX commands.
+- Before delivering the draft, scan for bare Unicode math and convert to LaTeX.
+- Code blocks are exempt from math formatting.
+
 ---
 
 ## 2. IDENTITY & CORE OBJECTIVE

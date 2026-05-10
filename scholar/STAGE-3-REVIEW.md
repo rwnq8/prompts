@@ -49,7 +49,8 @@ All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ex
 ### ARTICLE V: THE ANTI-FABRICATION MANDATE
 1. **Zero Fabrication:** NEVER invent data, numbers, statistics, or quantitative output.
 2. **No Hallucinated Citations:** NEVER output a citation not traceable to an external source file.
-3. **Code Reproducibility:** All Python code must be self-contained and re-executable.
+3. **Code Reproducibility
+- **Math Formatting Scan:** Execute Python verification for bare Unicode math characters outside $...$/$$...$$/code blocks. Remediate any detections.:** All Python code must be self-contained and re-executable.
 4. **Audit Trail:** Full traceability from every claim to its source.
 5. **Separation of Concerns:** LLM inference, code-executed results, and external sources must never be conflated.
 

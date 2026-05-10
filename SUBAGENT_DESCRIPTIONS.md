@@ -14,6 +14,7 @@ The main agent (DEFAULT-DEEPSEEK v1.2 running in the DeepChat chat thread) has a
 | `self` | SELF CLONE | **ACTIVE** | Parallel processing, blind validation, reader testing |
 | `slot-movio4vd-yj9c` | PROJECTS WORKSPACE | **ACTIVE** | File writes, document generation, project scaffolding |
 | `slot-movbn8bi-f61j` | ARCHIVE RESEARCHER | **ACTIVE** | Historical deep search, past work retrieval, cross-referencing |
+| *(pending)* | NOTES RESEARCHER | **PENDING** | Obsidian vault notes (Obsidian/notes/) for project supplementation |
 | *(pending)* | RELEASES READER | **PENDING** | Current publication releases (Obsidian/releases/) |
 | *(pending)* | PROMPTS AGENT | **PENDING** | Tier 1 & Tier 2 prompt engineering, prompt writes |
 
@@ -385,7 +386,93 @@ Step 3: PARENT             — review audit results, present findings to user
 
 ---
 
-## 6. DISPATCH DECISION MATRIX
+## 6. NOTES RESEARCHER
+
+### Slot-Ready Description (copy into DeepChat slot field when configuring)
+```
+OBSIDIAN NOTES RESEARCHER — Full Vault, Read-Only Knowledge Base Search | target=configure-for-notes | Read-only deep search agent for the user's Obsidian vault at G:\My Drive\Obsidian\notes\. This is the user's living, interconnected knowledge base — daily journals, topic notes, fleeting ideas, literature notes, permanent notes/Zettelkasten, MOCs, and templates. All notes use [[wikilinks]] and #tags for a dense concept graph.
+
+TARGET: Configure with read access to G:\My Drive\Obsidian\notes\
+
+VAULT CONTENTS (typical Obsidian structure):
+  • daily/ or journal/     — daily journals, periodic notes, timestamps and reflections
+  • topics/ or concepts/   — interlinked topic notes with #tags and [[wikilinks]]
+  • fleeting/ or inbox/    — quick captures, half-formed ideas, raw observations
+  • literature/ or sources/ — reading notes, literature reviews, source annotations
+  • permanent/ or zk/      — atomic Zettelkasten notes, self-contained ideas
+  • MOCs/ or indexes/      — Maps of Content, hub notes, navigational indexes
+  • templates/             — note templates for standardized capture
+  • attachments/           — images, PDFs, embedded media referenced in notes
+
+CAPABILITIES:
+  - File read from G:\My Drive\Obsidian\notes\ and its subdirectories (recursive)
+  - Python execution for quantitative analysis of note metadata (tags, links, word counts)
+  - LLM inference for synthesis and pattern recognition across the vault
+  - [[wikilink]] traversal — follow internal links to discover connected notes
+  - Tag-based filtering — search and aggregate notes by #tag
+  - Full-text search across all vault markdown files
+
+USE THIS SUBAGENT FOR:
+  • Supplementing projects with personal research notes and prior thinking
+  • Answering: "What do my notes say about X?", "Have I written about Y before?"
+  • Finding connections between vault notes and current project work
+  • Retrieving knowledge base entries on specific topics or concepts
+  • Scanning for prior thinking, half-formed ideas, or abandoned research threads
+  • Pulling literature notes to support academic or research writing
+  • Discovering related notes through [[wikilink]] traversal and tag analysis
+  • Cross-referencing notes against Archive (historical) and Releases (publications) for full coverage
+  • Analyzing vault structure: "What tags appear most?", "What topics are well-developed?"
+  • Finding templates in the vault for standardized note capture
+
+DO NOT USE FOR:
+  • Writing or editing notes in the vault — the vault is a READ-ONLY knowledge base
+  • Historical document search (use ARCHIVE — Archive/notes/ if historical notes exist there)
+  • Current publication releases (use RELEASES — Obsidian/releases/)
+  • File writes of any kind (use PROJECTS for output, PROMPTS for prompt files)
+  • Pure parallel computation with no vault relevance (use SELF CLONE)
+
+HARD CONSTRAINT: NEVER write to, edit, or modify any file in G:\My Drive\Obsidian\notes\. This is the user's personal knowledge base — all changes would disrupt the living note ecosystem. Flag any write attempt as a violation.
+
+READ-ONLY WARNING: The Obsidian vault is a living thinking environment, not a working directory. Do not attempt to save results here. All outputs go to PROJECTS.
+```
+
+### Extended Dispatch Reference
+
+**Dispatch Triggers (WHEN the main agent should delegate):**
+1. **"What do my notes say about..." queries:** Any question about the user's personal knowledge base — "what do my notes say about quantum computing?", "have I written about category theory?" — ALWAYS delegate to NOTES first
+2. **Project supplementation:** When working on a project and the user wants to incorporate their own prior thinking — NOTES retrieves relevant vault entries
+3. **Knowledge base retrieval:** User asks about a concept they've studied — NOTES finds topic notes, literature notes, and permanent notes on that concept
+4. **Cross-referencing against archive and releases:** For full coverage — NOTES (current thinking) + ARCHIVE (historical work) + RELEASES (current publications) in parallel
+5. **Vault analytics:** "What are my most-used tags?", "How many notes do I have on X?", "Show me the connections between topics A and B" — NOTES + Python
+6. **Idea recovery:** User mentions a half-remembered idea — NOTES scans fleeting notes and daily journals for partial captures
+7. **Literature note retrieval:** Supporting academic writing — NOTES pulls relevant source annotations and reading notes
+
+**Chain Pattern — Notes → Project Writing:**
+```
+Step 1: NOTES (chain)     — search vault for all notes on topic X, follow wikilinks
+Step 2: PROJECTS (chain)  — write project document incorporating vault insights
+```
+
+**Chain Pattern — Full Knowledge Coverage (parallel):**
+```
+Step 1: NOTES (parallel)    — search Obsidian vault for current thinking on topic
+Step 2: ARCHIVE (parallel)  — search historical archive for past work on topic
+Step 3: RELEASES (parallel) — search current publications for topic
+Step 4: PARENT              — merge into comprehensive knowledge map
+```
+
+**Result Format Contract:** NOTES should return:
+1. List of relevant notes found with relative paths and brief summaries
+2. A concept map: how notes interconnect via [[wikilinks]] and shared #tags
+3. Key excerpts from the most relevant notes
+4. Python-executed statistics when quantitative (e.g., "23 notes tagged #quantum, 8 interlinked via [[quantum-computing]]")
+5. Gap identification: topics mentioned in the vault but under-developed
+
+**Status Note:** NOTES currently has no active DeepChat slot. Until configured, the main agent should handle vault reading directly (File Read from G:\My Drive\Obsidian\notes\) or fold note-reading into ARCHIVE if ARCHIVE has access to the vault directory.
+
+---
+
+## 7. DISPATCH DECISION MATRIX
 
 ### Primary Dispatch: "I need to..."
 
@@ -402,6 +489,10 @@ Step 3: PARENT             — review audit results, present findings to user
 | "what did I publish in March 2026?" | RELEASES | chain | Scans Obsidian/releases/2026/03/ |
 | "get me all DOIs from last month" | RELEASES | chain | Extracts structured metadata |
 | "feed publications into social pipeline" | RELEASES → SELF CLONE × 4 | chain→parallel | RELEASES reads, clones generate platform posts |
+| "what do my notes say about X?" | NOTES | chain | Full-text search across Obsidian vault |
+| "supplement this project with my research notes" | NOTES | chain | Retrieves relevant vault entries on topic |
+| "check my notes for prior thinking on Y" | NOTES | chain | Scans topic notes + fleeting notes + daily journals |
+| "cross-reference my notes with publications" | NOTES + RELEASES | parallel | Vault thinking + current publications, parent merges |
 | "analyze publication trends in 2025" | RELEASES | chain | Python analysis of publication metadata |
 | "what did I write about X in 2024?" | ARCHIVE | chain | Deep search across Archive/notes/ |
 | "find templates for a research proposal" | ARCHIVE | chain | Searches Archive/templates/ |
@@ -426,6 +517,10 @@ Step 3: PARENT             — review audit results, present findings to user
 | Reading current publication releases (Obsidian) | RELEASES |
 | Feeding publication data into SOCIAL-ORCHESTRATOR | RELEASES |
 | Extracting metadata from publication .md files | RELEASES |
+| Supplementing projects with personal knowledge base notes | NOTES |
+| Searching Obsidian vault for prior thinking on a topic | NOTES |
+| Vault analytics (tag frequency, note interlinking, gaps) | NOTES |
+| Cross-referencing vault notes against archive and releases | NOTES |
 | Historical documents, past notes, prior projects | ARCHIVE |
 | Cross-referencing against past work | ARCHIVE |
 | Templates from Archive/templates/ | ARCHIVE |
@@ -438,7 +533,7 @@ Step 3: PARENT             — review audit results, present findings to user
 
 ---
 
-## 7. MULTI-AGENT WORKFLOW PATTERNS
+## 8. MULTI-AGENT WORKFLOW PATTERNS
 
 ### Pattern A: Parallel Analysis (most common)
 **When:** Multiple independent items to analyze/process simultaneously
@@ -516,9 +611,32 @@ subagent_orchestrator(mode="parallel", tasks=[
 ```
 **Aggregation:** Parent synthesizes both results, noting temporal coverage gaps.
 
+### Pattern G: Notes-Informed Research (chain)
+**When:** Need to incorporate personal knowledge base into new project work
+**How:** NOTES first (vault search), then PROJECTS (write incorporating notes)
+**Example:**
+```
+subagent_orchestrator(mode="chain", tasks=[
+  {slotId: "notes-slot", title: "Vault Search", prompt: "Search Obsidian vault for all notes on topic X. Follow [[wikilinks]] to discover connected ideas. Return key excerpts, concept map, and gap analysis..."},
+  {slotId: "slot-movio4vd-yj9c", title: "Write Project", prompt: "Using the vault research from Step 1, write the project document. Cite specific notes as sources. Identify where personal notes agree or diverge from external research..."},
+])
+```
+
+### Pattern H: Triple Knowledge Coverage (parallel — NOTES + ARCHIVE + RELEASES)
+**When:** Need the fullest possible picture — current thinking (NOTES), historical work (ARCHIVE), and current publications (RELEASES)
+**How:** All three run in parallel, parent synthesizes
+```
+subagent_orchestrator(mode="parallel", tasks=[
+  {slotId: "notes-slot", title: "Current Thinking", prompt: "Search Obsidian vault for all notes on topic X..."},
+  {slotId: "slot-movbn8bi-f61j", title: "Historical Work", prompt: "Search Archive for all past work on topic X..."},
+  {slotId: "releases-slot", title: "Current Publications", prompt: "Scan releases for recent publications on topic X..."},
+])
+```
+**Aggregation:** Parent builds a three-layer knowledge map: personal thinking (Notes) → historical work (Archive) → published output (Releases), identifying evolution, gaps, and convergences.
+
 ---
 
-## 8. RESULT AGGREGATION & COLLATION PROTOCOL
+## 9. RESULT AGGREGATION & COLLATION PROTOCOL
 
 ### How the Orchestrator Returns Results
 The `subagent_orchestrator` tool returns **a single aggregated markdown result** after all child sessions finish. Each child's output appears under its title heading. The parent agent receives this aggregated result as one block.
@@ -574,7 +692,7 @@ When reporting aggregated results, use this structure:
 
 ---
 
-## 9. PROMPT TEMPLATE INTEGRATION
+## 10. PROMPT TEMPLATE INTEGRATION
 
 The prompt template system (accessible via `fill_prompt_template`) integrates with the subagent system as follows:
 
@@ -603,7 +721,7 @@ The prompt template system (accessible via `fill_prompt_template`) integrates wi
 
 ---
 
-## 10. COMMON DISPATCH ERRORS (ANTI-PATTERNS)
+## 11. COMMON DISPATCH ERRORS (ANTI-PATTERNS)
 
 | Anti-Pattern | Why It's Wrong | Correct Approach |
 |:-------------|:---------------|:-----------------|
@@ -619,10 +737,12 @@ The prompt template system (accessible via `fill_prompt_template`) integrates wi
 | **PROJECTS writing to Archive or Releases** | Destroys the integrity of read-only directories | Hard refusal — redirect to appropriate directory |
 | **Not aggregating parallel results** | Dumping raw subagent outputs to the user is lazy and incoherent | Synthesize, remove redundancy, resolve conflicts |
 | **Assuming subagent has parent's context** | Subagents are isolated; they don't know what the parent discussed | Every subagent prompt must be fully self-contained |
+| **Using NOTES for file writes** | NOTES is read-only — vault integrity depends on it | Use PROJECTS for all output files |
+| **Not checking NOTES before starting a project** | Misses prior thinking that could save hours of redundant research | Always query NOTES + ARCHIVE before writing on a familiar topic |
 
 ---
 
-## 11. SLOT CONFIGURATION REFERENCE
+## 12. SLOT CONFIGURATION REFERENCE
 
 | Agent | Slot ID | Status | Write Access | Read Access |
 |:------|:--------|:-------|:-------------|:------------|
@@ -630,13 +750,14 @@ The prompt template system (accessible via `fill_prompt_template`) integrates wi
 | PROJECTS | `slot-movio4vd-yj9c` | ✅ Active | G:\My Drive\projects\, G:\My Drive\prompts\ | All directories |
 | ARCHIVE | `slot-movbn8bi-f61j` | ✅ Active | NONE (read-only) | G:\My Drive\Archive\ only |
 | RELEASES | *(not configured)* | ⬜ Pending | NONE (read-only) | G:\My Drive\Obsidian\releases\ only |
+| NOTES | *(not configured)* | ⬜ Pending | NONE (read-only) | G:\My Drive\Obsidian\notes\ only |
 | PROMPTS | *(not configured)* | ⬜ Pending | G:\My Drive\prompts\ only | All directories |
 
-**To configure RELEASES or PROMPTS:** Copy the "Slot-Ready Description" block from Section 3 or 5 above into a new DeepChat subagent slot. Configure the target with appropriate directory access as specified in the description.
+**To configure RELEASES, NOTES, or PROMPTS:** Copy the "Slot-Ready Description" block from Section 3, 6, or 5 above into a new DeepChat subagent slot. Configure the target with appropriate directory access as specified in the description.
 
 ---
 
-## 12. ORCHESTRATOR TOOL REFERENCE
+## 13. ORCHESTRATOR TOOL REFERENCE
 
 The main agent accesses subagents via:
 ```
@@ -658,4 +779,4 @@ subagent_orchestrator(mode="parallel"|"chain", tasks=[...])
 
 ---
 
-**[END OF SUBAGENT DESCRIPTIONS v2.0]**
+**[END OF SUBAGENT DESCRIPTIONS v2.1]**
