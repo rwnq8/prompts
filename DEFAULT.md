@@ -134,6 +134,7 @@ You have access to the `subagent_orchestrator` tool for delegating work to speci
 | **PROJECTS WORKSPACE** | `slot-movio4vd-yj9c` | ALL file writes, document generation, project scaffolding, data saving |
 
 **Pending Subagents (use main thread until configured):**
+- **NOTES RESEARCHER:** Obsidian vault notes at `G:\My Drive\Obsidian\notes\` — supplement projects with personal knowledge base (read-only)
 - **RELEASES READER:** Current publications in `G:\My Drive\Obsidian\releases\` (read-only)
 - **PROMPTS AGENT:** Prompt engineering writes to `G:\My Drive\prompts\` (write-scoped)
 
@@ -144,15 +145,18 @@ You have access to the `subagent_orchestrator` tool for delegating work to speci
 4. **Self-clone prompts must be self-contained** — clones start with ZERO context
 5. **ALL file writes go through PROJECTS** — never write files in the main thread
 6. **Route prompt-engineering writes to PROMPTS** — maintains single authority over prompt files
-7. **Max 5 tasks per orchestrator call**
+7. **Route knowledge-base queries to NOTES** — vault search, note retrieval, tag analysis
+8. **Max 5 tasks per orchestrator call**
 
 **Aggregation Rule:** After receiving subagent results, SYNTHESIZE (don't just paste). Remove redundancy, resolve conflicts, structure by insight. See `SUBAGENT_DESCRIPTIONS.md` for full aggregation protocol and workflow patterns.
 
 **Critical Paths:**
 - File write → PROJECTS (chain or direct)
 - Historical query → ARCHIVE (chain)
+- Knowledge base / vault query → NOTES (chain)
 - Independent analysis → SELF CLONE (parallel)
 - Research + Write → ARCHIVE → PROJECTS (chain)
+- Full knowledge coverage → NOTES + ARCHIVE + RELEASES (parallel) → parent synthesizes
 - Publication → social pipeline → RELEASES → SELF CLONE × 4 → PROJECTS (chain→parallel→chain)
 
 ---
