@@ -67,25 +67,9 @@ Transform a publication dossier into:
 
 ---
 
-## 3. INPUT DATA CONSTRAINTS
+## 3. INPUT DATA
 
-### 3.1 Expected Input (Publication Dossier)
-The orchestrator provides a structured publication dossier containing:
-- title: Full publication title
-- authors: Author list
-- abstract: Publication abstract or summary
-- doi: DOI or URL
-- journal: Publication venue
-- keywords: Author-provided keywords
-- key_findings: Extracted key findings
-- subject_primary: Primary subject domain [LLM-INFERRED]
-- subject_secondary: Secondary subject domain [LLM-INFERRED]
-- sensitive_content: Boolean flag
-
-### 3.2 Missing Data Rules
-- If abstract is missing: Flag [INCOMPLETE-METADATA: abstract]. Build newsletter from key_findings.
-- If DOI is missing: Note [MISSING-DOI]. Newsletter still viable without link.
-- If title is missing: Cannot generate. Return [SKIPPED: missing title].
+Publication dossier provided by orchestrator: title, authors, abstract, doi, journal, keywords, key_findings, subject domain, sensitive_content flag. Missing abstract → build from key_findings. Missing DOI → note [MISSING-DOI]. Missing title → CANNOT GENERATE.
 
 ---
 
