@@ -378,11 +378,19 @@ If ANY output contains bare Unicode math characters outside of `$$...$$`, `$...$
 ### GIT BRANCH VIOLATION
 If you discover you are on `main`/`master` or a non-`feature/` branch:
 1. **Do not proceed with file operations.**
-2. Stash any in-progress work: `git stash --include-untracked`
-3. Create feature branch: `git checkout -b feature/<descriptive-name>`
-4. Restore work: `git stash pop`
-5. Verify: `git branch --show-current`
-6. Resume work ONLY after confirming feature branch.
+2. **Check stash stack and worktree:**
+   - `git stash list` → Note how many stash entries exist (baseline count).
+   - `git status --short` → Is the worktree dirty?
+   - **If worktree is CLEAN:** skip to step 4. Do NOT stash — there is nothing to save, and `git stash pop` will restore the wrong entry.
+   - **If worktree is DIRTY:** `git stash push -m "pre-branch-switch-<feature-name>" --include-untracked`
+3. **Verify stash was created:** `git stash list` → Count should be baseline+1. If not, the stash failed — investigate before proceeding.
+4. Create feature branch: `git checkout -b feature/<descriptive-name>`
+5. Restore work (ONLY if you stashed in step 2):
+   - `git stash list` → Identify your stash entry by its message.
+   - `git stash pop` → If this triggers merge conflicts from a wrong stash entry, see Section 9.7 (Stash Pop Contamination).
+   - **If you did NOT stash** (worktree was clean): skip this step.
+6. Verify: `git branch --show-current`
+7. Resume work ONLY after confirming feature branch.
 
 ### GIT COMMIT NOT EXECUTED
 If you stated in your response that you committed changes, but the commit does not exist:
@@ -456,7 +464,13 @@ At the end of EVERY response that involved file changes, ask yourself these thre
 - **Examples:** `feature/git-hygiene-enforcement`, `feature/add-dark-mode`, `feature/fix-memory-leak`
 - **Anti-patterns:** `image-gen` (no `feature/` prefix), `my-branch` (no prefix), `fix` (too vague)
 - **If you are on a branch without `feature/` prefix:** rename it or create a new feature branch and migrate work.
-- **Transition procedure for non-`feature/` branch:** `git stash` → `git checkout -b feature/<name>` → `git stash pop`
+- **Transition procedure for non-`feature/` branch:**
+  1. `git stash list` → Record baseline count.
+  2. **If worktree is dirty:** `git stash push -m "migrate-to-feature-<name>" --include-untracked`
+  3. **If worktree is clean:** skip stash (nothing to save).
+  4. `git checkout -b feature/<name>`
+  5. **If you stashed:** `git stash list` → verify count increased by 1, then `git stash pop`.
+  6. **If you did NOT stash:** proceed directly.
 
 ### 9.6 COMMIT MESSAGE FORMAT
 
@@ -467,18 +481,29 @@ ACTION:[CREATE|EDIT|DELETE] FILE: <relative-path> RATIONALE:<brief-reason>
 \`\`\`
 
 - **ACTION:** CREATE (new file), EDIT (modified existing), DELETE (removed file)
-- **FILE:** Path relative to repo root
+- **FILE:** Path relative to repo root. For multi-file commits, use FILES: and comma-separate paths.
 - **RATIONALE:** Why this change was made (one sentence)
+
+**Single-file format:**
+```
+ACTION:[CREATE|EDIT|DELETE] FILE: <relative-path> RATIONALE:<brief-reason>
+```
+
+**Multi-file format (use only when files are logically inseparable):**
+```
+ACTION:[CREATE|EDIT|DELETE] FILES: <path1>, <path2>, <path3> RATIONALE:<brief-reason>
+```
 
 ### 9.7 FAILURE SCENARIOS & RECOVERY
 
 | Scenario | Detection | Recovery Procedure |
 |:---------|:----------|:-------------------|
 | **On `main`/`master`** | `git branch --show-current` returns `main` or `master` | 1. `git stash`. 2. `git checkout -b feature/<name>`. 3. `git stash pop`. 4. Continue work. |
-| **Dirty worktree on branch switch** | `git status --short` shows changes when trying to switch | 1. `git stash --include-untracked`. 2. Switch/create branch. 3. `git stash pop`. |
+| **Dirty worktree on branch switch** | `git status --short` shows changes when trying to switch | 1. `git stash list` (baseline). 2. `git stash push -m "pre-switch" --include-untracked`. 3. `git stash list` (verify +1). 4. Switch/create branch. 5. `git stash pop` (verify message matches). |
 | **Commit stated but not executed** | `git log -1` does not show expected commit | Execute `git add <file>` + `git commit -m "..."` immediately. Do NOT end the response. |
 | **Detached HEAD** | `git branch --show-current` returns nothing or error | `git checkout -b feature/recovery` to attach to new branch. |
-| **Merge conflict** | Git reports CONFLICT during merge/rebase | 1. Open conflicted file. 2. Resolve conflict markers. 3. `git add <file>`. 4. `git commit`. |
+| **Stash pop restores wrong work** | `git stash pop` triggers merge conflicts from a pre-existing stash entry (not your own) | 1. `git merge --abort` (or `git reset --merge`). 2. `git stash list` to identify the offending entry. 3. `git stash drop stash@{N}` to remove it. 4. Verify worktree clean with `git status --short`. 5. Resume work. **Prevention:** Always check `git stash list` before/after `git stash push`; only `git stash pop` if the count increased by exactly 1. |
+| **Merge conflict** | Git reports CONFLICT during merge/rebase | 1. Open each conflicted file. 2. Remove `<<<<<<<`, `=======`, `>>>>>>>` markers — choose which version to keep (current branch = between `<<<<<<<` and `=======`, incoming = between `=======` and `>>>>>>>`). 3. `git add <file>` to mark as resolved. 4. `git commit`. |
 | **Wrong branch for task** | Branch name does not match current work | 1. `git stash`. 2. `git checkout -b feature/<correct-name>`. 3. `git stash pop`. |
 | **`git add .` used accidentally** | Too many files staged in `git diff --cached --stat` | `git reset HEAD` to unstage all, then `git add <specific-file>` for each intended file. |
 | **Forgot to commit before long response** | End of response: `git status --short` shows uncommitted changes | Stage and commit ALL uncommitted changes before delivering response. |
