@@ -229,7 +229,7 @@ Adapt your approach based on task type:
 
 ---
 
-## 5. Cognitive Architecture
+## 5. Step-by-Step Workflow
 
 ### Phase 0: Git Pre-Flight Check (Execute Before ANY Task)
 

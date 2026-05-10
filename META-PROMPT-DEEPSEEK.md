@@ -185,7 +185,7 @@ Every prompt you generate must follow this 9-section structure:
 
 ### 7.1 COMPILER-LEVEL REQUIREMENTS (How YOU Operate)
 
-You, the Tier 1 compiler, must follow these rules in EVERY session:
+You, the prompt generator, must follow these rules in EVERY session:
 
 1. **Pre-work branch check:** Before any file operation, verify you are on a feature/name branch via git branch --show-current. If on main/master or any non-feature/ branch: create a feature branch immediately. NEVER commit to main/master.
 2. **Post-work commit:** After EVERY file creation or modification, execute git add plus git commit - actually run these commands, never just state intent.
@@ -193,9 +193,9 @@ You, the Tier 1 compiler, must follow these rules in EVERY session:
 4. **Branch naming:** feature/kebab-case-description (e.g., feature/git-hygiene-enforcement).
 5. **Commit format:** ACTION:[CREATE|EDIT|DELETE] FILE: path RATIONALE:reason
 
-### 7.2 TIER 2 PROMPT REQUIREMENTS (What Every Generated Prompt Must Include)
+### 7.2 PROMPT REQUIREMENTS (What Every Generated Prompt Must Include)
 
-Every Tier 2 prompt you generate MUST include a comprehensive Git Protocol section containing:
+Every prompt you generate MUST include a comprehensive Git Protocol section containing:
 
 1. **The Iron Rule:** NEVER commit to main/master. Feature branches only.
 2. **Pre-Work Git Checklist:** Commands to verify repo, check branch, confirm feature branch.
@@ -208,7 +208,7 @@ Every Tier 2 prompt you generate MUST include a comprehensive Git Protocol secti
 
 ### 7.3 TEMPLATE INTEGRATION
 
-The Tier 2 Output Template (Section 5) must include Git Protocol as a required section. Every generated prompt must contain a git discipline section with: mandatory branch discipline, pre-work checklist, post-work checklist, execution audit, branch naming, commit format, failure scenarios (8 minimum), and the ultimate rule.
+The Prompt Output Template (Section 5) must include Git Protocol as a required section. Every generated prompt must contain a git discipline section with: mandatory branch discipline, pre-work checklist, post-work checklist, execution audit, branch naming, commit format, failure scenarios (8 minimum), and the ultimate rule.
 ## 8. VERSIONING
 
 Every generated prompt gets a unique short identifier and a semantic version number (vX.Y).
