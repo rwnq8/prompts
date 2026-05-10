@@ -107,7 +107,7 @@ For EVERY generated Substack piece, execute Python to validate:
 - Subtitle: character count (100-150)
 - "Read more" break: placement at 200-300 words from start
 - Notes: each less than or equal to 280 characters
-- **ZERO newline check -- ALL content text must be single continuous lines with no \n or \r characters**
+- **Mid-paragraph break check -- no forced line breaks within paragraphs; \n\n between paragraphs is allowed**
 
 ### 4.2 Substack Newsletter Strategy (Detailed)
 
@@ -468,17 +468,43 @@ NEWSLETTER BODY [DIRECT -- copy to Substack editor]
   Read-more break at: [N] words [CODE-EXECUTED]
   Paid/subscriber content: [YES, starting at read-more break / NO, all free]
 
-  --- BEGIN NEWSLETTER BODY (copy below -- each section is ONE continuous line) ---
+  --- BEGIN NEWSLETTER BODY (copy below -- flowing paragraphs, no mid-paragraph breaks) ---
 
-  OPENING (SINGLE LINE): [opening lede with personal voice]
-  CONTEXT (SINGLE LINE): [what was known, why this question matters]
-  FINDING (SINGLE LINE): [what researchers discovered]
-  [READ MORE BREAK token inline]
-  RESEARCH DETAIL (SINGLE LINE): [methodology, data, what makes this different]
-  IMPLICATIONS (SINGLE LINE): [what this means, short-term and long-term | personal take]
-  TAKEAWAYS (SINGLE LINE): [Takeaway 1 | Takeaway 2 | Takeaway 3 | Takeaway 4 | Takeaway 5]
-  CTA (SINGLE LINE): [Read the full paper: DOI | What do you think? | Subscribe CTA]
-  REFERENCES (SINGLE LINE): [full citation | DOI link]
+  [OPENING -- 50-75 words]
+  [opening lede with personal voice -- flowing text, no mid-paragraph breaks]
+
+  [CONTEXT -- 100-150 words]
+  [what was known, why this question matters -- flowing text, no mid-paragraph breaks]
+
+  [THE FINDING -- 50-75 words]
+  [what researchers discovered -- flowing text, no mid-paragraph breaks]
+
+  [READ MORE BREAK -- email truncation point]
+  [SUBSCRIBER CONTENT BELOW -- if applicable]
+
+  [THE RESEARCH IN DETAIL -- 200-400 words]
+  [methodology, data, what makes this different -- flowing paragraphs]
+
+  [THE IMPLICATIONS -- 200-400 words]
+  [what this means, short-term and long-term -- flowing paragraphs]
+  [personal take]
+
+  [TAKEAWAYS]
+  - [takeaway 1]
+  - [takeaway 2]
+  - [takeaway 3]
+  - [takeaway 4]
+  - [takeaway 5]
+
+  [CALL TO ACTION]
+  Read the full paper: [DOI link]
+  What do you think? Reply or comment below.
+  If you found this valuable, please share with a colleague.
+  [Subscribe for more deep dives like this: subscription CTA]
+
+  [REFERENCES]
+  [full citation]
+  [DOI link]
 
   --- END NEWSLETTER BODY ---
 
@@ -538,49 +564,57 @@ flag for review if:
 
 ---
 
-## 10. CRITICAL OVERRIDE: NO LINE BREAKS IN FINAL OUTPUT TEXT
+## 10. CRITICAL OVERRIDE: NO MID-PARAGRAPH LINE BREAKS
 
 ### 10.1 The Iron Rule
-ALL final content text delivered in Section 8 (newsletter body sections, Notes text, subject line, title, subtitle) MUST be single continuous lines with ZERO embedded newline characters (\n). The output report may use line breaks for section headers and metadata labels, but the ACTUAL CONTENT TEXT (the text the user copies and pastes into Substack's editor) must contain NO line breaks whatsoever.
+ALL text delivered in Section 8 MUST have **no mid-paragraph line breaks**. This means:
+- Each paragraph is one continuous flowing line (no `\n` within a paragraph)
+- Paragraph separators (`\n\n` — blank lines BETWEEN paragraphs/sections) ARE ALLOWED and required for readability
+- Substack Notes are single flowing paragraphs (max 280 chars, zero `\n`)
+- The problem being fixed: forced 80-char wraps or manual carriage returns that add `\n` mid-sentence, making text fail to copy/paste cleanly into Substack's editor
 
-### 10.2 Python Validation
-Before delivering ANY output, execute Python to validate:
+### 10.2 Python Validation — Paragraph Flow (Not Single-Line)
 ```python
-def validate_no_newlines(text, label):
-    assert '\n' not in text, f"FAIL: {label} contains line breaks"
-    assert '\r' not in text, f"FAIL: {label} contains carriage returns"
+def validate_paragraph_flow(text, label):
+    """Each paragraph must flow continuously — no \n within a paragraph.
+    \n\n (blank lines between paragraphs) is explicitly allowed."""
+    paragraphs = [p for p in text.split('\n\n')]
+    for i, para in enumerate(paragraphs):
+        para = para.strip()
+        if not para:
+            continue
+        assert '\n' not in para, \
+            f"FAIL: {label} paragraph {i+1} has mid-paragraph line break"
+        assert '\r' not in para, \
+            f"FAIL: {label} paragraph {i+1} has carriage return"
     return True
 
-validate_no_newlines(subject_line, "Email Subject Line")
-validate_no_newlines(post_title, "Post Title")
-validate_no_newlines(subtitle, "Subtitle")
-validate_no_newlines(opening, "Newsletter Opening")
-validate_no_newlines(context, "Newsletter Context")
-validate_no_newlines(finding, "Newsletter Finding")
-validate_no_newlines(research_detail, "Research Detail")
-validate_no_newlines(implications, "Implications")
-validate_no_newlines(takeaways, "Takeaways")
-validate_no_newlines(cta, "Call to Action")
-validate_no_newlines(note1, "Substack Note 1")
-validate_no_newlines(note2, "Substack Note 2")
-validate_no_newlines(note3, "Substack Note 3")
+validate_paragraph_flow(subject_line, "Email Subject Line")
+validate_paragraph_flow(post_title, "Post Title")
+validate_paragraph_flow(subtitle, "Subtitle")
+validate_paragraph_flow(opening, "Newsletter Opening")
+validate_paragraph_flow(context, "Newsletter Context")
+validate_paragraph_flow(finding, "Newsletter Finding")
+validate_paragraph_flow(research_detail, "Research Detail")
+validate_paragraph_flow(implications, "Implications")
+validate_paragraph_flow(takeaways, "Takeaways")
+validate_paragraph_flow(cta, "Call to Action")
+# Notes are single-line (no \n at all — no paragraph separators needed)
+assert '\n' not in note1 and '\r' not in note1, "FAIL: Note 1 has line breaks"
+assert '\n' not in note2 and '\r' not in note2, "FAIL: Note 2 has line breaks"
+assert '\n' not in note3 and '\r' not in note3, "FAIL: Note 3 has line breaks"
 ```
-If validation fails, FIX the text by joining all lines with spaces BEFORE delivering.
 
-### 10.3 Multi-Paragraph Content
+### 10.3 Multi-Section / Multi-Paragraph Content
 When a newsletter section naturally contains multiple paragraphs:
-- Join paragraphs with single spaces (never line breaks)
-- Use the | character to mark paragraph transitions: "Paragraph one. | Paragraph two."
-- NEVER use \n or \r\n to separate paragraphs within a section
+- Separate paragraphs with a blank line (`\n\n`) — this is correct and desired
+- Each paragraph must be one continuous flowing line (no `\n` within it)
+- NEVER insert hard line breaks at 80-character limits or other arbitrary positions
 
-### 10.4 Substack Notes
-Each Note is delivered as a single continuous line (max 280 chars). No line breaks allowed within any Note.
-
-### 10.5 Pre-Delivery Audit
-After generating all content but BEFORE delivering, run:
-1. Python scan of ALL content text fields for \n or \r characters
-2. If ANY content text contains line breaks: fix by joining with spaces
-3. Re-validate: assert zero newlines in all deliverable content text
+### 10.4 Pre-Delivery Audit
+1. Python scan of ALL text fields using `validate_paragraph_flow()`
+2. If ANY mid-paragraph `\n` is found: fix by joining that paragraph into one line
+3. Re-validate: assert zero mid-paragraph `\n` in all deliverable text
 4. Only then deliver the output
 
-[NO-LINE-BREAK OVERRIDE ACTIVE -- this rule supersedes any conflicting formatting guidance above]
+[NO-MID-PARAGRAPH-BREAK OVERRIDE ACTIVE — `\n\n` OK, `\n` within paragraphs NOT OK]

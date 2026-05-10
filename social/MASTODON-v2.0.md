@@ -103,7 +103,7 @@ For EVERY generated Mastodon post, execute Python to validate:
 - Hashtag uniqueness (no duplicate hashtags)
 - Hashtag character percentage (hashtags should be less than 30 percent of total characters)
 - CW flag check (if sensitive_content is True, verify CW is included)
-- **ZERO newline check -- ALL post text must be single continuous lines with no \n or \r characters**
+- **Mid-paragraph break check -- no forced line breaks within paragraphs; \n\n between paragraphs is allowed**
 
 ### 4.2 Mastodon Strategy (Detailed)
 
@@ -211,9 +211,12 @@ TONE GUIDELINES:
   - "Exciting new research" is fine; "THIS CHANGES EVERYTHING" is not
   - First-person is acceptable ("I'm excited to share...") but not required
 
-POST STRUCTURE TEMPLATE (ALL SINGLE LINE, NO BREAKS):
-  [Optional: CW text] [Post body: what was discovered + why it matters + link -- ALL ONE LINE] [space-separated hashtags: 5-8 hashtags appended inline]
-  ^^^ The ENTIRE post is ONE continuous line. CW text, post body, and hashtags are space-separated on the same line. ZERO \n characters.
+POST STRUCTURE TEMPLATE (flowing paragraphs, no mid-paragraph breaks):
+  [Optional: CW line if sensitive content -- single line]
+  [Post body: 1-3 flowing paragraphs separated by blank lines -- each paragraph flows continuously, no mid-paragraph breaks]
+  
+  [Hashtag block: 5-8 hashtags, space-separated on its own line -- single line, no breaks]
+  **CRITICAL: Each paragraph flows continuously. \n\n allowed for paragraph separation. No \n within paragraphs.**
 
 THREAD STRATEGY:
   When the finding is too complex for a single post:
@@ -270,11 +273,12 @@ STEP 1.3: Select hashtags
   Priority 3: 1-2 instance/cultural
   Python: [CODE-EXECUTED] Validate hashtag count, uniqueness, character percentage
 
-STEP 1.4: Assemble final post (ALL SINGLE CONTINUOUS LINE)
-  [CW line if needed -- space-separated from body]
-  [Post body -- single line, NO breaks]
-  [Hashtag block -- space-separated, appended to same line]
-  **CRITICAL: The entire assembled post is ONE continuous line with ZERO \n characters**
+STEP 1.4: Assemble final post
+  [CW line if needed]
+  [Post body -- flowing paragraphs, no mid-paragraph breaks]
+  [blank line]
+  [Hashtag block -- space-separated on its own line]
+  **CRITICAL: Each paragraph flows continuously. No \n within paragraphs. \n\n allowed for paragraph separation.**
 
 [PAUSE: AWAIT VALIDATION]
 Content drafted. Hashtags selected and validated?
@@ -362,9 +366,11 @@ Content Warning: [YES: topic / NO]
   Hashtag percentage: [N] percent of post [CODE-EXECUTED]
   Optimal range check: [PASS: 300-500 / FLAG: outside range]
 
-  POST (copy to Buffer or paste directly -- SINGLE CONTINUOUS LINE):
-  [CW: topic -- if applicable] [post body text] [space-separated hashtag block]
-  ^^^ ALL ON ONE LINE -- ZERO LINE BREAKS ^^^
+  POST (copy to Buffer or paste directly -- flowing paragraphs, no mid-paragraph breaks):
+  [CW: topic -- if applicable]
+  [post body text]
+  
+  [space-separated hashtag block -- single line, no breaks within the block]
 
 ================================================================================
 HASHTAG BREAKDOWN
@@ -397,42 +403,45 @@ flag for review if:
 
 ---
 
-## 10. CRITICAL OVERRIDE: NO LINE BREAKS IN FINAL OUTPUT TEXT
+## 10. CRITICAL OVERRIDE: NO MID-PARAGRAPH LINE BREAKS
 
 ### 10.1 The Iron Rule
-ALL final post text delivered in Section 8 (post body, CW text, hashtag block, thread posts) MUST be single continuous lines with ZERO embedded newline characters (\n). The output report may use line breaks for section headers and metadata labels, but the ACTUAL POST TEXT (the content the user copies and pastes into Buffer or Mastodon) must contain NO line breaks whatsoever.
+ALL text delivered in Section 8 MUST have **no mid-paragraph line breaks**. This means:
+- Each paragraph is one continuous flowing line (no `\n` within a paragraph)
+- Paragraph separators (`\n\n` — blank lines BETWEEN paragraphs) ARE ALLOWED and required for readability
+- The hashtag block is always space-separated on its own line (single line, no breaks within it)
+- The problem being fixed: forced 80-char wraps or manual carriage returns that add `\n` mid-sentence, making text fail to copy/paste cleanly into social apps
 
-### 10.2 Python Validation
-Before delivering ANY output, execute Python to validate:
+### 10.2 Python Validation — Paragraph Flow (Not Single-Line)
 ```python
-def validate_no_newlines(text, label):
-    assert '\n' not in text, f"FAIL: {label} contains line breaks"
-    assert '\r' not in text, f"FAIL: {label} contains carriage returns"
+def validate_paragraph_flow(text, label):
+    """Each paragraph must flow continuously — no \n within a paragraph.
+    \n\n (blank lines between paragraphs) is explicitly allowed."""
+    paragraphs = [p for p in text.split('\n\n')]
+    for i, para in enumerate(paragraphs):
+        para = para.strip()
+        if not para:
+            continue
+        assert '\n' not in para, \
+            f"FAIL: {label} paragraph {i+1} has mid-paragraph line break"
+        assert '\r' not in para, \
+            f"FAIL: {label} paragraph {i+1} has carriage return"
     return True
 
-validate_no_newlines(post_body, "Post Body")
-validate_no_newlines(cw_text, "CW Text")
-validate_no_newlines(hashtag_block, "Hashtag Block")
-# Validate each thread post if applicable
+validate_paragraph_flow(post_body, "Post Body")
+validate_paragraph_flow(cw_text, "CW Text")
+# Hashtag block is single-line (space-separated)
+assert '\n' not in hashtag_block and '\r' not in hashtag_block, \
+    "FAIL: Hashtag Block contains line breaks"
 ```
-If validation fails, FIX the text by joining all lines with spaces BEFORE delivering.
 
 ### 10.3 Hashtag Block Format
-Hashtags must be space-separated on a SINGLE LINE appended to the post body:
-`[post body text] #Science #Astronomy #Exoplanets #Research`
-NOT stacked vertically with line breaks.
+Hashtags must be space-separated on their OWN single line (after a blank line from the post body). No line breaks within the hashtag block itself.
 
-### 10.4 Multi-Sentence Content
-When content naturally spans multiple ideas or sentences:
-- Join sentences with single spaces (never line breaks)
-- Use em-dashes (---) or the | character for visual separation within a single line
-- NEVER use \n to separate paragraphs within post text
-
-### 10.5 Pre-Delivery Audit
-After generating all content but BEFORE delivering, run:
-1. Python scan of ALL post text fields for \n or \r characters
-2. If ANY post text contains line breaks: fix by joining with spaces
-3. Re-validate: assert zero newlines in all deliverable post text
+### 10.4 Pre-Delivery Audit
+1. Python scan of ALL text fields using `validate_paragraph_flow()`
+2. If ANY mid-paragraph `\n` is found: fix by joining that paragraph into one line
+3. Re-validate: assert zero mid-paragraph `\n` in all deliverable text
 4. Only then deliver the output
 
-[NO-LINE-BREAK OVERRIDE ACTIVE -- this rule supersedes any conflicting formatting guidance above]
+[NO-MID-PARAGRAPH-BREAK OVERRIDE ACTIVE — `\n\n` OK, `\n` within paragraphs NOT OK]

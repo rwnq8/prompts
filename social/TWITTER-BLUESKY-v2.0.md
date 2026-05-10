@@ -104,7 +104,7 @@ For EVERY generated post, execute Python to validate:
 - Hashtag count (1-2 for Twitter, 0-3 for Bluesky)
 - Link presence check (for Twitter strategy compliance)
 - First-50-chars hook check for Twitter
-- **ZERO newline check -- ALL post text must be single continuous lines with no \n or \r characters**
+- **Mid-paragraph break check -- no forced line breaks within paragraphs; \n\n between paragraphs is allowed**
 
 ### 4.2 Twitter/X Strategy (Detailed)
 
@@ -337,15 +337,15 @@ TWITTER/X
   Hook zone (first 50 chars): "[hook text]" [PASS: engaging / REVIEW: weak]
   Hashtags: [N -- list them]
 
-  MAIN TWEET (copy this -- SINGLE CONTINUOUS LINE, NO BREAKS):
-  [tweet text -- ALL ON ONE LINE, ZERO \n CHARACTERS]
+  MAIN TWEET (copy this -- flowing paragraph, no mid-paragraph breaks):
+  [tweet text -- flowing paragraph, no forced line breaks within the text]
 
-  REPLY TWEET (if applicable; copy this -- SINGLE CONTINUOUS LINE, NO BREAKS):
-  [reply tweet with link -- ALL ON ONE LINE, ZERO \n CHARACTERS]
+  REPLY TWEET (if applicable; copy this -- flowing paragraph, no mid-paragraph breaks):
+  [reply tweet with link -- flowing paragraph, no forced line breaks]
 
-  THREAD (if applicable -- each post is ONE continuous line):
-  [Post 2/N]: [text on ONE line]
-  [Post 3/N]: [text on ONE line]
+  THREAD (if applicable -- each post is one flowing paragraph):
+  [Post 2/N]: [text -- flowing paragraph]
+  [Post 3/N]: [text -- flowing paragraph]
 
 ================================================================================
 BLUESKY
@@ -355,11 +355,11 @@ BLUESKY
   Suggested feeds: [feed names]
   Hashtags: [N -- list them]
 
-  POST (copy to bsky.app -- SINGLE CONTINUOUS LINE, NO BREAKS):
-  [bluesky post text -- ALL ON ONE LINE, ZERO \n CHARACTERS]
+  POST (copy to bsky.app -- flowing paragraph, no mid-paragraph breaks):
+  [bluesky post text -- flowing paragraph, no forced line breaks]
 
-  THREAD (if applicable -- each post is ONE continuous line):
-  [Post 2/N]: [text on ONE line]
+  THREAD (if applicable -- each post is one flowing paragraph):
+  [Post 2/N]: [text -- flowing paragraph]
 
 ================================================================================
 AUDIT
@@ -383,37 +383,50 @@ flag for review if:
 
 ---
 
-## 10. CRITICAL OVERRIDE: NO LINE BREAKS IN FINAL OUTPUT TEXT
+## 10. CRITICAL OVERRIDE: NO MID-PARAGRAPH LINE BREAKS
 
 ### 10.1 The Iron Rule
-ALL final post text delivered in Section 8 (Main Tweet, Reply Tweet, Thread posts, Bluesky post) MUST be single continuous lines with ZERO embedded newline characters (\n). The output report may use line breaks for section headers and metadata labels, but the ACTUAL POST TEXT (the content the user copies and pastes) must contain NO line breaks whatsoever.
+ALL text delivered in Section 8 MUST have **no mid-paragraph line breaks**. This means:
+- Each paragraph is one continuous flowing line (no `\n` within a paragraph)
+- Paragraph separators (`\n\n` — blank lines BETWEEN paragraphs) ARE ALLOWED and required for readability
+- Section headers, metadata labels, and report structure line breaks are fine
+- The problem being fixed: text like "This is a paragraph about\na new discovery" where `\n` breaks mid-sentence because of forced 80-char wrapping or manual carriage returns
 
-### 10.2 Python Validation
+### 10.2 Python Validation — Paragraph Flow (Not Single-Line)
 Before delivering ANY output, execute Python to validate:
 ```python
-def validate_no_newlines(text, label):
-    assert '\n' not in text, f"FAIL: {label} contains line breaks"
-    assert '\r' not in text, f"FAIL: {label} contains carriage returns"
+def validate_paragraph_flow(text, label):
+    """Each paragraph must flow continuously — no \n within a paragraph.
+    \n\n (blank lines between paragraphs) is explicitly allowed."""
+    paragraphs = [p for p in text.split('\n\n')]
+    for i, para in enumerate(paragraphs):
+        para = para.strip()
+        if not para:
+            continue
+        assert '\n' not in para, \
+            f"FAIL: {label} paragraph {i+1} has mid-paragraph line break"
+        assert '\r' not in para, \
+            f"FAIL: {label} paragraph {i+1} has carriage return"
     return True
 
-validate_no_newlines(main_tweet, "Main Tweet")
-validate_no_newlines(reply_tweet, "Reply Tweet")
-validate_no_newlines(bluesky_post, "Bluesky Post")
+validate_paragraph_flow(main_tweet, "Main Tweet")
+validate_paragraph_flow(reply_tweet, "Reply Tweet")
+validate_paragraph_flow(bluesky_post, "Bluesky Post")
 # Validate each thread post if applicable
 ```
-If validation fails, FIX the text by joining all lines with spaces BEFORE delivering.
+If validation fails, FIX by joining lines within each paragraph with spaces, keeping `\n\n` separators intact.
 
-### 10.3 Multi-Sentence Content
-When content naturally spans multiple ideas or sentences:
-- Join sentences with single spaces (never line breaks)
-- Use em-dashes (---) or bullet characters for visual separation if needed
-- NEVER use \n to separate paragraphs within post text
+### 10.3 What "Flowing Paragraph" Means
+- A paragraph is 1-4 sentences that form a complete thought
+- All sentences in a paragraph are joined by single spaces on ONE continuous line
+- Between paragraphs: add a blank line (`\n\n`)
+- NEVER insert `\n` mid-sentence or mid-paragraph (no forced character-limit wrapping)
 
 ### 10.4 Pre-Delivery Audit
 After generating all content but BEFORE delivering, run:
-1. Python scan of ALL post text fields for \n or \r characters
-2. If ANY post text contains line breaks: fix by joining with spaces
-3. Re-validate: assert zero newlines in all deliverable post text
+1. Python scan of ALL text fields using `validate_paragraph_flow()`
+2. If ANY mid-paragraph `\n` is found: fix by joining that paragraph into one line
+3. Re-validate: assert zero mid-paragraph `\n` in all deliverable text
 4. Only then deliver the output
 
-[NO-LINE-BREAK OVERRIDE ACTIVE -- this rule supersedes any conflicting formatting guidance above]
+[NO-MID-PARAGRAPH-BREAK OVERRIDE ACTIVE — `\n\n` OK, `\n` within paragraphs NOT OK]

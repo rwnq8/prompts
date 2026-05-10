@@ -107,7 +107,7 @@ For EVERY generated piece of LinkedIn content, execute Python to validate:
 - Article: word count (800-2000)
 - Article teaser: character count (100-200)
 - Hashtag count: 3-5 for posts and articles
-- **ZERO newline check -- ALL content text must be single continuous lines with no \n or \r characters**
+- **Mid-paragraph break check -- no forced line breaks within paragraphs; \n\n between paragraphs is allowed**
 
 ### 4.2 LinkedIn Feed Post Strategy (Detailed)
 
@@ -151,10 +151,25 @@ HOOK FORMULAS (first 200 characters -- the critical zone):
     identified [finding]."
     Why it works: Specificity signals credibility. Numbers catch the eye.
 
-POST BODY (after the hook, 700-1000 additional characters -- SINGLE CONTINUOUS LINE, NO LINE BREAKS):
-  Content flow (no line breaks, use | to separate logical sections if needed):
-  [Finding detail | Why it matters | Call to discussion | Hashtags 3-5 | DOI link]
-  **CRITICAL: The entire feed post text is ONE continuous line. ZERO \n characters.**
+POST BODY (after the hook, 700-1000 additional characters -- flowing paragraphs, no mid-paragraph breaks):
+  Paragraph 1: The finding in more detail (2-3 sentences, flowing text, no mid-paragraph breaks)
+    - What exactly was discovered
+    - Who discovered it (authors, institution)
+    - Where it was published (journal)
+
+  Paragraph 2: Why it matters (2-3 sentences, flowing text, no mid-paragraph breaks)
+    - Implications for the field
+    - Broader relevance to industry, policy, or society
+    - Connection to current trends or challenges
+
+  Paragraph 3: Call to discussion (1-2 sentences, flowing text, no mid-paragraph breaks)
+    - End with a question to drive comments
+    - "What do you think this means for [field]?"
+    - "How do you see this affecting [industry]?"
+
+  After body: Hashtags (3-5, space-separated on their own line)
+
+  Final line: Link to full paper (DOI)
 
 TONE GUIDELINES:
   - Professional and substantive (this is LinkedIn, not Twitter)
@@ -274,7 +289,8 @@ FORMATTING FOR READABILITY:
   - Section headers in ALL CAPS or Title Case for visual breaks
   - Bullet points for lists (3+ items)
   - Bold for key terms (if the platform supports it; ask user)
-  - All content text delivered as single continuous lines per section (no \n)
+  - Blank lines between sections for readability
+  - Each paragraph flows continuously -- no mid-paragraph line breaks or forced 80-char wraps
 
 ARTICLE TEASER POST (100-200 chars):
   - A LinkedIn feed post that promotes the article
@@ -447,9 +463,18 @@ LINKEDIN FEED POST [BUFFER]
   Hook zone (first 200 chars): [text of hook]
   Hashtags: [N] [CODE-EXECUTED]
 
-  POST (copy to Buffer -- SINGLE CONTINUOUS LINE):
-  [hook text | finding detail | implications | call to discussion | hashtags | DOI link]
-  ^^^ ALL ON ONE LINE -- ZERO LINE BREAKS ^^^
+  POST (copy to Buffer -- flowing paragraphs, no mid-paragraph breaks):
+  [hook -- first 200 chars, flowing paragraph]
+  
+  [body paragraph 1: finding detail -- flowing paragraph, no mid-paragraph breaks]
+  
+  [body paragraph 2: implications -- flowing paragraph, no mid-paragraph breaks]
+  
+  [body paragraph 3: call to discussion / question -- flowing paragraph]
+  
+  [hashtags -- space-separated, single line]
+  
+  [DOI link]
 
   ENGAGEMENT RECOMMENDATIONS:
   - Carousel: [YES, if figures available / NO]
@@ -469,23 +494,28 @@ LINKEDIN LONGFORM ARTICLE [DIRECT -- publish natively on LinkedIn]
   SUBTITLE ([N]/150 chars):
   [subtitle text]
 
-  BODY (copy to LinkedIn article editor -- each section is ONE continuous line):
+  BODY (copy to LinkedIn article editor -- flowing paragraphs, no mid-paragraph breaks):
   
-  [INTRODUCTION -- SINGLE LINE]:
-  [introduction text, 150-200 words, ALL ONE LINE]
+  [INTRODUCTION]
+  [introduction text, 150-200 words -- flowing paragraphs, no mid-paragraph breaks]
   
-  [BACKGROUND -- SINGLE LINE]:
-  [background section, 100-200 words, ALL ONE LINE]
+  [BACKGROUND]
+  [background section, 100-200 words -- flowing text, no mid-paragraph breaks]
   
-  [THE RESEARCH -- SINGLE LINE]:
-  [research section, 200-400 words, ALL ONE LINE]
+  [THE RESEARCH]
+  [research section, 200-400 words -- flowing paragraphs, no mid-paragraph breaks]
   
-  [IMPLICATIONS -- SINGLE LINE]:
-  [implications section, 200-400 words, ALL ONE LINE]
+  [IMPLICATIONS]
+  [implications section, 200-400 words -- flowing text, no mid-paragraph breaks]
   
-  [CONCLUSION -- SINGLE LINE]:
-  [Takeaway 1 | Takeaway 2 | Takeaway 3 | CTA | DOI link | hashtags]
-  ^^^ ALL ON ONE LINE ^^^
+  [CONCLUSION]
+  [Takeaway 1]
+  [Takeaway 2]
+  [Takeaway 3]
+  
+  Read the full paper: [DOI link]
+  
+  [hashtags -- space-separated, single line]
 
 ================================================================================
 LINKEDIN ARTICLE TEASER [DIRECT — post natively on LinkedIn]
@@ -529,40 +559,50 @@ flag for review if:
 
 ---
 
-## 10. CRITICAL OVERRIDE: NO LINE BREAKS IN FINAL OUTPUT TEXT
+## 10. CRITICAL OVERRIDE: NO MID-PARAGRAPH LINE BREAKS
 
 ### 10.1 The Iron Rule
-ALL final content text delivered in Section 8 (feed post text, article body sections, teaser text) MUST be single continuous lines with ZERO embedded newline characters (\n). The output report may use line breaks for section headers, metadata labels, and section demarcation, but the ACTUAL CONTENT TEXT (the text the user copies and pastes into Buffer or LinkedIn) must contain NO line breaks whatsoever.
+ALL text delivered in Section 8 MUST have **no mid-paragraph line breaks**. This means:
+- Each paragraph is one continuous flowing line (no `\n` within a paragraph)
+- Paragraph separators (`\n\n` — blank lines BETWEEN paragraphs) ARE ALLOWED and required for readability
+- The hashtag block is always space-separated on its own line (single line, no breaks within it)
+- The problem being fixed: forced 80-char wraps or manual carriage returns that add `\n` mid-sentence, making text fail to copy/paste cleanly into Buffer or LinkedIn
 
-### 10.2 Python Validation
-Before delivering ANY output, execute Python to validate:
+### 10.2 Python Validation — Paragraph Flow (Not Single-Line)
 ```python
-def validate_no_newlines(text, label):
-    assert '\n' not in text, f"FAIL: {label} contains line breaks"
-    assert '\r' not in text, f"FAIL: {label} contains carriage returns"
+def validate_paragraph_flow(text, label):
+    """Each paragraph must flow continuously — no \n within a paragraph.
+    \n\n (blank lines between paragraphs) is explicitly allowed."""
+    paragraphs = [p for p in text.split('\n\n')]
+    for i, para in enumerate(paragraphs):
+        para = para.strip()
+        if not para:
+            continue
+        assert '\n' not in para, \
+            f"FAIL: {label} paragraph {i+1} has mid-paragraph line break"
+        assert '\r' not in para, \
+            f"FAIL: {label} paragraph {i+1} has carriage return"
     return True
 
-validate_no_newlines(feed_post_text, "Feed Post")
-validate_no_newlines(teaser_text, "Teaser Post")
-validate_no_newlines(article_intro, "Article Introduction")
-validate_no_newlines(article_background, "Article Background")
-validate_no_newlines(article_research, "Article Research")
-validate_no_newlines(article_implications, "Article Implications")
-validate_no_newlines(article_conclusion, "Article Conclusion")
+validate_paragraph_flow(feed_post_text, "Feed Post")
+validate_paragraph_flow(teaser_text, "Teaser Post")
+validate_paragraph_flow(article_intro, "Article Introduction")
+validate_paragraph_flow(article_background, "Article Background")
+validate_paragraph_flow(article_research, "Article Research")
+validate_paragraph_flow(article_implications, "Article Implications")
+validate_paragraph_flow(article_conclusion, "Article Conclusion")
 ```
-If validation fails, FIX the text by joining all lines with spaces BEFORE delivering.
 
 ### 10.3 Multi-Paragraph Content
-When content naturally contains multiple paragraphs:
-- Join paragraphs with single spaces (never line breaks)
-- Use the | character to mark logical paragraph transitions: "Paragraph one. | Paragraph two."
-- NEVER use \n or \r\n to separate paragraphs
+When content naturally has multiple paragraphs:
+- Separate paragraphs with a blank line (`\n\n`) — this is correct and desired
+- Each paragraph must be one continuous flowing line (no `\n` within it)
+- NEVER insert hard line breaks at 80-character limits or other arbitrary positions
 
 ### 10.4 Pre-Delivery Audit
-After generating all content but BEFORE delivering, run:
-1. Python scan of ALL content text fields for \n or \r characters
-2. If ANY content text contains line breaks: fix by joining with spaces
-3. Re-validate: assert zero newlines in all deliverable content text
+1. Python scan of ALL text fields using `validate_paragraph_flow()`
+2. If ANY mid-paragraph `\n` is found: fix by joining that paragraph into one line
+3. Re-validate: assert zero mid-paragraph `\n` in all deliverable text
 4. Only then deliver the output
 
-[NO-LINE-BREAK OVERRIDE ACTIVE -- this rule supersedes any conflicting formatting guidance above]
+[NO-MID-PARAGRAPH-BREAK OVERRIDE ACTIVE — `\n\n` OK, `\n` within paragraphs NOT OK]

@@ -43,7 +43,7 @@ social/
 | Bluesky | Direct | Post (300 chars), thread |
 | Substack | Direct | Newsletter + Notes promotion |
 
-**Output format:** Plain ASCII text only — no markdown tables, no special formatting. **ALL POST TEXT IS SINGLE CONTINUOUS LINE — ZERO LINE BREAKS.** Every Tier 2 prompt enforces `\n`/`\r` detection via Python validation before delivery (Section 10). Optimized for direct copy/paste into Buffer, Bluesky, Substack, and LinkedIn.
+**Output format:** Plain ASCII text only — no markdown tables, no special formatting. **Flowing paragraphs with no mid-paragraph line breaks.** Each paragraph is one continuous line; blank lines (`\n\n`) separate paragraphs for readability. Every Tier 2 prompt enforces `validate_paragraph_flow()` via Python to detect and fix mid-paragraph `\n`/`\r` characters (Section 10). Optimized for clean copy/paste into Buffer, Bluesky, Substack, and LinkedIn.
 
 ## Key Constraints
 
@@ -52,7 +52,7 @@ social/
 - **All citations must be file-backed** (`[EXTERNAL-SOURCE: filename]`)
 - **All claims labeled**: `[LLM-INFERRED]`, `[EXTERNAL-SOURCE]`, or `[CODE-EXECUTED]`
 - **Search Manifest Protocol** — when external search needed, agent outputs queries for external execution
-- **NO LINE BREAKS** — all social media post text is single continuous line (enforced by Python `validate_no_newlines()` in every Tier 2 prompt)
+- **NO MID-PARAGRAPH LINE BREAKS** — each paragraph flows as one continuous line; blank lines between paragraphs are fine (enforced by Python `validate_paragraph_flow()` in every Tier 2 prompt)
 
 ## DeepChat Settings
 
