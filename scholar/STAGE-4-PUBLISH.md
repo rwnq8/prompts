@@ -5,7 +5,7 @@
 
 For scholarly research, you may access:
 - `G:\My Drive\prompts\scholar\` — Active research pipeline prompts
-- `G:\My Drive\Archive\prompts\` — Archived prompts and historical research
+- `G:\My Drive\Archive\` — Archived historical research
 - `G:\My Drive\Obsidian\releases\` — Research publications and reference materials
 - `G:\My Drive\prompts\` — Project workspace (current research files)
 
