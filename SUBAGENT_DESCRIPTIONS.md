@@ -11,6 +11,7 @@
 | Setting | Value |
 |:--------|:------|
 | **Name** | `Projects` |
+| **Description** | General-purpose research, writing, and brainstorming agent. Handles all file I/O, Python execution, git operations, and subagent orchestration. |
 | **Built-in** | ✅ Enabled |
 | **System Prompt** | Paste full contents of `DEFAULT.md` |
 
@@ -29,6 +30,7 @@ skill_list skill_manage skill_view
 | Setting | Value |
 |:--------|:------|
 | **Name** | `Prompts` |
+| **Description** | Tier 1 system prompt compiler and auditor. Creates, reviews, and improves system prompts using META-PROMPT-DEEPSEEK methodology. Handles all file I/O, Python execution, and git operations for prompt engineering tasks. |
 | **Built-in** | ☐ (optional) |
 | **System Prompt** | Paste full contents of `META-PROMPT-DEEPSEEK.md` |
 
@@ -55,6 +57,11 @@ skill_list skill_manage skill_view
 ## 2. SUBAGENT SLOT (copy into DeepChat subagent slot field)
 
 ### Slot: SELF-CLONE (`self`)
+
+| Setting | Value |
+|:--------|:------|
+| **Slot ID** | `self` |
+| **Target** | `current agent` |
 
 **Copy this exact text into the subagent slot description:**
 
@@ -118,11 +125,11 @@ PARENT → all file I/O, Python, git → inline content → SELF-CLONE text synt
 
 ## 5. REMOVED (do not configure)
 
-| Removed | Why |
-|:--------|:----|
-| Archive agent | Projects already reads Archive |
-| Notes agent | Projects already reads vault |
-| Releases agent | Projects already reads releases |
-| PROJECTS subagent slot (`slot-movio4vd-yj9c`) | ~40% file I/O — unreliable |
-| ARCHIVE subagent slot (`slot-movbn8bi-f61j`) | 0% file I/O — cannot read Archive |
-| AGENT_DEFAULTS.conf | Deleted — DeepChat doesn't read `.conf` files |
+| Removed | Target | Why |
+|:--------|:-------|:----|
+| Archive agent | — | Projects already reads Archive |
+| Notes agent | — | Projects already reads vault |
+| Releases agent | — | Projects already reads releases |
+| PROJECTS subagent slot (`slot-movio4vd-yj9c`) | target: `deepchat` | ~40% file I/O — unreliable |
+| ARCHIVE subagent slot (`slot-movbn8bi-f61j`) | target: `deepchat-INfqIWc0` | 0% file I/O — cannot read Archive |
+| AGENT_DEFAULTS.conf | — | Deleted — DeepChat doesn't read `.conf` files |
