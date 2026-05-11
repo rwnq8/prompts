@@ -1,4 +1,7 @@
 # SUBAGENT DESCRIPTIONS — Dispatch Reference & Orchestration Protocol
+
+> **⚠️ ARCHITECTURAL STATUS (2026-05-11):** 20-test empirical study proves ALL subagent slots have non-deterministic tool availability (~35% full tools, ~65% limited to 18 base tools). **The PARENT THREAD is the only guaranteed-capability entity.** Subagents are text-synthesis-only. All file I/O, Python, and git MUST stay in the parent. Read Section 0.5 for the full study, Section 0.6 for the Git Overhead Problem, and the Best Practices checklist at the end of this document.
+
 > **Purpose:** Definitive reference for configuring DeepChat subagent slots.
 > **Last updated:** 2026-05-11 | **Scope:** 6 subagents (3 active + 3 pending)
 > **⚠️ v2.5:** 20-test study + Git Overhead Problem documented. ALL subagents non-deterministic. PARENT ONLY for file I/O/Python/git. Include git-skip in subagent task prompts.

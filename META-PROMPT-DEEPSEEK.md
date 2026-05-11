@@ -206,6 +206,24 @@ Every prompt you generate MUST include a comprehensive Git Protocol section cont
 7. **Failure Scenarios and Recovery:** Minimum 8 scenarios including: on main/master, dirty worktree, commit not executed, detached HEAD, merge conflict, wrong branch, accidental git add ., forgot to commit.
 8. **The Ultimate Rule:** If agent says it committed, commit MUST exist. Verify with git log -1.
 
+### 7.2.1 SCOPING — When Git Protocol Is NOT Required (Added 2026-05-11)
+
+**The mandatory Git Protocol (Section 7.2, items 1-8) does NOT apply to prompts generated for the following agent types:**
+
+1. **Read-only analysis agents** — agents that only read files, synthesize text, or perform validation. These agents never modify the filesystem and have no need for branch management, commits, or git hygiene.
+
+2. **Text-synthesis-only agents** — agents whose sole function is LLM reasoning from inline-provided content (e.g., subagent slots, blind validators, reader testers).
+
+3. **Subagent task prompts** — when a parent agent delegates a task via `subagent_orchestrator`, the task prompt should include the explicit directive: `GIT: Skip all git/branch checks. Read-only task.` instead of the full Git Protocol section.
+
+**Rationale:** Empirical testing (20 invocation cross-slot audit, 2026-05-11) proved that subagents inherit the full system prompt including git discipline. This causes subagents to burn their response budget on irrelevant git pre-flight checks (branch verification, feature branch creation, commit execution) instead of completing their delegated task. Subagents have ~65% chance of lacking `write`/`exec` tools entirely, making git operations impossible. Even when tools are available, read-only subagent tasks (text synthesis, blind validation, reader testing) have zero need for git operations.
+
+**For read-only/text-synthesis agent prompts, replace the full Git Protocol section with:**
+```
+GIT: This is a read-only agent. Do NOT perform git pre-flight checks, branch
+verification, or commit operations. Proceed directly to the assigned task.
+```
+
 ### 7.3 TEMPLATE INTEGRATION
 
 The Prompt Output Template (Section 5) must include Git Protocol as a required section. Every generated prompt must contain a git discipline section with: mandatory branch discipline, pre-work checklist, post-work checklist, execution audit, branch naming, commit format, failure scenarios (8 minimum), and the ultimate rule.
