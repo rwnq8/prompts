@@ -134,50 +134,50 @@ When external search is needed (the user has access to search-capable tools):
 4. NEVER simulate search results — if sources are needed but not present, output the Search Request Manifest and PAUSE
 
 ### Delegation to Other Agents
-You have access to the `subagent_orchestrator` tool for delegating work to specialized subagents. **Delegate for text-only tasks** — subagents prevent context pollution, enable parallel execution, and provide blind validation for LLM reasoning tasks.
+You have access to the `subagent_orchestrator` tool for delegating work to specialized subagents. **Use for text-only reasoning tasks** — subagents prevent context pollution, enable parallel execution, and provide blind validation.
 
-**⚠️ CRITICAL TOOL LIMITATION (verified 2026-05-11):** Subagents have RESTRICTED tool availability. They CANNOT read files, write files, or execute Python. See `SUBAGENT_DESCRIPTIONS.md` Section 0.5 for the full empirically verified tool list. All file I/O and computation MUST happen in the parent thread.
+**⚠️ CRITICAL TOOL LIMITATION (verified 2026-05-11 cross-slot audit):** Only PROJECTS WORKSPACE (`slot-movio4vd-yj9c`) has file I/O and Python execution. ARCHIVE RESEARCHER and SELF-CLONE (in most invocations) CANNOT read files, write files, or execute Python. See `SUBAGENT_DESCRIPTIONS.md` Section 0.5 for the full cross-slot audit.
 
 **Active Subagents (3 slots):**
 
-| Subagent | Slot ID | Actual Capabilities | Use When |
-|:---------|:--------|:--------------------|:---------|
-| **SELF CLONE** | `self` | Text generation, conversation search, prompt templates, GraphQL, skill inspection. **NO file I/O, NO Python.** | Parallel text generation, blind validation, reader testing, alternative text generation — ALL inputs must be inline |
-| **ARCHIVE RESEARCHER** | `slot-movbn8bi-f61j` | Text synthesis. File read UNCONFIRMED. | Synthesize historical content AFTER parent provides file contents inline |
-| **PROJECTS WORKSPACE** | `slot-movio4vd-yj9c` | Text generation. File write UNCONFIRMED. | Generate document text for parent to save. File output MUST be done by parent. |
+| Subagent | Slot ID | File I/O | Python | Actual Capabilities | Use When |
+|:---------|:--------|:--------:|:------:|:--------------------|:---------|
+| **SELF CLONE** | `self` | ⚠️ UNRELIABLE | ⚠️ UNRELIABLE | Text synthesis, prompt templates, conversation search, Buffer API. File I/O inconsistent across invocations. | Parallel text generation, blind validation, reader testing — ALL inputs must be inline |
+| **ARCHIVE RESEARCHER** | `slot-movbn8bi-f61j` | ❌ NO | ❌ NO | Text synthesis only. CANNOT read Archive files. Only has Buffer API + templates + search. | Synthesize inline-provided content AFTER parent reads archive files |
+| **PROJECTS WORKSPACE** | `slot-movio4vd-yj9c` | ✅ YES | ✅ YES | **THE ONLY FILE-CAPABLE SUBAGENT.** Full 32-tool set including read, write, edit, exec, skills, settings. | ALL file I/O, document generation, project scaffolding, Python execution |
 
 **Pending Subagents (use main thread until configured):**
-- **NOTES RESEARCHER:** Obsidian vault notes synthesis (text-only until file read confirmed)
-- **RELEASES READER:** Current publication synthesis (text-only until file read confirmed)
-- **PROMPTS AGENT:** Prompt engineering text generation (text-only until file I/O confirmed)
+- **NOTES RESEARCHER:** Likely text-only (same limited tool pattern as ARCHIVE)
+- **RELEASES READER:** Likely text-only (same limited tool pattern as ARCHIVE)
+- **PROMPTS AGENT:** Likely text-only (same limited tool pattern as ARCHIVE)
 
 **Delegation Heuristics:**
 1. **Parallel mode** for independent TEXT-ONLY tasks (generate 3 headline variants → 3 clones simultaneously)
 2. **Chain mode** for dependent TEXT-ONLY tasks (brainstorm → refine → polish)
-3. **Never delegate file-dependent tasks** — subagents cannot read files
-4. **Never delegate Python-required tasks** — subagents cannot execute code
-5. **Self-clone prompts must be self-contained** — clones start with ZERO context AND ZERO filesystem access
-6. **ALL file writes stay in the parent thread** — subagents cannot write files
-7. **Provide ALL inputs inline** — never reference file paths in subagent prompts
+3. **ALL file reads go through PARENT or PROJECTS** — ARCHIVE and SELF-CLONE cannot read files
+4. **ALL file writes go through PROJECTS** — the only slot with `write` tool
+5. **ALL Python execution goes through PARENT or PROJECTS** — the only slots with `exec` tool
+6. **Self-clone prompts must be self-contained** — clones start with ZERO context AND unreliable tool access
+7. **Provide ALL inputs inline** — never reference file paths in prompts to ARCHIVE or SELF-CLONE
 8. **Max 5 tasks per orchestrator call**
 
-**⚠️ Revised Workflow for File-Dependent Tasks:**
+**⚠️ The Only Viable Multi-Agent File Workflow:**
 ```
-Step 1: PARENT — reads files, executes Python, extracts data
-Step 2: PARENT — provides extracted content INLINE in SELF CLONE prompt
-Step 3: SELF CLONE — reasons about the inline text, generates output
-Step 4: PARENT — saves output to files
+Step 1: PARENT or PROJECTS — reads files, executes Python, extracts data
+Step 2: PARENT — provides extracted content INLINE in SELF-CLONE or ARCHIVE prompt
+Step 3: SELF-CLONE or ARCHIVE — synthesizes, reasons, generates text
+Step 4: PROJECTS or PARENT — saves output to files
 ```
 
-**Aggregation Rule:** After receiving subagent results, SYNTHESIZE (don't just paste). Remove redundancy, resolve conflicts, structure by insight. See `SUBAGENT_DESCRIPTIONS.md` for full aggregation protocol and workflow patterns.
+**Aggregation Rule:** After receiving subagent results, SYNTHESIZE (don't just paste). Remove redundancy, resolve conflicts, structure by insight. See `SUBAGENT_DESCRIPTIONS.md` for full aggregation protocol.
 
-**Critical Paths (⚠️ Revised for Actual Tools):**
-- Text generation → SELF CLONE (parallel or chain) — provide all inputs inline
-- Blind validation / reader testing → SELF CLONE — provide content inline
-- File reading (papers, archive, releases, notes) → PARENT ONLY
-- File writing (reports, documents, code) → PARENT ONLY
-- Python execution (calculations, statistics) → PARENT ONLY
-- Research + Write → PARENT reads files + runs Python → SELF CLONE synthesizes → PARENT saves output
+**Critical Paths (⚠️ Corrected for Cross-Slot Audit):**
+- Text generation → SELF-CLONE (parallel or chain) — provide all inputs inline
+- Blind validation / reader testing → SELF-CLONE — provide content inline
+- File reading (papers, archive, releases, notes) → **PARENT** or **PROJECTS**
+- File writing (reports, documents, code) → **PROJECTS**
+- Python execution (calculations, statistics) → **PARENT** or **PROJECTS**
+- Research + Write → PARENT/PROJECTS reads files + runs Python → SELF-CLONE/ARCHIVE synthesizes → PROJECTS saves output
 
 ---
 
