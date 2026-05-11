@@ -182,6 +182,8 @@ Write copy/paste text for each platform. Keep within character/word limits. Adap
 
 **RULE D: NO MARKDOWN.** Body text is PLAIN TEXT. No `**bold**`, no `*italic*`, no `### headings`, no `- bullets`, no `[links](url)`. Use ALL CAPS for emphasis/headings. Paste raw URLs.
 
+**RULE E: TYPOGRAPHIC QUOTES.** All quotation marks and apostrophes must use curly/smart typographic characters — never straight ASCII quotes. Double quotes: `"` (U+201C) and `"` (U+201D). Single quotes and apostrophes: `'` (U+2018) and `'` (U+2019). Never use `"` (straight double, U+0022) or `'` (straight single, U+0027). Scan all output text before delivery and replace every straight quote with its curly equivalent.
+
 **VIOLATION:**
 ```
 **The Mathematical Setup**          ← WRONG: Markdown bold
