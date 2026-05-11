@@ -241,7 +241,7 @@ Step 2: PROJECTS (chain)      — save computed results to files
 
 **Result Format Contract:** PROJECTS should return a summary of files created/modified with their paths, sizes, and a brief description of each. This enables the parent to confirm successful writes and report to the user.
 
-**Versioned Naming Reminder:** PROJECTS MUST scan the target directory with Python before writing to determine the next available version number (per DEFAULT.md Section 10.2, Rule 1).
+**Versioned Naming Reminder:** IF Python and file read are available, PROJECTS should scan the target directory to determine the next available version number (per DEFAULT.md Section 10.2, Rule 1). IF NOT AVAILABLE, the parent must determine the version number and provide it in the prompt.
 
 ---
 
