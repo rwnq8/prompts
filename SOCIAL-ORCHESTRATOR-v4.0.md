@@ -109,7 +109,7 @@ Each file should have: title, authors, abstract, DOI, key findings. Extract what
 
 ## 4. PLATFORM RULES
 
-### Bluesky (bsky.app — DIRECT POST)
+### Bluesky (Buffer)
 - ≤300 characters. Links welcome, include DOI.
 - Conversational tone. 0-2 hashtags max.
 
@@ -205,7 +205,7 @@ SOCIAL MEDIA CONTENT: [Publication Title]
 Source: releases/YYYY/MM/filename.md  DOI: [doi]
 ======================================================================
 
-=== BLUESKY (bsky.app) ===
+=== BLUESKY (Buffer) ===
 [post text — ≤300 chars, conversational]
 
 === TWITTER/X (Buffer) ===
