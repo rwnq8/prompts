@@ -1,7 +1,8 @@
 # SUBAGENT DESCRIPTIONS — Dispatch Reference & Orchestration Protocol
 > **Purpose:** Definitive reference for configuring DeepChat subagent slots.
 > Each description is engineered so the LLM can unambiguously route tasks to the correct subagent.
-> **Last updated:** 2026-05-10 | **Scope:** All 5 subagents (3 active slots + 2 pending)
+> **Last updated:** 2026-05-11 | **Scope:** All 6 subagents (3 active slots + 3 pending)
+> **⚠️ v2.2 UPDATE:** Empirically verified tool availability added (Section 0.5). File I/O and Python execution UNCONFIRMED for all subagents.
 
 ---
 
@@ -97,42 +98,62 @@ FRESH INSTANCE — Clean Slate, Zero Context, Full Tools | target=current agent 
 
 TARGET: current agent (self-clone)
 
-CAPABILITIES:
-  - Python execution (standard library only, no pandas)
-  - File read access to G:\My Drive\ (same as parent session)
-  - File write access to G:\My Drive\ (same as parent session)
-  - LLM inference and generation
-  - Full tool access identical to parent
+⚠️ TOOL AVAILABILITY NOTE: See Section 0.5 for empirically verified tool availability.
+   Subagents have RESTRICTED tools — NO file I/O, NO Python execution.
 
-USE THIS SUBAGENT FOR:
-  • Parallel processing — run N independent subtasks simultaneously with no cross-contamination
-  • Reader testing — test prompts or content against a naive reader with zero prior exposure
-  • Blind validation — the clone cannot see parent-session results, so it provides unbiased review
-  • Splitting large tasks into independent subtasks (e.g., "analyze papers A, B, C in parallel")
+CONFIRMED CAPABILITIES:
+  - LLM inference and text generation (core capability — always available)
+  - Conversation history search (`search_conversations`, `search_messages`, `get_conversation_history`)
+  - Prompt template filling (`fill_prompt_template`, `get_prompt_template_parameters`)
+  - GraphQL / Buffer API operations (`execute_query`, `execute_mutation`, `introspect_schema`)
+  - Subagent orchestration (`subagent_orchestrator` — can delegate to other subagents)
+  - Skill inspection (`skill_list`, `skill_view`)
+  - DeepChat settings modification
+  - User interaction (`deepchat_question`)
+
+UNCONFIRMED / LIKELY UNAVAILABLE:
+  - File I/O (`read`, `write`, `edit`) — NOT CONFIRMED; task prompts requiring file access will FAIL
+  - Python/shell execution (`exec`, `process`) — NOT CONFIRMED; quantitative tasks will FAIL
+  - Buffer post/channel management tools — NOT CONFIRMED
+
+USE THIS SUBAGENT FOR (CONFIRMED WORKING):
+  • Pure LLM reasoning, ideation, brainstorming, text generation
+  • Parallel text generation — provide ALL inputs inline in the prompt (no file references)
+  • Reader testing — provide the content to test INLINE in the prompt
+  • Blind validation — provide the claim/argument INLINE (clone cannot read files)
+  • Prompt template filling — `fill_prompt_template` is available
+  • Conversation history search — search past conversations
+  • GraphQL/Buffer API operations
+  • Generating alternative text approaches from provided inputs
   • Any scenario where the parent session's accumulated context would bias or pollute results
-  • Generating alternative approaches to a problem without being influenced by the parent's chosen path
 
 DO NOT USE FOR:
-  • Tasks requiring access to files the parent has already read (clone must re-read)
+  • ANY task requiring file reading ("read paper_a.md", "search directory X") — WILL FAIL
+  • ANY task requiring Python execution ("analyze the data", "calculate statistics") — WILL FAIL
+  • ANY task requiring file writing ("save output to file") — WILL FAIL
   • Tasks that MUST build on parent-session discoveries (use chain mode with handoff instead)
   • Tasks where context sharing between subtasks is essential (use parent session directly)
 
-CONTEXT WARNING: The clone starts with ZERO knowledge of the parent conversation. It does not know what the parent has discussed, decided, or discovered. The prompt you send MUST be self-contained and complete.
+⚠️ CONTEXT WARNING: The clone starts with ZERO knowledge of the parent conversation AND zero filesystem access. It does not know what the parent has discussed, decided, or discovered. The prompt you send MUST be self-contained and complete — ALL information the clone needs must be provided INLINE in the prompt. Do NOT reference files the clone should read; it CANNOT read them.
 ```
 
 ### Extended Dispatch Reference
 
 **Dispatch Triggers (WHEN the main agent should delegate):**
-1. **Parallel processing needed:** User asks to "analyze these 3 papers" or "compare X, Y, Z" — split into N self-clone tasks running in `parallel` mode
-2. **Reader testing:** User asks "how would this read to someone unfamiliar with the project?" — deploy a self-clone with only the content, no context
-3. **Blind validation:** User wants an unbiased review of a claim, argument, or output — clone must not see parent's reasoning
-4. **Alternative generation:** User wants "give me 3 different approaches to solve X" — run 3 clones in parallel, each with a different angle
+1. **Parallel text generation:** User asks to "generate 3 versions of this tweet" or "write 5 headlines for this article" — split into N self-clone tasks running in `parallel` mode, with ALL source text inline
+2. **Reader testing:** User asks "how would this read to someone unfamiliar with the project?" — deploy a self-clone with the content INLINE (no file references — clone cannot read files)
+3. **Blind validation:** User wants an unbiased review of a claim, argument, or output — clone must not see parent's reasoning, ALL evidence must be inline
+4. **Alternative generation:** User wants "give me 3 different approaches to solve X" — run 3 clones in parallel, each with a different angle, all problem descriptions inline
 5. **Context isolation required:** Any task where the parent session's 50+ message history would distract or bias the output
+6. **Prompt template filling:** User needs a prompt filled from a template — use `fill_prompt_template` (available in subagents)
+7. **Conversation history search:** User asks about past conversations — use `search_conversations`/`search_messages` (available in subagents)
 
 **Dispatch Anti-Patterns (DO NOT delegate when):**
+- The task requires file reading ("read paper_a.md", "search directory X") — WILL FAIL in subagent
+- The task requires Python execution ("calculate statistics", "analyze data") — WILL FAIL in subagent
+- The task requires file writing ("save to file") — WILL FAIL in subagent
 - The task is trivial (under ~200 words of output) — parent can handle it directly
 - The task requires the parent's accumulated context (file contents already read, prior decisions)
-- The task is a single-step command (e.g., "run this Python script")
 - The task builds on in-progress work that only the parent has seen
 
 **Result Format Contract:** Self-clones return freeform markdown. The parent is responsible for synthesizing multiple clone outputs into a coherent response.
@@ -147,34 +168,52 @@ PROJECTS WORKSPACE — Read/Write Projects & Prompts Only | target=deepchat | Th
 
 TARGET: Configure with write access to project directories
 
-WRITE TARGETS:
+⚠️ TOOL AVAILABILITY NOTE: See Section 0.5. PROJECTS targets a different agent (`deepchat`)
+   which MAY have different tool availability than the self-clone. File I/O and Python
+   execution are UNCONFIRMED for this slot. Until verified, assume the same restrictions
+   as the self-clone (Section 0.5).
+
+WRITE TARGETS (IF FILE WRITE IS AVAILABLE):
   • Project working directories under G:\My Drive\projects\ (user's active project spaces)
   • G:\My Drive\prompts\ — ONLY when the Prompts agent is specifically being used
   • NEVER write to G:\My Drive\Archive\ — archive is historical, read-only
   • NEVER write to G:\My Drive\Obsidian\releases\ — releases are publication source files, read-only
 
-READ ACCESS:
+READ ACCESS (IF FILE READ IS AVAILABLE):
   • Full read access to G:\My Drive\projects\ for sourcing materials
   • Can read from Archive and Releases when gathering reference material
   • Can read from any project directory
 
-CAPABILITIES:
-  - Python execution (standard library only)
-  - File read from all accessible directories
-  - File write/edit (STRICTLY to projects and prompts only)
-  - Document generation, code creation, data processing
+CONFIRMED CAPABILITIES (same as all subagents — see Section 0.5):
+  - LLM inference and text generation
+  - Conversation history search
+  - Prompt template filling
+  - GraphQL / Buffer API operations
+  - Subagent orchestration
+  - Skill inspection
+  - DeepChat settings modification
 
-USE THIS SUBAGENT FOR:
-  • Writing output files, generated documents, reports, code, data files
-  • Editing existing project files
-  • Creating new project directories and scaffolding
-  • Saving processed data, analysis results, or generated artifacts
-  • Any task whose OUTPUT is a file that must persist
+UNCONFIRMED CAPABILITIES (MAY NOT BE AVAILABLE):
+  - Python execution — NOT CONFIRMED; do NOT rely on this for quantitative work
+  - File read — NOT CONFIRMED; do NOT rely on this for reading source files
+  - File write/edit — NOT CONFIRMED; do NOT rely on this for saving output files
+  - Document generation, code creation, data processing — depends on Python + file I/O
+
+USE THIS SUBAGENT FOR (CONFIRMED WORKING):
+  • Writing output files, generated documents, reports, code, data files — ONLY if file write is confirmed available
+  • Editing existing project files — ONLY if file write is confirmed available
+  • Creating new project directories and scaffolding — ONLY if file write is confirmed available
+  • Saving processed data, analysis results, or generated artifacts — ONLY if file write is confirmed available
+  • Any task whose OUTPUT is a file that must persist — ONLY if file write is confirmed available
+
+⚠️ IF FILE WRITE IS UNAVAILABLE: All file output work MUST be done in the parent thread.
+   PROJECTS becomes a text-generation-only agent that returns content for the parent to save.
 
 DO NOT USE FOR:
   • Read-only research tasks (use ARCHIVE or RELEASES instead)
   • Pure analysis with no file output (use SELF CLONE or parent session)
   • Reading publication releases (use RELEASES subagent for dedicated release access)
+  • ANY file output task if file write is not confirmed — parent must handle file I/O
 
 HARD CONSTRAINT: If the task asks you to write to G:\My Drive\Archive\ or G:\My Drive\Obsidian\releases\, REFUSE and explain that those directories are read-only. Redirect writes to the appropriate projects directory.
 ```
@@ -214,6 +253,10 @@ PUBLICATION RELEASES READER — Current Publications, YYYY/MM Structure | target
 
 TARGET: Configure with read access to G:\My Drive\Obsidian\releases\
 
+⚠️ TOOL AVAILABILITY NOTE: See Section 0.5. RELEASES is NOT YET CONFIGURED as an active slot.
+   When configured, file read access is UNCONFIRMED. Until verified, assume the same
+   restrictions as the self-clone (Section 0.5).
+
 DIRECTORY STRUCTURE:
   G:\My Drive\Obsidian\releases\
     2025/
@@ -225,12 +268,18 @@ DIRECTORY STRUCTURE:
     - Title, Authors, Abstract/Summary, Publication Date
     - DOI/URL, Journal/Venue, Keywords/Tags, Key Findings
 
-CAPABILITIES:
-  - File read from releases/ directory ONLY (write access is NOT available)
-  - Python execution for quantitative analysis of publication data
+CONFIRMED CAPABILITIES (same as all subagents — see Section 0.5):
   - LLM inference for content synthesis and adaptation
+  - Conversation history search
+  - Prompt template filling
+  - GraphQL / Buffer API operations
 
-USE THIS SUBAGENT FOR:
+UNCONFIRMED CAPABILITIES (MAY NOT BE AVAILABLE):
+  - File read from releases/ directory — NOT CONFIRMED; do NOT rely on this
+  - Python execution for quantitative analysis — NOT CONFIRMED
+  - Document parsing, metadata extraction from files — depends on file read
+
+USE THIS SUBAGENT FOR (WHEN CONFIGURED AND FILE READ IS CONFIRMED):
   • Reading the latest publication releases for any pipeline (social media, archiving, analysis)
   • Extracting metadata (title, authors, abstract, DOI) from publication files
   • Scanning for new publications in a specific month or date range
@@ -238,6 +287,9 @@ USE THIS SUBAGENT FOR:
   • Cross-referencing publications against the Archive to check for prior coverage
   • Analyzing publication trends, keyword frequencies, or author patterns across months
   • Answering questions like: "What was published in March 2026?", "Get me all DOIs from last month"
+
+⚠️ IF FILE READ IS UNAVAILABLE: RELEASES cannot read publication files. The parent must
+   read files and provide publication content INLINE in the subagent prompt.
 
 DO NOT USE FOR:
   • Writing or editing publication files — releases are READ-ONLY source documents
@@ -272,12 +324,12 @@ Step 3: PARENT               — compare, identify gaps, flag duplicates
 ```
 
 **Result Format Contract:** RELEASES should return:
-1. A structured list of publications found (title, date, authors, DOI)
+1. A structured list of publications found (title, date, authors, DOI) — from inline-provided content if file read is unavailable
 2. Extracted metadata in a format suitable for downstream agents
-3. A summary count: "Found N publications in [date range]"
-4. Python-executed statistics when quantitative analysis is requested
+3. A summary count: "Found N publications in [date range]" (label as `[LLM-INFERRED]` if Python unavailable)
+4. Statistics when quantitative analysis is requested (IF Python available AND parent provides data)
 
-**Status Note:** RELEASES currently has no active DeepChat slot. Until configured, the main agent should handle releases-reading directly or use the ARCHIVE subagent for Archive/releases/ content.
+**Status Note:** RELEASES currently has no active DeepChat slot. Until configured, the main agent should handle releases-reading directly. When configured, file read access must be empirically verified before relying on it.
 
 ---
 
@@ -289,6 +341,10 @@ ARCHIVE RESEARCHER — 35K+ Historical Documents, Read-Only Deep Search | target
 
 TARGET: Configure with read access to G:\My Drive\Archive\
 
+⚠️ TOOL AVAILABILITY NOTE: See Section 0.5. ARCHIVE targets a different agent (`deepchat-INfqIWc0`)
+   which MAY have different tool availability than the self-clone. File read access is
+   UNCONFIRMED. Until verified, assume the same restrictions as the self-clone (Section 0.5).
+
 ARCHIVE CONTENTS (verified 2026-05-07):
   • projects/    — 25,308 items (past projects, code, documents, deliverables)
   • notes/       —  8,325 items (research notes, ideas, journals, observations)
@@ -298,13 +354,20 @@ ARCHIVE CONTENTS (verified 2026-05-07):
   • templates/   —     95 items (document templates, scaffolds, boilerplates)
   • prompts/     —    153 items (historical prompts and agent configurations)
 
-CAPABILITIES:
-  - File read from G:\My Drive\Archive\ and its subdirectories
-  - Python execution for quantitative analysis of archived data
+CONFIRMED CAPABILITIES (same as all subagents — see Section 0.5):
   - LLM inference for synthesis and pattern recognition across archived materials
-  - Deep recursive search across all archive subdirectories
+  - Conversation history search
+  - Prompt template filling
+  - GraphQL / Buffer API operations
+  - Subagent orchestration
 
-USE THIS SUBAGENT FOR:
+UNCONFIRMED CAPABILITIES (MAY NOT BE AVAILABLE):
+  - File read from G:\My Drive\Archive\ — NOT CONFIRMED; do NOT rely on this
+  - Python execution for quantitative analysis — NOT CONFIRMED
+  - Deep recursive search across archive subdirectories — depends on file read
+  - Document parsing, content extraction from files — depends on file read
+
+USE THIS SUBAGENT FOR (WHEN FILE READ IS CONFIRMED):
   • Retrieving historical documents, past notes, or prior project files
   • Answering questions about past work: "What did I write about X in 2024?"
   • Finding templates (Archive/templates/) for document generation or project scaffolding
@@ -314,11 +377,16 @@ USE THIS SUBAGENT FOR:
   • Auditing past work: "What projects did I complete in 2023?", "Find all notes tagged with 'quantum'"
   • Retrieving old prompts or agent configurations (Archive/prompts/)
 
+⚠️ IF FILE READ IS UNAVAILABLE: ARCHIVE cannot read archive files. The parent must
+   search and read files, then provide content INLINE in the subagent prompt for
+   synthesis and analysis.
+
 DO NOT USE FOR:
   • Current/live publication releases — those are in G:\My Drive\Obsidian\releases\ (use RELEASES subagent)
   • Writing or editing files in the Archive — it is STRICTLY read-only
   • Fresh content generation with no historical reference needed (use SELF CLONE or PROJECTS)
   • Tasks that have no connection to prior work or archived materials
+  • ANY task requiring file reading if file read is not confirmed — parent must handle file I/O
 
 HARD CONSTRAINT: NEVER write to, edit, or modify any file in G:\My Drive\Archive\. This is a historical record — all changes would destroy its integrity as an archive. Flag any write attempt as a violation.
 
@@ -350,10 +418,12 @@ Step 3: PARENT               — merge results into complete bibliography
 ```
 
 **Result Format Contract:** ARCHIVE should return:
-1. List of files found with full paths and brief content summaries
+1. List of files found with full paths and brief content summaries (IF file read is available; otherwise, synthesize from inline-provided content)
 2. Relevance scoring: which files are most pertinent to the query
 3. Key excerpts or synthesized findings
-4. Python-executed counts when quantitative (e.g., "37 notes tagged 'quantum'")
+4. Counts and statistics (IF Python is available and parent provides data; otherwise, label as `[LLM-INFERRED]`)
+
+⚠️ **TOOL LIMITATION:** If file read and Python are unavailable, ARCHIVE can only synthesize text provided inline by the parent. The parent must search directories and provide file contents in the prompt.
 
 ---
 
@@ -364,6 +434,10 @@ Step 3: PARENT               — merge results into complete bibliography
 PROMPTS AGENT — Tier 1 & Tier 2 Prompt Engineering Workspace | target=configure-for-prompts | Dedicated agent for the G:\My Drive\prompts\ directory — the prompt engineering workspace. This is where Tier 1 meta-prompts, Tier 2 system prompts, agent configurations, sub-prompt libraries (social/, scholar/), and prompt dispatch reference files live.
 
 TARGET: Configure with read/write access to G:\My Drive\prompts\
+
+⚠️ TOOL AVAILABILITY NOTE: See Section 0.5. PROMPTS is NOT YET CONFIGURED as an active slot.
+   When configured, file read/write access is UNCONFIRMED. Until verified, assume the same
+   restrictions as the self-clone (Section 0.5).
 
 DIRECTORY STRUCTURE:
   G:\My Drive\prompts\
@@ -377,24 +451,29 @@ DIRECTORY STRUCTURE:
     • social/                        — platform-specific sub-prompts (Twitter, Mastodon, LinkedIn, Substack)
     • scholar/                       — scholar pipeline prompts (STAGE-1 to STAGE-4)
 
-WRITE ACCESS:
+WRITE ACCESS (IF FILE WRITE IS AVAILABLE):
   • This is the ONLY subagent authorized to write/edit files within G:\My Drive\prompts\
   • Other subagents (PROJECTS, SELF CLONE) may read prompts files but MUST NOT write here
   • The PROJECTS subagent should delegate any prompt-related writes to this agent
 
-READ ACCESS:
+READ ACCESS (IF FILE READ IS AVAILABLE):
   • Other agents and processes MAY access this directory READ-ONLY
   • ARCHIVE, RELEASES, and SELF CLONE agents can read prompt files for reference
   • PROJECTS agent can read prompt files but must route prompt edits to this agent
 
-CAPABILITIES:
-  - Python execution (standard library only)
-  - File read from all accessible directories
-  - File write/edit (STRICTLY to G:\My Drive\prompts\ only)
-  - Prompt generation, compilation, auditing, and patching
-  - Documentation generation for agent workflows
+CONFIRMED CAPABILITIES (same as all subagents — see Section 0.5):
+  - LLM inference, prompt generation, compilation, auditing, and patching
+  - Conversation history search
+  - Prompt template filling
+  - GraphQL / Buffer API operations
 
-USE THIS SUBAGENT FOR:
+UNCONFIRMED CAPABILITIES (MAY NOT BE AVAILABLE):
+  - Python execution — NOT CONFIRMED
+  - File read — NOT CONFIRMED; do NOT rely on this for reading prompt files
+  - File write/edit — NOT CONFIRMED; do NOT rely on this for saving prompts
+  - Documentation generation for agent workflows — depends on file write
+
+USE THIS SUBAGENT FOR (WHEN FILE I/O IS CONFIRMED):
   • Creating new Tier 2 system prompts from requirements
   • Auditing existing prompts for Constitutional compliance
   • Patching/modifying existing prompt files
@@ -403,6 +482,9 @@ USE THIS SUBAGENT FOR:
   • Documenting prompt architectures and dispatch patterns
   • Any file write operation whose target is G:\My Drive\prompts\
   • Answering questions about prompt structure, versioning, or agent capabilities
+
+⚠️ IF FILE I/O IS UNAVAILABLE: All prompt file work MUST be done in the parent thread.
+   PROMPTS becomes a text-generation-only agent that returns prompt content for the parent to save.
 
 DO NOT USE FOR:
   • Writing files outside G:\My Drive\prompts\ (use PROJECTS instead)
@@ -444,10 +526,11 @@ Step 3: PARENT             — review audit results, present findings to user
 **Result Format Contract:** PROMPTS should return:
 1. Summary of changes made (for edits) or prompt architecture (for creations)
 2. Constitutional compliance score (for audits)
-3. File paths modified/created with git-ready commit messages
+3. File paths modified/created with git-ready commit messages (IF file write available)
 4. Test results if blind validation was requested
+5. ⚠️ If file I/O unavailable: return the complete prompt text for parent to save
 
-**Status Note:** PROMPTS currently has no active DeepChat slot. Until configured, prompt engineering work should be done in the main thread using META-PROMPT-DEEPSEEK methodology, with file writes routed through PROJECTS.
+**Status Note:** PROMPTS currently has no active DeepChat slot. Until configured, prompt engineering work should be done in the main thread using META-PROMPT-DEEPSEEK methodology, with file writes handled directly by the parent.
 
 ---
 
@@ -459,6 +542,10 @@ OBSIDIAN NOTES RESEARCHER — Full Vault, Read-Only Knowledge Base Search | targ
 
 TARGET: Configure with read access to G:\My Drive\Obsidian\notes\
 
+⚠️ TOOL AVAILABILITY NOTE: See Section 0.5. NOTES is NOT YET CONFIGURED as an active slot.
+   When configured, file read access is UNCONFIRMED. Until verified, assume the same
+   restrictions as the self-clone (Section 0.5).
+
 VAULT CONTENTS (typical Obsidian structure):
   • daily/ or journal/     — daily journals, periodic notes, timestamps and reflections
   • topics/ or concepts/   — interlinked topic notes with #tags and [[wikilinks]]
@@ -469,15 +556,20 @@ VAULT CONTENTS (typical Obsidian structure):
   • templates/             — note templates for standardized capture
   • attachments/           — images, PDFs, embedded media referenced in notes
 
-CAPABILITIES:
-  - File read from G:\My Drive\Obsidian\notes\ and its subdirectories (recursive)
-  - Python execution for quantitative analysis of note metadata (tags, links, word counts)
+CONFIRMED CAPABILITIES (same as all subagents — see Section 0.5):
   - LLM inference for synthesis and pattern recognition across the vault
-  - [[wikilink]] traversal — follow internal links to discover connected notes
-  - Tag-based filtering — search and aggregate notes by #tag
-  - Full-text search across all vault markdown files
+  - Conversation history search
+  - Prompt template filling
+  - GraphQL / Buffer API operations
 
-USE THIS SUBAGENT FOR:
+UNCONFIRMED CAPABILITIES (MAY NOT BE AVAILABLE):
+  - File read from G:\My Drive\Obsidian\notes\ — NOT CONFIRMED; do NOT rely on this
+  - Python execution for quantitative analysis of note metadata — NOT CONFIRMED
+  - [[wikilink]] traversal — depends on file read
+  - Tag-based filtering — depends on file read
+  - Full-text search across vault markdown files — depends on file read
+
+USE THIS SUBAGENT FOR (WHEN FILE READ IS CONFIRMED):
   • Supplementing projects with personal research notes and prior thinking
   • Answering: "What do my notes say about X?", "Have I written about Y before?"
   • Finding connections between vault notes and current project work
@@ -488,6 +580,10 @@ USE THIS SUBAGENT FOR:
   • Cross-referencing notes against Archive (historical) and Releases (publications) for full coverage
   • Analyzing vault structure: "What tags appear most?", "What topics are well-developed?"
   • Finding templates in the vault for standardized note capture
+
+⚠️ IF FILE READ IS UNAVAILABLE: NOTES cannot read vault files. The parent must
+   search and read vault files, then provide content INLINE in the subagent prompt for
+   synthesis and analysis.
 
 DO NOT USE FOR:
   • Writing or editing notes in the vault — the vault is a READ-ONLY knowledge base
@@ -527,74 +623,72 @@ Step 4: PARENT              — merge into comprehensive knowledge map
 ```
 
 **Result Format Contract:** NOTES should return:
-1. List of relevant notes found with relative paths and brief summaries
+1. List of relevant notes found with relative paths and brief summaries (from inline-provided content if file read unavailable)
 2. A concept map: how notes interconnect via [[wikilinks]] and shared #tags
 3. Key excerpts from the most relevant notes
-4. Python-executed statistics when quantitative (e.g., "23 notes tagged #quantum, 8 interlinked via [[quantum-computing]]")
+4. Statistics when quantitative (e.g., "23 notes tagged #quantum") — label as `[LLM-INFERRED]` if Python unavailable
 5. Gap identification: topics mentioned in the vault but under-developed
 
-**Status Note:** NOTES currently has no active DeepChat slot. Until configured, the main agent should handle vault reading directly (File Read from G:\My Drive\Obsidian\notes\) or fold note-reading into ARCHIVE if ARCHIVE has access to the vault directory.
+**Status Note:** NOTES currently has no active DeepChat slot. Until configured, the main agent should handle vault reading directly (File Read from G:\My Drive\Obsidian\notes\). When configured, file read access must be empirically verified before relying on it.
 
 ---
 
-## 7. DISPATCH DECISION MATRIX
+## 7. DISPATCH DECISION MATRIX (⚠️ UPDATED FOR ACTUAL TOOL AVAILABILITY)
+
+**⚠️ CRITICAL:** See Section 0.5 for empirically verified tool availability. Subagents lack file I/O and Python execution. All tasks below that require reading files or executing Python CANNOT be completed by subagents. The parent must handle file I/O and computation, then provide results inline in subagent prompts.
 
 ### Primary Dispatch: "I need to..."
 
-| User Intent | Delegate To | Mode | Notes |
-|:------------|:------------|:-----|:------|
-| "analyze these 3 papers" | SELF CLONE × 3 | parallel | One clone per paper, zero cross-contamination |
-| "give me 3 different approaches" | SELF CLONE × 3 | parallel | Each clone gets a different angle prompt |
-| "test how this reads to a new reader" | SELF CLONE | chain | Clone gets only the content, no context |
-| "validate this claim independently" | SELF CLONE | chain | Clone must NOT see parent's reasoning |
-| "write a report and save it" | PROJECTS | chain | Handles all file I/O + versioned naming |
-| "generate this document" | PROJECTS | chain | Produces .md output with proper naming |
-| "set up a new project directory" | PROJECTS | chain | Creates directory structure + scaffolds |
-| "save these results to a file" | PROJECTS | chain | Writes data/code/artifacts to disk |
-| "what did I publish in March 2026?" | RELEASES | chain | Scans Obsidian/releases/2026/03/ |
-| "get me all DOIs from last month" | RELEASES | chain | Extracts structured metadata |
-| "feed publications into social pipeline" | RELEASES → SELF CLONE × 4 | chain→parallel | RELEASES reads, clones generate platform posts |
-| "what do my notes say about X?" | NOTES | chain | Full-text search across Obsidian vault |
-| "supplement this project with my research notes" | NOTES | chain | Retrieves relevant vault entries on topic |
-| "check my notes for prior thinking on Y" | NOTES | chain | Scans topic notes + fleeting notes + daily journals |
-| "cross-reference my notes with publications" | NOTES + RELEASES | parallel | Vault thinking + current publications, parent merges |
-| "analyze publication trends in 2025" | RELEASES | chain | Python analysis of publication metadata |
-| "what did I write about X in 2024?" | ARCHIVE | chain | Deep search across Archive/notes/ |
-| "find templates for a research proposal" | ARCHIVE | chain | Searches Archive/templates/ |
-| "has this topic been covered before?" | ARCHIVE | chain | Cross-reference against all past work |
-| "audit all my past projects in 2023" | ARCHIVE | chain | Recursive scan of Archive/projects/ |
-| "retrieve my old agent configurations" | ARCHIVE | chain | Searches Archive/prompts/ |
-| "create a new system prompt" | PROMPTS | chain | Uses META-PROMPT-DEEPSEEK methodology |
-| "audit this prompt for compliance" | PROMPTS | chain | Scores 0-10 on Constitutional compliance |
-| "update the social prompt templates" | PROMPTS | chain | Edits files in social/ directory |
-| "modify the subagent descriptions" | PROMPTS | chain | Edits SUBAGENT_DESCRIPTIONS.md |
+| User Intent | Delegate To | Mode | Works? | Notes |
+|:------------|:------------|:-----|:-------|:------|
+| "brainstorm ideas about X" | SELF CLONE | parallel | ✅ YES | Provide topic inline |
+| "give me 3 different approaches" | SELF CLONE × 3 | parallel | ✅ YES | Provide problem description inline |
+| "test how this reads to a new reader" | SELF CLONE | chain | ✅ YES | Provide content inline (no file refs) |
+| "validate this claim independently" | SELF CLONE | chain | ✅ YES | Provide claim inline |
+| "generate social media posts from this text" | SELF CLONE | chain | ✅ YES | Provide source text inline |
+| "fill this prompt template" | SELF CLONE | chain | ✅ YES | `fill_prompt_template` available |
+| "search past conversations for X" | SELF CLONE | chain | ✅ YES | `search_conversations` available |
+| "analyze these 3 papers" | **PARENT** | — | ❌ NO | Requires file read → parent must read papers, then provide text inline to SELF CLONE |
+| "write a report and save it" | **PARENT** | — | ❌ NO | Requires file write → parent must handle |
+| "generate this document" | **PARENT** | — | ❌ NO | Requires file write → parent must handle |
+| "set up a new project directory" | **PARENT** | — | ❌ NO | Requires file write → parent must handle |
+| "save these results to a file" | **PARENT** | — | ❌ NO | Requires file write → parent must handle |
+| "what did I publish in March 2026?" | **PARENT** | — | ❌ NO | Requires file read → parent reads, provides inline |
+| "get me all DOIs from last month" | **PARENT** | — | ❌ NO | Requires file read → parent reads, provides inline |
+| "what do my notes say about X?" | **PARENT** | — | ❌ NO | Requires file read → parent reads vault, provides inline |
+| "what did I write about X in 2024?" | **PARENT** | — | ❌ NO | Requires file read → parent reads archive, provides inline |
+| "find templates for a research proposal" | **PARENT** | — | ❌ NO | Requires file read → parent reads, provides inline |
+| "create a new system prompt" | SELF CLONE | chain | ✅ YES | Prompt generation is pure text — provide requirements inline |
+| "audit this prompt for compliance" | SELF CLONE | chain | ✅ YES | Provide prompt text inline |
+| "update the social prompt templates" | **PARENT** | — | ❌ NO | Requires file read + write → parent must handle |
+| "modify the subagent descriptions" | **PARENT** | — | ❌ NO | Requires file read + write → parent must handle |
+
+### ⚠️ REVISED WORKFLOW: File-Dependent Tasks
+
+For tasks that require file reading (papers, archive, releases, notes), use this pattern:
+
+```
+Step 1: PARENT — reads files, executes Python, extracts data
+Step 2: PARENT — provides extracted content INLINE in SELF CLONE prompt
+Step 3: SELF CLONE — reasons about the inline text, generates output
+Step 4: PARENT — saves output to files (subagents cannot write)
+```
 
 ### Secondary Dispatch: "What subagent for..."
 
-| Capability Needed | Subagent |
-|:------------------|:---------|
-| Fresh, unbiased analysis with no context | SELF CLONE |
-| Parallel processing of independent subtasks | SELF CLONE |
-| Reader testing / prompt validation | SELF CLONE |
-| Writing files, generating documents, editing projects | PROJECTS |
-| Saving data, reports, code, or generated artifacts | PROJECTS |
-| Creating project directories or scaffolding | PROJECTS |
-| Reading current publication releases (Obsidian) | RELEASES |
-| Feeding publication data into SOCIAL-ORCHESTRATOR | RELEASES |
-| Extracting metadata from publication .md files | RELEASES |
-| Supplementing projects with personal knowledge base notes | NOTES |
-| Searching Obsidian vault for prior thinking on a topic | NOTES |
-| Vault analytics (tag frequency, note interlinking, gaps) | NOTES |
-| Cross-referencing vault notes against archive and releases | NOTES |
-| Historical documents, past notes, prior projects | ARCHIVE |
-| Cross-referencing against past work | ARCHIVE |
-| Templates from Archive/templates/ | ARCHIVE |
-| Archived publication copies (Archive/releases/) | ARCHIVE |
-| Retrieving old prompts or configurations (Archive/prompts/) | ARCHIVE |
-| Writing or editing prompt files in G:\My Drive\prompts\ | PROMPTS |
-| Creating Tier 2 system prompts, sub-prompt libraries | PROMPTS |
-| Auditing/patching existing prompt files | PROMPTS |
-| Documenting agent workflows and dispatch patterns | PROMPTS |
+| Capability Needed | Where It Lives | Notes |
+|:------------------|:---------------|:------|
+| File reading (papers, archive, releases, notes) | **PARENT ONLY** | Subagents cannot read files |
+| File writing (reports, documents, code) | **PARENT ONLY** | Subagents cannot write files |
+| Python execution (calculations, statistics) | **PARENT ONLY** | Subagents cannot execute code |
+| Directory scanning / recursive search | **PARENT ONLY** | Subagents cannot access filesystem |
+| Fresh, unbiased text analysis with no context | SELF CLONE | Works — provide text inline |
+| Parallel text generation from inline inputs | SELF CLONE | Works — all inputs in prompt |
+| Reader testing / prompt validation | SELF CLONE | Works — provide content inline |
+| Prompt template filling | SELF CLONE | Works — `fill_prompt_template` available |
+| Conversation history search | SELF CLONE | Works — conversation tools available |
+| GraphQL / Buffer API operations | SELF CLONE | Works — GraphQL tools available |
+| Pure LLM reasoning, ideation, synthesis | SELF CLONE | Works — core LLM capability |
 
 ---
 
@@ -757,66 +851,78 @@ When reporting aggregated results, use this structure:
 
 ---
 
-## 10. PROMPT TEMPLATE INTEGRATION
+## 10. PROMPT TEMPLATE INTEGRATION (⚠️ UPDATED FOR TOOL LIMITATIONS)
 
-The prompt template system (accessible via `fill_prompt_template`) integrates with the subagent system as follows:
+The prompt template system (accessible via `fill_prompt_template`) integrates with the subagent system as follows. **⚠️ NOTE:** All file reading and Python execution must happen in the PARENT thread. Subagents can only handle text generation from inline inputs.
 
 ### OMEGA-SCHOLAR Pipeline
-| Stage | Template Name | Delegate To | Rationale |
-|:------|:-------------|:------------|:----------|
-| Stage 1: Setup | `OMEGA-SCHOLAR-STAGE-1-SETUP` | Main thread or SELF CLONE | Context gathering + Search Manifest generation |
-| Stage 2: Draft | `OMEGA-SCHOLAR-STAGE-2-DRAFT` | SELF CLONE | Python-only evidence + narrative (parallelizable across topics) |
-| Stage 3: Review | `OMEGA-SCHOLAR-STAGE-3-REVIEW` | SELF CLONE (different from Stage 2) | Blind audit against anti-fabrication — must NOT see Stage 2 reasoning |
-| Stage 4: Publish | `OMEGA-SCHOLAR-STAGE-4-PUBLISH` | PROJECTS | Final assembly + file write with source labels |
+| Stage | Template Name | Delegate To | Works? | Rationale |
+|:------|:-------------|:------------|:-------|:----------|
+| Stage 1: Setup | `OMEGA-SCHOLAR-STAGE-1-SETUP` | **PARENT** | ⚠️ Parent only | Requires file reading + Python for context gathering |
+| Stage 2: Draft | `OMEGA-SCHOLAR-STAGE-2-DRAFT` | SELF CLONE | ✅ Yes | Python-only evidence must be provided inline by parent |
+| Stage 3: Review | `OMEGA-SCHOLAR-STAGE-3-REVIEW` | SELF CLONE | ✅ Yes | Blind audit — provide draft text inline (clone cannot read files) |
+| Stage 4: Publish | `OMEGA-SCHOLAR-STAGE-4-PUBLISH` | **PARENT** | ⚠️ Parent only | Requires file write for final assembly |
 
 ### SOCIAL Pipeline
-| Template Name | Delegate To | Rationale |
-|:-------------|:------------|:----------|
-| `SOCIAL-ORCHESTRATOR` | Main thread (dispatcher) | Orchestrates the pipeline, delegates to platform agents |
-| `SOCIAL - Twitter/Bluesky` | SELF CLONE | Parallel generation with platform-specific template |
-| `SOCIAL - Mastodon` | SELF CLONE | Parallel generation with platform-specific template |
-| `SOCIAL - LinkedIn` | SELF CLONE | Parallel generation with platform-specific template |
-| `SOCIAL - Substack` | SELF CLONE | Parallel generation with platform-specific template |
+| Template Name | Delegate To | Works? | Rationale |
+|:-------------|:------------|:-------|:----------|
+| `SOCIAL-ORCHESTRATOR` | **PARENT** | ⚠️ Parent only | Orchestrator must read publication files (parent only) |
+| `SOCIAL - Twitter/Bluesky` | SELF CLONE | ✅ Yes | Provide publication text inline in prompt |
+| `SOCIAL - Mastodon` | SELF CLONE | ✅ Yes | Provide publication text inline in prompt |
+| `SOCIAL - LinkedIn` | SELF CLONE | ✅ Yes | Provide publication text inline in prompt |
+| `SOCIAL - Substack` | SELF CLONE | ✅ Yes | Provide publication text inline in prompt |
 
-### Recommended Flow for SOCIAL Pipeline:
-1. **Main thread:** Fill `SOCIAL-ORCHESTRATOR` template to get the full pipeline prompt
-2. **Delegate to SELF CLONE:** Run the orchestrator in a self-clone with the filled template
-3. **Clone executes:** The orchestrator prompt guides it through reading publications and generating platform content
-4. **Write via PROJECTS:** If output needs to be saved, chain to PROJECTS for file writes
+### ⚠️ Recommended Flow for SOCIAL Pipeline (Revised):
+1. **PARENT:** Reads publication files from `G:\My Drive\Obsidian\releases\`
+2. **PARENT:** Fills `SOCIAL-ORCHESTRATOR` template
+3. **PARENT:** Extracts publication metadata and abstracts
+4. **SELF CLONE × 4 (parallel):** Each clone receives publication text INLINE and generates platform-specific content
+5. **PARENT:** Aggregates results, saves output files
 
 ---
 
-## 11. COMMON DISPATCH ERRORS (ANTI-PATTERNS)
+## 11. COMMON DISPATCH ERRORS (ANTI-PATTERNS) — ⚠️ UPDATED FOR ACTUAL TOOLS
 
 | Anti-Pattern | Why It's Wrong | Correct Approach |
 |:-------------|:---------------|:-----------------|
-| **Running all work in main thread** | Wastes context, no parallelization, no blind validation | Delegate specialized work to subagents |
-| **Using SELF CLONE for file writes** | Clone may write to unexpected locations; no centralized write tracking | Use PROJECTS for ALL file writes |
-| **Using PROJECTS for read-only research** | PROJECTS is optimized for writes; burns a write-capable slot on reading | Use ARCHIVE or RELEASES for read-only research |
-| **Using ARCHIVE for current releases** | ARCHIVE has historical copies only; current releases are in Obsidian/releases/ | Use RELEASES for current publications |
-| **Not providing enough context to SELF CLONE** | Clone starts with ZERO knowledge of the conversation; incomplete prompts produce garbage | Write self-contained, complete prompts for every clone |
+| **Assuming subagent can read files** | Subagents lack `read`/`write`/`edit` tools — any "read file X" instruction will fail silently | Parent reads files, provides content INLINE in subagent prompt |
+| **Assuming subagent can execute Python** | Subagents lack `exec`/`process` — any "analyze the data" or "calculate" instruction will fail | Parent executes Python, provides results INLINE |
+| **Delegating file writes to subagents** | Subagents cannot write files — "save this report" will fail | Parent does ALL file writes |
+| **Delegating file-dependent tasks to ARCHIVE/RELEASES/NOTES** | These subagents are described as reading from specific directories, but file read is UNCONFIRMED | Parent reads files → provides content inline → subagent synthesizes |
+| **Running all work in main thread** | Wastes context, no parallelization, no blind validation | Delegate TEXT-ONLY work to subagents; parent handles file I/O |
+| **Using SELF CLONE for file writes** | Clone cannot write files at all | Use PARENT for ALL file writes |
+| **Not providing enough inline context to SELF CLONE** | Clone starts with ZERO filesystem access AND zero conversation context; incomplete prompts produce garbage | Write self-contained, complete prompts with ALL information inline |
 | **Chain mode for independent tasks** | Sequential execution wastes time when tasks don't depend on each other | Use `parallel` mode for independent work |
 | **Parallel mode for dependent tasks** | Later tasks can't access earlier results in parallel mode | Use `chain` mode when Step 2 needs Step 1's output |
 | **Delegating trivial tasks** | Overhead of spawning a subagent exceeds the cost of doing it directly | Handle single-step, <200-word-output tasks in the main thread |
 | **Writing prompts/ to PROJECTS instead of PROMPTS** | Creates split authority over prompt files | Route ALL prompt writes to PROMPTS agent |
 | **PROJECTS writing to Archive or Releases** | Destroys the integrity of read-only directories | Hard refusal — redirect to appropriate directory |
 | **Not aggregating parallel results** | Dumping raw subagent outputs to the user is lazy and incoherent | Synthesize, remove redundancy, resolve conflicts |
-| **Assuming subagent has parent's context** | Subagents are isolated; they don't know what the parent discussed | Every subagent prompt must be fully self-contained |
-| **Using NOTES for file writes** | NOTES is read-only — vault integrity depends on it | Use PROJECTS for all output files |
-| **Not checking NOTES before starting a project** | Misses prior thinking that could save hours of redundant research | Always query NOTES + ARCHIVE before writing on a familiar topic |
+| **Assuming subagent has parent's context AND filesystem access** | Subagents are isolated; they don't know what the parent discussed AND they can't read files | Every subagent prompt must be fully self-contained with all information inline |
+| **Using NOTES for file writes** | NOTES is read-only — vault integrity depends on it | Use PARENT for all output files |
+| **Not checking NOTES before starting a project** | Misses prior thinking that could save hours of redundant research | PARENT reads vault → provides content inline → SELF CLONE synthesizes |
+| **⚠️ NEW: Referencing file paths in subagent prompts** | Subagents cannot read files — "see attached file" or "open paper.md" instructions will fail | NEVER reference files in subagent prompts; always provide content inline |
+| **⚠️ NEW: Expecting subagent to run Python** | Subagents lack `exec` — "use Python to calculate..." will fail | Parent runs Python and provides results in the subagent prompt |
+| **⚠️ NEW: Using subagent as a full-capability clone** | Subagents are NOT identical to parent — they have severely restricted tool sets | Treat subagents as text-only reasoning engines; parent handles all tool operations |
 
 ---
 
-## 12. SLOT CONFIGURATION REFERENCE
+## 12. SLOT CONFIGURATION REFERENCE (⚠️ UPDATED FOR ACTUAL TOOLS)
 
-| Agent | Slot ID | Status | Write Access | Read Access |
-|:------|:--------|:-------|:-------------|:------------|
-| SELF CLONE | `self` | ✅ Active | G:\My Drive\ (same as parent) | G:\My Drive\ (same as parent) |
-| PROJECTS | `slot-movio4vd-yj9c` | ✅ Active | G:\My Drive\projects\, G:\My Drive\prompts\ | All directories |
-| ARCHIVE | `slot-movbn8bi-f61j` | ✅ Active | NONE (read-only) | G:\My Drive\Archive\ only |
-| RELEASES | *(not configured)* | ⬜ Pending | NONE (read-only) | G:\My Drive\Obsidian\releases\ only |
-| NOTES | *(not configured)* | ⬜ Pending | NONE (read-only) | G:\My Drive\Obsidian\notes\ only |
-| PROMPTS | *(not configured)* | ⬜ Pending | G:\My Drive\prompts\ only | All directories |
+| Agent | Slot ID | Status | Write Access | Read Access | File I/O? | Python? |
+|:------|:--------|:-------|:-------------|:------------|:----------|:--------|
+| SELF CLONE | `self` | ✅ Active | NONE (unconfirmed) | NONE (unconfirmed) | ❌ Unconfirmed | ❌ Unconfirmed |
+| PROJECTS | `slot-movio4vd-yj9c` | ✅ Active | G:\My Drive\projects\, prompts\ (UNCONFIRMED) | All directories (UNCONFIRMED) | ❓ Unconfirmed | ❓ Unconfirmed |
+| ARCHIVE | `slot-movbn8bi-f61j` | ✅ Active | NONE (read-only) | G:\My Drive\Archive\ only (UNCONFIRMED) | ❓ Unconfirmed | ❓ Unconfirmed |
+| RELEASES | *(not configured)* | ⬜ Pending | NONE (read-only) | G:\My Drive\Obsidian\releases\ only (UNCONFIRMED) | ❓ Unconfirmed | ❓ Unconfirmed |
+| NOTES | *(not configured)* | ⬜ Pending | NONE (read-only) | G:\My Drive\Obsidian\notes\ only (UNCONFIRMED) | ❓ Unconfirmed | ❓ Unconfirmed |
+| PROMPTS | *(not configured)* | ⬜ Pending | G:\My Drive\prompts\ only (UNCONFIRMED) | All directories (UNCONFIRMED) | ❓ Unconfirmed | ❓ Unconfirmed |
+
+**⚠️ CRITICAL:** File I/O and Python execution are UNCONFIRMED for ALL subagent slots. Empirical testing of the self-clone (`self`) confirmed that `read`, `write`, `edit`, `exec`, and `process` tools are NOT available. Other slots (PROJECTS, ARCHIVE) target different agents and MAY have different tool availability, but this has NOT been verified. Until each slot is empirically tested, assume ALL subagents have the restricted tool set documented in Section 0.5.
+
+**Verified available tools (all subagents):** `search_conversations`, `search_messages`, `get_conversation_history`, `get_conversation_stats`, `fill_prompt_template`, `get_prompt_template_parameters`, `list_all_prompt_template_names`, `execute_query`, `execute_mutation`, `introspect_schema`, `subagent_orchestrator`, `deepchat_question`, `deepchat_settings_*`, `skill_list`, `skill_view`, `skill_manage`.
+
+**Verified unavailable tools (self-clone):** `read`, `write`, `edit`, `exec`, `process`, `get_account`, `list_channels`, `get_channel`, `list_posts`, `get_post`, `create_post`, `create_idea`, `delete_post`.
 
 **To configure RELEASES, NOTES, or PROMPTS:** Copy the "Slot-Ready Description" block from Section 3, 6, or 5 above into a new DeepChat subagent slot. Configure the target with appropriate directory access as specified in the description.
 
@@ -844,4 +950,4 @@ subagent_orchestrator(mode="parallel"|"chain", tasks=[...])
 
 ---
 
-**[END OF SUBAGENT DESCRIPTIONS v2.1]**
+**[END OF SUBAGENT DESCRIPTIONS v2.2 — ⚠️ Updated for Actual Tool Availability]**
