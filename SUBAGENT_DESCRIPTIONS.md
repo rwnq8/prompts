@@ -1,7 +1,7 @@
 # SUBAGENT DESCRIPTIONS — Dispatch Reference & Orchestration Protocol
 > **Purpose:** Definitive reference for configuring DeepChat subagent slots.
 > **Last updated:** 2026-05-11 | **Scope:** 6 subagents (3 active + 3 pending)
-> **⚠️ v2.4 DEFINITIVE:** 20-test empirical study. ALL subagent slots are non-deterministic (~35% full tools, ~65% limited). PARENT ONLY for file I/O/Python.
+> **⚠️ v2.5:** 20-test study + Git Overhead Problem documented. ALL subagents non-deterministic. PARENT ONLY for file I/O/Python/git. Include git-skip in subagent task prompts.
 
 ---
 
@@ -91,6 +91,55 @@ The main agent has access to the `subagent_orchestrator` tool. **⚠️ ALL suba
 | Buffer/GraphQL API | ANY subagent | Universally available |
 | Parallel text generation | SELF-CLONE × N | Provide all inputs inline |
 | Blind validation / reader testing | SELF-CLONE | Provide content inline |
+
+---
+
+## 0.6 ⚠️ THE GIT OVERHEAD PROBLEM (Discovered 2026-05-11)
+
+**Subagents inherit the full system prompt including mandatory git discipline (pre-flight checks, branch verification, commit requirements). This causes subagents to burn their response budget on git operations that are irrelevant to their delegated task.**
+
+### Observed Failure Pattern
+A critical review subagent (self-clone) was deployed to analyze prompt files. Instead of reading and reviewing files, the subagent:
+1. Detected it was on an unexpected branch (`feature/fix-social-media-line-breaks`)
+2. Attempted to create a new feature branch
+3. Spent its **entire response budget** on git operations
+4. **Never reached the actual analysis task**
+
+Archive and notes search subagents were similarly paralyzed by git pre-flight checks. Result: **zero task progress — subagents burned their budget on git operations irrelevant to read-only analysis.**
+
+### Root Cause
+The system prompt generator's mandatory git protocol (inherited from DEFAULT.md and enforced by META-PROMPT-DEEPSEEK.md) requires EVERY agent to:
+1. Verify it's on a feature branch before any file operation
+2. Create a feature branch if on main/master
+3. Commit after every file change
+4. Verify commits exist
+
+Subagents inherit this full protocol but:
+- ~65% of the time CANNOT write files (no `write`/`edit` tools)
+- Are deployed for read-only tasks (search, review, synthesis)
+- Have no use for git operations
+- Are confused by unexpected branch states
+
+### Mitigation
+
+**For task prompts to subagents:** Explicitly instruct subagents to SKIP git operations:
+```
+GIT: Do NOT perform git pre-flight checks. Do NOT check branches. Do NOT commit. 
+This is a read-only subagent task. Proceed directly to the assigned work.
+```
+
+**For DEFAULT.md delegation section:** Updated to recommend including the git-skip directive in all subagent task prompts.
+
+**For subagent system prompts (long-term):** Consider scoping git requirements — full protocol for write-capable agents, no protocol for read-only subagents. This requires prompt-level changes to DEFAULT.md or META-PROMPT-DEEPSEEK.md.
+
+### Combined Impact
+| Problem | Severity | Subagents Affected |
+|:--------|:---------|:-------------------|
+| Tool non-determinism (~35% full, ~65% limited) | CRITICAL | ALL slots |
+| Git overhead (response budget consumed) | HIGH | ALL subagents with inherited git protocol |
+| Combined: subagent gets limited tools AND burns budget on git | FATAL | ~65% of invocations — subagent achieves nothing |
+
+**The safe pattern:** PARENT handles ALL file I/O, Python, AND git. Subagents receive clean task prompts with explicit git-skip directives and inline content only.
 
 ---
 
@@ -908,4 +957,4 @@ subagent_orchestrator(mode="parallel"|"chain", tasks=[...])
 
 ---
 
-**[END OF SUBAGENT DESCRIPTIONS v2.4 — DEFINITIVE: 20-test study | ALL subagents non-deterministic | PARENT ONLY for file I/O/Python]**
+**[END OF SUBAGENT DESCRIPTIONS v2.5 — 20-test study + Git Overhead Problem | PARENT ONLY for file I/O/Python/git | git-skip directive required]**

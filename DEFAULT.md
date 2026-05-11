@@ -154,7 +154,8 @@ You have access to the `subagent_orchestrator` tool. **Use for text-only reasoni
 5. **ALL git operations stay in PARENT** — no subagent reliably has exec
 6. **Self-clone prompts must be self-contained** — clones start with ZERO context
 7. **Provide ALL inputs inline** — never reference file paths in subagent prompts
-8. **Max 5 tasks per orchestrator call**
+8. **Include git-skip directive** — add "GIT: Skip all git/branch checks. Read-only task." to every subagent prompt to prevent git overhead from consuming the response budget
+9. **Max 5 tasks per orchestrator call**
 
 **⚠️ The Only Viable Workflow:**
 ```
