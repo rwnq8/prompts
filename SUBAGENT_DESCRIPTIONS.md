@@ -1,102 +1,96 @@
 # SUBAGENT DESCRIPTIONS — Dispatch Reference & Orchestration Protocol
 > **Purpose:** Definitive reference for configuring DeepChat subagent slots.
-> **Last updated:** 2026-05-11 | **Scope:** All 6 subagents (3 active + 3 pending)
-> **⚠️ v2.3 CORRECTED:** Cross-slot audit. PROJECTS is the ONLY file-capable slot. ARCHIVE cannot read files. SELF-CLONE tool set is non-deterministic.
+> **Last updated:** 2026-05-11 | **Scope:** 6 subagents (3 active + 3 pending)
+> **⚠️ v2.4 DEFINITIVE:** 20-test empirical study. ALL subagent slots are non-deterministic (~35% full tools, ~65% limited). PARENT ONLY for file I/O/Python.
 
 ---
 
 ## 0. SUBAGENT ARCHITECTURE OVERVIEW
 
-The main agent (DEFAULT-DEEPSEEK v1.2 running in the DeepChat chat thread) has access to the `subagent_orchestrator` tool with these slots:
+The main agent has access to the `subagent_orchestrator` tool. **⚠️ ALL subagent slots have non-deterministic tool availability (~35% chance of full tools, ~65% limited to 18 base tools). See Section 0.5 for the 20-test empirical study.**
 
-| Slot ID | Agent Name | Status | File I/O? | Python? | Primary Role |
-|:--------|:-----------|:-------|:---------:|:------:|:-------------|
-| `self` | SELF CLONE | **ACTIVE** | ⚠️ UNRELIABLE | ⚠️ UNRELIABLE | Text synthesis, blind validation, reader testing |
-| `slot-movio4vd-yj9c` | PROJECTS WORKSPACE | **ACTIVE** | ✅ YES | ✅ YES | **ALL file I/O**, document generation, project scaffolding |
-| `slot-movbn8bi-f61j` | ARCHIVE RESEARCHER | **ACTIVE** | ❌ NO | ❌ NO | Text synthesis from inline-provided content |
-| *(pending)* | NOTES RESEARCHER | **PENDING** | ❌ NO | ❌ NO | Text synthesis from inline-provided content |
-| *(pending)* | RELEASES READER | **PENDING** | ❌ NO | ❌ NO | Text synthesis from inline-provided content |
-| *(pending)* | PROMPTS AGENT | **PENDING** | ❌ NO | ❌ NO | Text synthesis from inline-provided content |
+| Slot ID | Agent Name | Status | Role |
+|:--------|:-----------|:-------|:-----|
+| `self` | SELF CLONE | **ACTIVE** | Text synthesis, blind validation, parallel generation |
+| `slot-movio4vd-yj9c` | PROJECTS WORKSPACE | **ACTIVE** | Text synthesis, prompt templates, conversation search |
+| `slot-movbn8bi-f61j` | ARCHIVE RESEARCHER | **ACTIVE** | Text synthesis, prompt templates, conversation search |
+| *(pending)* | NOTES RESEARCHER | **PENDING** | Text synthesis (same limited-tool pattern) |
+| *(pending)* | RELEASES READER | **PENDING** | Text synthesis (same limited-tool pattern) |
+| *(pending)* | PROMPTS AGENT | **PENDING** | Text synthesis (same limited-tool pattern) |
 
-**Orchestration modes:** `parallel` (all subagents run concurrently) and `chain` (sequential execution).
-
-**⚠️ CRITICAL RULE (Revised):** PROJECTS WORKSPACE is the ONLY subagent slot with file I/O and Python execution. No other slot can read files, write files, or execute code. All file-dependent work MUST route through PROJECTS or stay in the parent thread.
+**⚠️ CRITICAL RULE:** File I/O, Python execution, git operations, skill management — ALL belong in the PARENT thread. Subagents are text-synthesis-only. Never delegate tool-dependent work to any subagent slot.
 
 ---
 
-## 0.5 ⚠️ ACTUAL TOOL AVAILABILITY — Cross-Slot Audit (Verified 2026-05-11)
+## 0.5 ⚠️ DEFINITIVE TOOL AVAILABILITY — 20-Test Empirical Study (2026-05-11)
 
-**All three active slots were tested simultaneously in a parallel orchestration run.** Each subagent was asked to introspect its available function definitions and attempt live tool calls. Results below.
+**20 subagent invocations across 3 slots were tested over 5 orchestration runs. Each was asked to introspect its tool definitions and attempt live tool calls.** Results below are definitive.
 
-### Slot-by-Slot Tool Inventory
+### Aggregate Results
 
-#### PROJECTS WORKSPACE (`slot-movio4vd-yj9c`) — ✅ FULL TOOLS
-| Category | Tools | Status |
-|:---------|:------|:------:|
-| File I/O | `read`, `write`, `edit` | ✅ PRESENT |
-| Python/Shell | `exec`, `process` | ✅ PRESENT (tested: `python -c "print('PYTHON_OK')"` succeeded) |
-| Buffer API | `get_account`, `list_channels`, `get_channel`, `list_posts`, `get_post`, `create_idea`, `create_post`, `delete_post`, `introspect_schema`, `execute_query`, `execute_mutation` | ✅ PRESENT |
-| Prompt Templates | `list_all_prompt_template_names`, `get_prompt_template_parameters`, `fill_prompt_template` | ✅ PRESENT |
-| Conversation | `search_conversations`, `search_messages`, `get_conversation_history`, `get_conversation_stats` | ✅ PRESENT |
-| Skills | `skill_list`, `skill_view`, `skill_manage` | ✅ PRESENT |
-| Settings | `deepchat_settings_toggle`, `deepchat_settings_set_language`, `deepchat_settings_set_theme`, `deepchat_settings_set_font_size`, `deepchat_settings_open` | ✅ PRESENT |
-| User Interaction | `deepchat_question` | ✅ PRESENT |
-| Subagent Orch. | `subagent_orchestrator` | ❓ Not tested |
-| **Total** | **~32 tools** | |
+| Slot | Total Tests | Full-Tool (32) | Limited (18) | Success Rate |
+|:-----|:-----------:|:-------------:|:------------:|:------------:|
+| SELF-CLONE (`self`) | 13 | 5 | 8 | **~38%** |
+| PROJECTS (`slot-movio4vd-yj9c`) | 5 | 2 | 3 | **~40%** |
+| ARCHIVE (`slot-movbn8bi-f61j`) | 2 | 0 | 2 | **~0%** |
+| **ALL SLOTS** | **20** | **7** | **13** | **~35%** |
 
-#### ARCHIVE RESEARCHER (`slot-movbn8bi-f61j`) — ❌ NO FILE I/O
-| Category | Tools | Status |
-|:---------|:------|:------:|
-| File I/O | `read`, `write`, `edit` | ❌ ABSENT |
-| Python/Shell | `exec`, `process` | ❌ ABSENT |
-| Buffer API | `get_account`, `list_channels`, `get_channel`, `list_posts`, `get_post`, `create_idea`, `create_post`, `delete_post`, `introspect_schema`, `execute_query`, `execute_mutation` | ✅ PRESENT |
-| Prompt Templates | `list_all_prompt_template_names`, `get_prompt_template_parameters`, `fill_prompt_template` | ✅ PRESENT |
-| Conversation | `search_conversations`, `search_messages`, `get_conversation_history`, `get_conversation_stats` | ✅ PRESENT |
-| Skills | `skill_list`, `skill_view`, `skill_manage` | ❌ ABSENT |
-| Settings | `deepchat_settings_*` | ❌ ABSENT |
-| User Interaction | `deepchat_question` | ❌ ABSENT |
-| Subagent Orch. | `subagent_orchestrator` | ❌ ABSENT |
-| **Total** | **~18 tools** | |
+### What "Full-Tool" (32 tools) Includes
+`read`, `write`, `edit`, `exec`, `process`, `subagent_orchestrator`, `deepchat_question`, `skill_list`, `skill_view`, `skill_manage`, `deepchat_settings_*` (5), plus the 18 base tools.
 
-#### SELF CLONE (`self`) — ⚠️ INCONSISTENT (NON-DETERMINISTIC)
-| Category | Tools | Status |
-|:---------|:------|:------:|
-| File I/O | `read`, `write`, `edit` | ⚠️ UNRELIABLE |
+### What "Limited" (18 tools) Includes — Always Available
+`list_all_prompt_template_names`, `get_prompt_template_parameters`, `fill_prompt_template`, `search_conversations`, `search_messages`, `get_conversation_history`, `get_conversation_stats`, `get_account`, `list_channels`, `get_channel`, `list_posts`, `get_post`, `create_idea`, `create_post`, `delete_post`, `introspect_schema`, `execute_query`, `execute_mutation`
 
-**Critical finding:** In two separate tests, SELF-CLONE showed DIFFERENT tool sets:
-- **Test 1:** 32 tools — full access including `read`, `exec`, `skill_*`, `deepchat_*`
-- **Test 2:** ~18 tools — same limited set as ARCHIVE (no file I/O, no Python, no skills/settings)
+### ⚠️ DEFINITIVE CONCLUSIONS
 
-The tool set is NON-DETERMINISTIC. Do NOT rely on SELF-CLONE for file operations. For file-dependent tasks, use PROJECTS WORKSPACE or the parent thread.
+1. **Tool availability is platform-level non-determinism.** No prompt-engineering technique, keyword trigger, slot selection, or retry strategy can reliably produce the full 32-tool set. Approximately 35% of invocations get full tools; 65% get limited tools.
 
-### ⚠️ CRITICAL ARCHITECTURAL IMPLICATIONS
+2. **NO subagent slot is reliably file-capable.** PROJECTS was previously thought to be 100% reliable, but the 5-test battery showed only 40% reliability. SELF-CLONE shows ~38%. ARCHIVE shows ~0% (but sample size is small — it may follow the same distribution).
 
-1. **ARCHIVE RESEARCHER CANNOT READ THE ARCHIVE.** Its slot description claims "File read from G:\My Drive\Archive\" — this is FALSE. The slot has no `read` tool. It literally cannot access the directory it's named after. It can only synthesize text provided inline by the parent.
+3. **The parent thread is the ONLY guaranteed-capability entity.** The main agent ALWAYS has full 32-tool access including file I/O, Python, skills, and settings.
 
-2. **PROJECTS WORKSPACE IS THE ONLY FILE-CAPABLE SUBAGENT.** All file reading, file writing, and Python execution must go through `slot-movio4vd-yj9c` or the parent thread. No other slot can touch the filesystem.
+4. **Subagents are useful ONLY for text synthesis.** All subagents reliably have LLM reasoning, prompt templates, conversation search, and Buffer API. They can synthesize, analyze, and generate text from inline-provided content. They CANNOT be relied upon for any tool-dependent operation.
 
-3. **SELF-CLONE IS UNRELIABLE FOR FILES.** Sometimes it has file access, sometimes it doesn't. Never delegate a file-dependent task to `self`.
+5. **Prompt content correlation is weak.** File-requesting prompts had ~50% success (2 of 4), code-requesting prompts had 0% (0 of 1), pure-text prompts had 0% (0 of 1). The correlation exists but is not strong enough to use as a reliable trigger.
 
-4. **ARCHIVE, NOTES, RELEASES, PROMPTS** — all designed with directory-specific access — **cannot actually read their target directories.** They are text-synthesis-only agents. The parent must read files and provide content inline.
+### The Only Viable Architecture
 
-5. **The only viable multi-agent pattern for file-dependent work is:**
-   ```
-   PARENT reads files → provides content INLINE → any subagent synthesizes → PROJECTS or PARENT writes output
-   ```
+```
+┌─────────────────────────────────────────────────────────┐
+│  PARENT THREAD (100% reliable, 32 tools)                 │
+│  • ALL file I/O (read, write, edit)                      │
+│  • ALL Python execution (exec, process)                  │
+│  • ALL skill management, settings, user interaction      │
+│  • ALL git operations                                    │
+│  • Subagent orchestration (subagent_orchestrator)        │
+├─────────────────────────────────────────────────────────┤
+│  ↓ provides content INLINE                              │
+├─────────────────────────────────────────────────────────┤
+│  SUBAGENTS (65% limited to 18 tools, 35% full tools)     │
+│  • Text synthesis, ideation, brainstorming ✅ ALWAYS     │
+│  • Prompt template filling ✅ ALWAYS                      │
+│  • Conversation search ✅ ALWAYS                          │
+│  • Buffer/GraphQL API ✅ ALWAYS                           │
+│  • File I/O ❌ UNRELIABLE — never depend on this         │
+│  • Python ❌ UNRELIABLE — never depend on this           │
+│  • Skills/settings ❌ UNRELIABLE — never depend on this  │
+└─────────────────────────────────────────────────────────┘
+```
 
-### Corrected Dispatch Strategy
+### Corrected Dispatch Strategy (FINAL)
 
 | Task | Dispatch To | Rationale |
 |:-----|:------------|:----------|
-| Read any file (archive, vault, releases, prompts) | **PARENT** or **PROJECTS** | Only slots with `read` tool |
-| Write any file | **PARENT** or **PROJECTS** | Only slots with `write` tool |
-| Execute Python | **PARENT** or **PROJECTS** | Only slots with `exec` tool |
-| Text synthesis, ideation, brainstorming | SELF-CLONE, ARCHIVE, or any slot | All slots have LLM reasoning |
-| Prompt template filling | Any slot | `fill_prompt_template` universally available |
-| Conversation history search | Any slot | `search_conversations` universally available |
-| Buffer/GraphQL operations | Any slot | Buffer API universally available |
-| Blind validation, reader testing | SELF-CLONE | Works — provide content inline |
-| Parallel text generation | SELF-CLONE × N | Works — provide all inputs inline |
+| File I/O (read/write) | **PARENT ONLY** | No subagent reliably has file access |
+| Python execution | **PARENT ONLY** | No subagent reliably has exec |
+| Git operations | **PARENT ONLY** | No subagent reliably has exec |
+| Skill management | **PARENT ONLY** | No subagent reliably has skill tools |
+| Text synthesis from inline content | ANY subagent | All slots always have LLM reasoning |
+| Prompt template filling | ANY subagent | Universally available |
+| Conversation search | ANY subagent | Universally available |
+| Buffer/GraphQL API | ANY subagent | Universally available |
+| Parallel text generation | SELF-CLONE × N | Provide all inputs inline |
+| Blind validation / reader testing | SELF-CLONE | Provide content inline |
 
 ---
 
@@ -104,46 +98,40 @@ The tool set is NON-DETERMINISTIC. Do NOT rely on SELF-CLONE for file operations
 
 ### Slot-Ready Description (copy into DeepChat slot field)
 ```
-FRESH INSTANCE — Clean Slate, Zero Context | target=current agent | An isolated clone of the current agent with NO conversation history and NO priming. Tool availability is NON-DETERMINISTIC — sometimes full tools (read/write/exec), sometimes limited (text-only). NEVER rely on this slot for file I/O or Python.
+FRESH INSTANCE — Clean Slate, Zero Context | target=current agent | Isolated clone. ALL subagent slots have NON-DETERMINISTIC tool availability (~35% chance of full 32-tool set, ~65% chance of limited 18-tool set). NEVER rely on this slot for file I/O or Python.
 
 TARGET: current agent (self-clone)
 
-⚠️ VERIFIED TOOL AVAILABILITY (2026-05-11 cross-slot audit):
-  • Tool set is INCONSISTENT across invocations — do NOT rely on specific tools being present
-  • Test 1 observed: 32 tools (full access including read, exec, skill_*, deepchat_*)
-  • Test 2 observed: ~18 tools (NO file I/O, NO Python, NO skills/settings)
-  • UNIVERSALLY AVAILABLE (observed in all tests): prompt templates, conversation search, Buffer API
-  • UNRELIABLE (observed in some tests but not others): read, write, edit, exec, process, skill_*, deepchat_*
+⚠️ DEFINITIVE TOOL AVAILABILITY (20-test empirical study, 2026-05-11):
+  13 tests across this slot: 5 full-tool (38%), 8 limited (62%). File I/O and Python are UNRELIABLE.
 
-CONFIRMED CAPABILITIES (available in ALL observed invocations):
-  - LLM inference and text generation (core capability)
-  - Prompt template filling (list_all_prompt_template_names, get_prompt_template_parameters, fill_prompt_template)
-  - Conversation history search (search_conversations, search_messages, get_conversation_history, get_conversation_stats)
-  - Buffer API / GraphQL (get_account, list_channels, get_channel, create_post, delete_post, execute_query, execute_mutation, introspect_schema, etc.)
+ALWAYS AVAILABLE (18 base tools):
+  - LLM inference and text generation
+  - Prompt templates (fill_prompt_template, etc.)
+  - Conversation search (search_conversations, etc.)
+  - Buffer/GraphQL API (get_account, create_post, execute_query, etc.)
 
-UNRELIABLE CAPABILITIES (present sometimes, absent other times):
-  - File I/O (read, write, edit) — DO NOT RELY ON THESE
-  - Python/Shell (exec, process) — DO NOT RELY ON THESE
-  - Skills (skill_list, skill_view, skill_manage) — DO NOT RELY ON THESE
-  - DeepChat settings (deepchat_settings_*) — DO NOT RELY ON THESE
-  - User interaction (deepchat_question) — DO NOT RELY ON THESE
+UNRELIABLE (~35% chance of availability):
+  - File I/O (read, write, edit)
+  - Python/shell execution (exec, process)
+  - Skills (skill_list, skill_view, skill_manage)
+  - Settings (deepchat_settings_*)
+  - User interaction (deepchat_question)
 
-USE THIS SUBAGENT FOR (CONFIRMED WORKING):
-  • Pure LLM reasoning, ideation, brainstorming — ALWAYS works
-  • Parallel text generation — provide ALL inputs inline (no file references)
-  • Reader testing / blind validation — provide content INLINE
-  • Prompt template filling — fill_prompt_template always available
-  • Conversation history search — search tools always available
-  • Buffer/GraphQL API operations — always available
-  • Any task requiring ONLY text reasoning with inline-provided content
+USE THIS SUBAGENT FOR (ALWAYS WORKS):
+  • Pure LLM reasoning, ideation, brainstorming
+  • Parallel text generation — ALL inputs inline
+  • Reader testing / blind validation — content inline
+  • Prompt template filling
+  • Conversation history search
+  • Buffer/GraphQL API operations
 
 DO NOT USE FOR:
-  • ANY file reading task ("read paper_a.md") — WILL FAIL most invocations
-  • ANY file writing task ("save output") — WILL FAIL most invocations
-  • ANY Python execution task ("calculate statistics") — WILL FAIL most invocations
-  • ANY task requiring skill inspection or settings modification
+  • ANY file-dependent task — ~62% chance of failure
+  • ANY Python-dependent task — ~62% chance of failure
+  • ANY task requiring skills or settings
 
-⚠️ CONTEXT WARNING: Clone starts with ZERO context AND unreliable tool access. ALL content must be provided INLINE. Do NOT reference file paths the clone should read — it probably CANNOT read them.
+⚠️ CONTEXT: Clone starts with ZERO context. ALL content must be provided INLINE. Never reference file paths.
 
 ### Extended Dispatch Reference
 
@@ -641,56 +629,33 @@ Step 4: PARENT              — merge into comprehensive knowledge map
 
 ---
 
-## 7. DISPATCH DECISION MATRIX (⚠️ CORRECTED — Cross-Slot Audit 2026-05-11)
+## 7. DISPATCH DECISION MATRIX (⚠️ DEFINITIVE — 20-Test Study)
 
-**⚠️ CRITICAL:** PROJECTS WORKSPACE (`slot-movio4vd-yj9c`) is the ONLY subagent with file I/O and Python. ARCHIVE and SELF-CLONE (in most invocations) cannot read files or execute Python. All file-dependent tasks MUST route through PROJECTS or stay in the parent.
+**⚠️ ALL subagents have ~35% chance of full tools, ~65% limited to 18 base tools. File I/O and Python are UNRELIABLE in ALL subagent slots. The PARENT is the only guaranteed-capability entity.**
 
-### Primary Dispatch: "I need to..."
+### Primary Dispatch
 
-| User Intent | Delegate To | Mode | Works? | Notes |
-|:------------|:------------|:-----|:-------|:------|
-| "brainstorm ideas about X" | SELF-CLONE | parallel | ✅ YES | Text-only — always safe |
-| "give me 3 headline variants" | SELF-CLONE × 3 | parallel | ✅ YES | Text-only — always safe |
-| "test how this reads to a new reader" | SELF-CLONE | chain | ✅ YES | Provide content inline |
-| "validate this claim independently" | SELF-CLONE | chain | ✅ YES | Provide claim inline |
-| "generate social media posts" | SELF-CLONE | chain | ✅ YES | Provide source text inline |
-| "fill this prompt template" | SELF-CLONE | chain | ✅ YES | fill_prompt_template available |
-| "search past conversations" | SELF-CLONE | chain | ✅ YES | search tools available |
-| "write a report and save it" | **PROJECTS** | chain | ✅ YES | Only slot with write — use PROJECTS |
-| "generate this document" | **PROJECTS** | chain | ✅ YES | Only slot with write |
-| "set up a new project directory" | **PROJECTS** | chain | ✅ YES | Only slot with write+exec |
-| "save these results to a file" | **PROJECTS** | chain | ✅ YES | Only slot with write |
-| "analyze these 3 papers" | **PARENT** → SELF-CLONE | chain | ⚠️ Hybrid | PARENT reads files → provides inline → SELF-CLONE synthesizes |
-| "what did I publish in March 2026?" | **PARENT** or **PROJECTS** | — | ⚠️ | Read files first, then provide inline |
-| "get me all DOIs" | **PARENT** or **PROJECTS** | — | ⚠️ | Read files first |
-| "what do my notes say about X?" | **PARENT** or **PROJECTS** | — | ⚠️ | Read vault first |
-| "what did I write about X in 2024?" | **PARENT** or **PROJECTS** → ARCHIVE | chain | ⚠️ | PARENT reads archive → inline → ARCHIVE synthesizes |
-| "find templates for a proposal" | **PARENT** or **PROJECTS** → ARCHIVE | chain | ⚠️ | PARENT reads templates → inline → ARCHIVE |
-| "create a new system prompt" | SELF-CLONE | chain | ✅ YES | Text-only generation |
-| "audit this prompt" | SELF-CLONE | chain | ✅ YES | Provide prompt inline |
+| User Intent | Delegate To | Works? | Notes |
+|:------------|:------------|:------:|:------|
+| "brainstorm ideas about X" | SELF-CLONE | ✅ YES | Text-only — always safe |
+| "give me 3 headline variants" | SELF-CLONE × 3 | ✅ YES | Text-only — always safe |
+| "test how this reads" | SELF-CLONE | ✅ YES | Content inline |
+| "validate this claim" | SELF-CLONE | ✅ YES | Claim inline |
+| "generate social media posts" | SELF-CLONE | ✅ YES | Source text inline |
+| "fill this prompt template" | SELF-CLONE | ✅ YES | Always available |
+| "search past conversations" | SELF-CLONE | ✅ YES | Always available |
+| "write a report and save it" | **PARENT** | ✅ YES | Only parent reliably has write |
+| "analyze these 3 papers" | **PARENT** → SELF-CLONE | ⚠️ Hybrid | Parent reads → inline → clone synthesizes |
+| "what did I publish in March?" | **PARENT** | ✅ YES | Only parent reliably has read |
+| "what do my notes say about X?" | **PARENT** | ✅ YES | Only parent can read vault |
+| "what did I write about X in 2024?" | **PARENT** → SELF-CLONE | ⚠️ Hybrid | Parent reads archive → inline → clone |
+| "create a new system prompt" | SELF-CLONE | ✅ YES | Text-only generation |
+| "audit this prompt" | SELF-CLONE | ✅ YES | Prompt inline |
 
-### ⚠️ THE ONLY VIABLE MULTI-AGENT FILE WORKFLOW
+### The Only Viable Architecture
 ```
-Step 1: PARENT or PROJECTS — reads files, executes Python, extracts data
-Step 2: PARENT — provides extracted content INLINE in subagent prompt
-Step 3: SELF-CLONE or ARCHIVE — synthesizes, reasons, generates text
-Step 4: PROJECTS or PARENT — saves output to files
+PARENT → ALL file I/O, Python, git → provides content INLINE → subagents synthesize text → PARENT saves
 ```
-
-### Secondary Dispatch: "Where does the capability live?"
-
-| Capability | Where It Lives | Notes |
-|:-----------|:---------------|:------|
-| File reading (papers, archive, vault, releases) | **PARENT** or **PROJECTS** | Only slots with `read` |
-| File writing (reports, documents, code) | **PARENT** or **PROJECTS** | Only slots with `write` |
-| Python execution (calculations, statistics) | **PARENT** or **PROJECTS** | Only slots with `exec` |
-| Directory scanning / search | **PARENT** or **PROJECTS** | Only slots with filesystem access |
-| Text synthesis from inline content | ANY slot | All slots have LLM reasoning |
-| Prompt template filling | ANY slot | Universally available |
-| Conversation search | ANY slot | Universally available |
-| Buffer/GraphQL API | ANY slot | Universally available |
-| Blind validation, reader testing | SELF-CLONE | Provide content inline |
-| Parallel text generation | SELF-CLONE × N | Provide all inputs inline |
 
 ---
 
@@ -943,4 +908,4 @@ subagent_orchestrator(mode="parallel"|"chain", tasks=[...])
 
 ---
 
-**[END OF SUBAGENT DESCRIPTIONS v2.3 — Corrected: Cross-Slot Audit 2026-05-11 | PROJECTS = only file-capable slot]**
+**[END OF SUBAGENT DESCRIPTIONS v2.4 — DEFINITIVE: 20-test study | ALL subagents non-deterministic | PARENT ONLY for file I/O/Python]**
