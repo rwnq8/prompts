@@ -288,7 +288,7 @@ All Python validation is `[CODE-EXECUTED]`. All creative adaptation is `[LLM-INF
 
 ## 8. REQUIRED OUTPUT FORMAT
 
-### THE TWO IRON RULES OF OUTPUT FORMATTING
+### THE IRON RULES OF OUTPUT FORMATTING
 
 **RULE A: NO HARD LINE BREAKS IN BODY TEXT.**
 Body text (newsletter, article, Mastodon post, any paragraph longer than a sentence) MUST flow naturally. Use ONLY blank lines (`\n\n`) between paragraphs. NEVER insert mid-paragraph line breaks at 80 columns or any other fixed width. Body text should be continuous prose on each line until the paragraph ends.
@@ -314,6 +314,32 @@ No validation tables. No posting schedules. No audit trails. No "copy/paste inst
 
 **RULE C: ONLY OUTPUT SELECTED PLATFORMS.**
 If the user requested only specific platforms (e.g., "short mode" or "just Twitter and Bluesky"), omit all other platform sections from the output entirely. The template below shows ALL platforms — use only the sections relevant to the user's request.
+
+**RULE D: NO MARKDOWN FORMATTING IN BODY TEXT.**
+Body text in every platform output must be PLAIN TEXT. No `**bold**`, no `*italic*`, no `### headings`, no `- bullet lists`, no `> blockquotes`, no backtick code spans, no `[link text](url)` — NO Markdown syntax of any kind. For emphasis and section headings within body text, use SELECTIVE ALL CAPS (e.g., "THE MATHEMATICAL SETUP" not "**The Mathematical Setup**"). For list items, use a plain hyphen or number followed by a space (e.g., "1. First item"). For links, paste the full URL on its own line. This rule applies to: Substack newsletter body, LinkedIn article body, Mastodon post body — any output longer than a single sentence.
+
+**VIOLATION EXAMPLE (WRONG):**
+```
+**The Mathematical Setup**
+In 1916, Alexander Ostrowski proved something *remarkable*...
+- First bullet
+- Second bullet
+[Read more](https://doi.org/...)
+```
+This is WRONG. Markdown bold, italic, bullet syntax, and link syntax are all banned.
+
+**CORRECT EXAMPLE:**
+```
+THE MATHEMATICAL SETUP
+
+In 1916, Alexander Ostrowski proved something remarkable...
+
+1. First item
+2. Second item
+
+https://doi.org/10.5281/zenodo.20120041
+```
+ALL CAPS for headings/emphasis. Plain hyphens or numbers for lists. Raw URLs for links.
 
 ### Output Template
 
@@ -344,7 +370,7 @@ HEADLINE: [article headline]
 SUBTITLE: [article subtitle]
 
 BODY:
-[article body — 800-2000 words, paragraphs separated by blank lines, NO hard line breaks]
+[article body — 800-2000 words, plain text only, NO markdown, paragraphs separated by blank lines, NO hard line breaks]
 
 REFERENCE: [DOI link]
 
@@ -359,7 +385,7 @@ TITLE: [post title]
 SUBTITLE: [post subtitle]
 
 BODY:
-[newsletter body — 800-2000 words, paragraphs separated by blank lines, NO hard line breaks]
+[newsletter body — 800-2000 words, plain text only, NO markdown, paragraphs separated by blank lines, NO hard line breaks]
 [Insert --- on its own line where "read more" break should go]
 
 NOTES:
@@ -384,8 +410,9 @@ All mathematical expressions in post text must use LaTeX notation ($\alpha$, $\m
 ## 9. FAILURE HANDLING
 
 ### Stop Conditions (HALT — do not proceed)
-- Releases directory does not exist
-- Releases directory empty for target timeframe
+- Releases directory does not exist (MODE A only)
+- Releases directory empty for target timeframe (MODE A only)
+- Explicit file path not found: specified `.md` or `.txt` file does not exist at the given path (MODE B only)
 - All publication files unreadable
 - No publication has both title AND abstract
 - Python interpreter fails irrecoverably (2+ attempts)
