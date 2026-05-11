@@ -128,239 +128,239 @@ HASHTAG STRATEGY (CRITICAL -- this is the core of Mastodon optimization):
 
 PRIORITY 1: CORE HASHTAGS (always include 2-3 from this set)
 
-  #Math #Physics #Nature #Space #Science #Research #Academic
+#Math #Physics #Nature #Space #Science #Research #Academic
 
-  These connect to the broadest academic/science communities.
+These connect to the broadest academic/science communities.
 
-  #Science and #Research are the most-followed science hashtags.
+#Science and #Research are the most-followed science hashtags.
 
-  #Academic and #AcademicChatter connect to the researcher community.
+#Academic and #AcademicChatter connect to the researcher community.
 
 
 
 PRIORITY 2: DOMAIN HASHTAGS (include 2-4 based on publication subject)
 
-  Derive from the curated domain mapping:
+Derive from the curated domain mapping:
 
-  Astrophysics/Cosmology -> #Astronomy #Astrophysics #Cosmology #Exoplanets
+Astrophysics/Cosmology -> #Astronomy #Astrophysics #Cosmology #Exoplanets
 
-  Particle Physics -> #ParticlePhysics #CERN #LHC #HighEnergyPhysics
+Particle Physics -> #ParticlePhysics #CERN #LHC #HighEnergyPhysics
 
-  Quantum -> #Quantum #QuantumComputing #QuantumMechanics
+Quantum -> #Quantum #QuantumComputing #QuantumMechanics
 
-  Condensed Matter -> #CondensedMatter #MaterialsScience #Superconductivity
+Condensed Matter -> #CondensedMatter #MaterialsScience #Superconductivity
 
-  Mathematics -> #Mathematics #PureMath #AppliedMath #NumberTheory
+Mathematics -> #Mathematics #PureMath #AppliedMath #NumberTheory
 
-  Statistics -> #Statistics #DataScience #Bayesian
+Statistics -> #Statistics #DataScience #Bayesian
 
-  Biology -> #Biology #Genetics #Evolution #MolecularBiology
+Biology -> #Biology #Genetics #Evolution #MolecularBiology
 
-  Neuroscience -> #Neuroscience #Brain #Cognition
+Neuroscience -> #Neuroscience #Brain #Cognition
 
-  Climate -> #ClimateChange #ClimateScience #GlobalWarming
+Climate -> #ClimateChange #ClimateScience #GlobalWarming
 
-  Ecology -> #Ecology #Biodiversity #Conservation
+Ecology -> #Ecology #Biodiversity #Conservation
 
-  AI/ML -> #AI #MachineLearning #DeepLearning #ArtificialIntelligence
+AI/ML -> #AI #MachineLearning #DeepLearning #ArtificialIntelligence
 
-  Computer Science -> #ComputerScience #Programming #Algorithms
+Computer Science -> #ComputerScience #Programming #Algorithms
 
-  Chemistry -> #Chemistry #OrganicChemistry #MaterialsScience
+Chemistry -> #Chemistry #OrganicChemistry #MaterialsScience
 
-  Medicine -> #Medicine #Health #ClinicalResearch #Epidemiology
+Medicine -> #Medicine #Health #ClinicalResearch #Epidemiology
 
-  Engineering -> #Engineering #Robotics #Nanotechnology
+Engineering -> #Engineering #Robotics #Nanotechnology
 
-  Psychology -> #Psychology #CognitiveScience #BehavioralScience
+Psychology -> #Psychology #CognitiveScience #BehavioralScience
 
-  Economics -> #Economics #Econometrics
+Economics -> #Economics #Econometrics
 
-  Sociology -> #Sociology #SocialScience
+Sociology -> #Sociology #SocialScience
 
-  Philosophy -> #Philosophy #PhilosophyOfScience
+Philosophy -> #Philosophy #PhilosophyOfScience
 
-  General Science -> #Science #Research #Academic (already in Priority 1)
+General Science -> #Science #Research #Academic (already in Priority 1)
 
 
 
 PRIORITY 3: INSTANCE/CULTURAL HASHTAGS (include 1-2)
 
-  #Mastodon #Academia #Fediverse #AcademicChatter
+#Mastodon #Academia #Fediverse #AcademicChatter
 
-  These connect to the Mastodon-specific community.
+These connect to the Mastodon-specific community.
 
-  #AcademicChatter is particularly active and well-followed.
+#AcademicChatter is particularly active and well-followed.
 
 
 
 HASHTAG PLACEMENT RULES:
 
-  - Place ALL hashtags at the END of the post (not inline)
+- Place ALL hashtags at the END of the post (not inline)
 
-  - Group related hashtags together
+- Group related hashtags together
 
-  - Use CamelCase for readability (#MachineLearning not #machinelearning)
+- Use CamelCase for readability (#MachineLearning not #machinelearning)
 
-  - Hashtags must be space-separated on the SAME line as the post body (no blank line, no line break)
+- Hashtags must be space-separated on the SAME line as the post body (no blank line, no line break)
 
-  - Total hashtags: 5-8 (minimum 5, maximum 8)
+- Total hashtags: 5-8 (minimum 5, maximum 8)
 
-  - Hashtags should not exceed 30 percent of total character count
+- Hashtags should not exceed 30 percent of total character count
 
 
 
 HASHTAG FATIGUE PREVENTION:
 
-  When generating multiple posts for different publications in a batch:
+When generating multiple posts for different publications in a batch:
 
-  - Vary the generator hashtags across posts (rotate #Math, #Physics, #Science, etc.)
+- Vary the generator hashtags across posts (rotate #Math, #Physics, #Science, etc.)
 
-  - Avoid using identical hashtag sets for consecutive posts
+- Avoid using identical hashtag sets for consecutive posts
 
-  - track hashtag frequency across batch, flag overuse
+- track hashtag frequency across batch, flag overuse
 
 
 
 CONTENT WARNING (CW) PROTOCOL:
 
-  Mastodon has a strong CW culture. CWs blur the post content until the user clicks through.
+Mastodon has a strong CW culture. CWs blur the post content until the user clicks through.
 
-  
 
-  REQUIRED CW for:
 
-  - Violence, death, or injury
+REQUIRED CW for:
 
-  - Medical procedures or trauma
+- Violence, death, or injury
 
-  - Discrimination or harassment
+- Medical procedures or trauma
 
-  - Mental health topics
+- Discrimination or harassment
 
-  - Pandemic/epidemic content
+- Mental health topics
 
-  - Graphic scientific content (animal research, etc.)
+- Pandemic/epidemic content
 
-  
+- Graphic scientific content (animal research, etc.)
 
-  CW FORMAT:
 
-  "CW: [brief topic description, 5-15 words]"
 
-  Then post body follows.
+CW FORMAT:
 
-  
+"CW: [brief topic description, 5-15 words]"
 
-  The CW should be descriptive enough for users to decide whether to click through.
+Then post body follows.
 
-  Examples:
 
-  "CW: Animal research, mice studies"
 
-  "CW: Pandemic mortality data"
+The CW should be descriptive enough for users to decide whether to click through.
 
-  "CW: Medical imaging, surgical"
+Examples:
 
-  
+"CW: Animal research, mice studies"
 
-  If unsure whether CW is needed: err on the side of including it.
+"CW: Pandemic mortality data"
+
+"CW: Medical imaging, surgical"
+
+
+
+If unsure whether CW is needed: err on the side of including it.
 
 
 
 ALT-TEXT REQUIREMENT:
 
-  Mastodon community STRONGLY expects alt-text for images. This is a cultural norm, not optional.
+Mastodon community STRONGLY expects alt-text for images. This is a cultural norm, not optional.
 
-  If the publication has figures or images referenced in the post:
+If the publication has figures or images referenced in the post:
 
-  - Include alt-text description in post metadata
+- Include alt-text description in post metadata
 
-  - Format: "Image description: [concise description of what the figure shows]"
+- Format: "Image description: [concise description of what the figure shows]"
 
-  - This helps visually impaired users and is considered basic etiquette
+- This helps visually impaired users and is considered basic etiquette
 
 
 
 LINK STRATEGY:
 
-  - Links are WELCOME. Mastodon does not penalize or downgrade link posts.
+- Links are WELCOME. Mastodon does not penalize or downgrade link posts.
 
-  - Include the DOI/URL naturally within the post body.
+- Include the DOI/URL naturally within the post body.
 
-  - Placement: after the main finding description, before the hashtag block.
+- Placement: after the main finding description, before the hashtag block.
 
-  - Format: "Full paper (open access): [DOI]" or "Read the study: [DOI]"
+- Format: "Full paper (open access): [DOI]" or "Read the study: [DOI]"
 
-  - If the paper is open access, highlight this ("open access" gets boosts).
+- If the paper is open access, highlight this ("open access" gets boosts).
 
 
 
 TONE GUIDELINES:
 
-  - Informative and community-oriented
+- Informative and community-oriented
 
-  - Slightly more formal than Bluesky, less punchy than Twitter
+- Slightly more formal than Bluesky, less punchy than Twitter
 
-  - Assume an educated audience interested in the subject
+- Assume an educated audience interested in the subject
 
-  - Avoid hype language ("groundbreaking," "revolutionary")
+- Avoid hype language ("groundbreaking," "revolutionary")
 
-  - "Exciting new research" is fine; "THIS CHANGES EVERYTHING" is not
+- "Exciting new research" is fine; "THIS CHANGES EVERYTHING" is not
 
-  - First-person is acceptable ("I'm excited to share...") but not required
+- First-person is acceptable ("I'm excited to share...") but not required
 
 
 
 POST STRUCTURE TEMPLATE (flowing paragraphs, no mid-paragraph breaks):
 
-  [Optional: CW line if sensitive content -- single line]
+[Optional: CW line if sensitive content -- single line]
 
-  [Post body: 1-3 flowing paragraphs separated by blank lines -- each paragraph flows continuously, no mid-paragraph breaks]
+[Post body: 1-3 flowing paragraphs separated by blank lines -- each paragraph flows continuously, no mid-paragraph breaks]
 
-  
 
-  [Hashtag block: 5-8 hashtags, space-separated on its own line -- single line, no breaks]
 
-  CRITICAL: Each paragraph flows continuously. \n\n allowed for paragraph separation. No \n within paragraphs.
+[Hashtag block: 5-8 hashtags, space-separated on its own line -- single line, no breaks]
+
+CRITICAL: Each paragraph flows continuously. \n\n allowed for paragraph separation. No \n within paragraphs.
 
 
 
 THREAD STRATEGY:
 
-  When the finding is too complex for a single post:
+When the finding is too complex for a single post:
 
-  - Use the "emoji 1/N" thread marker
+- Use the "emoji 1/N" thread marker
 
-  - First post: overview + hook
+- First post: overview + hook
 
-  - Middle posts: details, methods, implications
+- Middle posts: details, methods, implications
 
-  - Final post: link + hashtag block
+- Final post: link + hashtag block
 
-  - Maximum 5 posts per thread
+- Maximum 5 posts per thread
 
-  
 
-  Thread marker format:
 
-  "Post text... 1/3"
+Thread marker format:
 
-  
+"Post text... 1/3"
 
-  Each post in thread gets partial hashtags; the FINAL post gets the full hashtag block.
+
+
+Each post in thread gets partial hashtags; the FINAL post gets the full hashtag block.
 
 
 
 INSTANCE STRATEGY (for user consideration):
 
-  While we cannot control which instance the user posts from, note in output:
+While we cannot control which instance the user posts from, note in output:
 
-  - If posting from a general instance (mastodon.social, etc.): include #Mastodon #Fediverse
+- If posting from a general instance (mastodon.social, etc.): include #Mastodon #Fediverse
 
-  - If posting from an academic instance (fediscience.org, mstdn.science): these hashtags are less necessary
+- If posting from an academic instance (fediscience.org, mstdn.science): these hashtags are less necessary
 
-  - Academic instances have built-in academic audiences in their local timeline
+- Academic instances have built-in academic audiences in their local timeline
 
 
 
@@ -454,25 +454,25 @@ Content Warning: [YES: topic / NO]
 
 
 
-  Character count: [N] chars 
+Character count: [N] chars
 
-  Hashtags: [N] unique 
+Hashtags: [N] unique
 
-  Hashtag percentage: [N] percent of post 
+Hashtag percentage: [N] percent of post
 
-  Optimal range check: [PASS: 300-500 / FLAG: outside range]
+Optimal range check: [PASS: 300-500 / FLAG: outside range]
 
 
 
-  POST (copy to Buffer or paste directly -- flowing paragraphs, no mid-paragraph breaks):
+POST (copy to Buffer or paste directly -- flowing paragraphs, no mid-paragraph breaks):
 
-  [CW: topic -- if applicable]
+[CW: topic -- if applicable]
 
-  [post body text]
+[post body text]
 
-  
 
-  [space-separated hashtag block -- single line, no breaks within the block]
+
+[space-separated hashtag block -- single line, no breaks within the block]
 
 
 
@@ -482,15 +482,15 @@ HASHTAG BREAKDOWN
 
 ================================================================================
 
-  generator (core): [list hashtags]
+generator (core): [list hashtags]
 
-  agent (domain): [list hashtags]
+agent (domain): [list hashtags]
 
-  Priority 3 (instance/cultural): [list hashtags]
+Priority 3 (instance/cultural): [list hashtags]
 
-  
 
-  Batch rotation note: [if applicable, hashtag fatigue warning]
+
+Batch rotation note: [if applicable, hashtag fatigue warning]
 
 
 
@@ -500,7 +500,7 @@ AUDIT
 
 ================================================================================
 
-  Mastodon: [EXTERNAL-SOURCE: path] | : N chars, N hashtags] | [LLM-INFERRED: tone, hashtag selection, CW judgment]
+Mastodon: [EXTERNAL-SOURCE: path] | : N chars, N hashtags] | [LLM-INFERRED: tone, hashtag selection, CW judgment]
 
 
 
@@ -523,7 +523,6 @@ FLAG if: abstract too short, no clear domain, hashtag fatigue.
 
 
 ---
-
 
 
 

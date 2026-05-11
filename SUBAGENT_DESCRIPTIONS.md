@@ -24,6 +24,71 @@ The main agent (DEFAULT-DEEPSEEK v1.2 running in the DeepChat chat thread) has a
 
 ---
 
+## 0.5 ⚠️ ACTUAL TOOL AVAILABILITY (Empirically Verified 2026-05-11)
+
+**The subagent tool availability described above is ASPIRATIONAL — actual subagent tool sets are significantly more restricted than what the slot descriptions claim.**
+
+Based on empirical testing (self-clone introspection of available function definitions), subagents have the following **CONFIRMED** tools:
+
+### Confirmed Available Tools (All Subagents)
+| Tool Category | Specific Tools | Notes |
+|:--------------|:---------------|:------|
+| Conversation Management | `search_conversations`, `search_messages`, `get_conversation_history`, `get_conversation_stats` | Search and retrieve conversation records |
+| Prompt Templates | `list_all_prompt_template_names`, `get_prompt_template_parameters`, `fill_prompt_template` | Fill and generate prompts from templates |
+| GraphQL / Buffer API | `execute_query`, `execute_mutation`, `introspect_schema` | Buffer social media management API |
+| Subagent Orchestration | `subagent_orchestrator` | Nested delegation to other subagents |
+| User Interaction | `deepchat_question` | Ask the parent user clarifying questions |
+| DeepChat Settings | `deepchat_settings_toggle`, `deepchat_settings_set_language`, `deepchat_settings_set_theme`, `deepchat_settings_set_font_size`, `deepchat_settings_open` | Modify DeepChat application settings |
+| Skill Management | `skill_list`, `skill_view`, `skill_manage` | Inspect and manage skills |
+
+### Confirmed UNAVAILABLE Tools (All Subagents)
+| Tool Category | Missing Tools | Impact |
+|:--------------|:--------------|:-------|
+| **File I/O** | `read`, `write`, `edit` | **CRITICAL: Subagents CANNOT read or write files from the filesystem.** All file-dependent task descriptions (e.g., "Read paper_a.md and analyze") will FAIL. |
+| **Python/Shell Execution** | `exec`, `process` | **CRITICAL: Subagents CANNOT execute Python code or shell commands.** All quantitative work, data processing, and computation-dependent task descriptions will FAIL. |
+| **Buffer Post Management** | `list_posts`, `get_post`, `create_post`, `create_idea`, `delete_post` | Cannot create/manage social media posts directly |
+| **Buffer Account/Channel** | `get_account`, `list_channels`, `get_channel` | Cannot access Buffer account/channel info |
+
+### ⚠️ CRITICAL IMPLICATIONS
+
+1. **No file reading:** Any subagent task that says "Read file X" or "Search directory Y" will fail. The subagent can only work with information provided INLINE in its task prompt.
+
+2. **No Python execution:** Any subagent task that requires calculations, data processing, counting, statistics, or quantitative analysis will fail. Numbers must be provided by the parent.
+
+3. **Prompt-only workflow:** Subagents can ONLY reason about text provided in their prompt, fill prompt templates, search conversations, use GraphQL, and orchestrate other subagents. They are pure LLM reasoning engines.
+
+4. **All file work stays in parent:** File reading, Python execution, and file writing MUST happen in the main agent thread. Subagents cannot supplement or replace these capabilities.
+
+5. **ARCHIVE RESEARCHER impact:** The ARCHIVE subagent (slot-movbn8bi-f61j) is described as reading from `G:\My Drive\Archive\` — this capability is UNCONFIRMED. If it also lacks file read access, it cannot perform its primary function.
+
+6. **PROJECTS WORKSPACE impact:** The PROJECTS subagent (slot-movio4vd-yj9c) is described as writing to `G:\My Drive\projects\` — this capability is UNCONFIRMED. If it also lacks file write access, it cannot perform its primary function.
+
+### Recommended Dispatch Strategy (Given These Limitations)
+
+| Task Type | Dispatch To | Rationale |
+|:----------|:------------|:----------|
+| Pure LLM reasoning, ideation, text generation | SELF CLONE | Works — subagent can reason about provided text |
+| Prompt template filling | SELF CLONE | Works — `fill_prompt_template` is available |
+| Conversation history search | SELF CLONE | Works — conversation tools available |
+| GraphQL/Buffer operations | SELF CLONE | Works — GraphQL tools available |
+| Blind validation / reader testing (text-only) | SELF CLONE | Works — provide content inline in prompt |
+| Parallel text generation | SELF CLONE × N | Works — provide all inputs inline |
+| **File reading** | **PARENT ONLY** | Subagents cannot read files |
+| **File writing** | **PARENT ONLY** | Subagents cannot write files |
+| **Python execution** | **PARENT ONLY** | Subagents cannot execute code |
+| **Quantitative analysis** | **PARENT ONLY** | Requires Python → parent only |
+| **Directory search/scan** | **PARENT ONLY** | Requires file read → parent only |
+
+### When to NOT Use Subagents
+- Any task requiring file I/O (reading source files, writing output)
+- Any task requiring Python execution (calculations, data processing, statistics)
+- Any task where the subagent would need to discover information from the filesystem
+- Any task where the subagent would need to verify quantitative claims
+
+**Until subagent tool availability is expanded, treat subagents as pure LLM reasoning assistants that can only work with text explicitly provided in their prompt.**
+
+---
+
 ## 1. SELF CLONE
 
 ### Slot-Ready Description (copy into DeepChat slot field)

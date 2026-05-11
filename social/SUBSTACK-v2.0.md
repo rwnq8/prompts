@@ -146,99 +146,99 @@ THE SUBSTACK AUDIENCE:
 
 EMAIL SUBJECT LINE (CRITICAL -- this determines open rates):
 
-  This is DIFFERENT from the post title.
+This is DIFFERENT from the post title.
 
-  The subject line only appears in the email inbox.
+The subject line only appears in the email inbox.
 
-  The post title appears on the web version and in archives.
+The post title appears on the web version and in archives.
 
-  
 
-  RULES FOR SUBJECT LINES:
 
-  - 40-60 characters (shorter is better for mobile)
+RULES FOR SUBJECT LINES:
 
-  - Curiosity-driven: create an "I need to know more" feeling
+- 40-60 characters (shorter is better for mobile)
 
-  - Avoid clickbait ("You won't believe...") -- undermines credibility
+- Curiosity-driven: create an "I need to know more" feeling
 
-  - Can be different from post title
+- Avoid clickbait ("You won't believe...") -- undermines credibility
 
-  - Front-load important words (email clients truncate at ~40 chars)
+- Can be different from post title
 
-  - No ALL CAPS (spam trigger)
+- Front-load important words (email clients truncate at ~40 chars)
 
-  - No excessive punctuation (spam trigger)
+- No ALL CAPS (spam trigger)
 
-  
+- No excessive punctuation (spam trigger)
 
-  FORMULAS:
 
-  Formula 1: The Question
 
-    "What if [surprising finding]?"
+FORMULAS:
 
-    Example: "What if super-Earths have water?"
+Formula 1: The Question
 
-  
+"What if [surprising finding]?"
 
-  Formula 2: The Implication
+Example: "What if super-Earths have water?"
 
-    "Why [finding] changes [field]"
 
-    Example: "Why JWST's latest find changes exoplanet science"
 
-  
+Formula 2: The Implication
 
-  Formula 3: The Contrast
+"Why [finding] changes [field]"
 
-    "[Old belief] vs [new finding]"
+Example: "Why JWST's latest find changes exoplanet science"
 
-    Example: "What we got wrong about Kepler-442b"
 
-  
 
-  Formula 4: The Direct Statement
+Formula 3: The Contrast
 
-    "[Finding]: [one-line implication]"
+"[Old belief] vs [new finding]"
 
-    Example: "Water on Kepler-442b: the search for life just got real"
+Example: "What we got wrong about Kepler-442b"
 
-  
 
-  Formula 5: The Personal Angle
 
-    "I read [N] papers on [topic]. Here's the one that matters."
+Formula 4: The Direct Statement
 
-    Example: "I read 47 exoplanet papers this month. This one stands out."
+"[Finding]: [one-line implication]"
+
+Example: "Water on Kepler-442b: the search for life just got real"
+
+
+
+Formula 5: The Personal Angle
+
+"I read [N] papers on [topic]. Here's the one that matters."
+
+Example: "I read 47 exoplanet papers this month. This one stands out."
 
 
 
 POST TITLE (for web version):
 
-  - Can be longer than subject line (50-100 chars)
+- Can be longer than subject line (50-100 chars)
 
-  - More descriptive, SEO-friendly
+- More descriptive, SEO-friendly
 
-  - Appears on the Substack website and in archives
+- Appears on the Substack website and in archives
 
-  - Can be identical to subject line or different
+- Can be identical to subject line or different
 
-  - Example: "JWST Detects Water Vapor on Kepler-442b: A New Era for Exoplanet Science"
+- Example: "JWST Detects Water Vapor on Kepler-442b: A New Era for Exoplanet Science"
 
 
 
 SUBTITLE:
 
-  - 100-150 characters
+- 100-150 characters
 
-  - Appears in email preview text and under post title on web
+- Appears in email preview text and under post title on web
 
-  - Expands on the title, adds context
+- Expands on the title, adds context
 
-  - Example: "The first atmospheric characterization of a rocky super-Earth 
+- Example: "The first atmospheric characterization of a rocky super-Earth
 
-    in the habitable zone -- and what it means for finding life beyond Earth."
+in the habitable zone -- and what it means for finding life beyond Earth."
 
 
 
@@ -246,167 +246,167 @@ NEWSLETTER STRUCTURE (800-2000 words):
 
 
 
-  SECTION 1: THE HOOK (first 200-300 words -- before the "read more" break)
-
-    
-
-    Opening (50-75 words):
-
-      - A compelling lede that grabs attention
-
-      - Personal voice: "I remember when..." / "Here's something fascinating..."
-
-      - Connect the research to a bigger question or human interest
-
-      - Set up why THIS paper matters among all the papers published this week/month
-
-    
-
-    Context (100-150 words):
-
-      - What was known before
-
-      - Why this question matters (to the field, to society, to the reader)
-
-      - The gap this research fills
-
-    
-
-    The Finding (50-75 words):
-
-      - What the researchers discovered, in clear accessible language
-
-      - "Here's what they found:" or "The key result:"
-
-    
-
-    "READ MORE" BREAK:
-
-      - Mark with: "[READ MORE BREAK -- email truncation point]"
-
-      - Everything above this line appears in the email preview
-
-      - Everything below requires clicking through to the web version
-
-      - This break is essential: it gives free subscribers a taste and 
-
-        encourages them to click through (or subscribe for full access)
+SECTION 1: THE HOOK (first 200-300 words -- before the "read more" break)
 
 
 
-  SECTION 2: THE DEEP DIVE (after the break, 400-800 words)
+Opening (50-75 words):
 
-    
+- A compelling lede that grabs attention
 
-    The Research in Detail (200-400 words):
+- Personal voice: "I remember when..." / "Here's something fascinating..."
 
-      - How they did it (methodology, in accessible terms with analogies)
+- Connect the research to a bigger question or human interest
 
-      - What the data actually shows
-
-      - What makes this study different or better than previous work
-
-      - Include a key quote from the paper if available [EXTERNAL-SOURCE]
-
-      - Use analogies: "Think of it like..." to explain complex concepts
-
-    
-
-    The Implications (200-400 words):
-
-      - What this means for the field (short-term)
-
-      - What this means for the bigger picture (long-term)
-
-      - Potential applications or follow-up research
-
-      - What questions remain unanswered
-
-      - Personal take: "What I find most exciting/striking/surprising is..."
+- Set up why THIS paper matters among all the papers published this week/month
 
 
 
-  SECTION 3: THE TAKEAWAY (100-200 words)
+Context (100-150 words):
 
-    
+- What was known before
 
-    Summary (50-100 words):
+- Why this question matters (to the field, to society, to the reader)
 
-      - 3-5 bullet points of key takeaways
-
-      - Each takeaway: one clear sentence
-
-      - "Here's what to remember:"
-
-    
-
-    Call to Action (50-100 words):
-
-      - "Read the full paper here: [DOI link]"
-
-      - "What do you think? Reply to this email or comment below."
-
-      - "If you found this useful, please share it with a colleague."
-
-      - Subscription pitch (if applicable): "This is the kind of analysis 
-
-        I provide to subscribers. If you'd like to receive deep dives like 
-
-        this every [week/month], consider subscribing."
+- The gap this research fills
 
 
 
-  SECTION 4: REFERENCES & FOOTER
+The Finding (50-75 words):
 
-    - Full citation of the paper
+- What the researchers discovered, in clear accessible language
 
-    - DOI link
+- "Here's what they found:" or "The key result:"
 
-    - "Found this via [journal/newsletter/colleague]"
 
-    - Author bio (if applicable)
 
-    - "Subscribe for more" link
+"READ MORE" BREAK:
+
+- Mark with: "[READ MORE BREAK -- email truncation point]"
+
+- Everything above this line appears in the email preview
+
+- Everything below requires clicking through to the web version
+
+- This break is essential: it gives free subscribers a taste and
+
+encourages them to click through (or subscribe for full access)
+
+
+
+SECTION 2: THE DEEP DIVE (after the break, 400-800 words)
+
+
+
+The Research in Detail (200-400 words):
+
+- How they did it (methodology, in accessible terms with analogies)
+
+- What the data actually shows
+
+- What makes this study different or better than previous work
+
+- Include a key quote from the paper if available [EXTERNAL-SOURCE]
+
+- Use analogies: "Think of it like..." to explain complex concepts
+
+
+
+The Implications (200-400 words):
+
+- What this means for the field (short-term)
+
+- What this means for the bigger picture (long-term)
+
+- Potential applications or follow-up research
+
+- What questions remain unanswered
+
+- Personal take: "What I find most exciting/striking/surprising is..."
+
+
+
+SECTION 3: THE TAKEAWAY (100-200 words)
+
+
+
+Summary (50-100 words):
+
+- 3-5 bullet points of key takeaways
+
+- Each takeaway: one clear sentence
+
+- "Here's what to remember:"
+
+
+
+Call to Action (50-100 words):
+
+- "Read the full paper here: [DOI link]"
+
+- "What do you think? Reply to this email or comment below."
+
+- "If you found this useful, please share it with a colleague."
+
+- Subscription pitch (if applicable): "This is the kind of analysis
+
+I provide to subscribers. If you'd like to receive deep dives like
+
+this every [week/month], consider subscribing."
+
+
+
+SECTION 4: REFERENCES & FOOTER
+
+- Full citation of the paper
+
+- DOI link
+
+- "Found this via [journal/newsletter/colleague]"
+
+- Author bio (if applicable)
+
+- "Subscribe for more" link
 
 
 
 TONE GUIDELINES:
 
-  - Personal and authentic -- this is YOUR newsletter
+- Personal and authentic -- this is YOUR newsletter
 
-  - Write like you're explaining to a smart friend over coffee
+- Write like you're explaining to a smart friend over coffee
 
-  - Enthusiasm is welcome: "I love this paper because..."
+- Enthusiasm is welcome: "I love this paper because..."
 
-  - Skepticism is also welcome: "One limitation to keep in mind..."
+- Skepticism is also welcome: "One limitation to keep in mind..."
 
-  - First-person is expected, not optional
+- First-person is expected, not optional
 
-  - Humor is fine when appropriate
+- Humor is fine when appropriate
 
-  - Avoid: corporate-speak, passive voice, excessive hedging
+- Avoid: corporate-speak, passive voice, excessive hedging
 
-  
 
-  The Substack voice should feel like a conversation, not a lecture.
 
-  Readers subscribe to Substack for the WRITER'S perspective, not just the news.
+The Substack voice should feel like a conversation, not a lecture.
+
+Readers subscribe to Substack for the WRITER'S perspective, not just the news.
 
 
 
 PAID VS FREE CONTENT STRATEGY:
 
-  - Default: everything before the "read more" break is FREE (email preview)
+- Default: everything before the "read more" break is FREE (email preview)
 
-  - Default: the deep dive after the break is for SUBSCRIBERS
+- Default: the deep dive after the break is for SUBSCRIBERS
 
-  - This gives free readers enough to understand the value and incentivizes subscription
+- This gives free readers enough to understand the value and incentivizes subscription
 
-  - Mark the subscriber threshold clearly: "[SUBSCRIBER CONTENT BELOW]"
+- Mark the subscriber threshold clearly: "[SUBSCRIBER CONTENT BELOW]"
 
-  - If the user's Substack is entirely free: note "Full content is free for all readers"
+- If the user's Substack is entirely free: note "Full content is free for all readers"
 
-  - Suggest: which parts could be paid-only vs free based on depth/analysis level
+- Suggest: which parts could be paid-only vs free based on depth/analysis level
 
 
 
@@ -416,91 +416,91 @@ PAID VS FREE CONTENT STRATEGY:
 
 WHAT ARE SUBSTACK NOTES:
 
-  - Short-form posts (similar to tweets) within the Substack ecosystem
+- Short-form posts (similar to tweets) within the Substack ecosystem
 
-  - Appear in the Notes feed for Substack users
+- Appear in the Notes feed for Substack users
 
-  - Can include links to full newsletter posts
+- Can include links to full newsletter posts
 
-  - Used for promotion, conversation starters, and community engagement
+- Used for promotion, conversation starters, and community engagement
 
-  - Less than or equal to 280 characters (similar to Twitter)
+- Less than or equal to 280 characters (similar to Twitter)
 
 
 
 NOTES STRATEGY:
 
-  Note 1: THE HOOK NOTE
+Note 1: THE HOOK NOTE
 
-    - Tease the newsletter's main finding
+- Tease the newsletter's main finding
 
-    - Create curiosity
+- Create curiosity
 
-    - Include a link to the full post
+- Include a link to the full post
 
-    - Example: "We just found water vapor on a planet 1,200 light-years away. 
+- Example: "We just found water vapor on a planet 1,200 light-years away.
 
-      JWST did something incredible. I wrote about what this means: [link]"
+JWST did something incredible. I wrote about what this means: [link]"
 
-  
 
-  Note 2: THE DISCUSSION NOTE
 
-    - Pose a question related to the research
+Note 2: THE DISCUSSION NOTE
 
-    - Invite responses and discussion
+- Pose a question related to the research
 
-    - Can be posted after the newsletter is live
+- Invite responses and discussion
 
-    - Example: "The Kepler-442b finding raises a big question: if water is 
+- Can be posted after the newsletter is live
 
-      common on super-Earths, how does that change the Drake equation? 
+- Example: "The Kepler-442b finding raises a big question: if water is
 
-      Would love to hear from astrobiologists."
+common on super-Earths, how does that change the Drake equation?
 
-  
+Would love to hear from astrobiologists."
 
-  Note 3 (optional): THE QUOTE NOTE
 
-    - Share a compelling quote or statistic from the paper
 
-    - Attribute to the authors
+Note 3 (optional): THE QUOTE NOTE
 
-    - Link to the full post
+- Share a compelling quote or statistic from the paper
 
-    - Example: "As Smith et al. put it: 'This detection opens a new window 
+- Attribute to the authors
 
-      into temperate exoplanet atmospheres.' Read my full analysis: [link]"
+- Link to the full post
+
+- Example: "As Smith et al. put it: 'This detection opens a new window
+
+into temperate exoplanet atmospheres.' Read my full analysis: [link]"
 
 
 
 SUBSTACK TAGS:
 
-  - Substack uses tags for content categorization and discovery
+- Substack uses tags for content categorization and discovery
 
-  - Suggest 3-5 relevant tags for the newsletter
+- Suggest 3-5 relevant tags for the newsletter
 
-  - Examples: Science, Space, Research, Astronomy, Exoplanets, Physics
+- Examples: Science, Space, Research, Astronomy, Exoplanets, Physics
 
-  - Tags help readers find your content within Substack
+- Tags help readers find your content within Substack
 
 
 
 CROSS-PROMOTION RECOMMENDATIONS:
 
-  - Suggest other Substack writers/publications in similar domains
+- Suggest other Substack writers/publications in similar domains
 
-  - Recommendations drive significant subscriber growth on Substack
+- Recommendations drive significant subscriber growth on Substack
 
-  - Based on subject domain [LLM-INFERRED]:
+- Based on subject domain [LLM-INFERRED]:
 
-    Astrophysics -> suggest space/science Substacks
+Astrophysics -> suggest space/science Substacks
 
-    Biology -> suggest biotech/life sciences Substacks
+Biology -> suggest biotech/life sciences Substacks
 
-    AI/ML -> suggest tech/AI Substacks
+AI/ML -> suggest tech/AI Substacks
 
-  - Note in output: "Consider reaching out to [type of writer] for cross-recommendation"
+- Note in output: "Consider reaching out to [type of writer] for cross-recommendation"
 
 
 
@@ -591,7 +591,6 @@ FLAG if: abstract too short, word count outside range → best effort; DOI missi
 
 
 ---
-
 
 
 
