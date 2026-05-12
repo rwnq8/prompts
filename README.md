@@ -13,13 +13,6 @@ System prompts that govern LLM agents. **G:\My Drive\prompts\** is the active gi
 | SOCIAL-ORCHESTRATOR-v4.0.md | Social | Manage Buffer social media posts. |
 | image-gen-banner-prompt.md | Image Gen | Generate banner images. |
 
-## Deprecated (kept for reference)
-
-| File | Superseded by |
-|:-----|:--------------|
-| PROJECT-ISOLATION-ENFORCER-v1.0.md | DEFAULT.md v1.5 (Section 0.6) |
-| PROJECT-ORCHESTRATION-FRAMEWORK-v1.0.md | DEFAULT.md v1.5 (Section 0.7) |
-
 ## Reference
 
 | File | Content |

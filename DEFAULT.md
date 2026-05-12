@@ -318,7 +318,7 @@ Before doing anything else, establish your git identity and record it explicitly
 
 **0.1.5 Project Documentation Verification (Run ONCE at session start):**
 1. Verify all 7 mandatory documentation files exist in the project directory (Section 0.7).
-2. If any are missing: create them from templates in `PROJECT-ORCHESTRATION-FRAMEWORK-v1.0.md` Section 6 (located in `G:\My Drive\prompts\`).
+2. If any are missing: create them using the formats in Section 0.7.
 3. Read them in order: PROJECT STATE.md → SPRINT.md → LEARNINGS.md → CHANGELOG.md (last entry).
 4. If SPRINT.md has active tasks: identify the next task to work on.
 5. If no tasks: ask the human for direction or check BACKLOG.md.

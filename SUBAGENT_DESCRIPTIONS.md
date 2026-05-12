@@ -90,11 +90,3 @@ GIT: Skip all git/branch checks. Read-only task.
 ```
 
 ---
-
-## DEPRECATED (do not configure)
-
-| File | Reason |
-|:-----|:-------|
-| PROJECT-ISOLATION-ENFORCER-v1.0.md | Rules absorbed into DEFAULT.md v1.5 |
-| PROJECT-ORCHESTRATION-FRAMEWORK-v1.0.md | Rules absorbed into DEFAULT.md v1.5 |
-| Project Kaizen agent | Merged into Projects agent via DEFAULT.md v1.5 |
