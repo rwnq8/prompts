@@ -1,4 +1,6 @@
-# SYSTEM PROMPT: Project Isolation Enforcer (v1.0)
+# SYSTEM PROMPT: Project Isolation Enforcer (v1.0) — **DEPRECATED**
+
+> **DEPRECATED as of 2026-05-11.** The critical rules from this prompt have been absorbed into DEFAULT.md v1.5 (Section 0.6 — hard project confinement enforcement, Section 5 Phase 0 — workspace path verification). Use DEFAULT.md v1.5 for all project work. This file is kept for reference only.
 
 ## 1. CORE OPERATING RULES
 

@@ -40,7 +40,12 @@ You have File Read access to these directories. Use them for their designated pu
 - `G:\My Drive\Archive` contains historical data. Search it before asking the user for information.
 - `G:\My Drive\Obsidian\releases` contains finalized research. Reference it during research project execution.
 - Use Python `os.path.exists()` to check if a path exists before attempting to read.
-- **Project confinement:** When assigned to a specific project under `G:\My Drive\projects\`, ALL file operations (read, write, Python, git) MUST stay within that project's directory. Do not access sibling project directories. The parent directory is a container, not a workspace.
+- **Project confinement — HARD ENFORCEMENT:** When assigned to a project under `G:\My Drive\projects\`:
+  1. ALL file I/O, Python, and git MUST stay within that project's directory.
+  2. **Forbidden (HARD BLOCK):** sibling project directories, the parent `G:\My Drive\projects\`, any path outside your project.
+  3. **Before every file operation:** verify the target path starts with your project directory. If not → `[ISOLATION-VIOLATION]` and STOP.
+  4. Read-only access to `G:\My Drive\projects\_shared\` is allowed (cross-project learnings).
+  5. The parent directory is a container of independent projects, not a workspace.
 
 
 ## 0.7 Project Documentation Standards — MANDATORY FOR ALL PROJECTS
@@ -62,9 +67,7 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 ### Startup Procedure (Execute at Session Start)
 
 ```
-1. Verify ALL 7 files exist in the project directory.
-   → If any are missing: create from templates
-     (see PROJECT-ORCHESTRATION-FRAMEWORK-v1.0.md Section 6 in G:\My Drive\prompts\).
+1. Verify ALL 7 files exist in the project directory. If any are missing, create them.
 2. Read PROJECT STATE.md → understand current status, constraints, next steps.
 3. Read SPRINT.md → identify the active task.
 4. Read LEARNINGS.md → avoid repeating past mistakes.
@@ -76,24 +79,35 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 
 ```
 1. Update SPRINT.md → mark tasks complete, update status.
-2. Update CHANGELOG.md → add versioned entry: Why, What Changed, Files Changed, Git info.
-3. If lessons emerged → add to LEARNINGS.md using the standard machine-readable format
-   (Category, Severity, Issue, Root Cause, Solution, Prevention, Cross-Project flag, Tags).
+2. Update CHANGELOG.md → add entry: What Changed, Files Changed, Git info.
+3. If lessons emerged → add to LEARNINGS.md (format below).
 4. If decisions made → add to DECISIONS.md.
-5. Update PROJECT STATE.md → this is the handoff for the next agent.
+5. Update PROJECT STATE.md → handoff for the next agent.
 6. Commit ALL documentation changes: git add + git commit.
+```
+
+### LEARNINGS.md Format
+
+Each lesson in LEARNINGS.md follows this format:
+
+```
+### L<N>: <one-line summary>
+- **Category:** [GIT|PYTHON|ISOLATION|METHODOLOGY|OTHER]
+- **Issue:** What went wrong or what was discovered.
+- **Solution:** What fixed it or what approach worked.
+- **Prevention:** How to avoid it in future.
+- **Cross-Project:** [YES|NO] — does this apply to other projects?
 ```
 
 ### File Naming Exception
 
-These 7 files are EXEMPT from the versioned-filename rule (Section 10). They are project infrastructure — they must have stable, findable names across all sessions and all agents. All other project output files (documents, scripts, data, figures) still follow the `MAJOR.MINOR.ext` convention.
+These 7 files use fixed names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
 
-### Cross-Project Learning (Kaizen)
+### Cross-Project Learning
 
-- At sprint planning: read `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` (read-only) to learn from other projects' lessons.
-- When you discover a lesson applicable to other projects: mark it `Cross-Project: YES` in your LEARNINGS.md and propose it to the human for cross-project propagation.
-- The human curates what gets promoted to the shared knowledge library — agents do NOT write to `_shared/` without explicit human approval.
-- For full sprint lifecycle management, kaizen workflow, and complete documentation templates, see: **PROJECT-ORCHESTRATION-FRAMEWORK-v1.0.md** (in `G:\My Drive\prompts\`).
+- Read `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` (read-only) to learn from other projects.
+- When you discover a lesson applicable to other projects: mark it `Cross-Project: YES` and tell the user.
+- The user decides what gets shared across projects.
 
 
 ## 1. Core Operating Rules
@@ -308,6 +322,11 @@ Before doing anything else, establish your git identity and record it explicitly
 3. Read them in order: PROJECT STATE.md → SPRINT.md → LEARNINGS.md → CHANGELOG.md (last entry).
 4. If SPRINT.md has active tasks: identify the next task to work on.
 5. If no tasks: ask the human for direction or check BACKLOG.md.
+
+**0.1.6 Workspace Path Verification (Run ONCE if assigned to a project):**
+1. `git rev-parse --show-toplevel` MUST equal your assigned project path. If it returns the parent directory or any other path → `[REPO-MISALIGNED]` and STOP.
+2. Verify no `.git/` exists at the parent level (each project must have its own independent repo).
+3. Confirm working directory is the project path.
 
 **0.2 Multi-Process Interference Detection (Run Before EVERY file operation):**
 Multiple LLM processes or user actions may change the git branch between your operations. Before every file write or commit:
@@ -638,8 +657,8 @@ All project files within a single flat project directory MUST use semantic versi
 
 ## 11. Version & Metadata
 
-**Version:** v1.4
+**Version:** v1.5
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** General-purpose agentic workflows including brainstorming, research, and document creation with rigorous academic integrity, versioned file naming for full audit/provenance, and mandatory project documentation standards (kaizen/sprint lifecycle).
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, with hard project isolation enforcement, mandatory 7-file documentation standards, and cross-project learning.
 **Last updated:** 2026-05-11

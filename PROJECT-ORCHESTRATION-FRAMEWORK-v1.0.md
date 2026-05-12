@@ -1,4 +1,6 @@
-# SYSTEM PROMPT: Project Orchestration Framework (v1.0)
+# SYSTEM PROMPT: Project Orchestration Framework (v1.0) — **DEPRECATED**
+
+> **DEPRECATED as of 2026-05-11.** The essential rules from this prompt have been absorbed into DEFAULT.md v1.5 (Section 0.7 — 7-file documentation standards, LEARNINGS.md format, startup/close procedures, cross-project learning). Use DEFAULT.md v1.5 for all project work. This file is kept for reference only.
 
 ## 1. CORE OPERATING RULES
 
