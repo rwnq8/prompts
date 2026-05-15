@@ -323,10 +323,34 @@ Before doing anything else, establish your git identity and record it explicitly
 4. If SPRINT.md has active tasks: identify the next task to work on.
 5. If no tasks: ask the human for direction or check BACKLOG.md.
 
-**0.1.6 Workspace Path Verification (Run ONCE if assigned to a project):**
-1. `git rev-parse --show-toplevel` MUST equal your assigned project path. If it returns the parent directory or any other path → `[REPO-MISALIGNED]` and STOP.
-2. Verify no `.git/` exists at the parent level (each project must have its own independent repo).
-3. Confirm working directory is the project path.
+**0.1.6 Project Git Initialization & Path Verification (Run ONCE if assigned to a project):**
+
+Every project under `G:\My Drive\projects\` MUST have its OWN independent `.git/` repository. The parent directory `G:\My Drive\projects\` is a container, NOT a git repo. Committing to a shared parent repo causes cross-project contamination (see CROSS-PROJECT-LEARNINGS L1).
+
+**ALL git commands for project work MUST use the `-C` flag:** `git -C "<project_path>" <command>`. This ensures operations target the project repo, not the prompts repo or any other directory. The shell working directory defaults to `G:\My Drive\prompts` — do NOT rely on it.
+
+**Step A: Check for existing repo**
+1. Run: `git -C "<project_path>" rev-parse --show-toplevel`
+   - **Returns the project path:** Repo is correctly aligned. Go to Step C.
+   - **Returns the parent (`G:\My Drive\projects\`):** `[REPO-MISALIGNED-PARENT]` — A shared parent `.git/` exists. Go to Step B to initialize a project-level repo. The parent repo contamination must be reported to the user.
+   - **Returns any other path:** `[REPO-MISALIGNED-OTHER]` — STOP immediately. Report the unexpected path to the user. Do NOT proceed.
+   - **Fails ("not a git repository"):** No repo exists yet. Go to Step B.
+
+**Step B: Initialize project-level repo (new or misaligned projects)**
+1. Run: `git -C "<project_path>" init`
+2. Run: `git -C "<project_path>" checkout -b feature/initial-setup`
+3. Run: `git -C "<project_path>" rev-parse --show-toplevel` — MUST now return the project path. If it still returns the parent path, a parent `.git/` is overriding. Report this to the user.
+4. If verification fails → report error with exact command output and STOP.
+5. **Parent repo warning:** If a parent `.git/` was detected in Step A → warn user: `[PARENT-REPO-WARNING]` A `.git/` exists at `G:\My Drive\projects\` which may capture commits from all projects. This should be removed manually. My commits will use the project-level repo via `-C` flag.
+
+**Step C: Verify parent-level contamination**
+1. Check if `G:\My Drive\projects\.git\` exists (use Python `os.path.exists()` or `Test-Path`).
+2. If it exists → `[PARENT-REPO-EXISTS]`. Warn the user. This is a known issue (CROSS-PROJECT-LEARNINGS L1). All subsequent git commands will use `-C "<project_path>"` to avoid contaminating the parent repo.
+
+**Step D: Confirm working context**
+1. Always prefix project git commands with `git -C "<project_path>"`.
+2. For file writes, verify the target path starts with the project path.
+3. Do NOT change the shell working directory — use `-C` flag instead. The parent directory is a container, not a workspace.
 
 **0.2 Multi-Process Interference Detection (Run Before EVERY file operation):**
 Multiple LLM processes or user actions may change the git branch between your operations. Before every file write or commit:
@@ -597,6 +621,7 @@ ACTION:[CREATE|EDIT|DELETE] FILES: <path1>, <path2>, <path3> RATIONALE:<brief-re
 | **`git add .` used accidentally** | Too many files staged in `git diff --cached --stat` | `git reset HEAD` to unstage all, then `git add <specific-file>` for each intended file. |
 | **Forgot to commit before long response** | End of response: `git status --short` shows uncommitted changes | Stage and commit ALL uncommitted changes before delivering response. |
 
+| **Repo misaligned (project uses parent/shared repo)** | `git -C "<project_path>" rev-parse --show-toplevel` returns `G:\My Drive\projects\` instead of project path | 1. Report `[REPO-MISALIGNED-PARENT]`. 2. Run `git -C "<project_path>" init` to create project-level repo. 3. Run `git -C "<project_path>" checkout -b feature/initial-setup`. 4. Verify with `git -C "<project_path>" rev-parse --show-toplevel`. 5. Use `-C "<project_path>"` for ALL subsequent git commands. 6. Warn user about parent `.git/` contamination (CROSS-PROJECT-LEARNINGS L1). |
 ### 9.8 THE ULTIMATE RULE
 
 **If you say you committed, the commit MUST exist.** Check with `git log -1 --oneline`. If it does not exist, you have not finished your response. The user should never have to remind you to actually execute git commands after you said you would.
