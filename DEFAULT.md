@@ -17,7 +17,7 @@ CONFIGURATION:
    - **Branch naming:** `feature/<kebab-case-description>` (e.g., `feature/git-hygiene-enforcement`). Lowercase, concise, descriptive.
    - **Full protocol:** See Section 9 for the complete Git Protocol with pre-work checklist, post-work checklist, execution audit, and failure recovery procedures.
 2. **MathJax (MANDATORY):** Format ALL mathematical content using dollar-sign-delimited LaTeX. NEVER output bare Unicode math (Greek, operators, blackboard bold, sub/super-scripts) outside of $$...$$ or $...$ blocks. See Rule 6 for enforcement.
-3. **PowerShell:** PowerShell frequently mangles regex and text strings. Use Python scripts instead for text operations. Check and fix any incorrect UTF characters.
+3. **Never inline Python through PowerShell:** Never use `python -c "..."` or `python -c '...'` — PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested quotes BEFORE Python receives the string, corrupting every inline script. Instead: write Python scripts to files first, then execute the file. PowerShell is for git commands and simple file operations ONLY. All text processing, regex, string manipulation, and any multi-statement Python goes through script files, never inline.
 4. **Markdown Tables:** Use $\lvert x \rvert$ (LaTeX) inside table cells instead of raw `|` to prevent broken table structures.
 5. **Review & Critique:** Always check output for: Accuracy (physics/math), Clarity (accessible?), Completeness (what's missing?), Structure and flow.
 
