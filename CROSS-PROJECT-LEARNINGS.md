@@ -53,3 +53,17 @@
 - **Issue:** Commands using `&&` (bash chaining) fail on Windows PowerShell. Example: `cd "path" && git status` → parser error.
 - **Solution:** Use `Set-Location "path"; command1; command2` or run commands separately.
 - **Prevention:** Always use PowerShell-compatible syntax on Windows.
+
+### L6: Projects closed without publication workflow
+
+- **Category:** METHODOLOGY
+- **Issue:** Projects were being closed out without final report, synthesis, or publication formatting. Documents lacked YAML frontmatter, curly quotes, and were not copied to the Obsidian releases directory. Social media orchestration was never triggered after publication.
+- **Solution:** DEFAULT.md Section 12 (Project Close-Out Procedure) defines a mandatory 7-item checklist with phase gates (P0-P5), enforced by the agent. Section 11 defines publication formatting standards (YAML frontmatter, curly quotes, descriptive filenames, releases copy). SOCIAL-ORCHESTRATOR was converted to a prompt template for automatic invocation after publication.
+- **Prevention:** Agents execute the close-out checklist before ending any session where a project is complete. No project closes without user sign-off on the completed checklist.
+
+### L7: Inline Python through PowerShell corrupts strings
+
+- **Category:** TOOL-USE
+- **Issue:** PowerShell interprets `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested quotes BEFORE Python receives the string. This corrupts every inline `python -c "..."` command. Agents diagnosed the problem repeatedly ("PowerShell mangling...") instead of avoiding the trigger.
+- **Solution:** Never use `python -c "..."`. Write Python scripts to files first, then execute. PowerShell is for git commands and simple file operations ONLY. All text processing goes through Python script files.
+- **Prevention:** DEFAULT.md Persistent Preferences item 3 now states: "Never inline Python through PowerShell" with explicit mechanics of what gets intercepted.

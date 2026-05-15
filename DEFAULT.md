@@ -84,6 +84,8 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 4. If decisions made → add to DECISIONS.md.
 5. Update PROJECT STATE.md → handoff for the next agent.
 6. Commit ALL documentation changes: git add + git commit.
+7. If project is in close-out phase: execute Project Close-Out Procedure (Section 12). 
+   Verify no checklist items remain incomplete before ending session.
 ```
 
 ### LEARNINGS.md Format
@@ -682,7 +684,202 @@ All project files within a single flat project directory MUST use semantic versi
 
 ---
 
-## 12. Semi-Autonomous Progression Mode (WHAT'S NEXT? PROCEED / RESUME)
+## 11. Publication Formatting Standards
+
+When a project produces a publication-ready document (paper, manuscript, whitepaper, or release), the following standards apply. These override the versioned-file-naming convention of Section 10 — publication documents use descriptive filenames because they are external-facing artifacts, not internal project iterations.
+
+### 11.1 Publication-Ready Filename Exception
+
+**Rule:** Publication-ready documents MUST use descriptive filenames (e.g., `"Validation of Ultrametric Error Confinement.md"`). Versioned filenames (`0.8.md`) are for internal project iterations only. Descriptive filenames serve external discovery, citation, and archival purposes.
+
+**When to use descriptive filenames:**
+- The document has been reader-tested, polished, and is ready for external release
+- The document includes YAML frontmatter with title, authors, date, and DOI
+- The document will be copied to `G:\My Drive\Obsidian\releases\YYYY\MM\`
+
+**When to keep versioned filenames:**
+- Internal drafts, working documents, research notes
+- Documents still undergoing revision within the project
+- Any file not intended for external release
+
+### 11.2 YAML Frontmatter (MANDATORY for Publication Documents)
+
+Every publication-ready document MUST begin with YAML frontmatter delimited by `---` on its own line before and after:
+
+```yaml
+---
+title: "Full Publication Title in Title Case"
+authors: "Author Name(s)"
+date: "YYYY-MM-DD"
+doi: "10.5281/zenodo.XXXXXXXXX"
+version: "vX.Y"
+abstract: >
+  Full abstract text here. The folded block scalar (>) treats
+  newlines as spaces, producing a single paragraph. Keep the
+  abstract accessible to educated non-specialists.
+keywords: ["keyword1", "keyword2", "keyword3"]
+license: "CC-BY-4.0"
+---
+```
+
+**Required fields:** title, authors, date, doi, abstract
+**Optional fields:** version, keywords, license
+
+### 11.3 Curly/Smart Typographic Quotes (MANDATORY)
+
+All quotation marks and apostrophes in publication documents MUST use curly/smart typographic characters — never straight ASCII quotes.
+
+| Character | Unicode | Name | Usage |
+|:----------|:--------|:-----|:------|
+| `"` | U+201C | LEFT DOUBLE QUOTATION MARK | Opening double quote |
+| `"` | U+201D | RIGHT DOUBLE QUOTATION MARK | Closing double quote |
+| `'` | U+2018 | LEFT SINGLE QUOTATION MARK | Opening single quote |
+| `'` | U+2019 | RIGHT SINGLE QUOTATION MARK | Closing single quote / apostrophe |
+
+**Prohibited:** Straight double quote `"` (U+0022) and straight single quote `'` (U+0027) in body text.
+**Exception:** Code blocks, inline code, and YAML frontmatter may use straight quotes.
+
+**Verification script:** Before finalizing a publication document, run a Python scan:
+```python
+import re
+with open(path, 'r', encoding='utf-8') as f:
+    text = f.read()
+# Skip code blocks and frontmatter
+# Check for straight quotes outside code spans
+straight_double = re.findall(r'(?<!`)["](?!`)', text)
+straight_single = re.findall(r"(?<!`)['](?!`)", text)
+if straight_double or straight_single:
+    print(f"FOUND {len(straight_double)} straight double quotes, {len(straight_single)} straight single quotes — REPLACE WITH CURLY QUOTES")
+```
+
+### 11.4 Copy to Obsidian Releases Directory
+
+When a document is publication-ready, copy it to the Obsidian releases directory:
+
+```
+G:\My Drive\Obsidian\releases\YYYY\MM\<Descriptive Filename>.md
+```
+
+- `YYYY` = current 4-digit year (use Python: `from datetime import datetime; datetime.now().year`)
+- `MM` = current 2-digit month (use Python: `datetime.now().strftime('%m')`)
+- Filename = descriptive, title-case, no version numbers
+
+**Copy command (PowerShell):**
+```powershell
+Copy-Item "G:\My Drive\projects\<ProjectName>\<DescriptiveFilename>.md" "G:\My Drive\Obsidian\releases\YYYY\MM\"
+```
+
+**Verify copy with Python** `os.path.exists()` before declaring success.## 12. Project Close-Out Procedure
+
+No project closes out without final report, synthesis, documentation, and publication workflow completion. This section defines the mandatory close-out procedure — enforced, not optional. The system tracks completion of every item.
+
+### 12.1 Close-Out Trigger Conditions
+
+A project is eligible for close-out when ANY of the following conditions are met:
+1. All SPRINT.md tasks are marked `[x]` complete and BACKLOG.md is empty or all remaining items are `P3` (nice-to-have)
+2. The user explicitly signals close-out (e.g., "close this project," "wrap up," "finalize")
+3. A publication-ready document has been produced and copied to releases
+
+**The agent MUST NOT close out silently.** Before executing close-out, confirm with the user:
+```
+Project [name] is eligible for close-out. Proceed with close-out checklist?
+[If yes, the mandatory checklist follows.]
+```
+
+### 12.2 Mandatory Close-Out Checklist
+
+Every item must be verified and marked `[x]` before the session ends. Items marked `[!]` indicate a blocker that prevents close-out.
+
+```
+PROJECT CLOSE-OUT CHECKLIST: [Project Name]
+Date: [YYYY-MM-DD]
+
+[ ] 1. FINAL REPORT/SYNTHESIS — A comprehensive final document (or the publication itself) 
+       summarizing: what was done, key results, what was NOT done, known limitations, 
+       lessons learned, and handoff recommendations for any continuation.
+
+[ ] 2. PUBLICATION DOCUMENT — If a publication was produced:
+       [ ] 2a. YAML frontmatter complete (title, authors, date, DOI, abstract)
+       [ ] 2b. Curly/smart quotes verified (Python scan, 0 straight quotes)
+       [ ] 2c. Math formatting verified (Python scan, 0 bare Unicode math)
+       [ ] 2d. Descriptive filename (not versioned)
+       [ ] 2e. Copied to G:\My Drive\Obsidian\releases\YYYY\MM\
+       [ ] 2f. Copy verified with os.path.exists()
+
+[ ] 3. ALL 7 MANDATORY DOCS UPDATED — PROJECT STATE.md (final state), SPRINT.md 
+       (all tasks marked), CHANGELOG.md (close-out entry), LEARNINGS.md (final 
+       lessons), DECISIONS.md (final decisions), BACKLOG.md (remaining items 
+       triaged), README.md (project summary updated)
+
+[ ] 4. GIT FINALIZED — All changes committed on feature branch. No uncommitted 
+       changes. Branch ready for merge to main (or archival). Final commit 
+       message includes "PROJECT CLOSE-OUT" tag.
+
+[ ] 5. PUBLICATION WORKFLOW (if publication exists):
+       [ ] 5a. User prompted: "Published to Zenodo? [YES/NO]"
+       [ ] 5b. User prompted: "Published to ResearchGate? [YES/NO]"
+       [ ] 5c. If both confirmed: trigger SOCIAL-ORCHESTRATOR template
+             (fill_prompt_template with publication details, execute against 
+             release file, deliver social media content to user)
+
+[ ] 6. ARCHIVING — Project directory is self-contained. A new agent starting 
+       from cold can read PROJECT STATE.md and understand everything. No 
+       broken references. No temp files. .gitignore covers build artifacts.
+
+[ ] 7. FINAL AUDIT — Python script verifies: all 7 docs exist and are non-empty, 
+       publication file exists in releases, git worktree clean, no temp files, 
+       no __pycache__, no .pyc files.
+```
+
+### 12.3 Close-Out Execution Protocol
+
+**Step 1: Generate checklist.** Create the checklist above in the project directory as `CLOSEOUT-CHECKLIST.md`. Pre-populate what is already known to be complete.
+
+**Step 2: Execute each item.** Work through the checklist systematically. Mark `[x]` as each item completes. Mark `[!]` if an item cannot be completed and requires user intervention.
+
+**Step 3: Final audit.** Run a Python audit script that verifies every checklist item. Output: `[PASS/FAIL]` for each.
+
+**Step 4: User sign-off.** Present the completed checklist with audit results. Request user confirmation before the final commit.
+
+**Step 5: Final commit.** Commit the CLOSEOUT-CHECKLIST.md and any remaining documentation updates. Commit message format: `PROJECT CLOSE-OUT: [Project Name] — [N]/7 checklist items complete`.
+
+### 12.4 Social Orchestration Integration
+
+When a publication has been released (user confirms Zenodo + ResearchGate), the agent MUST trigger the social media content generation workflow:
+
+1. Call `fill_prompt_template` with:
+   - `templateName`: `"Social Orchestrator"` (or the registered template name)
+   - `templateArgs`: `{"publicationTitle": "...", "publicationAuthors": "...", "publicationDOI": "...", "publicationAbstract": "...", "publicationFindings": "...", "publicationPath": "G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\<filename>.md"}`
+   
+2. Execute the filled prompt (either as a subagent or in a new thread)
+3. Deliver the generated social media content to the user for copy/paste to platforms
+
+**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. If the template is not yet registered in DeepChat settings, instruct the user: "The SOCIAL-ORCHESTRATOR template needs to be registered in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
+
+### 12.5 Project Management System (PMBOK/Agile Hybrid)
+
+The project management system combines PMBOK (structured phases with deliverables) and Agile (sprint-based iterative execution):
+
+**Phase Gates (PMBOK-style):**
+| Gate | Name | Deliverable | Checklist |
+|:-----|:-----|:------------|:----------|
+| P0 | Initiation | 7 mandatory docs, git repo, SPRINT.md with tasks | Phase 0 in Section 5 |
+| P1 | Planning | Detailed SPRINT.md, BACKLOG.md prioritized | Task framing (Phase 1) |
+| P2 | Execution | Versioned output files, committed incrementally | Approach selection (Phase 2) |
+| P3 | Review | Reader testing, validation, peer review | Validation (Phase 3) |
+| P4 | Publication | Publication-ready document, releases copy | Section 11 standards |
+| P5 | Close-Out | CLOSEOUT-CHECKLIST.md, final audit, user sign-off | Section 12 checklist |
+
+**Sprint Management (Agile-style):**
+- SPRINT.md tracks active sprint tasks with status markers: `[ ]` incomplete, `[~]` in-progress, `[x]` complete, `[!]` blocked, `[-]` cancelled
+- BACKLOG.md holds future work prioritized as P0 (critical), P1 (high), P2 (medium), P3 (nice-to-have)
+- Each sprint produces at least one versioned output file
+- Sprint review = reader testing or self-audit (Phase 3)
+- Sprint retrospective = LEARNINGS.md update
+
+**Agent Responsibility:** The agent tracks which phase gate the project is in and ensures no gate is skipped. Phase gates cannot be bypassed — a project cannot go from Initiation directly to Publication without passing through Planning, Execution, and Review.
+
+## 13. Semi-Autonomous Progression Mode (WHAT'S NEXT? PROCEED / RESUME)
 
 ### 12.1 Overview
 
