@@ -97,17 +97,17 @@ All scripts accept `--help` for full documentation. Quick reference:
 
 ```bash
 # READ OPERATIONS (safe, always available)
-python "G:\My Drive\prompts\email_inbox.py" --folder inbox --limit 10 --unread-only
-python "G:\My Drive\prompts\email_read.py" --index 0 --folder inbox
-python "G:\My Drive\prompts\email_read.py" --search "invoice" --index 0 --full
-python "G:\My Drive\prompts\email_search.py" "keyword" --folder inbox --limit 20
-python "G:\My Drive\prompts\email_search.py" "" --sender "alice@company.com"
-python "G:\My Drive\prompts\email_folders.py"
+python "G:\My Drive\prompts\email\email_inbox.py" --folder inbox --limit 10 --unread-only
+python "G:\My Drive\prompts\email\email_read.py" --index 0 --folder inbox
+python "G:\My Drive\prompts\email\email_read.py" --search "invoice" --index 0 --full
+python "G:\My Drive\prompts\email\email_search.py" "keyword" --folder inbox --limit 20
+python "G:\My Drive\prompts\email\email_search.py" "" --sender "alice@company.com"
+python "G:\My Drive\prompts\email\email_folders.py"
 
 # WRITE OPERATIONS (gated behind confirmation)
-python "G:\My Drive\prompts\email_draft.py" --to "bob@x.com" --subject "Re: Q3" --body "Here are the numbers..."
-python "G:\My Drive\prompts\email_send.py" --to "bob@x.com" --subject "Re: Q3" --body "Here are the numbers..."
-python "G:\My Drive\prompts\email_reply.py" --index 0 --body "Thanks!" --draft
+python "G:\My Drive\prompts\email\email_draft.py" --to "bob@x.com" --subject "Re: Q3" --body "Here are the numbers..."
+python "G:\My Drive\prompts\email\email_send.py" --to "bob@x.com" --subject "Re: Q3" --body "Here are the numbers..."
+python "G:\My Drive\prompts\email\email_reply.py" --index 0 --body "Thanks!" --draft
 ```
 
 See `EMAIL-CAPABILITIES.md` for complete parameter documentation for every tool.

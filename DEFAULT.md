@@ -1093,10 +1093,10 @@ All tools run via `exec` from the `G:\My Drive\prompts\` directory. The agent **
 ### E.2.1 Check Inbox — `email_inbox.py`
 
 ```bash
-python "G:\My Drive\prompts\email_inbox.py" --folder inbox --limit 10
-python "G:\My Drive\prompts\email_inbox.py" --folder inbox --unread-only
-python "G:\My Drive\prompts\email_inbox.py" --folder sent --limit 5
-python "G:\My Drive\prompts\email_inbox.py" --folder inbox --limit 20 --json
+python "G:\My Drive\prompts\email\email_inbox.py" --folder inbox --limit 10
+python "G:\My Drive\prompts\email\email_inbox.py" --folder inbox --unread-only
+python "G:\My Drive\prompts\email\email_inbox.py" --folder sent --limit 5
+python "G:\My Drive\prompts\email\email_inbox.py" --folder inbox --limit 20 --json
 ```
 
 **Parameters:**
@@ -1112,11 +1112,11 @@ python "G:\My Drive\prompts\email_inbox.py" --folder inbox --limit 20 --json
 ### E.2.2 Read Email — `email_read.py`
 
 ```bash
-python "G:\My Drive\prompts\email_read.py" --index 0                          # Most recent
-python "G:\My Drive\prompts\email_read.py" --index 3 --folder sent            # 4th message in Sent
-python "G:\My Drive\prompts\email_read.py" --search "invoice" --index 0        # First match for "invoice"
-python "G:\My Drive\prompts\email_read.py" --index 0 --attachments-dir "G:\My Drive\temp\attachments"
-python "G:\My Drive\prompts\email_read.py" --index 0 --full                    # No body truncation
+python "G:\My Drive\prompts\email\email_read.py" --index 0                          # Most recent
+python "G:\My Drive\prompts\email\email_read.py" --index 3 --folder sent            # 4th message in Sent
+python "G:\My Drive\prompts\email\email_read.py" --search "invoice" --index 0        # First match for "invoice"
+python "G:\My Drive\prompts\email\email_read.py" --index 0 --attachments-dir "G:\My Drive\temp\attachments"
+python "G:\My Drive\prompts\email\email_read.py" --index 0 --full                    # No body truncation
 ```
 
 **Parameters:**
@@ -1132,11 +1132,11 @@ python "G:\My Drive\prompts\email_read.py" --index 0 --full                    #
 ### E.2.3 Search Emails — `email_search.py`
 
 ```bash
-python "G:\My Drive\prompts\email_search.py" "quarterly report"
-python "G:\My Drive\prompts\email_search.py" "" --sender "boss@company.com" --limit 10
-python "G:\My Drive\prompts\email_search.py" "invoice" --folder sent --body-search
-python "G:\My Drive\prompts\email_search.py" "" --since 2026-05-01 --limit 30
-python "G:\My Drive\prompts\email_search.py" "urgent" --json
+python "G:\My Drive\prompts\email\email_search.py" "quarterly report"
+python "G:\My Drive\prompts\email\email_search.py" "" --sender "boss@company.com" --limit 10
+python "G:\My Drive\prompts\email\email_search.py" "invoice" --folder sent --body-search
+python "G:\My Drive\prompts\email\email_search.py" "" --since 2026-05-01 --limit 30
+python "G:\My Drive\prompts\email\email_search.py" "urgent" --json
 ```
 
 **Parameters:**
@@ -1158,9 +1158,9 @@ python "G:\My Drive\prompts\email_search.py" "urgent" --json
 ```
 
 ```bash
-python "G:\My Drive\prompts\email_send.py" --to "boss@company.com" --subject "Q2 Report" --body "Please find attached..."
-python "G:\My Drive\prompts\email_send.py" --to "team@company.com" --cc "manager@company.com" --subject "Meeting notes" --body "Here are the notes from today..." --attachment "G:\My Drive\projects\notes.docx"
-python "G:\My Drive\prompts\email_send.py" --to "a@x.com,b@x.com" --subject "Update" --body-file "G:\My Drive\projects\draft.txt"
+python "G:\My Drive\prompts\email\email_send.py" --to "boss@company.com" --subject "Q2 Report" --body "Please find attached..."
+python "G:\My Drive\prompts\email\email_send.py" --to "team@company.com" --cc "manager@company.com" --subject "Meeting notes" --body "Here are the notes from today..." --attachment "G:\My Drive\projects\notes.docx"
+python "G:\My Drive\prompts\email\email_send.py" --to "a@x.com,b@x.com" --subject "Update" --body-file "G:\My Drive\projects\draft.txt"
 ```
 
 **Parameters:**
@@ -1183,8 +1183,8 @@ python "G:\My Drive\prompts\email_send.py" --to "a@x.com,b@x.com" --subject "Upd
 ### E.2.5 Create Draft — `email_draft.py` ✅ SAFE
 
 ```bash
-python "G:\My Drive\prompts\email_draft.py" --to "boss@company.com" --subject "Q2 Proposal" --body "Draft proposal for Q2 initiatives..."
-python "G:\My Drive\prompts\email_draft.py" --to "team@x.com" --subject "Review" --body "..." --attachment "report.pdf" --open
+python "G:\My Drive\prompts\email\email_draft.py" --to "boss@company.com" --subject "Q2 Proposal" --body "Draft proposal for Q2 initiatives..."
+python "G:\My Drive\prompts\email\email_draft.py" --to "team@x.com" --subject "Review" --body "..." --attachment "report.pdf" --open
 ```
 
 **Parameters:** Same as `email_send.py`, plus:
@@ -1195,10 +1195,10 @@ Drafts appear in Outlook's Drafts folder. The user reviews and sends manually.
 ### E.2.6 Reply or Forward — `email_reply.py` ⚠️ DESTRUCTIVE
 
 ```bash
-python "G:\My Drive\prompts\email_reply.py" --index 0 --body "Thanks, received!"
-python "G:\My Drive\prompts\email_reply.py" --index 2 --body "FYI" --forward
-python "G:\My Drive\prompts\email_reply.py" --search "meeting" --index 0 --body "I'll be there" --reply-all
-python "G:\My Drive\prompts\email_reply.py" --index 0 --body "Draft reply" --draft
+python "G:\My Drive\prompts\email\email_reply.py" --index 0 --body "Thanks, received!"
+python "G:\My Drive\prompts\email\email_reply.py" --index 2 --body "FYI" --forward
+python "G:\My Drive\prompts\email\email_reply.py" --search "meeting" --index 0 --body "I'll be there" --reply-all
+python "G:\My Drive\prompts\email\email_reply.py" --index 0 --body "Draft reply" --draft
 ```
 
 **Parameters:**
@@ -1218,8 +1218,8 @@ python "G:\My Drive\prompts\email_reply.py" --index 0 --body "Draft reply" --dra
 ### E.2.7 List Folders — `email_folders.py`
 
 ```bash
-python "G:\My Drive\prompts\email_folders.py"
-python "G:\My Drive\prompts\email_folders.py" --json
+python "G:\My Drive\prompts\email\email_folders.py"
+python "G:\My Drive\prompts\email\email_folders.py" --json
 ```
 
 Returns all Outlook folders with item counts and unread counts. Use this to discover available folder names before running inbox/read/search operations.
@@ -1230,25 +1230,25 @@ Returns all Outlook folders with item counts and unread counts. Use this to disc
 
 ### Pattern A: "What's new in my inbox?"
 ```
-1. exec: python "G:\My Drive\prompts\email_inbox.py" --unread-only --limit 10
+1. exec: python "G:\My Drive\prompts\email\email_inbox.py" --unread-only --limit 10
 2. Review output with user
 3. If user wants to read a specific message:
-   exec: python "G:\My Drive\prompts\email_read.py" --index N
+   exec: python "G:\My Drive\prompts\email\email_read.py" --index N
 ```
 
 ### Pattern B: "Find that email about X"
 ```
-1. exec: python "G:\My Drive\prompts\email_search.py" "X" --limit 10
+1. exec: python "G:\My Drive\prompts\email\email_search.py" "X" --limit 10
 2. Show results to user
 3. If user selects one:
-   exec: python "G:\My Drive\prompts\email_read.py" --search "X" --index N
+   exec: python "G:\My Drive\prompts\email\email_read.py" --search "X" --index N
 ```
 
 ### Pattern C: "Send an email for me"
 ```
 1. Clarify: to, subject, body
 2. ALWAYS use email_draft.py first (safe):
-   exec: python "G:\My Drive\prompts\email_draft.py" --to "..." --subject "..." --body "..."
+   exec: python "G:\My Drive\prompts\email\email_draft.py" --to "..." --subject "..." --body "..."
 3. Show user the draft saved confirmation
 4. Only use email_send.py when user explicitly says "send it"
 ```
@@ -1256,10 +1256,10 @@ Returns all Outlook folders with item counts and unread counts. Use this to disc
 ### Pattern D: "Reply to the latest email from Y"
 ```
 1. Find the message:
-   exec: python "G:\My Drive\prompts\email_search.py" "" --sender "Y" --limit 5
+   exec: python "G:\My Drive\prompts\email\email_search.py" "" --sender "Y" --limit 5
 2. Confirm with user which message to reply to
 3. Draft the reply:
-   exec: python "G:\My Drive\prompts\email_reply.py" --search "Y" --index 0 --body "..." --draft
+   exec: python "G:\My Drive\prompts\email\email_reply.py" --search "Y" --index 0 --body "..." --draft
 4. User reviews in Outlook Drafts, or confirms to send
 ```
 
@@ -1281,7 +1281,7 @@ Returns all Outlook folders with item counts and unread counts. Use this to disc
 
 ### Error: "Folder 'X' not found"
 ```
-→ Run: python "G:\My Drive\prompts\email_folders.py" to show available folders
+→ Run: python "G:\My Drive\prompts\email\email_folders.py" to show available folders
 → Suggest closest match or ask user to clarify
 ```
 
