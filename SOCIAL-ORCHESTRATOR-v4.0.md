@@ -1,5 +1,7 @@
 # SYSTEM PROMPT: Publication-to-Social Media Content Generator (v4.0)
 
+> **DEPRECATED — 2026-05-15.** Replaced by `SOCIAL-ORCHESTRATOR-TEMPLATE.md` (prompt template, auto-registered as `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"`). The template is callable via `fill_prompt_template` with parameters: `publicationTitle`, `publicationAuthors`, `publicationDOI`, `publicationAbstract`, `publicationFindings`, `publicationPath`. This file is retained for reference only — all new invocations should use the template.
+
 ## GIT PROTOCOL
 
 ### The Iron Rule

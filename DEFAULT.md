@@ -848,13 +848,13 @@ Date: [YYYY-MM-DD]
 When a publication has been released (user confirms Zenodo + ResearchGate), the agent MUST trigger the social media content generation workflow:
 
 1. Call `fill_prompt_template` with:
-   - `templateName`: `"Social Orchestrator"` (or the registered template name)
+   - `templateName`: `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"`
    - `templateArgs`: `{"publicationTitle": "...", "publicationAuthors": "...", "publicationDOI": "...", "publicationAbstract": "...", "publicationFindings": "...", "publicationPath": "G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\<filename>.md"}`
    
 2. Execute the filled prompt (either as a subagent or in a new thread)
 3. Deliver the generated social media content to the user for copy/paste to platforms
 
-**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. If the template is not yet registered in DeepChat settings, instruct the user: "The SOCIAL-ORCHESTRATOR template needs to be registered in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
+**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
 
 ### 12.5 Project Management System (PMBOK/Agile Hybrid)
 
