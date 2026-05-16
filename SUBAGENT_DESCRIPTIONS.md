@@ -63,26 +63,90 @@
 
 ---
 
-## SUBAGENT SLOT: SELF-CLONE
+## SUBAGENT SLOTS: SELF-CLONES (explorer / implementer / reviewer)
+
+All three slots are SELF-CLONES — isolated instances of the current agent. They share the same tool availability profile.
+
+**Tool Availability (ALL self-clone slots):**
+- CONFIRMED (always available): LLM text generation, fill_prompt_template, search_conversations, Buffer API
+- UNRELIABLE (~35% chance — never depend on): read, write, edit, exec, process, subagent_orchestrator, skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+
+---
+
+### Slot 1: EXPLORER
 
 | Field | Value |
 |:------|:------|
-| **Slot ID** | `self` |
+| **Slot ID** | `explorer` |
 | **Target** | `current agent` |
 
 **Slot description — paste this:**
 ```
-FRESH INSTANCE — Text Synthesis Only | target=current agent | Isolated clone for parallel text generation, blind validation, and reader testing. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
+EXPLORER — Divergent Thinking | target=current agent | Isolated clone for brainstorming, possibility-space mapping, and edge-case discovery. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
 
 CONFIRMED (always available):
-  - LLM text generation — Parallel text, blind validation, reader testing
+  - LLM text generation — Brainstorming, alternative generation, edge-case discovery
   - fill_prompt_template, search_conversations, Buffer API
 
 UNRELIABLE (~35% chance — never depend on):
   - read, write, edit, exec, process, subagent_orchestrator
   - skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
 
-USE: Parallel text generation, blind validation, reader testing — ALL inputs inline.
+USE: Brainstorming alternatives, mapping possibility spaces, finding edge cases — ALL inputs inline.
+NEVER USE: File I/O, Python, git, skills, settings.
+
+GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
+```
+
+---
+
+### Slot 2: IMPLEMENTER
+
+| Field | Value |
+|:------|:------|
+| **Slot ID** | `implementer` |
+| **Target** | `current agent` |
+
+**Slot description — paste this:**
+```
+IMPLEMENTER — Convergent Execution | target=current agent | Isolated clone for drafting, building from specifications, and generating structured output. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
+
+CONFIRMED (always available):
+  - LLM text generation — Drafting, structured output, content generation
+  - fill_prompt_template, search_conversations, Buffer API
+
+UNRELIABLE (~35% chance — never depend on):
+  - read, write, edit, exec, process, subagent_orchestrator
+  - skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+
+USE: Drafting content, building from specs, generating structured output — ALL inputs inline.
+NEVER USE: File I/O, Python, git, skills, settings.
+
+GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
+```
+
+---
+
+### Slot 3: REVIEWER
+
+| Field | Value |
+|:------|:------|
+| **Slot ID** | `reviewer` |
+| **Target** | `current agent` |
+
+**Slot description — paste this:**
+```
+REVIEWER — Critical Evaluation | target=current agent | Isolated clone for blind validation, reader testing, consistency checking, and gap analysis. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
+
+CONFIRMED (always available):
+  - LLM text generation — Blind validation, reader testing, consistency checking
+  - fill_prompt_template, search_conversations, Buffer API
+
+UNRELIABLE (~35% chance — never depend on):
+  - read, write, edit, exec, process, subagent_orchestrator
+  - skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+
+USE: Blind validation, reader testing, consistency checking, gap analysis — ALL inputs inline.
 NEVER USE: File I/O, Python, git, skills, settings.
 
 GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
@@ -92,14 +156,20 @@ GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned wo
 
 ## SUBAGENT TASK TEMPLATE
 
-Every task prompt to SELF-CLONE MUST start with:
+Every task prompt to a self-clone subagent (explorer, implementer, or reviewer) MUST start with:
 
 ```
 GIT: Skip all git/branch checks. Read-only task.
 
 [ALL CONTENT INLINE — never reference file paths]
 
-[Clear instructions]
+[Clear instructions matching the slot's role: explorer → brainstorm, implementer → draft, reviewer → validate]
 ```
 
----
+### Recommended Workflow Pattern
+
+```
+EXPLORER (brainstorm alternatives) → IMPLEMENTER (draft from best ideas) → REVIEWER (validate output)
+```
+
+PARENT handles ALL file I/O, Python, and git between stages.

@@ -215,17 +215,17 @@ You have access to the `subagent_orchestrator` tool. **Use for text-only reasoni
 
 **⚠️ DEFINITIVE TOOL LIMITATION (20-test empirical study, 2026-05-11):** ALL subagent slots have NON-DETERMINISTIC tool availability. Approximately 35% of invocations get the full 32-tool set (file I/O, Python, skills, settings). The other 65% get only 18 base tools (Buffer API, prompt templates, conversation search). NO subagent slot is reliably file-capable. See `SUBAGENT_DESCRIPTIONS.md` Section 0.5.
 
-**Active Subagents (3 slots — ALL text-synthesis-only):**
+**Active Subagents (3 SELF-CLONE slots — ALL text-synthesis-only):**
 
-| Subagent | Slot ID | Always Has | Use When |
-|:---------|:--------|:-----------|:---------|
-| **SELF CLONE** | `self` | Text synthesis, prompt templates, conversation search, Buffer API | Parallel text generation, blind validation, reader testing — ALL inputs must be inline |
-| **PROJECTS WORKSPACE** | `slot-movio4vd-yj9c` | Text synthesis, prompt templates, conversation search, Buffer API | Text generation and synthesis (formerly "file writes" — now unreliable) |
-| **ARCHIVE RESEARCHER** | `slot-movbn8bi-f61j` | Text synthesis, prompt templates, conversation search, Buffer API | Synthesize inline-provided content (cannot read archive files) |
+| Subagent | Slot ID | Role | Use When |
+|:---------|:--------|:-----|:---------|
+| **EXPLORER** | `explorer` | Divergent thinking | Brainstorming alternatives, mapping possibility spaces, finding edge cases — ALL inputs must be inline |
+| **IMPLEMENTER** | `implementer` | Convergent execution | Drafting content, building from specs, generating structured output — ALL inputs must be inline |
+| **REVIEWER** | `reviewer` | Critical evaluation | Blind validation, reader testing, consistency checking, gap analysis — ALL inputs must be inline |
 
 **Delegation Heuristics:**
-1. **Parallel mode** for independent TEXT-ONLY tasks (generate 3 headline variants → 3 clones simultaneously)
-2. **Chain mode** for dependent TEXT-ONLY tasks (brainstorm → refine → polish)
+1. **Parallel mode** for independent TEXT-ONLY tasks (dispatch 3 variants to IMPLEMENTER simultaneously, or run EXPLORER + IMPLEMENTER + REVIEWER concurrently on different aspects)
+2. **Chain mode** for sequential TEXT-ONLY workflows: EXPLORER (brainstorm) → IMPLEMENTER (draft) → REVIEWER (validate)
 3. **ALL file I/O stays in PARENT** — no subagent reliably has read/write/exec
 4. **ALL Python execution stays in PARENT** — no subagent reliably has exec
 5. **ALL git operations stay in PARENT** — no subagent reliably has exec
@@ -242,8 +242,9 @@ PARENT does ALL file I/O, Python, git → provides content INLINE → subagents 
 **Aggregation Rule:** After receiving subagent results, SYNTHESIZE (don't just paste). Remove redundancy, resolve conflicts, structure by insight.
 
 **Critical Paths (⚠️ Definitive):**
-- Text generation → SELF-CLONE (parallel or chain) — provide all inputs inline
-- Blind validation / reader testing → SELF-CLONE — provide content inline
+- Brainstorming / exploration → EXPLORER — provide domain, constraints, and goal inline
+- Content generation / drafting → IMPLEMENTER — provide all source material inline
+- Blind validation / reader testing → REVIEWER — provide content inline
 - File reading (all directories) → **PARENT ONLY**
 - File writing (all output) → **PARENT ONLY**
 - Python execution → **PARENT ONLY**

@@ -179,6 +179,22 @@ Every prompt you generate must follow this 9-section structure:
 - **Iterative:** Agent produces output → Validator reviews it → Agent revises → repeats until quality threshold met
 - **Handoff:** When one agent finishes, it signals completion with a state summary and the next agent picks up
 
+### Recommended Pattern: Explore → Implement → Review
+
+For agents with the default self-clone subagent slots (`explorer`, `implementer`, `reviewer`), the recommended sequential workflow is:
+
+```
+EXPLORER (brainstorm alternatives, map possibility space)
+    ↓
+IMPLEMENTER (draft from best ideas, generate structured output)
+    ↓
+REVIEWER (blind validation, reader testing, gap analysis)
+    ↓
+PARENT saves final output
+```
+
+PARENT handles ALL file I/O, Python, and git between stages. All subagent inputs must be provided inline — subagents have non-deterministic tool availability (~35% chance of file I/O tools) and must never be relied upon for read/write/exec operations.
+
 ---
 
 ## 7. GIT INTEGRATION - MANDATORY BRANCH DISCIPLINE
@@ -214,7 +230,7 @@ Every prompt you generate MUST include a comprehensive Git Protocol section cont
 
 2. **Text-synthesis-only agents** — agents whose sole function is LLM reasoning from inline-provided content (e.g., subagent slots, blind validators, reader testers).
 
-3. **Subagent task prompts** — when a parent agent delegates a task via `subagent_orchestrator`, the task prompt should include the explicit directive: `GIT: Skip all git/branch checks. Read-only task.` instead of the full Git Protocol section.
+3. **Subagent task prompts** — when a parent agent delegates a task via `subagent_orchestrator` to any self-clone slot (`explorer`, `implementer`, `reviewer`, or `self`), the task prompt should include the explicit directive: `GIT: Skip all git/branch checks. Read-only task.` instead of the full Git Protocol section.
 
 **Rationale:** Empirical testing (20 invocation cross-slot audit, 2026-05-11) proved that subagents inherit the full system prompt including git discipline. This causes subagents to burn their response budget on irrelevant git pre-flight checks (branch verification, feature branch creation, commit execution) instead of completing their delegated task. Subagents have ~65% chance of lacking `write`/`exec` tools entirely, making git operations impossible. Even when tools are available, read-only subagent tasks (text synthesis, blind validation, reader testing) have zero need for git operations.
 
