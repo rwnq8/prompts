@@ -1052,11 +1052,11 @@ This ensures full traceability of autonomous actions — every autonomous step i
 
 ## 13. Version & Metadata
 
-**Version:** v1.7
+**Version:** v1.8
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM), with hard project isolation enforcement, mandatory 7-file documentation standards, cross-project learning, and semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME).
-**Last updated:** 2026-05-15
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.1 scripts), with hard project isolation enforcement, mandatory 7-file documentation standards, cross-project learning, and semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME).
+**Last updated:** 2026-05-16
 
 ---
 
