@@ -28,7 +28,7 @@ The email system gives DeepChat agents **structured, discoverable access to Micr
 |:------|:-----|:------|
 | **7 Python scripts** | CLI tools that read/search/compose/send via Outlook | `email/email_*.py` |
 | **1 shared utility** | Multi-account resolution and folder lookup | `email/_email_utils.py` |
-| **2 system prompts** | Agent instructions — how to use the tools | `email/EMAIL-AGENT-v1.1.md` (lightweight) |
+| **2 system prompts** | Agent instructions — how to use the tools | `email/EMAIL-AGENT-v1.2.md` (lightweight) |
 | **1 prompt module** | Drop-in section for any existing prompt | `email/EMAIL-CAPABILITIES.md` |
 | **MCP server** | Production-grade Microsoft Graph API integration | `email/outlook_mcp_server/` |
 
@@ -105,7 +105,7 @@ The COM connection requires `Outlook.exe` to be live. If Outlook is closed, the 
 
 ### 3. Load the email agent prompt in DeepChat
 
-Choose one of the three methods below. The simplest: **load `EMAIL-AGENT-v1.1.md` as your system prompt.**
+Choose one of the three methods below. The simplest: **load `EMAIL-AGENT-v1.2.md` as your system prompt.**
 
 ### 4. Start chatting
 
@@ -126,7 +126,7 @@ Agent: [runs email_reply.py --draft, confirms draft saved]
 
 ### Method A — Dedicated Email Agent Session **(Recommended for email-heavy sessions)**
 
-Load `EMAIL-AGENT-v1.1.md` as the **system prompt** in DeepChat. This gives you:
+Load `EMAIL-AGENT-v1.2.md` as the **system prompt** in DeepChat. This gives you:
 
 - Full email capabilities with zero project management overhead
 - No sprint workflow, no git protocol (except when creating files)
@@ -134,7 +134,7 @@ Load `EMAIL-AGENT-v1.1.md` as the **system prompt** in DeepChat. This gives you:
 - 10 edge cases with recovery procedures
 - 6 security rules (never send without confirmation, etc.)
 
-**How to load:** Configure DeepChat to use `G:\My Drive\prompts\email\EMAIL-AGENT-v1.1.md` as the system prompt for email sessions.
+**How to load:** Configure DeepChat to use `G:\My Drive\prompts\email\EMAIL-AGENT-v1.2.md` as the system prompt for email sessions.
 
 ---
 
@@ -344,7 +344,7 @@ email/
 ├── email_reply.py               Reply / reply-all / forward
 ├── email_folders.py             List all folders with counts
 │
-├── EMAIL-AGENT-v1.1.md         Lightweight system prompt (dedicated email sessions)
+├── EMAIL-AGENT-v1.2.md         Lightweight system prompt (dedicated email sessions)
 ├── EMAIL-CAPABILITIES.md        Drop-in prompt module (append to any prompt)
 │
 └── outlook_mcp_server/          MCP server for Microsoft Graph API
