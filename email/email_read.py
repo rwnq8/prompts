@@ -80,7 +80,9 @@ def main():
     body = target.HTMLBody if args.html else target.Body
     if not args.full and len(body) > 5000:
         body = body[:5000] + f"\n\n... [TRUNCATED at 5000 chars, {len(target.Body)} total. Use --full to see all]"
-    print(body)
+    # Sanitize for Windows console (replace non-cp1252 chars)
+    body_safe = body.encode("cp1252", errors="replace").decode("cp1252")
+    print(body_safe)
 
     if args.attachments_dir and target.Attachments.Count > 0:
         os.makedirs(args.attachments_dir, exist_ok=True)

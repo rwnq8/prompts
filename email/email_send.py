@@ -7,7 +7,7 @@ SECURITY: This sends immediately. Use email_draft.py to review first.
 import argparse
 import sys
 
-from _email_utils import resolve_account
+from _email_utils import resolve_account, resolve_store, get_folder_in_store
 
 def main():
     parser = argparse.ArgumentParser(description="Send an email via Outlook")
@@ -49,13 +49,18 @@ def main():
         sys.exit(3)
 
     try:
+        # Resolve account and its Outbox
         account = resolve_account(namespace, args.account)
+        store, store_name = resolve_store(namespace, args.account)
+        outbox = get_folder_in_store(store, "outbox")
     except (ValueError, RuntimeError) as e:
         print(f"ERROR: {e}")
         sys.exit(4)
 
     try:
         mail = outlook.CreateItem(0)
+        # Move to correct account's Outbox BEFORE sending
+        mail = mail.Move(outbox)
         mail.SendUsingAccount = account
 
         mail.Subject = args.subject

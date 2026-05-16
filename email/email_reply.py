@@ -83,18 +83,22 @@ def main():
             action = "REPLY"
 
         reply.SendUsingAccount = account
+        # Set body and attachments
         reply.Body = args.body + "\n\n" + reply.Body
 
         for fpath in args.attachment:
             reply.Attachments.Add(fpath)
 
         if args.draft:
-            reply.Save()
-            # Move to correct account's Drafts folder
+            # Move to correct Drafts before saving
             drafts_folder = get_folder_in_store(store, "drafts")
-            reply.Move(drafts_folder)
+            reply = reply.Move(drafts_folder)
+            reply.Save()
             print(f"DRAFT {action} saved from {account.SmtpAddress}: Re: {target.Subject}")
         else:
+            # Move to correct Outbox before sending
+            outbox = get_folder_in_store(store, "outbox")
+            reply = reply.Move(outbox)
             reply.Send()
             print(f"SENT {action} from {account.SmtpAddress}: Re: {target.Subject}")
 

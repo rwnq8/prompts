@@ -73,11 +73,11 @@ def main():
         for fpath in args.attachment:
             mail.Attachments.Add(fpath)
 
-        mail.Save()
-        # Move to correct account's Drafts folder
+        # Move to correct Drafts BEFORE saving
         store, _ = resolve_store(namespace, args.account)
         drafts_folder = get_folder_in_store(store, "drafts")
-        mail.Move(drafts_folder)
+        mail = mail.Move(drafts_folder)
+        mail.Save()
 
         print(f"DRAFT SAVED from {account.SmtpAddress}: '{args.subject}' to {args.to}")
         print("  Review in Outlook Drafts folder before sending.")

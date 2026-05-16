@@ -82,7 +82,7 @@ def main():
             "received": msg.ReceivedTime.strftime("%Y-%m-%d %H:%M"),
             "unread": bool(msg.UnRead),
             "has_attachments": bool(msg.Attachments.Count > 0),
-            "body_preview": str(msg.Body)[:300].replace("\n", " "),
+            "body_preview": str(msg.Body)[:300].encode(chr(99)+chr(112)+chr(49)+chr(50)+chr(53)+chr(50),errors=chr(114)+chr(101)+chr(112)+chr(108)+chr(97)+chr(99)+chr(101)).decode(chr(99)+chr(112)+chr(49)+chr(50)+chr(53)+chr(50)).replace("\n", " "),
         })
 
     if args.json:
