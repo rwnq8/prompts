@@ -1,4 +1,4 @@
-# DEEPCHAT AGENT/SUBAGENT SETUP (v4.1)
+# DEEPCHAT AGENT/SUBAGENT SETUP (v4.2)
 
 > Copy the exact values below into DeepChat Settings → Agents. One prompt per agent.
 
@@ -28,12 +28,25 @@
 
 ---
 
-### Agent: Social (use for Buffer/social media)
+### Agent: Social (DEPRECATED — use template instead)
 
 | Field | Value |
 |:------|:------|
 | **Name** | `Social` |
-| **System Prompt** | Paste ENTIRE contents of `SOCIAL-ORCHESTRATOR-v4.0.md` |
+| **System Prompt** | Paste ENTIRE contents of `SOCIAL-ORCHESTRATOR-v4.0.md` (DEPRECATED) |
+
+> **NOTE:** The SOCIAL-ORCHESTRATOR has been converted to a prompt template (`SOCIAL-ORCHESTRATOR TEMPLATE v1.0`), auto-registered and callable via `fill_prompt_template`. The dedicated Social agent is retained only for manual Buffer operations. For publication promotion, the template is invoked automatically during project close-out (DEFAULT.md Section 12.4).
+
+**Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
+
+---
+
+### Agent: Email (use for inbox sessions)
+
+| Field | Value |
+|:------|:------|
+| **Name** | `Email` |
+| **System Prompt** | Paste ENTIRE contents of `email/EMAIL-AGENT-v1.0.md` |
 
 **Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
 
