@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 Send an email via Outlook.
-Usage: python email_send.py --to addr [--cc addr] [--subject "text"] [--body "text"]
-       python email_send.py --to addr --body-file path.txt --subject "text"
-
-SECURITY: This script sends immediately. Use email_draft.py to review first.
+Usage: python email_send.py --to addr [--cc addr] [--subject "text"] [--body "text"] [--account NAME]
+SECURITY: This sends immediately. Use email_draft.py to review first.
 """
 import argparse
 import sys
+
+from _email_utils import resolve_account
 
 def main():
     parser = argparse.ArgumentParser(description="Send an email via Outlook")
@@ -19,9 +19,9 @@ def main():
     parser.add_argument("--body-file", default="", help="Read body from a file")
     parser.add_argument("--html", action="store_true", help="Body is HTML")
     parser.add_argument("--attachment", action="append", default=[], help="File to attach (repeatable)")
+    parser.add_argument("--account", default="rowan.quni@outlook.com", help="Account to send from")
     args = parser.parse_args()
 
-    # Resolve body
     body = args.body
     if args.body_file:
         try:
@@ -43,33 +43,38 @@ def main():
 
     try:
         outlook = win32com.client.Dispatch("Outlook.Application")
+        namespace = outlook.GetNamespace("MAPI")
     except Exception as e:
         print(f"ERROR: Cannot connect to Outlook. Is it running? ({e})")
         sys.exit(3)
 
     try:
-        mail = outlook.CreateItem(0)  # 0 = olMailItem
-        mail.Subject = args.subject
+        account = resolve_account(namespace, args.account)
+    except (ValueError, RuntimeError) as e:
+        print(f"ERROR: {e}")
+        sys.exit(4)
 
-        # Set recipients
+    try:
+        mail = outlook.CreateItem(0)
+        mail.SendUsingAccount = account
+
+        mail.Subject = args.subject
         mail.To = args.to
         if args.cc:
             mail.CC = args.cc
         if args.bcc:
             mail.BCC = args.bcc
 
-        # Set body
         if args.html:
             mail.HTMLBody = body
         else:
             mail.Body = body
 
-        # Attachments
         for fpath in args.attachment:
             mail.Attachments.Add(fpath)
 
         mail.Send()
-        print(f"SENT: '{args.subject}' to {args.to}")
+        print(f"SENT from {account.SmtpAddress}: '{args.subject}' to {args.to}")
         if args.cc:
             print(f"  CC: {args.cc}")
         if args.attachment:
@@ -77,7 +82,7 @@ def main():
 
     except Exception as e:
         print(f"ERROR: Failed to send. {e}")
-        sys.exit(4)
+        sys.exit(5)
 
 if __name__ == "__main__":
     main()

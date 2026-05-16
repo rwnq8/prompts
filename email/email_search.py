@@ -1,31 +1,13 @@
 #!/usr/bin/env python3
 """
 Search Outlook emails across folders.
-Usage: python email_search.py "keyword" [--folder inbox] [--limit 20] [--body-search]
+Usage: python email_search.py "keyword" [--folder inbox] [--limit 20] [--body-search] [--account NAME]
 """
 import argparse
 import sys
 import json
 
-FOLDER_MAP = {
-    "inbox": 6, "sent": 5, "drafts": 16, "deleted": 3,
-    "outbox": 4, "junk": 23, "archive": 45,
-}
-
-def get_folder(name, namespace):
-    name_lower = name.lower()
-    if name_lower in FOLDER_MAP:
-        return namespace.GetDefaultFolder(FOLDER_MAP[name_lower])
-    for fld in namespace.Folders:
-        for f in _walk(fld):
-            if f.Name.lower() == name_lower:
-                return f
-    return None
-
-def _walk(folder):
-    yield folder
-    for sub in folder.Folders:
-        yield from _walk(sub)
+from _email_utils import resolve_store, get_folder_in_store
 
 def main():
     parser = argparse.ArgumentParser(description="Search Outlook emails")
@@ -36,6 +18,7 @@ def main():
     parser.add_argument("--sender", default="", help="Filter by sender name/email")
     parser.add_argument("--since", default="", help="Only after date (YYYY-MM-DD)")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
+    parser.add_argument("--account", default="rowan.quni@outlook.com", help="Account to use")
     args = parser.parse_args()
 
     try:
@@ -51,10 +34,17 @@ def main():
         print(f"ERROR: Cannot connect to Outlook. Is it running? ({e})")
         sys.exit(2)
 
-    folder = get_folder(args.folder, namespace)
-    if folder is None:
-        print(f"ERROR: Folder '{args.folder}' not found.")
+    try:
+        store, store_name = resolve_store(namespace, args.account)
+    except (ValueError, RuntimeError) as e:
+        print(f"ERROR: {e}")
         sys.exit(3)
+
+    try:
+        folder = get_folder_in_store(store, args.folder)
+    except ValueError as e:
+        print(f"ERROR: {e}")
+        sys.exit(4)
 
     messages = folder.Items
     messages.Sort("[ReceivedTime]", True)
@@ -66,8 +56,6 @@ def main():
     for msg in messages:
         if len(results) >= args.limit:
             break
-
-        # Date filter
         if args.since:
             try:
                 from datetime import datetime
@@ -76,22 +64,17 @@ def main():
                     continue
             except ValueError:
                 pass
-
-        # Sender filter
         if sender_lower:
             sname = str(msg.SenderName).lower()
             smail = str(msg.SenderEmailAddress).lower()
             if sender_lower not in sname and sender_lower not in smail:
                 continue
-
-        # Text search
         if query_lower:
             text = str(msg.Subject).lower()
             if args.body_search:
                 text += " " + str(msg.Body[:2000]).lower()
             if query_lower not in text:
                 continue
-
         results.append({
             "subject": str(msg.Subject),
             "sender_name": str(msg.SenderName),
@@ -103,9 +86,9 @@ def main():
         })
 
     if args.json:
-        print(json.dumps({"query": args.query, "count": len(results), "results": results}, indent=2))
+        print(json.dumps({"account": store_name, "query": args.query, "count": len(results), "results": results}, indent=2))
     else:
-        print(f"Search: '{args.query}' in {args.folder} — {len(results)} results")
+        print(f"Account: {store_name}  |  Search: '{args.query}' in {args.folder}  |  {len(results)} results")
         print("-" * 60)
         for i, r in enumerate(results):
             status = "[UNREAD]" if r["unread"] else ""
@@ -113,7 +96,8 @@ def main():
             print(f"[{i}] {r['received']} {status} {attach}")
             print(f"    {r['sender_name']} <{r['sender_email']}>")
             print(f"    {r['subject']}")
-            print(f"    ...{r['body_preview'][:150]}")
+            if args.body_search:
+                print(f"    ...{r['body_preview'][:150]}")
             print()
 
 if __name__ == "__main__":

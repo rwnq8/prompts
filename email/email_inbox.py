@@ -1,33 +1,13 @@
 #!/usr/bin/env python3
 """
 List recent emails from an Outlook folder.
-Usage: python email_inbox.py [--folder NAME] [--limit N] [--unread-only]
+Usage: python email_inbox.py [--folder NAME] [--limit N] [--unread-only] [--account NAME]
 """
 import argparse
 import sys
 import json
 
-FOLDER_MAP = {
-    "inbox": 6, "sent": 5, "drafts": 16, "deleted": 3,
-    "outbox": 4, "junk": 23, "archive": 45,
-}
-
-def get_folder_id(name, namespace):
-    """Resolve folder by name or return default folders by enum."""
-    name_lower = name.lower()
-    if name_lower in FOLDER_MAP:
-        return namespace.GetDefaultFolder(FOLDER_MAP[name_lower])
-    # Try recursive search for custom folders
-    for folder in namespace.Folders:
-        for f in _walk_folders(folder):
-            if f.Name.lower() == name_lower:
-                return f
-    return None
-
-def _walk_folders(folder):
-    yield folder
-    for sub in folder.Folders:
-        yield from _walk_folders(sub)
+from _email_utils import resolve_store, get_folder_in_store
 
 def main():
     parser = argparse.ArgumentParser(description="List Outlook emails")
@@ -35,6 +15,7 @@ def main():
     parser.add_argument("--limit", type=int, default=20, help="Max messages (default: 20)")
     parser.add_argument("--unread-only", action="store_true", help="Show only unread")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
+    parser.add_argument("--account", default="rowan.quni@outlook.com", help="Account to use (default: rowan.quni@outlook.com)")
     args = parser.parse_args()
 
     try:
@@ -50,10 +31,17 @@ def main():
         print(f"ERROR: Cannot connect to Outlook. Is it running? ({e})")
         sys.exit(2)
 
-    folder = get_folder_id(args.folder, namespace)
-    if folder is None:
-        print(f"ERROR: Folder '{args.folder}' not found.")
+    try:
+        store, store_name = resolve_store(namespace, args.account)
+    except (ValueError, RuntimeError) as e:
+        print(f"ERROR: {e}")
         sys.exit(3)
+
+    try:
+        folder = get_folder_in_store(store, args.folder)
+    except ValueError as e:
+        print(f"ERROR: {e}")
+        sys.exit(4)
 
     messages = folder.Items
     messages.Sort("[ReceivedTime]", True)
@@ -79,9 +67,9 @@ def main():
         count += 1
 
     if args.json:
-        print(json.dumps({"folder": args.folder, "count": len(results), "messages": results}, indent=2))
+        print(json.dumps({"account": store_name, "folder": args.folder, "count": len(results), "messages": results}, indent=2))
     else:
-        print(f"Folder: {args.folder} ({len(results)} messages)")
+        print(f"Account: {store_name}  |  Folder: {args.folder}  |  {len(results)} messages")
         print("-" * 60)
         for entry in results:
             status = "[UNREAD]" if entry["unread"] else "        "

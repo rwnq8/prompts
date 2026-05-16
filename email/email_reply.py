@@ -1,32 +1,12 @@
 #!/usr/bin/env python3
 """
 Reply to or forward an email.
-Usage: python email_reply.py --index 3 --body "Thanks!"
-       python email_reply.py --index 0 --body "FYI" --forward
-       python email_reply.py --search "invoice" --index 0 --body "Received, thanks"
+Usage: python email_reply.py --index 3 --body "Thanks!" [--account NAME]
 """
 import argparse
 import sys
 
-FOLDER_MAP = {
-    "inbox": 6, "sent": 5, "drafts": 16, "deleted": 3,
-    "outbox": 4, "junk": 23, "archive": 45,
-}
-
-def get_folder(name, namespace):
-    name_lower = name.lower()
-    if name_lower in FOLDER_MAP:
-        return namespace.GetDefaultFolder(FOLDER_MAP[name_lower])
-    for fld in namespace.Folders:
-        for f in _walk(fld):
-            if f.Name.lower() == name_lower:
-                return f
-    return None
-
-def _walk(folder):
-    yield folder
-    for sub in folder.Folders:
-        yield from _walk(sub)
+from _email_utils import resolve_store, get_folder_in_store, resolve_account
 
 def main():
     parser = argparse.ArgumentParser(description="Reply to or forward an Outlook email")
@@ -38,6 +18,7 @@ def main():
     parser.add_argument("--reply-all", action="store_true", help="Reply to all recipients")
     parser.add_argument("--draft", action="store_true", help="Save as draft instead of sending")
     parser.add_argument("--attachment", action="append", default=[], help="Additional attachment (repeatable)")
+    parser.add_argument("--account", default="rowan.quni@outlook.com", help="Account to use")
     args = parser.parse_args()
 
     try:
@@ -53,10 +34,23 @@ def main():
         print(f"ERROR: Cannot connect to Outlook. Is it running? ({e})")
         sys.exit(2)
 
-    folder = get_folder(args.folder, namespace)
-    if folder is None:
-        print(f"ERROR: Folder '{args.folder}' not found.")
+    try:
+        store, store_name = resolve_store(namespace, args.account)
+    except (ValueError, RuntimeError) as e:
+        print(f"ERROR: {e}")
         sys.exit(3)
+
+    try:
+        folder = get_folder_in_store(store, args.folder)
+    except ValueError as e:
+        print(f"ERROR: {e}")
+        sys.exit(4)
+
+    try:
+        account = resolve_account(namespace, args.account)
+    except (ValueError, RuntimeError) as e:
+        print(f"ERROR: {e}")
+        sys.exit(5)
 
     messages = folder.Items
     messages.Sort("[ReceivedTime]", True)
@@ -75,10 +69,9 @@ def main():
 
     if target is None:
         print(f"ERROR: Message index {args.index} not found (matched {matched}).")
-        sys.exit(4)
+        sys.exit(5)
 
     try:
-        # Create reply or forward
         if args.forward:
             reply = target.Forward()
             action = "FORWARD"
@@ -89,23 +82,25 @@ def main():
             reply = target.Reply()
             action = "REPLY"
 
-        # Set body (prepended before original)
+        reply.SendUsingAccount = account
         reply.Body = args.body + "\n\n" + reply.Body
 
-        # Additional attachments
         for fpath in args.attachment:
             reply.Attachments.Add(fpath)
 
         if args.draft:
             reply.Save()
-            print(f"DRAFT {action} saved: Re: {target.Subject}")
+            # Move to correct account's Drafts folder
+            drafts_folder = get_folder_in_store(store, "drafts")
+            reply.Move(drafts_folder)
+            print(f"DRAFT {action} saved from {account.SmtpAddress}: Re: {target.Subject}")
         else:
             reply.Send()
-            print(f"SENT {action} to: Re: {target.Subject}")
+            print(f"SENT {action} from {account.SmtpAddress}: Re: {target.Subject}")
 
     except Exception as e:
         print(f"ERROR: Failed. {e}")
-        sys.exit(5)
+        sys.exit(6)
 
 if __name__ == "__main__":
     main()

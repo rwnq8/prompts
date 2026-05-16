@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 Create an email draft in Outlook (for review before sending).
-Usage: python email_draft.py --to addr --subject "text" --body "text"
-       python email_draft.py --to addr --subject "text" --body-file path.txt
+Usage: python email_draft.py --to addr --subject "text" --body "text" [--account NAME]
 """
 import argparse
 import sys
+
+from _email_utils import resolve_account, resolve_store, get_folder_in_store
 
 def main():
     parser = argparse.ArgumentParser(description="Create an Outlook email draft")
@@ -18,6 +19,7 @@ def main():
     parser.add_argument("--html", action="store_true", help="Body is HTML")
     parser.add_argument("--attachment", action="append", default=[], help="File to attach (repeatable)")
     parser.add_argument("--open", action="store_true", help="Open the draft in Outlook window")
+    parser.add_argument("--account", default="rowan.quni@outlook.com", help="Account to use")
     args = parser.parse_args()
 
     body = args.body
@@ -41,12 +43,21 @@ def main():
 
     try:
         outlook = win32com.client.Dispatch("Outlook.Application")
+        namespace = outlook.GetNamespace("MAPI")
     except Exception as e:
         print(f"ERROR: Cannot connect to Outlook. Is it running? ({e})")
         sys.exit(3)
 
     try:
+        account = resolve_account(namespace, args.account)
+    except (ValueError, RuntimeError) as e:
+        print(f"ERROR: {e}")
+        sys.exit(4)
+
+    try:
         mail = outlook.CreateItem(0)
+        mail.SendUsingAccount = account
+
         mail.Subject = args.subject
         mail.To = args.to
         if args.cc:
@@ -62,18 +73,22 @@ def main():
         for fpath in args.attachment:
             mail.Attachments.Add(fpath)
 
-        mail.Save()  # saves to Drafts folder
+        mail.Save()
+        # Move to correct account's Drafts folder
+        store, _ = resolve_store(namespace, args.account)
+        drafts_folder = get_folder_in_store(store, "drafts")
+        mail.Move(drafts_folder)
 
-        print(f"DRAFT SAVED: '{args.subject}' to {args.to}")
+        print(f"DRAFT SAVED from {account.SmtpAddress}: '{args.subject}' to {args.to}")
         print("  Review in Outlook Drafts folder before sending.")
 
         if args.open:
-            mail.Display()  # opens in Outlook window
+            mail.Display()
             print("  Draft opened in Outlook window.")
 
     except Exception as e:
         print(f"ERROR: Failed to create draft. {e}")
-        sys.exit(4)
+        sys.exit(5)
 
 if __name__ == "__main__":
     main()
