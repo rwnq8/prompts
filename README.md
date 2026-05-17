@@ -1,60 +1,92 @@
-# Prompts \u2014 System Prompt Library
+# Prompts — System Prompt Library v5.1
 
-System prompts that govern LLM agents. **G:\\My Drive\\prompts\\** is the active git-tracked workspace.
+> **G:\My Drive\prompts\** — git-tracked prompt engineering workspace.
+> See ARCHITECTURE.md for full taxonomy and AGENT-CONFIG.md for Settings values.
 
 ---
 
-## Active System Prompts
+## Architecture (3 Agents)
 
-| File | Agent | Use |
-|:-----|:------|:----|
-| **DEFAULT.md** v1.7+ | Projects | THE ONE \u2014 all research, writing, coding, project work. Hard isolation, 7-file docs, cross-project learning, semi-autonomous sprint progression (WHAT\u2019S NEXT? PROCEED / RESUME), Phase 0.1.6 project git init, email capabilities, Sections 11-12 publication & close-out standards. |
-| META-PROMPT-DEEPSEEK.md v4.1 | Prompts | Create, review, and improve system prompts. |
-| EMAIL-AGENT-v1.0.md | Email | Lightweight email agent for quick inbox sessions. |
-| image-gen-banner-prompt.md | Image Gen | Generate banner images. |
+| Agent | System Prompt | Write Boundary |
+|:------|:-------------|:---------------|
+| **Projects** | DEFAULT.md v1.10 | `G:\My Drive\projects\<name>\` |
+| **QWAV** | DEFAULT.md v1.10 | `G:\My Drive\QWAV\` |
+| **Prompts** | META-PROMPT-DEEPSEEK.md v4.1 | `G:\My Drive\prompts\` |
 
-## Active Prompt Templates (registered in DeepChat Settings \u2192 Prompts)
+**Design principle:** Agent = filesystem write boundary. Email, social media, image generation are templates consumed within the Projects/QWAV agents — not separate agents.
+
+## Prompt Templates (call via `fill_prompt_template`)
 
 | Template Name | Purpose |
 |:--------------|:--------|
-| Research Planning Agent \u2014 Step 1 of 4: Setup | Scholar pipeline: research planning |
-| Research Writing Agent \u2014 Step 2 of 4: Draft | Scholar pipeline: draft writing |
-| Research Review Agent \u2014 Step 3 of 4: Quality Check | Scholar pipeline: review |
-| Research Publication Agent \u2014 Step 4 of 4: Final Assembly | Scholar pipeline: publication |
-| WHAT\u2019S NEXT? PROCEED | Autonomous sprint task selection |
-| SOCIAL-ORCHESTRATOR TEMPLATE v1.0 | Generate social media content from publications |
+| EMAIL-AGENT TEMPLATE v1.2 | Draft emails from project outputs |
+| SOCIAL-ORCHESTRATOR TEMPLATE v1.0 | Generate social media posts |
+| Research Planning — Step 1 of 4 | Scholar pipeline: planning |
+| Research Writing — Step 2 of 4 | Scholar pipeline: drafting |
+| Research Review — Step 3 of 4 | Scholar pipeline: review |
+| Research Publication — Step 4 of 4 | Scholar pipeline: publication |
 
-## Reference & Infrastructure
+## Subagents (3 self-clones)
 
-| File | Content |
-|:-----|:--------|
-| SUBAGENT_DESCRIPTIONS.md v4.2 | Agent/subagent setup values for DeepChat Settings |
-| CROSS-PROJECT-LEARNINGS.md | 7 cross-project lessons (L1-L7) |
-| SOCIAL-ORCHESTRATOR-TEMPLATE.md | Social media template source (auto-registered) |
-| SOCIAL-ORCHESTRATOR-v4.0.md | **DEPRECATED** \u2014 replaced by template |
-| scholar/ | 4-stage research pipeline system prompts |
-| email/ | Email scripts + Outlook MCP server |
-| .gitattributes | Git line-ending config |
+| Slot | Role | Use |
+|:-----|:-----|:----|
+| EXPLORER | Divergent thinking | Brainstorming, alternatives, edge cases |
+| IMPLEMENTER | Convergent execution | Drafting, structured output |
+| REVIEWER | Critical evaluation | Blind validation, gap analysis |
+
+## Directory Structure
+
+```
+prompts\
+├── DEFAULT.md                    System prompt (Projects + QWAV agents)
+├── META-PROMPT-DEEPSEEK.md       System prompt (Prompts agent)
+├── ARCHITECTURE.md               Taxonomy + design principles
+├── AGENT-CONFIG.md               Settings — exact values to paste
+├── README.md                     This file
+├── .gitattributes
+│
+├── templates\                    Prompt templates
+│   ├── SOCIAL-ORCHESTRATOR-TEMPLATE.md
+│   └── image-gen-banner-prompt.md
+│
+├── email\                        Email system
+│   ├── EMAIL-AGENT-v1.2.md       Dedicated email system prompt
+│   ├── EMAIL-AGENT-TEMPLATE.md   Email prompt template
+│   ├── EMAIL-CAPABILITIES.md     Drop-in email module
+│   ├── EMAIL-TEST-SUITE.md       15 validation scenarios
+│   ├── README.md                 Email setup guide
+│   ├── email_*.py (7 scripts)    COM automation tools
+│   ├── _email_utils.py           Shared multi-account utility
+│   └── outlook_mcp_server\       MCP server (Graph API)
+│
+└── scholar\                      Research pipeline stages
+    ├── STAGE-1-SETUP.md
+    ├── STAGE-2-DRAFT.md
+    ├── STAGE-3-REVIEW.md
+    └── STAGE-4-PUBLISH.md
+```
+
+## DeepChat Settings (see AGENT-CONFIG.md for exact values)
+
+```
+Settings → Agents:
+  Projects   ← paste DEFAULT.md
+  QWAV       ← paste DEFAULT.md
+  Prompts    ← paste META-PROMPT-DEEPSEEK.md
+
+Settings → Subagents → paste slot descriptions from AGENT-CONFIG.md
+Settings → Templates → auto-registered from file headers
+```
+
+## Key Documents
+
+| File | Audience | Purpose |
+|:-----|:---------|:--------|
+| **AGENT-CONFIG.md** | You (setup) | Exact values to paste into DeepChat Settings |
+| **ARCHITECTURE.md** | You + agents | Taxonomy, sandboxing, happy path workflows |
+| **DEFAULT.md** v1.10 | Agents | System prompt with due diligence, email, social, sandboxing |
+| **email/README.md** | You + agents | Email system setup and usage |
 
 ---
 
-## DeepChat Setup (2 minutes)
-
-```
-Settings \u2192 Agents:
-  Projects   \u2190 paste DEFAULT.md
-  Prompts    \u2190 paste META-PROMPT-DEEPSEEK.md
-  Email      \u2190 paste EMAIL-AGENT-v1.0.md
-  Image Gen  \u2190 paste image-gen-banner-prompt.md
-
-  All agents: enable read, write, edit, exec, process,
-  deepchat_question, skill_list, skill_view, skill_manage
-
-Settings \u2192 Subagents \u2192 SELF-CLONE slot:
-  Paste slot description from SUBAGENT_DESCRIPTIONS.md
-
-Settings \u2192 Prompts (templates auto-register from files in prompts/):
-  Verify all 6 templates are present
-```
-
-**That\u2019s it.** Use the Projects agent for everything \u2014 including WHAT\u2019S NEXT? PROCEED / RESUME for autonomous sprint progression. Switch to Prompts/Email/Image Gen only for those specific tasks. Social media content is generated via the SOCIAL-ORCHESTRATOR TEMPLATE (called automatically during project close-out or manually via fill_prompt_template).
+*Prompts Library v5.1 — 3 agents, 6 templates, 3 subagents. All destructive operations gated behind user confirmation.*
