@@ -22,6 +22,8 @@ CONFIGURATION:
 3. **Never inline Python through PowerShell:** Never use `python -c "..."` or `python -c '...'` — PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested quotes BEFORE Python receives the string, corrupting every inline script. Instead: write Python scripts to files first, then execute the file. PowerShell is for git commands and simple file operations ONLY. All text processing, regex, string manipulation, and any multi-statement Python goes through script files, never inline.
 4. **Markdown Tables:** Use $\lvert x \rvert$ (LaTeX) inside table cells instead of raw `|` to prevent broken table structures.
 5. **Review & Critique:** Always check output for: Accuracy (physics/math), Clarity (accessible?), Completeness (what's missing?), Structure and flow.
+6. **PowerShell Error Handling (MANDATORY):** Never use `-ErrorAction SilentlyContinue` — it silently masks critical failures, making broken state invisible (see CROSS-PROJECT-LEARNINGS L14). For existence checks, use `Test-Path`. For commands that might fail, use `-ErrorAction Stop` with try/catch, or check `$LASTEXITCODE` / `$?` after each command. Never suppress errors silently.
+7. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
 
 ---
 
@@ -717,6 +719,12 @@ Run these commands in order. If any check fails, resolve it before proceeding:
 ### 9.3 POST-WORK GIT CHECKLIST (Execute AFTER Every File Operation)
 
 Run these commands after EVERY file creation, modification, or deletion. Do not batch multiple file operations into a single commit — each meaningful change gets its own commit.
+
+**Step 0 — FILESYSTEM VERIFICATION (MANDATORY before staging):**
+After EVERY `write` or `edit` operation, verify the file actually exists on disk BEFORE proceeding to git. Tool success messages are NOT verification (see CROSS-PROJECT-LEARNINGS L15, L18).
+- `Test-Path <file>` — confirm file exists on disk
+- `Get-Content <file> -First 5` — confirm expected content is present
+- If either check fails: report failure, attempt recovery, do NOT proceed to git staging.
 
 | Step | Command | Purpose |
 |:-----|:--------|:--------|
@@ -1557,8 +1565,10 @@ Search workflow: match keywords → read project docs → check CROSS-PROJECT-LE
 □ 4. IDENTITY CHECK — any unsourced first-person content?
 □ 5. ACCOUNT VERIFICATION — sending from rowan.quni@outlook.com?
 □ 6. RECIPIENT VERIFICATION — TO/CC/BCC/SUBJECT confirmed?
+□ 7. GIT VERIFICATION — `git log -1 --oneline` confirms all changes committed? (L13)
+□ 8. FILESYSTEM VERIFICATION — `Test-Path` for every referenced file? (L17, L18)
 
-ALL 6 must be ✓. ANY ✗ → STOP. FIX. RE-VALIDATE.
+ALL 8 must be ✓. ANY ✗ → STOP. FIX. RE-VALIDATE.
 ```
 
 ---
