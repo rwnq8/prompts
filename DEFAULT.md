@@ -974,7 +974,17 @@ When a publication has been released (user confirms Zenodo + ResearchGate), the 
 2. Execute the filled prompt (either as a subagent or in a new thread)
 3. Deliver the generated social media content to the user for copy/paste to platforms
 
-**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
+**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`.
+
+**EMAIL-AGENT TEMPLATE v1.2** — for drafting emails from project outputs:
+  1. Call `fill_prompt_template` with:
+     - `templateName`: `"EMAIL-AGENT TEMPLATE v1.2"`
+     - `templateArgs`: `{"recipient": "...", "subject": "...", "context": "...", "bodyDraft": "...", "attachmentPath": "...", "doiLink": "..."}`
+  2. Template extracts facts from context, asks user for body if missing, produces `email_draft.py` command
+  3. Execute the command: `python "G:\My Drive\prompts\email\email_draft.py" --to "..." --subject "..." --body "..."`
+  4. User reviews draft in Outlook, confirms, then send or execute `email_send.py`
+
+**Note:** The EMAIL-AGENT is available BOTH as a standalone system prompt (`email/EMAIL-AGENT-v1.2.md`) for dedicated email sessions AND as a template for in-line drafting from project outputs. The template approach is preferred when email is triggered by project work — the calling agent provides context, and the template handles formatting without fabricating content. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
 
 ### 12.5 Project Management System (PMBOK/Agile Hybrid)
 

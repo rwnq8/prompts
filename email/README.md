@@ -28,7 +28,7 @@ The email system gives DeepChat agents **structured, discoverable access to Micr
 |:------|:-----|:------|
 | **7 Python scripts** | CLI tools that read/search/compose/send via Outlook | `email/email_*.py` |
 | **1 shared utility** | Multi-account resolution and folder lookup | `email/_email_utils.py` |
-| **2 system prompts** | Agent instructions — how to use the tools | `email/EMAIL-AGENT-v1.2.md` (lightweight) |
+ — how to use the tools | `email/EMAIL-AGENT-v1.2.md` (lightweight) |
 | **1 prompt module** | Drop-in section for any existing prompt | `email/EMAIL-CAPABILITIES.md` |
 | **MCP server** | Production-grade Microsoft Graph API integration | `email/outlook_mcp_server/` |
 
@@ -344,7 +344,8 @@ email/
 ├── email_reply.py               Reply / reply-all / forward
 ├── email_folders.py             List all folders with counts
 │
-├── EMAIL-AGENT-v1.2.md         Lightweight system prompt (dedicated email sessions)
+├── EMAIL-AGENT-v1.2.md         System prompt (dedicated email sessions)
+├── EMAIL-AGENT-TEMPLATE.md      Prompt template (in-line drafting)
 ├── EMAIL-CAPABILITIES.md        Drop-in prompt module (append to any prompt)
 │
 └── outlook_mcp_server/          MCP server for Microsoft Graph API

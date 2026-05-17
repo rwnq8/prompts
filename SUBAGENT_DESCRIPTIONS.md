@@ -41,12 +41,12 @@
 
 ---
 
-### Agent: Email (use for inbox sessions)
+### Agent: Email (use for inbox sessions — also available as EMAIL-AGENT TEMPLATE v1.2)
 
 | Field | Value |
 |:------|:------|
 | **Name** | `Email` |
-| **System Prompt** | Paste ENTIRE contents of `email/EMAIL-AGENT-v1.0.md` |
+| **System Prompt** | Paste ENTIRE contents of `email/EMAIL-AGENT-v1.2.md` |
 
 **Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
 
