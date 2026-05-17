@@ -1,11 +1,13 @@
-# EMAIL CAPABILITIES MODULE v1.2
+# EMAIL CAPABILITIES MODULE v1.3
 
 > **Drop-in section for any DeepChat system prompt.**
-> Append this to your agent's system prompt (e.g., at the end of `DEFAULT.md`) to give it full Outlook email access — read, search, compose, reply, and manage attachments.
+> Append this to your agent's system prompt (e.g., at the end of `DEFAULT.md`) to give it full Outlook email access — read, search, compose, reply, organize, and manage attachments.
 >
 > **Default account:** `rowan.quni@outlook.com` (primary). All scripts auto-target this. Override with `--account "rwnquni@outlook.com"` for the legacy account.
 >
 > **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
+>
+> **v1.3 NEW:** email_archive.py for moving/organizing messages; AI hallmark avoidance rules; Smart Skeleton Mode for stuck-user handling.
 
 ---
 
@@ -24,6 +26,7 @@ Your agent gains access to **7 email tools** via Python scripts in `G:\My Drive\
 | **Draft Create** | `email_draft.py` | Compose and save as draft (review before sending) | No |
 | **Reply/Forward** | `email_reply.py` | Reply, reply-all, or forward an email | **YES** |
 | **Folder List** | `email_folders.py` | List all Outlook folders and message counts | No |
+| **Archive/Move** | `email_archive.py` | Move messages between folders | Moderate — recoverable |
 
 **All write operations (send, reply)** require explicit user confirmation before execution. Drafts are safe — they save for human review.
 
@@ -177,9 +180,38 @@ python "G:\My Drive\prompts\email\email_folders.py" --account "rwnquni@outlook.c
 
 Returns all Outlook folders with item counts and unread counts. Use this to discover available folder names before running inbox/read/search operations. **All scripts support `--account`** — use `--account` to target a specific mailbox.
 
+### E.2.8 Move / Archive Email — `email_archive.py` ✅ MODERATE
+
+Move messages between folders: archive, organize projects, clean inbox. Recoverable — messages can be moved back.
+
+```bash
+python "G:\My Drive\prompts\email\email_archive.py" --index 0 --destination Archive
+python "G:\My Drive\prompts\email\email_archive.py" --search "Richard" --index 0 --destination Archive --mark-read
+python "G:\My Drive\prompts\email\email_archive.py" --index 2 --folder inbox --destination "Project X"
+python "G:\My Drive\prompts\email\email_archive.py" --index 0 --destination "Deleted Items" --mark-read
+```
+
+**Parameters:**
+| Flag | Type | Default | Description |
+|:-----|:-----|:--------|:------------|
+| `--index` | int | 0 | Message index in source folder (0=most recent) |
+| `--folder` | string | `inbox` | Source folder name |
+| `--search` | string | — | Filter messages by text before indexing |
+| `--destination` | string | `Archive` | Destination folder name |
+| `--mark-read` | flag | off | Mark the message as read before moving |
+| `--account` | string | `rowan.quni@outlook.com` | Account to use |
+
+**Usage pattern:**
+1. Run `email_inbox.py` or `email_search.py` to find the message
+2. Note the index or use `--search` to identify it
+3. Run `email_archive.py` with `--destination`
+4. Confirm: "MOVED [subject] to [destination]"
+
+**Safety:** This is a move, not a delete — the message appears in the destination folder. It can be moved back with another `email_archive.py` call. If the destination doesn't exist, the script reports an error (run `email_folders.py` to see available folders).
+
 ---
 
-### E.2.8 Filesystem Search — Supplemental Context (See DEFAULT.md §0.8)
+### E.2.9 Filesystem Search — Supplemental Context (See DEFAULT.md §0.8)
 
 Before composing any substantive reply, search the user's knowledge base. The canonical filesystem map is in DEFAULT.md §0.8. Quick reference:
 
@@ -230,6 +262,26 @@ Search workflow: match keywords → read project docs → check CROSS-PROJECT-LE
    exec: python "G:\My Drive\prompts\email\email_reply.py" --search "Y" --index 0 --body "..." --draft
 4. User reviews in Outlook Drafts, or confirms to send
 ```
+
+### Pattern E: "Archive the email from X"
+```
+1. Find the message:
+   exec: python "G:\My Drive\prompts\email\email_search.py" "" --sender "X" --limit 5
+2. Confirm with user: "Move '[subject]' from [sender] to Archive?"
+3. Execute the move:
+   exec: python "G:\My Drive\prompts\email\email_archive.py" --search "X" --index 0 --destination Archive --mark-read
+4. Confirm: "MOVED [subject] to Archive"
+```
+
+### Pattern F: "Clean up my inbox — move all [Project X] emails to its folder"
+```
+1. Search for messages:
+   exec: python "G:\My Drive\prompts\email\email_search.py" "Project X" --folder inbox --limit 20
+2. Present results to user
+3. User selects which messages to move (by index or all)
+4. Move each selected message:
+   exec: python "G:\My Drive\prompts\email\email_archive.py" --search "Project X" --index N --destination "Project X"
+5. Note: this moves one at a time. Repeat for each index the user selects.
 
 ---
 
@@ -282,6 +334,19 @@ Search workflow: match keywords → read project docs → check CROSS-PROJECT-LE
 → Suggest using email_draft.py as fallback
 ```
 
+### Error: "Folder 'X' not found" (during archive)
+```
+→ Run: python "G:\My Drive\prompts\email\email_folders.py" to show available folders
+→ Suggest closest match or ask user to clarify
+→ The message was NOT moved — it's still in the source folder
+```
+
+### Error: "Message index N not found" (during archive)
+```
+→ Message index is out of range. Show the user how many messages were matched.
+→ The message was NOT moved — run email_inbox.py or email_search.py to see current state
+```
+
 ### Error: Wrong account accessed (legacy rwnquni@outlook.com)
 ```
 → Scripts default to rowan.quni@outlook.com — but if output shows "rwnquni",
@@ -317,10 +382,11 @@ Search workflow: match keywords → read project docs → check CROSS-PROJECT-LE
 □ 2. FABRICATION CHECK — any invented papers, DOIs, paths?
 □ 3. USER APPROVAL — user saw and approved this EXACT text?
 □ 4. IDENTITY CHECK — any unsourced first-person content?
-□ 5. ACCOUNT VERIFICATION — sending from rowan.quni@outlook.com?
-□ 6. RECIPIENT VERIFICATION — TO/CC/BCC/SUBJECT confirmed?
+□ 5. AI HALLMARK SCAN — any em-dashes, smart quotes, formulaic closings?
+□ 6. ACCOUNT VERIFICATION — sending from rowan.quni@outlook.com?
+□ 7. RECIPIENT VERIFICATION — TO/CC/BCC/SUBJECT confirmed?
 
-ALL 6 must be ✓. ANY ✗ → STOP. FIX. RE-VALIDATE.
+ALL 7 must be ✓. ANY ✗ → STOP. FIX. RE-VALIDATE.
 ```
 
 ---
@@ -355,4 +421,9 @@ For production use, migrate from COM scripts to an MCP server wrapping Microsoft
 
 ---
 
-*Email Capabilities Module v1.2 — drop-in section. Built for DeepChat agents using local Outlook COM automation. Default account: rowan.quni@outlook.com. Updated: 2026-05-16 (added §E.2.8 Filesystem Search referencing DEFAULT.md §0.8, §E.3.1 Composition Authority with Legal/Inference/Forbidden framework, and §E.5.1 Pre-Send Validation Checklist).*
+*Email Capabilities Module v1.3 — drop-in section. Built for DeepChat agents using local Outlook COM automation. Default account: rowan.quni@outlook.com.*
+
+*Changelog v1.2 → v1.3:*
+- *Added email_archive.py tool with full parameter docs, workflow patterns, and error handling (§E.1, §E.2.8, §E.3 Patterns E-F, §E.4)*
+- *Added AI hallmark avoidance rules to pre-send checklist (now 7 items, §E.5.1)*
+- *Renumbered Filesystem Search from E.2.8 → E.2.9*

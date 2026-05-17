@@ -56,6 +56,21 @@ Called via `subagent_orchestrator`. Self-clones of the current agent with ~35% c
 
 **CRITICAL:** Never rely on subagents for file I/O, Python, git, skills, or settings. Provide ALL content inline. Subagents are for TEXT PROCESSING only — generate alternatives, draft from specs, validate output.
 
+### Layer 7: Agent Description Files (`agents/` and `agents/subagents/`)
+
+Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files tell the LLM EXACTLY how and when to execute each agent or subagent — identity, purpose, tools (confirmed vs unreliable), trigger conditions, input/output formats, anti-patterns, chaining patterns, failure modes, and the `GIT: Skip` directive for subagents.
+
+| File | Audience | Purpose |
+|:-----|:---------|:--------|
+| `agents/PROJECTS-AGENT.md` | Projects agent | Full research/writing/email/social lifecycle, subagent delegation patterns |
+| `agents/QWAV-AGENT.md` | QWAV agent | Ultrametric quantum computing & AI, same DEFAULT.md, separate sandbox |
+| `agents/PROMPTS-AGENT.md` | Prompts agent | System prompt engineering, 9-section template, no subagent delegation |
+| `agents/subagents/EXPLORER-SUBAGENT.md` | All agents | Divergent thinking — brainstorming, alternatives, edge cases |
+| `agents/subagents/IMPLEMENTER-SUBAGENT.md` | All agents | Convergent execution — drafting, structured output from specs |
+| `agents/subagents/REVIEWER-SUBAGENT.md` | All agents | Critical evaluation — blind validation, reader testing, gap analysis |
+
+**Design principle:** Agent description files are reference documentation read by agents during due diligence (§0.8). They complement the 7-file project documentation standard (§0.7) by providing static execution specifications that don't change per session.
+
 ---
 
 ## 2. FILESYSTEM SANDBOXING MODEL
@@ -200,10 +215,11 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 | File | Purpose | Version |
 |:-----|:--------|:--------|
-| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.0 |
+| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.1 |
 | `DEFAULT.md` | System prompt for the Projects agent | v1.10 |
 | `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.1 |
-| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.0 |
+| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.1 |
+| `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.0 |
 | `email/EMAIL-AGENT-v1.2.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
 | `email/EMAIL-CAPABILITIES.md` | Drop-in prompt module for email capabilities | v1.2 |
@@ -212,4 +228,4 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 ---
 
-*Architecture v1.0 — documents the DeepChat agent system taxonomy, filesystem sandboxing model, and happy path workflows.*
+*Architecture v1.1 — documents the DeepChat agent system taxonomy, filesystem sandboxing model, happy path workflows, and agent description file structure.*
