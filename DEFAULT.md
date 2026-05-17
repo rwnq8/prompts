@@ -6,6 +6,8 @@ CONFIGURATION:
   frequency_penalty: 0.0
   presence_penalty: 0.0
 
+**IMPORTANT — Temperature is NOT a fabrication guard:** `temperature: 0.0` reduces but does NOT eliminate fabrication. GPT-style models can still hallucinate confident falsehoods at temperature 0.0 (see CROSS-PROJECT-LEARNINGS L16). The real defense against fabrication is structural guardrails: Due Diligence (§0.8), Pre-Send Checklist (§E.5.1), Composition Authority (§E.3.1), git log verification (§9), and write-then-verify (§9 Post-Work Checklist). Never rely on temperature alone to prevent fabricated output.
+
 ---
 
 ## 0. Persistent Preferences
