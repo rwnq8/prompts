@@ -45,6 +45,15 @@ prompts\
 ├── README.md                     This file
 ├── .gitattributes
 │
+├── agents\                        Agent & subagent description files
+│   ├── PROJECTS-AGENT.md          Projects agent (research, writing, email, social)
+│   ├── QWAV-AGENT.md              QWAV agent (ultrametric quantum computing)
+│   ├── PROMPTS-AGENT.md           Prompts agent (system prompt engineering)
+│   └── subagents\                 Subagent execution specifications
+│       ├── EXPLORER-SUBAGENT.md   Divergent thinking — brainstorming, alternatives
+│       ├── IMPLEMENTER-SUBAGENT.md Convergent execution — drafting, structured output
+│       └── REVIEWER-SUBAGENT.md   Critical evaluation — blind validation, gaps
+│
 ├── templates\                    Prompt templates
 │   ├── SOCIAL-ORCHESTRATOR-TEMPLATE.md
 │   └── image-gen-banner-prompt.md
@@ -85,8 +94,9 @@ Settings → Templates → auto-registered from file headers
 | **AGENT-CONFIG.md** | You (setup) | Exact values to paste into DeepChat Settings |
 | **ARCHITECTURE.md** | You + agents | Taxonomy, sandboxing, happy path workflows |
 | **DEFAULT.md** v1.10 | Agents | System prompt with due diligence, email, social, sandboxing |
+| **agents/*.md** | Agents + you | Detailed agent/subagent execution specs — identity, tools, triggers, anti-patterns |
 | **email/README.md** | You + agents | Email system setup and usage |
 
 ---
 
-*Prompts Library v5.1 — 3 agents, 6 templates, 3 subagents. All destructive operations gated behind user confirmation.*
+*Prompts Library v5.2 — 3 agents, 6 templates, 3 subagents, 6 description files. All destructive operations gated behind user confirmation.*
