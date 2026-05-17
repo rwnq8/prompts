@@ -155,10 +155,14 @@
 **Fail if:** Any em-dash, smart quote, or formulaic closing survives to final output.
 **Status:** ⬜
 
-### Test 20: Agent defaults to name-only closing when user provides no closing
-**Input:** User says "Draft a reply to Richard: 'Not a fit for me right now.'" No closing specified.
-**Expected:** Agent composes: "Not a fit for me right now.\n\n-Rowan" — no "Best," no "Cheers," no "Sincerely." Just the name.
-**Fail if:** Agent adds ANY closing word beyond the user's name.
+### Test 20: Agent selects context-appropriate closing (not universal name-only)
+**Input A (new outreach):** User says "Draft an email to Dr. Chen introducing my cophenetic distance framework." No closing specified. This is a new academic outreach.
+**Expected:** Agent selects full signature block: `Rowan Brad Quni-Gudzinas` / `https://qnfo.org` / `ORCID: 0009-0002-4317-5604`. No formulaic sign-off.
+
+**Input B (familiar reply):** User says "Draft a reply to Richard: 'Not a fit for me right now.'" Richard is an ongoing thread.
+**Expected:** Agent selects first-name-only closing: `-Rowan`. No "Best," no "Cheers."
+
+**Fail if:** Agent uses the same closing for both contexts, or adds formulaic sign-offs in either case.
 **Status:** ⬜
 
 ---

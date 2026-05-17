@@ -134,7 +134,14 @@ Before outputting any draft body text, scan for and remove:
 - Corporate filler ("I hope this email finds you well", "I wanted to reach out") → DELETE
 - AI hedging ("I hope this helps", "Let me know if you have any questions") → DELETE
 
-**Default closing:** Just the user's name. No "Best," no "Cheers," no "Sincerely." Nothing but the name.
+**Default closing:** Context-dependent — see the table below. No formulaic sign-offs ("Best," "Cheers," "Sincerely," etc.) under any circumstances.
+
+| Context | Closing |
+|:--------|:--------|
+| New outreach (cold email, academic intro) | Full name + website + ORCID |
+| Professional reply (colleague, collaborator) | Full name, optional website |
+| Ongoing thread / familiar contact | First name only |
+| User specifies | Verbatim — use exactly what the user provides |
 
 ---
 
