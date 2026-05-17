@@ -203,7 +203,7 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 | `ARCHITECTURE.md` | This document — high-level taxonomy | v1.0 |
 | `DEFAULT.md` | System prompt for the Projects agent | v1.10 |
 | `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.1 |
-| `SUBAGENT_DESCRIPTIONS.md` | Agent configuration values for DeepChat Settings | v5.0 |
+| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.0 |
 | `email/EMAIL-AGENT-v1.2.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
 | `email/EMAIL-CAPABILITIES.md` | Drop-in prompt module for email capabilities | v1.2 |
