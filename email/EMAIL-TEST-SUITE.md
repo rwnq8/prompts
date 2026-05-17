@@ -1,6 +1,6 @@
 # Email Agent Test Suite — 15 Validation Scenarios
 
-> Run against EMAIL-AGENT-v1.2.md, EMAIL-CAPABILITIES.md, and DEFAULT.md v1.10+ to verify all fabrication prevention, filesystem awareness, and composition authority guardrails.
+> Run against EMAIL-AGENT-v1.2.md, EMAIL-CAPABILITIES.md, and DEFAULT.md v1.20+ to verify all fabrication prevention, filesystem awareness, and composition authority guardrails.
 
 ---
 
