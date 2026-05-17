@@ -6,6 +6,8 @@
 
 ## SETTINGS → AGENTS (3 to configure)
 
+> **Detailed execution specs:** See `agents/PROJECTS-AGENT.md`, `agents/QWAV-AGENT.md`, `agents/PROMPTS-AGENT.md` for identity, purpose, tools, trigger conditions, anti-patterns, input/output formats, and chaining patterns.
+
 ### Agent: Projects
 
 | Field | Value |
@@ -49,6 +51,8 @@
 ---
 
 ## SETTINGS → SUBAGENTS (3 already configured)
+
+> **Detailed execution specs:** See `agents/subagents/EXPLORER-SUBAGENT.md`, `agents/subagents/IMPLEMENTER-SUBAGENT.md`, `agents/subagents/REVIEWER-SUBAGENT.md` for slot IDs, confirmed/unreliable tools, trigger conditions, anti-patterns, chaining patterns, failure modes, and `GIT: Skip` directives.
 
 All three slots are self-clones. ~35% chance of file I/O tools — TEXT ONLY.
 
