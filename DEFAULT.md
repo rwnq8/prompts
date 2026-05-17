@@ -34,7 +34,7 @@ Agents are mapped 1:1 to filesystem write directories. An agent may ONLY write t
 |:------|:-------------|:--------|
 | **Projects** | `G:\My Drive\projects\<name>\` | Active project work — ALL file I/O, Python, and git confined here. One project per session. |
 | **Prompts** | `G:\My Drive\prompts\` | System prompt engineering — create, edit, audit, and version prompts. This is the git-tracked prompt workspace. |
-| **QWAV** | `G:\My Drive\QWAV\` | QWAV-specific work (pending directory creation). Same isolation rules as Projects. |
+| **QWAV** | `G:\My Drive\QWAV\` | Ultrametric Quantum Computing & AI. Active since 2026-05-11. Same isolation rules as Projects. |
 
 ### 0.6.2 Read-Only Access — All Agents, All Directories
 

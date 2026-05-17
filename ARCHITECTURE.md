@@ -19,7 +19,7 @@ Configured in DeepChat Settings → Agents. Each agent loads ONE system prompt a
 |:------|:-------------|:--------------|:-----------|:--------|
 | **Projects** | `DEFAULT.md` | `G:\My Drive\projects\<name>\` | ALL directories | All project work — research, writing, coding, email, social media |
 | **Prompts** | `META-PROMPT-DEEPSEEK.md` | `G:\My Drive\prompts\` | ALL directories | System prompt engineering — create, edit, audit prompts |
-| **QWAV** | `QWAV-DEFAULT.md` (TBD) | `G:\My Drive\QWAV\` | ALL directories | QWAV-specific work (pending directory creation) |
+| **QWAV** | `QWAV-DEFAULT.md` (TBD) | `G:\My Drive\QWAV\` | ALL directories | Ultrametric Quantum Computing & AI — passive fault tolerance, glass-based q-computing |
 
 **Design principle:** An agent exists ONLY when it has a unique filesystem write boundary. Everything else (email, image generation, social media) is consumed as a template or sub-prompt WITHIN the writing agent — typically the Projects agent.
 
