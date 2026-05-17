@@ -1,10 +1,14 @@
-# DEEPCHAT AGENT/SUBAGENT SETUP (v4.2)
+# DEEPCHAT AGENT/SUBAGENT SETUP (v5.0)
 
 > Copy the exact values below into DeepChat Settings → Agents. One prompt per agent.
+>
+> **Design principle:** An agent exists ONLY when it has a unique filesystem write directory. Everything else (email, social media, image generation) is consumed as a prompt template or sub-prompt within the writing agent — typically the Projects agent.
+>
+> **For the full architecture taxonomy, see:** `ARCHITECTURE.md` — documents agents, system prompts, prompt templates, subagents, filesystem sandboxing, and happy path workflows.
 
 ---
 
-## AGENTS
+## AGENTS (Minimal Set — 3 Agents)
 
 ### Agent: Projects (THE ONE — use for all project work)
 
@@ -13,7 +17,11 @@
 | **Name** | `Projects` |
 | **System Prompt** | Paste ENTIRE contents of `DEFAULT.md` |
 
-**Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
+**Write boundary:** `G:\My Drive\projects\<name>\`
+**Can also:** Email (via template), social media (via template), image generation (via skill/template)
+**MOVE permissions:** → `Archive\projects\`, → `Obsidian\releases\`
+
+**Tools to enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage subagent_orchestrator fill_prompt_template search_conversations`
 
 ---
 
@@ -24,42 +32,69 @@
 | **Name** | `Prompts` |
 | **System Prompt** | Paste ENTIRE contents of `META-PROMPT-DEEPSEEK.md` |
 
-**Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
+**Write boundary:** `G:\My Drive\prompts\`
+**Can also:** Audit and version existing prompts, create templates
+**MOVE permissions:** → `Archive\prompts\`
+
+**Tools to enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
 
 ---
 
-### Agent: Social (DEPRECATED — use template instead)
+### Agent: QWAV (pending — directory not yet created)
 
 | Field | Value |
 |:------|:------|
-| **Name** | `Social` |
-| **System Prompt** | Paste ENTIRE contents of `SOCIAL-ORCHESTRATOR-v4.0.md` (DEPRECATED) |
+| **Name** | `QWAV` |
+| **System Prompt** | `QWAV-DEFAULT.md` (TBD — create when `G:\My Drive\QWAV\` exists) |
 
-> **NOTE:** The SOCIAL-ORCHESTRATOR has been converted to a prompt template (`SOCIAL-ORCHESTRATOR TEMPLATE v1.0`), auto-registered and callable via `fill_prompt_template`. The dedicated Social agent is retained only for manual Buffer operations. For publication promotion, the template is invoked automatically during project close-out (DEFAULT.md Section 12.4).
+**Write boundary:** `G:\My Drive\QWAV\`
+**Can also:** Email (via template), social media (via template)
+**MOVE permissions:** → `Archive\QWAV\`, → `Obsidian\releases\`
 
-**Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
+**Tools to enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage subagent_orchestrator fill_prompt_template search_conversations`
+
+**Setup when QWAV exists:**
+1. Create directory: `G:\My Drive\QWAV\`
+2. Create system prompt: `QWAV-DEFAULT.md` (follow the 9-section prompt template from `META-PROMPT-DEEPSEEK.md`)
+3. Register agent in DeepChat Settings → Agents with values above
 
 ---
 
-### Agent: Email (use for inbox sessions — also available as EMAIL-AGENT TEMPLATE v1.2)
+## DEPRECATED AGENTS (Do NOT Configure)
 
-| Field | Value |
-|:------|:------|
-| **Name** | `Email` |
-| **System Prompt** | Paste ENTIRE contents of `email/EMAIL-AGENT-v1.2.md` |
+These were previously standalone agents. They have been converted to prompt templates or sub-prompts consumed within the Projects agent.
 
-**Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
+| Agent | Status | Replacement |
+|:------|:-------|:------------|
+| **Email** | ❌ Removed (v5.0) | Use `EMAIL-AGENT TEMPLATE v1.2` via `fill_prompt_template()` from Projects agent. The system prompt file (`email/EMAIL-AGENT-v1.2.md`) remains available for optional standalone email sessions. |
+| **Social** | ❌ Removed (v5.0) | Use `SOCIAL-ORCHESTRATOR TEMPLATE v1.0` via `fill_prompt_template()` from Projects agent. Posts published via Buffer API. |
+| **Image Gen** | ❌ Removed (v5.0) | Use `image-gen-banner-prompt.md` as a sub-prompt consumed within the Projects agent. Image generation via the `algorithmic-art` or `frontend-design` skills. |
 
 ---
 
-### Agent: Image Gen (use for banner images)
+## PROMPT TEMPLATES (Call via `fill_prompt_template()`)
 
-| Field | Value |
-|:------|:------|
-| **Name** | `Image Gen` |
-| **System Prompt** | Paste ENTIRE contents of `image-gen-banner-prompt.md` |
+These are NOT agents. They are parameterized sub-prompts called by the Projects agent (or QWAV agent) for specialized tasks.
 
-**Tools — enable:** `read write edit exec process deepchat_question skill_list skill_view skill_manage`
+| Template Name | Parameters | Purpose |
+|:--------------|:-----------|:--------|
+| `SOCIAL-ORCHESTRATOR TEMPLATE v1.0` | publicationTitle, publicationAuthors, publicationAbstract, publicationDOI, publicationFindings, publicationPath | Generate social media posts from publications |
+| `EMAIL-AGENT TEMPLATE v1.2` | recipient, subject, context, bodyDraft, attachmentPath, doiLink | Draft emails from project outputs |
+| `Research Planning Agent — Step 1 of 4: Setup` | — | Research project setup |
+| `Research Writing Agent — Step 2 of 4: Draft` | — | Research draft generation |
+| `Research Review Agent — Step 3 of 4: Quality Check` | — | Research quality review |
+| `Research Publication Agent — Step 4 of 4: Final Assembly` | — | Research publication assembly |
+
+**Usage pattern:**
+```
+Projects agent:
+  fill_prompt_template(
+    templateName: "EMAIL-AGENT TEMPLATE v1.2",
+    templateArgs: {recipient: "...", subject: "...", context: "...", ...}
+  )
+  → Template returns formatted output (email command, social text, etc.)
+  → Projects agent executes or displays the output
+```
 
 ---
 
@@ -67,109 +102,101 @@
 
 All three slots are SELF-CLONES — isolated instances of the current agent. They share the same tool availability profile.
 
-**Tool Availability (ALL self-clone slots):**
+**⚠️ DEFINITIVE TOOL LIMITATION (20-test empirical study, 2026-05-11):** ALL subagent slots have NON-DETERMINISTIC tool availability. ~35% chance of having file I/O tools (read, write, edit, exec, process, subagent_orchestrator, skill_*, deepchat_*). NEVER rely on subagents for any file operation, Python execution, git, skills, or settings.
+
 - CONFIRMED (always available): LLM text generation, fill_prompt_template, search_conversations, Buffer API
-- UNRELIABLE (~35% chance — never depend on): read, write, edit, exec, process, subagent_orchestrator, skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+- UNRELIABLE (~35% chance — never depend on): read, write, edit, exec, process, subagent_orchestrator, skill_list, skill_view, skill_manage, deepchat_*
 
----
-
-### Slot 1: EXPLORER
-
-| Field | Value |
-|:------|:------|
-| **Slot ID** | `explorer` |
-| **Target** | `current agent` |
-
-**Slot description — paste this:**
-```
-EXPLORER — Divergent Thinking | target=current agent | Isolated clone for brainstorming, possibility-space mapping, and edge-case discovery. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
-
-CONFIRMED (always available):
-  - LLM text generation — Brainstorming, alternative generation, edge-case discovery
-  - fill_prompt_template, search_conversations, Buffer API
-
-UNRELIABLE (~35% chance — never depend on):
-  - read, write, edit, exec, process, subagent_orchestrator
-  - skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
-
-USE: Brainstorming alternatives, mapping possibility spaces, finding edge cases — ALL inputs inline.
-NEVER USE: File I/O, Python, git, skills, settings.
-
-GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
-```
-
----
-
-### Slot 2: IMPLEMENTER
-
-| Field | Value |
-|:------|:------|
-| **Slot ID** | `implementer` |
-| **Target** | `current agent` |
-
-**Slot description — paste this:**
-```
-IMPLEMENTER — Convergent Execution | target=current agent | Isolated clone for drafting, building from specifications, and generating structured output. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
-
-CONFIRMED (always available):
-  - LLM text generation — Drafting, structured output, content generation
-  - fill_prompt_template, search_conversations, Buffer API
-
-UNRELIABLE (~35% chance — never depend on):
-  - read, write, edit, exec, process, subagent_orchestrator
-  - skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
-
-USE: Drafting content, building from specs, generating structured output — ALL inputs inline.
-NEVER USE: File I/O, Python, git, skills, settings.
-
-GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
-```
-
----
-
-### Slot 3: REVIEWER
-
-| Field | Value |
-|:------|:------|
-| **Slot ID** | `reviewer` |
-| **Target** | `current agent` |
-
-**Slot description — paste this:**
-```
-REVIEWER — Critical Evaluation | target=current agent | Isolated clone for blind validation, reader testing, consistency checking, and gap analysis. ALL subagent slots have non-deterministic tool availability (~35% chance of full tools). NEVER rely on this slot for file I/O, Python, git, skills, or settings. Provide ALL content inline.
-
-CONFIRMED (always available):
-  - LLM text generation — Blind validation, reader testing, consistency checking
-  - fill_prompt_template, search_conversations, Buffer API
-
-UNRELIABLE (~35% chance — never depend on):
-  - read, write, edit, exec, process, subagent_orchestrator
-  - skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
-
-USE: Blind validation, reader testing, consistency checking, gap analysis — ALL inputs inline.
-NEVER USE: File I/O, Python, git, skills, settings.
-
-GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
-```
-
----
-
-## SUBAGENT TASK TEMPLATE
+### Subagent Task Template
 
 Every task prompt to a self-clone subagent (explorer, implementer, or reviewer) MUST start with:
 
 ```
-GIT: Skip all git/branch checks. Read-only task.
-
-[ALL CONTENT INLINE — never reference file paths]
-
-[Clear instructions matching the slot's role: explorer → brainstorm, implementer → draft, reviewer → validate]
+GIT: Skip all git/branch checks. Read-only task. Proceed directly to assigned work.
 ```
 
-### Recommended Workflow Pattern
+**Rationale:** Subagents inherit the full system prompt including git discipline. Without this directive, subagents burn their response budget on irrelevant git pre-flight checks (branch verification, feature branch creation, commit execution) instead of completing their delegated task. Subagents have ~65% chance of lacking write/exec tools, making git impossible.
 
-```
-EXPLORER (brainstorm alternatives) → IMPLEMENTER (draft from best ideas) → REVIEWER (validate output)
-```
+---
 
-PARENT handles ALL file I/O, Python, and git between stages.
+### EXPLORER — Divergent Thinking | slot: `self`
+
+| Field | Value |
+|:------|:------|
+| **Name** | `EXPLORER` |
+| **Slot ID** | `self` |
+| **Target** | Current agent (self-clone) |
+| **System Prompt** | Inherits from parent agent |
+
+**CONFIRMED (always available):**
+- LLM text generation — brainstorming, alternative generation, edge-case discovery
+- fill_prompt_template, search_conversations, Buffer API
+
+**UNRELIABLE (~35% chance — never depend on):**
+- read, write, edit, exec, process, subagent_orchestrator
+- skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+
+**USE:** Brainstorming alternatives, mapping possibility spaces, finding edge cases — ALL inputs inline.
+**NEVER USE:** File I/O, Python, git, skills, settings.
+
+---
+
+### IMPLEMENTER — Convergent Execution | slot: `slot-mp80dr5g-oh9g`
+
+| Field | Value |
+|:------|:------|
+| **Name** | `IMPLEMENTER` |
+| **Slot ID** | `slot-mp80dr5g-oh9g` |
+| **Target** | Current agent (self-clone) |
+| **System Prompt** | Inherits from parent agent |
+
+**CONFIRMED (always available):**
+- LLM text generation — drafting, structured output, content generation
+- fill_prompt_template, search_conversations, Buffer API
+
+**UNRELIABLE (~35% chance — never depend on):**
+- read, write, edit, exec, process, subagent_orchestrator
+- skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+
+**USE:** Drafting content, building from specs, generating structured output — ALL inputs inline.
+**NEVER USE:** File I/O, Python, git, skills, settings.
+
+---
+
+### REVIEWER — Critical Evaluation | slot: `slot-mp80e4mj-5s1l`
+
+| Field | Value |
+|:------|:------|
+| **Name** | `REVIEWER` |
+| **Slot ID** | `slot-mp80e4mj-5s1l` |
+| **Target** | Current agent (self-clone) |
+| **System Prompt** | Inherits from parent agent |
+
+**CONFIRMED (always available):**
+- LLM text generation — blind validation, reader testing, consistency checking
+- fill_prompt_template, search_conversations, Buffer API
+
+**UNRELIABLE (~35% chance — never depend on):**
+- read, write, edit, exec, process, subagent_orchestrator
+- skill_list, skill_view, skill_manage, deepchat_*, deepchat_question
+
+**USE:** Blind validation, reader testing, consistency checking, gap analysis — ALL inputs inline.
+**NEVER USE:** File I/O, Python, git, skills, settings.
+
+---
+
+## FILESYSTEM SANDBOXING — Cross-Directory Access
+
+See `ARCHITECTURE.md` §2 for the complete sandboxing model. Summary:
+
+| Agent | Write | Can MOVE to | Read |
+|:------|:------|:------------|:-----|
+| Projects | `projects\<name>\` | `Archive\projects\`, `Obsidian\releases\` | ALL |
+| Prompts | `prompts\` | `Archive\prompts\` | ALL |
+| QWAV | `QWAV\` | `Archive\QWAV\`, `Obsidian\releases\` | ALL |
+
+**Rule:** MOVE is allowed (handoff, not write). READ is allowed everywhere. WRITE is ONLY allowed in the agent's sandbox.
+
+---
+
+*DeepChat Agent/Subagent Setup v5.0 — minimal 3-agent architecture. Design principle: agent = filesystem write boundary. Templates for everything else.*

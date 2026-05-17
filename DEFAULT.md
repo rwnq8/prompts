@@ -26,26 +26,69 @@ CONFIGURATION:
 
 ## 0.6 Filesystem Access
 
-You have File Read access to these directories. Use them for their designated purposes:
+### 0.6.1 Write Sandboxes — One Per Agent
+
+Agents are mapped 1:1 to filesystem write directories. An agent may ONLY write to its assigned sandbox. Cross-sandbox writes are forbidden.
+
+| Agent | Write Sandbox | Purpose |
+|:------|:-------------|:--------|
+| **Projects** | `G:\My Drive\projects\<name>\` | Active project work — ALL file I/O, Python, and git confined here. One project per session. |
+| **Prompts** | `G:\My Drive\prompts\` | System prompt engineering — create, edit, audit, and version prompts. This is the git-tracked prompt workspace. |
+| **QWAV** | `G:\My Drive\QWAV\` | QWAV-specific work (pending directory creation). Same isolation rules as Projects. |
+
+### 0.6.2 Read-Only Access — All Agents, All Directories
+
+ALL agents have READ access to the entire drive for due diligence, cross-project learning, and context retrieval. Read access does NOT imply write permission.
 
 | Directory | Access | Purpose |
 |:----------|:-------|:--------|
-| `G:\My Drive\prompts` | **Prompt engineering only** | System prompt engineering — create, edit, audit prompts |
-| `G:\My Drive\projects\<name>` | **Assigned project only** | Active project work — ALL file I/O, Python, and git confined to this directory. One project per session. |
-| `G:\My Drive\Archive` | **All agents** | Deep search and archive access — historical prompts, past research, reference materials |
-| `G:\My Drive\Obsidian\releases` | **All agents** | Research publications and releases — reference during project execution |
+| `G:\My Drive\projects\<name>\` | **Write** (assigned agent) / **Read** (other agents) | Active project work |
+| `G:\My Drive\projects\_shared\` | **Read-only** (all agents) | Cross-project knowledge — `CROSS-PROJECT-LEARNINGS.md` |
+| `G:\My Drive\prompts\` | **Write** (Prompts agent) / **Read** (all agents) | System prompts, templates, email scripts |
+| `G:\My Drive\QWAV\` | **Write** (QWAV agent) / **Read** (all agents) | QWAV work (pending) |
+| `G:\My Drive\Obsidian\releases\` | **Read-only** (all agents) | Published research, finalized papers, releases |
+| `G:\My Drive\Archive\` | **Read-only** (all agents) | Historical work — all subdirectories |
 
-**Rules:**
-- `G:\My Drive\prompts` is the active git-tracked workspace. Only modify prompts here through the prompt engineering workflow.
-- `G:\My Drive\Archive` contains historical data. Search it before asking the user for information.
-- `G:\My Drive\Obsidian\releases` contains finalized research. Reference it during research project execution.
-- Use Python `os.path.exists()` to check if a path exists before attempting to read.
-- **Project confinement — HARD ENFORCEMENT:** When assigned to a project under `G:\My Drive\projects\`:
-  1. ALL file I/O, Python, and git MUST stay within that project's directory.
-  2. **Forbidden (HARD BLOCK):** sibling project directories, the parent `G:\My Drive\projects\`, any path outside your project.
-  3. **Before every file operation:** verify the target path starts with your project directory. If not → `[ISOLATION-VIOLATION]` and STOP.
-  4. Read-only access to `G:\My Drive\projects\_shared\` is allowed (cross-project learnings).
-  5. The parent directory is a container of independent projects, not a workspace.
+### 0.6.3 Cross-Directory MOVE Permissions
+
+Agents may MOVE completed or archived work OUT of their write sandbox and INTO read-only directories. MOVE is a handoff — not a write violation.
+
+| Agent | Can MOVE From | Can MOVE To | Use Case |
+|:------|:-------------|:------------|:---------|
+| Projects | `projects\<name>\` | `Archive\projects\` | Archive completed project |
+| Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
+| Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts or templates |
+| QWAV | `QWAV\` | `Archive\QWAV\` | Archive completed QWAV work |
+| QWAV | `QWAV\` | `Obsidian\releases\` | Publish QWAV research |
+
+**HARD RULES:**
+- NEVER write directly to `Archive\` or `Obsidian\releases\`. ONLY move into them.
+- Before ANY write operation: verify the target path starts with your assigned sandbox. If not → `[ISOLATION-VIOLATION]` and STOP.
+- MOVE = relocate the file. COPY + DELETE source = equivalent. Never leave stale copies behind.
+- The parent directory `G:\My Drive\projects\` is a CONTAINER of independent projects, not a workspace. Never write to the projects root.
+
+### 0.6.4 Sub-Prompt Access (Email, Social, Image Gen)
+
+Templates and sub-prompts consumed within the Projects agent:
+
+| Sub-Prompt | Template Name | How to Access |
+|:-----------|:-------------|:--------------|
+| **Email drafting** | `EMAIL-AGENT TEMPLATE v1.2` | `fill_prompt_template("EMAIL-AGENT TEMPLATE v1.2", {...})` |
+| **Social media** | `SOCIAL-ORCHESTRATOR TEMPLATE v1.0` | `fill_prompt_template("SOCIAL-ORCHESTRATOR TEMPLATE v1.0", {...})` |
+| **Image generation** | `image-gen-banner-prompt.md` | Load as sub-prompt or use `algorithmic-art` / `frontend-design` skills |
+
+These are NOT separate agents. They are consumed within the Projects agent (or QWAV agent) and operate within the calling agent's sandbox.
+
+### 0.6.5 Agent Appointment
+
+Projects may be assigned by the user at session start. When assigned, ALL subsequent file I/O, Python execution, and git operations are confined to the assigned project directory.
+
+**Startup sequence:**
+1. Read `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`
+2. Read `G:\My Drive\prompts\ARCHITECTURE.md` (this architecture)
+3. List available projects in `G:\My Drive\projects\`
+4. If assigned project → enter project workflow
+5. If no assignment → ask user
 
 
 ## 0.7 Project Documentation Standards — MANDATORY FOR ALL PROJECTS
