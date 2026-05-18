@@ -1,7 +1,7 @@
-# Prompts — System Prompt Library v5.1
+# Prompts — System Prompt Library v5.3
 
 > **G:\My Drive\prompts\** — git-tracked prompt engineering workspace.
-> See ARCHITECTURE.md for full taxonomy and AGENT-CONFIG.md for Settings values.
+> See ARCHITECTURE.md (v1.2) for full taxonomy and slot ID ground truth. See AGENT-CONFIG.md (v5.2) for Settings values.
 
 ---
 
@@ -9,8 +9,8 @@
 
 | Agent | System Prompt | Write Boundary |
 |:------|:-------------|:---------------|
-| **Projects** | DEFAULT.md v1.10 | `G:\My Drive\projects\<name>\` |
-| **QWAV** | DEFAULT.md v1.10 | `G:\My Drive\QWAV\` |
+| **Projects** | DEFAULT.md v1.11 | `G:\My Drive\projects\<name>\` |
+| **QWAV** | DEFAULT.md v1.11 | `G:\My Drive\QWAV\` |
 | **Prompts** | META-PROMPT-DEEPSEEK.md v4.1 | `G:\My Drive\prompts\` |
 
 **Design principle:** Agent = filesystem write boundary. Email, social media, image generation are templates consumed within the Projects/QWAV agents — not separate agents.
@@ -28,11 +28,11 @@
 
 ## Subagents (3 self-clones)
 
-| Slot | Role | Use |
-|:-----|:-----|:----|
-| EXPLORER | Divergent thinking | Brainstorming, alternatives, edge cases |
-| IMPLEMENTER | Convergent execution | Drafting, structured output |
-| REVIEWER | Critical evaluation | Blind validation, gap analysis |
+| Slot ID | Role | Use |
+|:--------|:-----|:----|
+| `slot-mp80a5ry-e7hn` | EXPLORER — Divergent thinking | Brainstorming, alternatives, edge cases |
+| `slot-mp80ay3u-yzqo` | IMPLEMENTER — Convergent execution | Drafting, structured output |
+| `slot-mp80b6bl-iix2` | REVIEWER — Critical evaluation | Blind validation, gap analysis |
 
 ## Directory Structure
 
@@ -43,7 +43,9 @@ prompts\
 ├── ARCHITECTURE.md               Taxonomy + design principles
 ├── AGENT-CONFIG.md               Settings — exact values to paste
 ├── README.md                     This file
+├── system_audit.py               Self-learning system health check
 ├── .gitattributes
+├── audit-reports\                Periodic system health reports
 │
 ├── agents\                        Agent & subagent description files
 │   ├── PROJECTS-AGENT.md          Projects agent (research, writing, email, social)
@@ -91,12 +93,16 @@ Settings → Templates → auto-registered from file headers
 
 | File | Audience | Purpose |
 |:-----|:---------|:--------|
-| **AGENT-CONFIG.md** | You (setup) | Exact values to paste into DeepChat Settings |
-| **ARCHITECTURE.md** | You + agents | Taxonomy, sandboxing, happy path workflows |
-| **DEFAULT.md** v1.10 | Agents | System prompt with due diligence, email, social, sandboxing |
-| **agents/*.md** | Agents + you | Detailed agent/subagent execution specs — identity, tools, triggers, anti-patterns |
+| **AGENT-CONFIG.md** (v5.2) | You (setup) | Exact values to paste into DeepChat Settings |
+| **ARCHITECTURE.md** (v1.2) | You + agents | Taxonomy, sandboxing, slot IDs, happy path workflows |
+| **DEFAULT.md** (v1.11) | Agents | System prompt with due diligence, email, social, sandboxing, reader testing, synthesis audit |
+| **META-PROMPT-DEEPSEEK.md** (v4.2) | Prompts agent | Generates and reviews system prompts; self-audit aware |
+| **agents/*.md** | Agents + you | Detailed agent/subagent execution specs |
+| **CROSS-PROJECT-LEARNINGS.md** | All agents | 35 cross-project lessons (L1-L40) at `G:\My Drive\projects\_shared\` |
 | **email/README.md** | You + agents | Email system setup and usage |
+
+**Cross-Project Lessons:** `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` contains 35 lessons (L1-L40) catalogued from 11 archived projects. Categories: git, methodology, writing, python, tool-use. All agents should read this at session start.
 
 ---
 
-*Prompts Library v5.2 — 3 agents, 6 templates, 3 subagents, 6 description files. All destructive operations gated behind user confirmation.*
+*Prompts Library v5.3 — 3 agents, 7 templates, 3 subagents, 7 description files. All destructive operations gated behind user confirmation.*
