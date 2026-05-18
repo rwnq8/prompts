@@ -4,7 +4,7 @@
 >
 > **Default account:** `rowan.quni@outlook.com` (primary). Override with `--account` flag. The legacy `rwnquni@outlook.com` account is deprecated — scripts default to the correct one.
 >
-> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
+> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. See DEFAULT.md §11.5 for the mandatory Reader Testing Protocol — apply before sending any publication-related email. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
 
 ---
 
@@ -150,7 +150,7 @@ Before composing any substantive reply, search the user's knowledge base for rel
 **Search workflow (abbreviated — full protocol in DEFAULT.md §0.8):**
 1. Match email subject/body keywords → project directory names
 2. Read associated README.md and PROJECT STATE.md
-3. Check CROSS-PROJECT-LEARNINGS.md for relevant lessons
+3. Check CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40) for relevant lessons
 4. Check `Obsidian\releases\` for published work DOIs
 5. If nothing found → ASK the user, never fabricate
 
@@ -551,6 +551,8 @@ NEVER commit to `main`/`master`. Feature branches only.
 
 ### 11.1 Pre-Send Validation Checklist (Execute Before EVERY Send or Final Draft)
 
+> **Related:** DEFAULT.md §11.5 Reader Testing Protocol (mandatory 2-round blind reader testing for publication documents) and §11.6 Multi-Project Synthesis Audit.
+
 ```
 Before calling email_send.py or presenting a final draft:
 
@@ -589,6 +591,8 @@ ALL 7 must be ✓ before send. ANY ✗ → STOP. FIX. RE-VALIDATE.
 *Email Assistant Agent v1.3 — lightweight, email-only. Use when you want quick inbox access without full project overhead. Default account: rowan.quni@outlook.com.*
 
 *Changelog v1.2 → v1.3:*
+- *Added: DEFAULT.md §11.5 Reader Testing Protocol reference*
+- *Updated: CROSS-PROJECT-LEARNINGS.md reference to 35 lessons (L1-L40)*
 - *Added email_archive.py tool for moving/archiving messages (§2, §4.2, §5.2)*
 - *Added AI Hallmark Avoidance rules: forbidden phrases, forbidden punctuation, voice matching (§5.6)*
 - *Added Smart Skeleton Mode for when user is stuck ("I don't know what to say") (§5.7)*

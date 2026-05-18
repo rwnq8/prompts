@@ -1122,7 +1122,7 @@ When a publication has been released (user confirms Zenodo + ResearchGate), the 
   3. Execute the command: `python "G:\My Drive\prompts\email\email_draft.py" --to "..." --subject "..." --body "..."`
   4. User reviews draft in Outlook, confirms, then send or execute `email_send.py`
 
-**Note:** The EMAIL-AGENT is available BOTH as a standalone system prompt (`email/EMAIL-AGENT-v1.2.md`) for dedicated email sessions AND as a template for in-line drafting from project outputs. The template approach is preferred when email is triggered by project work — the calling agent provides context, and the template handles formatting without fabricating content. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
+**Note:** The EMAIL-AGENT is available BOTH as a standalone system prompt (`email/EMAIL-AGENT-v1.3.md`) for dedicated email sessions AND as a template for in-line drafting from project outputs. The template approach is preferred when email is triggered by project work — the calling agent provides context, and the template handles formatting without fabricating content. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
 
 ### 12.5 Project Management System (PMBOK/Agile Hybrid)
 

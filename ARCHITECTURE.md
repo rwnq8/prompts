@@ -30,7 +30,7 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 |:--------------|:--------|:----------|:------|
 | `DEFAULT.md` | v1.11 | Projects agent | Full research/writing/coding/email/social workflow |
 | `META-PROMPT-DEEPSEEK.md` | v4.2 | Prompts agent | System prompt generation and auditing |
-| `EMAIL-AGENT-v1.2.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
+| `EMAIL-AGENT-v1.3.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
 
 ### Layer 5: Prompt Templates (Parameterized Sub-Prompts)
@@ -220,7 +220,7 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 | `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.2 |
 | `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.2 |
 | `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.0 |
-| `email/EMAIL-AGENT-v1.2.md` | System prompt for optional dedicated email sessions | v1.2 |
+| `email/EMAIL-AGENT-v1.3.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
 | `email/EMAIL-CAPABILITIES.md` | Drop-in prompt module for email capabilities | v1.2 |
 | `email/README.md` | Setup and usage guide for email system | — |

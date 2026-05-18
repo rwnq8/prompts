@@ -61,7 +61,7 @@ prompts\
 │   └── image-gen-banner-prompt.md
 │
 ├── email\                        Email system
-│   ├── EMAIL-AGENT-v1.2.md       Dedicated email system prompt
+│   ├── EMAIL-AGENT-v1.3.md       Dedicated email system prompt
 │   ├── EMAIL-AGENT-TEMPLATE.md   Email prompt template
 │   ├── EMAIL-CAPABILITIES.md     Drop-in email module
 │   ├── EMAIL-TEST-SUITE.md       15 validation scenarios
