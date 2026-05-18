@@ -1,4 +1,4 @@
-# QWAV AGENT — v1.0
+# QWAV AGENT — v1.1
 
 > **DeepChat Agent: `QWAV`** | System Prompt: `DEFAULT.md` | Write Sandbox: `G:\My Drive\QWAV\`
 
@@ -9,7 +9,7 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | QWAV |
-| **System Prompt** | `DEFAULT.md` (v1.10+) — SAME prompt as Projects agent. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
+| **System Prompt** | `DEFAULT.md` (v1.11+) — SAME prompt as Projects agent. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
 | **Write Sandbox** | `G:\My Drive\QWAV\` — active since 2026-05-11 |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
 | **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `G:\My Drive\Obsidian\releases\` |
@@ -50,10 +50,10 @@ Key tools: `read`, `write`, `edit`, `exec`, `process`, `subagent_orchestrator`, 
 Workflow: **EXPLORER → IMPLEMENTER → REVIEWER**
 
 - **EXPLORER** (`self`): Brainstorm quantum computing approaches, edge cases in ultrametric methods
-- **IMPLEMENTER** (`slot-mp80dr5g-oh9g`): Draft papers, code, structured output from specs
-- **REVIEWER** (`slot-mp80e4mj-5s1l`): Blind validation of quantum/physics content, reader testing
+- **IMPLEMENTER** (slot: see AGENT-CONFIG.md): Draft papers, code, structured output from specs
+- **REVIEWER** (slot: see AGENT-CONFIG.md): Blind validation of quantum/physics content, reader testing
 
-**CRITICAL:** ALL subagent inputs inline. Subagents have ~35% chance of file I/O tools. GIT: Skip directive required (CROSS-PROJECT-LEARNINGS L3).
+**CRITICAL:** ALL subagent inputs inline. Subagents have ~35% chance of file I/O tools. GIT: Skip directive required (CROSS-PROJECT-LEARNINGS.md — 35 lessons, L1-L40).
 
 ---
 
@@ -92,13 +92,17 @@ Full protocol: DEFAULT.md §9. Key points:
 
 ---
 
-## 8. KEY CROSS-PROJECT LEARNINGS
+## 8. KEY CROSS-PROJECT LEARNINGS (L1-L40)
 
-Same as Projects agent (see `PROJECTS-AGENT.md` Section 7). All 18 lessons apply, with emphasis on:
+Same as Projects agent (see `PROJECTS-AGENT.md` Section 7). All 35 lessons (L1-L40) apply, with emphasis on:
 - **L2** (isolation): QWAV must not access sibling project directories
+- **L20** (branch hygiene): Never reuse branches across projects
+- **L22-L24** (synthesis audit): Convergence claims require vocabulary audit
 - **L7** (no inline Python): PowerShell corrupts Python strings — always use script files
 - **L14** (no SilentlyContinue): Directory existence checks use `Test-Path`, not suppressed errors
 - **L17** (filesystem audit): QWAV directory exists. Verify, don't assume from memory.
+- **L26-L28** (reader testing): Mandatory blind reader testing before publication
+- **L40** (write failures): Fall back to Python exec for batch write operations
 
 ---
 
@@ -112,4 +116,4 @@ Same as Projects agent (see `PROJECTS-AGENT.md` Section 7). All 18 lessons apply
 
 ---
 
-*QWAV Agent v1.0 — Ultrametric Quantum Computing & AI research. Same DEFAULT.md prompt, separate write sandbox.*
+*QWAV Agent v1.1 — Ultrametric Quantum Computing & AI research. Same DEFAULT.md prompt, separate write sandbox.*

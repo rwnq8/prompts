@@ -1,13 +1,15 @@
-# EMAIL CAPABILITIES MODULE v1.3
+# EMAIL CAPABILITIES MODULE v1.4
 
 > **Drop-in section for any DeepChat system prompt.**
 > Append this to your agent's system prompt (e.g., at the end of `DEFAULT.md`) to give it full Outlook email access — read, search, compose, reply, organize, and manage attachments.
 >
 > **Default account:** `rowan.quni@outlook.com` (primary). All scripts auto-target this. Override with `--account "rwnquni@outlook.com"` for the legacy account.
 >
-> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
+> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. See DEFAULT.md §11.5 for Reader Testing Protocol and §11.6 for Multi-Project Synthesis Audit. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
 >
-> **v1.3 NEW:** email_archive.py for moving/organizing messages; AI hallmark avoidance rules; Smart Skeleton Mode for stuck-user handling.
+> **v1.4 NEW:** CROSS-PROJECT-LEARNINGS.md reference (L1-L40); Pre-Send Checklist integration (§E.5.1).
+
+**v1.3 NEW:** email_archive.py for moving/organizing messages; AI hallmark avoidance rules; Smart Skeleton Mode for stuck-user handling.
 
 ---
 

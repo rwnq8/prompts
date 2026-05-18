@@ -1,6 +1,6 @@
-# REVIEWER SUBAGENT — v1.0
+# REVIEWER SUBAGENT — v1.1
 
-> **Slot: `slot-mp80e4mj-5s1l`** | Role: **Critical Evaluation** | Target: Current agent clone | Input: Inline text only
+> **Slot: (agent-dependent; see AGENT-CONFIG.md)** | Role: **Critical Evaluation** | Target: Current agent clone | Input: Inline text only
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Field | Value |
 |:------|:------|
-| **Slot ID** | `slot-mp80e4mj-5s1l` (auto-clone of calling agent) |
+| **Slot ID** | Agent-dependent — see AGENT-CONFIG.md for the slot configured for your parent agent |
 | **Role** | REVIEWER — Critical Evaluation |
 | **Purpose** | Blind validation, reader testing, consistency checking, gap analysis |
 | **Model** | Same as parent agent (DeepSeek V3/V4/R1) |
@@ -49,7 +49,7 @@
 | Gap analysis | "What's missing? What would a reviewer flag?" |
 | Fabrication audit | "Scan for any invented citations, DOIs, paths, or unsourced claims" |
 | Reader experience testing | "Is the argument flow logical? Where does it lose the reader?" |
-| Pre-send / pre-publish audit | "Run the Pre-Send Checklist against this content" |
+| Pre-send / pre-publish audit (DEFAULT.md §11.5, §E.5.1) | "Run the Pre-Send Checklist against this content" |
 
 ### When NOT to Use
 | Don't Use When... | Reason | Do This Instead |
@@ -58,6 +58,7 @@
 | Content needs factual verification | REVIEWER can't run Python or read source files | Parent verifies facts separately |
 | Content needs file comparison | REVIEWER can't read files | Parent reads files, passes content inline |
 | Review criteria are vague | REVIEWER produces unhelpful feedback | Provide specific review criteria |
+| Parent needs §11.5 protocol compliance | REVIEWER unaware of mandatory reader testing structure | Provide §11.5 criteria inline (genre clarity, 2-round minimum, severity classification) |
 
 ---
 
@@ -179,4 +180,4 @@ PARENT: only proceeds to send/publish if REVIEWER passes
 
 ---
 
-*REVIEWER Subagent v1.0 — Critical evaluation for blind validation, reader testing, gap analysis, and fabrication audit. TEXT ONLY. GIT: Skip.*
+*REVIEWER Subagent v1.1 — Critical evaluation for blind validation, reader testing, gap analysis, and fabrication audit. TEXT ONLY. GIT: Skip.*

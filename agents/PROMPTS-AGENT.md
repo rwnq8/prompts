@@ -1,4 +1,4 @@
-# PROMPTS AGENT — v1.0
+# PROMPTS AGENT — v1.1
 
 > **DeepChat Agent: `Prompts`** | System Prompt: `META-PROMPT-DEEPSEEK.md` | Write Sandbox: `G:\My Drive\prompts\`
 
@@ -9,7 +9,7 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | Prompts |
-| **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.1+) — paste ENTIRE contents into DeepChat Settings → Agents → Prompts → System Prompt |
+| **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.2+) — paste ENTIRE contents into DeepChat Settings → Agents → Prompts → System Prompt |
 | **Write Sandbox** | `G:\My Drive\prompts\` — the git-tracked prompt engineering workspace |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
 | **MOVE Destination** | `G:\My Drive\Archive\prompts\` |
@@ -28,7 +28,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 | **Prompt Review** | Audit existing prompts for compliance with core rules |
 | **Prompt Modification** | Apply targeted edits to existing prompts |
 | **Versioning** | Assign semantic version numbers, track changes via git |
-| **Architecture Maintenance** | Keep ARCHITECTURE.md, AGENT-CONFIG.md, README.md current |
+| **Architecture Maintenance** | Keep ARCHITECTURE.md, AGENT-CONFIG.md, README.md, system_audit.py current |
 
 ### Output Format: 9-Section Prompt Template (§5)
 1. CORE OPERATING RULES (Rules 1-6 verbatim)
@@ -65,7 +65,9 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 |:-----|:--------|
 | `subagent_orchestrator` | NOT in Prompts agent tool set — no subagent delegation |
 
-**Implication:** The Prompts agent works alone. It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
+**Implication:** The Prompts agent works alone. When the user says "SYSTEM HEALTH CHECK," run `system_audit.py` and report findings.
+
+**Essential reading:** ARCHITECTURE.md (v1.2), AGENT-CONFIG.md (v5.2), DEFAULT.md (v1.11), CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
 
 ---
 
@@ -163,4 +165,4 @@ verification, or commit operations. Proceed directly to the assigned task.
 
 ---
 
-*Prompts Agent v1.0 — System prompt generation and auditing. Tool set: read/write/edit/exec/skills/templates. No subagent delegation.*
+*Prompts Agent v1.1 — System prompt generation and auditing. Tool set: read/write/edit/exec/skills/templates. No subagent delegation.*
