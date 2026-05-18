@@ -1,6 +1,6 @@
-# IMPLEMENTER SUBAGENT — v1.0
+# IMPLEMENTER SUBAGENT — v1.1
 
-> **Slot: `slot-mp80dr5g-oh9g`** | Role: **Convergent Execution** | Target: Current agent clone | Input: Inline text only
+> **Slot: (agent-dependent; see AGENT-CONFIG.md)** | Role: **Convergent Execution** | Target: Current agent clone | Input: Inline text only
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Field | Value |
 |:------|:------|
-| **Slot ID** | `slot-mp80dr5g-oh9g` (auto-clone of calling agent) |
+| **Slot ID** | Agent-dependent — see AGENT-CONFIG.md for the slot configured for your parent agent |
 | **Role** | IMPLEMENTER — Convergent Execution |
 | **Purpose** | Drafting, building from specifications, generating structured output |
 | **Model** | Same as parent agent (DeepSeek V3/V4/R1) |
@@ -58,6 +58,7 @@
 | Task requires Python execution | IMPLEMENTER can't reliably execute code | Parent runs Python separately |
 | Task requires git operations | IMPLEMENTER can't reliably run git | Parent handles all git |
 | Creative exploration is needed | IMPLEMENTER converges, doesn't diverge | Use EXPLORER |
+| Output may exceed ~32K tokens (CPL L39) | Subagent output truncates mid-sentence | Parent splits task into sections using chain mode |
 
 ---
 
@@ -149,4 +150,4 @@ PARENT: IMPLEMENTER → draft v2 (with review feedback inline)
 
 ---
 
-*IMPLEMENTER Subagent v1.0 — Convergent execution for drafting, building from specs, and structured output. TEXT ONLY. GIT: Skip.*
+*IMPLEMENTER Subagent v1.1 — Convergent execution for drafting, building from specs, and structured output. TEXT ONLY. GIT: Skip.*

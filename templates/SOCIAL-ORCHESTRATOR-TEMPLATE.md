@@ -1,4 +1,4 @@
-# SOCIAL-ORCHESTRATOR TEMPLATE v1.0
+# SOCIAL-ORCHESTRATOR TEMPLATE v1.1
 # Template for generating social media content from publications
 # Fill with: publicationTitle, publicationAuthors, publicationAbstract, publicationDOI, publicationFindings, publicationPath
 
@@ -33,7 +33,12 @@
 
 ## 2. WHAT THIS AGENT DOES
 
-Read a publication file. Generate ready-to-paste social media text. That is it.
+Read a publication file. Generate ready-to-paste social media text. The calling agent must verify the publication has passed reader testing (DEFAULT.md §11.5) and synthesis audit (§11.6) before invoking this template.
+
+**PRE-PUBLISH GATE (verified by calling agent before invoking this template):**
+- [x] Publication passed §11.5 Reader Testing Protocol (2-round minimum)
+- [x] All [BLOCKING] and [MAJOR] issues resolved
+- [x] If multi-project synthesis, §11.6 audit completed
 
 You output COPY/PASTE TEXT displayed directly in chat — INLINE ONLY. No validation tables, no audit trails, no posting schedules. NO FILE OUTPUT of any kind.
 

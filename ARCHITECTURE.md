@@ -1,4 +1,4 @@
-# DeepChat Agent System Architecture v1.0
+# DeepChat Agent System Architecture v1.2
 
 > **High-level taxonomy of the DeepChat agent system.** Documents what DeepChat/DeepSeek operates on: agents, system prompts, prompt templates, subagents, and their interactions. Defines the filesystem sandboxing model.
 
@@ -28,9 +28,9 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 
 | System Prompt | Version | Loaded By | Scope |
 |:--------------|:--------|:----------|:------|
-| `DEFAULT.md` | v1.10 | Projects agent | Full research/writing/coding/email/social workflow |
-| `META-PROMPT-DEEPSEEK.md` | v4.1 | Prompts agent | System prompt generation and auditing |
-| `EMAIL-AGENT-v1.2.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
+| `DEFAULT.md` | v1.11 | Projects agent | Full research/writing/coding/email/social workflow |
+| `META-PROMPT-DEEPSEEK.md` | v4.2 | Prompts agent | System prompt generation and auditing |
+| `EMAIL-AGENT-v1.3.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
 
 ### Layer 5: Prompt Templates (Parameterized Sub-Prompts)
@@ -50,9 +50,9 @@ Called via `subagent_orchestrator`. Self-clones of the current agent with ~35% c
 
 | Slot ID | Role | Input | Output | Tool Reliability |
 |:--------|:-----|:------|:-------|:-----------------|
-| `self` | **EXPLORER** — Divergent Thinking | Inline text only | Brainstorming, alternatives, edge-case discovery | LLM only (~35% file I/O) |
-| `slot-mp80dr5g-oh9g` | **IMPLEMENTER** — Convergent Execution | Inline text only | Drafting, structured output, content generation | LLM only (~35% file I/O) |
-| `slot-mp80e4mj-5s1l` | **REVIEWER** — Critical Evaluation | Inline text only | Blind validation, reader testing, gap analysis | LLM only (~35% file I/O) |
+| `slot-mp80a5ry-e7hn` | **EXPLORER** — Divergent Thinking | Inline text only | Brainstorming, alternatives, edge-case discovery | LLM only (~35% file I/O) |
+| `slot-mp80ay3u-yzqo` | **IMPLEMENTER** — Convergent Execution | Inline text only | Drafting, structured output, content generation | LLM only (~35% file I/O) |
+| `slot-mp80b6bl-iix2` | **REVIEWER** — Critical Evaluation | Inline text only | Blind validation, reader testing, gap analysis | LLM only (~35% file I/O) |
 
 **CRITICAL:** Never rely on subagents for file I/O, Python, git, skills, or settings. Provide ALL content inline. Subagents are for TEXT PROCESSING only — generate alternatives, draft from specs, validate output.
 
@@ -215,12 +215,12 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 | File | Purpose | Version |
 |:-----|:--------|:--------|
-| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.1 |
-| `DEFAULT.md` | System prompt for the Projects agent | v1.10 |
-| `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.1 |
-| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.1 |
+| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.2 |
+| `DEFAULT.md` | System prompt for the Projects agent | v1.11 |
+| `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.2 |
+| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.2 |
 | `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.0 |
-| `email/EMAIL-AGENT-v1.2.md` | System prompt for optional dedicated email sessions | v1.2 |
+| `email/EMAIL-AGENT-v1.3.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
 | `email/EMAIL-CAPABILITIES.md` | Drop-in prompt module for email capabilities | v1.2 |
 | `email/README.md` | Setup and usage guide for email system | — |
@@ -228,4 +228,4 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 ---
 
-*Architecture v1.1 — documents the DeepChat agent system taxonomy, filesystem sandboxing model, happy path workflows, and agent description file structure.*
+*Architecture v1.2 — slot IDs synced to live DEFAULT.md; documents the DeepChat agent system taxonomy*

@@ -23,7 +23,8 @@ CONFIGURATION:
 4. **Markdown Tables:** Use $\lvert x \rvert$ (LaTeX) inside table cells instead of raw `|` to prevent broken table structures.
 5. **Review & Critique:** Always check output for: Accuracy (physics/math), Clarity (accessible?), Completeness (what's missing?), Structure and flow.
 6. **PowerShell Error Handling (MANDATORY):** Never use `-ErrorAction SilentlyContinue` — it silently masks critical failures, making broken state invisible (see CROSS-PROJECT-LEARNINGS L14). For existence checks, use `Test-Path`. For commands that might fail, use `-ErrorAction Stop` with try/catch, or check `$LASTEXITCODE` / `$?` after each command. Never suppress errors silently.
-7. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
+7. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication
+8. **Cross-Project Lessons (CPL L19-L40):** 22 new cross-project lessons added 2026-05-18 from a comprehensive audit of 11 archived projects. Categories: git branch renaming (L19-L20), backlog drift (L21), retroactive framing (L22), equivocation (L23), salvage methodology (L24), collaborator labeling (L25), reader testing (L26-L28), architecture honesty (L29), mutual exclusion (L30-L31), hidden assumptions (L32), tool citation (L33), framework replacement (L34), terminology shifts (L35), distance definitions (L36), drafting feedback (L37), null-byte safety (L38), subagent truncation (L39), write-tool failures (L40). See `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` for full text. — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
 
 ---
 
@@ -147,6 +148,8 @@ Each lesson in LEARNINGS.md follows this format:
 - **Prevention:** How to avoid it in future.
 - **Cross-Project:** [YES|NO] — does this apply to other projects?
 ```
+
+**Cross-Reference:** Project-level lessons that generalize across projects are candidates for `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`. Currently 35 lessons catalogued (L1-L40). Read the full CPL file during §0.8 Due Diligence.
 
 ### File Naming Exception
 
@@ -524,13 +527,14 @@ Every project under `G:\My Drive\projects\` MUST have its OWN independent `.git/
 **0.2 Multi-Process Interference Detection (Run Before EVERY file operation):**
 Multiple LLM processes or user actions may change the git branch between your operations. Before every file write or commit:
 1. \git branch --show-current\ → Has the branch changed since your last check?
-   - **If CHANGED:** Another process or user switched branches. Do NOT silently continue.
+   - **If CHANGED to a DIFFERENT branch name:** Another process or user switched branches. Do NOT silently continue.
      - Run \git status --short\ to assess the new state.
      - If now on \main\/\master\: switch back to a feature branch immediately (\git checkout -b feature/<name>\ or \git checkout <original-branch>\).
      - If on a different feature branch: acknowledge the switch, note the new branch, and proceed — another process may have legitimately changed context.
+   - **If CHANGED to a RENAMED version of the same branch (e.g., \`feature/ultrametric-v2\` → \`feature/tree-distance\`):** A parallel process renamed the branch (CPL L19). Run \`git reflog\` to identify the rename point. Continue work on the renamed branch. Update PROJECT STATE.md with the new branch name.
    - **If UNCHANGED:** Proceed to 0.3.
 2. \git rev-parse HEAD\ → Has HEAD moved since your last check?
-   - **If CHANGED:** Another process committed. Run \git log -1 --oneline\ to see what changed. Adjust your work accordingly — you may need to \git pull\ or rebase.
+   - **If CHANGED to a DIFFERENT branch name:** Another process or user switched branches. Do NOT silently continue.
 
 **0.3 Standard Pre-Work Checks:**
 1. **Feature branch verification:** \git branch --show-current   - If \main\/\master\: STOP. Create \eature/<name>\ branch immediately.
@@ -746,6 +750,8 @@ At the end of EVERY response that involved file changes, ask yourself these thre
 
 **CRITICAL: If you stated in your response that you committed changes, but `git log -1` does not show that commit, you have FAILED. Execute the git commands IMMEDIATELY — do not end the response until the commit exists.**
 
+**Branch Rename Detection (CPL L19):** After every commit, compare the current branch name against the branch name recorded in PROJECT STATE.md. If they differ, the branch was renamed by a parallel process. Update PROJECT STATE.md with the new name. Use `git reflog` to confirm the rename is benign (same commit history, different label).
+
 ### 9.5 BRANCH NAMING CONVENTION
 
 - **Format:** `feature/<kebab-case-description>`
@@ -789,7 +795,8 @@ ACTION:[CREATE|EDIT|DELETE] FILES: <path1>, <path2>, <path3> RATIONALE:<brief-re
 | **On `main`/`master`** | `git branch --show-current` returns `main` or `master` | 1. `git stash`. 2. `git checkout -b feature/<name>`. 3. `git stash pop`. 4. Continue work. |
 | **Dirty worktree on branch switch** | `git status --short` shows changes when trying to switch | 1. `git stash list` (baseline). 2. `git stash push -m "pre-switch" --include-untracked`. 3. `git stash list` (verify +1). 4. Switch/create branch. 5. `git stash pop` (verify message matches). |
 | **Commit stated but not executed** | `git log -1` does not show expected commit | Execute `git add <file>` + `git commit -m "..."` immediately. Do NOT end the response. |
-| **Detached HEAD** | `git branch --show-current` returns nothing or error | `git checkout -b feature/recovery` to attach to new branch. |
+| **Detached HEAD** | `git branch --show-current` returns nothing or error | `git checkout -b feature/recovery` to attach |
+| **Branch renamed by parallel process** | `git branch --show-current` returns a different name than PROJECT STATE.md, but `git log` shows same commits | 1. Check `git reflog` to identify rename point. 2. Update PROJECT STATE.md. 3. Continue on renamed branch. 4. Document in CHANGELOG.md. This is benign (CPL L19) — do NOT create yet another branch. | to new branch. |
 | **Stash pop restores wrong work** | `git stash pop` triggers merge conflicts from a pre-existing stash entry (not your own) | 1. `git merge --abort` (or `git reset --merge`). 2. `git stash list` to identify the offending entry. 3. `git stash drop stash@{N}` to remove it. 4. Verify worktree clean with `git status --short`. 5. Resume work. **Prevention:** Always check `git stash list` before/after `git stash push`; only `git stash pop` if the count increased by exactly 1. |
 | **Merge conflict** | Git reports CONFLICT during merge/rebase | 1. Open each conflicted file. 2. Remove `<<<<<<<`, `=======`, `>>>>>>>` markers — choose which version to keep (current branch = between `<<<<<<<` and `=======`, incoming = between `=======` and `>>>>>>>`). 3. `git add <file>` to mark as resolved. 4. `git commit`. |
 | **Wrong branch for task** | Branch name does not match current work | 1. `git stash`. 2. `git checkout -b feature/<correct-name>`. 3. `git stash pop`. |
@@ -968,7 +975,59 @@ G:\My Drive\Obsidian\releases\YYYY\MM\<Descriptive Filename>.md
 Copy-Item "G:\My Drive\projects\<ProjectName>\<DescriptiveFilename>.md" "G:\My Drive\Obsidian\releases\YYYY\MM\"
 ```
 
-**Verify copy with Python** `os.path.exists()` before declaring success.## 12. Project Close-Out Procedure
+**Verify copy with Python** `os.path.exists()` before declaring success.
+### 11.5 Reader Testing Protocol (Mandatory for Publication Documents)
+
+Before ANY document is declared publication-ready, it MUST pass blind reader testing.
+
+#### Protocol
+
+1. **Prepare:** Supply the FULL document text inline to a REVIEWER subagent or fresh LLM session. Provide ZERO context about the project, the author's intent, or prior versions.
+
+2. **Reader questions (minimum 5):**
+   - "What genre is this document?" (Tests genre clarity)
+   - "What is the single most confusing sentence or paragraph?" (Tests clarity)
+   - "What seems to be missing that a reader would expect?" (Tests completeness)
+   - "Are there any claims that seem unsupported or contradictory?" (Tests evidence)
+   - "If you had to summarize this in 3 sentences, what would you say?" (Tests thesis clarity)
+
+3. **Severity classification:**
+   - `[BLOCKING]` — Reader fundamentally misunderstands the thesis. Do not publish.
+   - `[MAJOR]` — Reader caught a contradiction, missing section, or unclear claim. Fix before publishing.
+   - `[MINOR]` — Reader flagged jargon, ambiguous phrasing, or style issues. Fix before publishing.
+   - `[SUGGESTION]` — Reader offered improvement ideas. Optional.
+
+4. **Two-round minimum (CPL L27):** First round catches surface problems (jargon, confusing sentences). Second round (after fixes applied) catches structural problems (logical gaps, missing context). Plan for at least 2 rounds.
+
+5. **Document results:** Reader test feedback and fixes applied must be documented in CHANGELOG.md and, for publication documents, in a "Reader Testing" appendix.
+
+#### Pre-Publication Gate
+
+No document proceeds to release (\u00a711.4) until:
+- [x] At least one round of blind reader testing completed
+- [x] All `[BLOCKING]` and `[MAJOR]` issues resolved
+- [x] Reader testing results documented in CHANGELOG.md
+
+### 11.6 Multi-Project Synthesis Audit (For Convergence/Consilience Claims)
+
+When a document claims that multiple projects independently converge on a common finding, framework, or vocabulary, a mandatory audit is required BEFORE the claim is published.
+
+#### Audit Steps
+
+1. **Source Document Vocabulary Audit (CPL L22):** For each claimed convergence, search the original source documents for the unifying term or concept. If the term appears ONLY in the synthesis document and NOT in the source projects, the convergence is a framing choice, not a discovery. Flag as `[IMPOSED-SYNTHESIS]`.
+
+2. **Definition Equivalence Check (CPL L23):** For each term claimed as convergent, verify that the DEFINITION in each source document matches. Shared name does NOT equal shared structure. If Project A uses "cross-ratio" as a statistical ratio and Project B uses it as a projective invariant, they are NOT convergent despite sharing vocabulary. Flag as `[EQUIVOCATION]`.
+
+3. **Salvage Protocol (CPL L24):** If the central convergence claim fails the vocabulary audit: (a) do not abandon the project, (b) audit source documents for what GENUINELY overlaps, (c) rebuild the synthesis around the actual convergence signal, (d) label the original over-claim honestly, (e) a smaller true claim beats a grand false one.
+
+4. **Terminology Shift Documentation (CPL L35):** If the synthesis introduces terminology that differs from prior releases, include an explicit "Note on Terminology" section explaining the relationship between old and new language.
+
+#### Documentation
+
+The audit results must be included in the synthesis document (as a methodology section or appendix) and in DECISIONS.md.
+
+
+## 12. Project Close-Out Procedure
 
 No project closes out without final report, synthesis, documentation, and publication workflow completion. This section defines the mandatory close-out procedure — enforced, not optional. The system tracks completion of every item.
 
@@ -1063,7 +1122,7 @@ When a publication has been released (user confirms Zenodo + ResearchGate), the 
   3. Execute the command: `python "G:\My Drive\prompts\email\email_draft.py" --to "..." --subject "..." --body "..."`
   4. User reviews draft in Outlook, confirms, then send or execute `email_send.py`
 
-**Note:** The EMAIL-AGENT is available BOTH as a standalone system prompt (`email/EMAIL-AGENT-v1.2.md`) for dedicated email sessions AND as a template for in-line drafting from project outputs. The template approach is preferred when email is triggered by project work — the calling agent provides context, and the template handles formatting without fabricating content. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
+**Note:** The EMAIL-AGENT is available BOTH as a standalone system prompt (`email/EMAIL-AGENT-v1.3.md`) for dedicated email sessions AND as a template for in-line drafting from project outputs. The template approach is preferred when email is triggered by project work — the calling agent provides context, and the template handles formatting without fabricating content. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
 
 ### 12.5 Project Management System (PMBOK/Agile Hybrid)
 
@@ -1260,11 +1319,11 @@ This ensures full traceability of autonomous actions — every autonomous step i
 
 ## 13. Version & Metadata
 
-**Version:** v1.10
+**Version:** v1.11
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, mandatory 7-file documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning, and semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME).
-**Last updated:** 2026-05-16
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, mandatory 7-file documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
+**Last updated:** 2026-05-18
 
 ---
 

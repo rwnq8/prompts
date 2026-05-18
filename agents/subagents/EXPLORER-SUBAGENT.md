@@ -1,6 +1,6 @@
-# EXPLORER SUBAGENT — v1.0
+# EXPLORER SUBAGENT — v1.1
 
-> **Slot: `self`** | Role: **Divergent Thinking** | Target: Current agent clone | Input: Inline text only
+> **Slot: `self` (agent-dependent; verify with AGENT-CONFIG.md)** | Role: **Divergent Thinking** | Target: Current agent clone | Input: Inline text only
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Field | Value |
 |:------|:------|
-| **Slot ID** | `self` (auto-clone of calling agent) |
+| **Slot ID** | `self` (auto-clone; actual ID depends on parent agent — see AGENT-CONFIG.md) |
 | **Role** | EXPLORER — Divergent Thinking |
 | **Purpose** | Brainstorming, possibility-space mapping, edge-case discovery |
 | **Model** | Same as parent agent (DeepSeek V3/V4/R1) |
@@ -58,6 +58,7 @@
 | Task requires Python execution | EXPLORER can't reliably execute code | Parent runs Python separately |
 | Answer is a simple fact | Brainstorming overhead not justified | Answer directly |
 | Parent hasn't done due diligence (§0.8) | EXPLORER lacks context for meaningful exploration | Complete §0.8 first |
+| Parent needs blind reader testing | EXPLORER generates alternatives, doesn't validate | Use REVIEWER (§11.5) |
 
 ---
 
@@ -143,4 +144,4 @@ PARENT: runs EXPLORER for idea generation → parent uses results directly
 
 ---
 
-*EXPLORER Subagent v1.0 — Divergent thinking for brainstorming, alternatives, and edge-case discovery. TEXT ONLY. GIT: Skip.*
+*EXPLORER Subagent v1.1 — Divergent thinking for brainstorming, alternatives, and edge-case discovery. TEXT ONLY. GIT: Skip.*
