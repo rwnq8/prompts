@@ -1,4 +1,4 @@
-# DEEPCHAT AGENT/SETUP CONFIGURATION (v5.1)
+# DEEPCHAT AGENT/SETUP CONFIGURATION (v5.2)
 
 > **DeepChat Settings — exact values to paste.** See `ARCHITECTURE.md` for design principles and taxonomy.
 
@@ -56,7 +56,7 @@
 
 All three slots are self-clones. ~35% chance of file I/O tools — TEXT ONLY.
 
-### EXPLORER (slot: `self`)
+### EXPLORER (slot: `slot-mp80a5ry-e7hn`)
 
 ```
 EXPLORER — Divergent Thinking | target=current agent | Isolated clone for
@@ -71,7 +71,7 @@ NEVER: File I/O, Python, git, skills, settings.
 GIT: Skip all git/branch checks. Read-only task.
 ```
 
-### IMPLEMENTER (slot: `slot-mp80dr5g-oh9g`)
+### IMPLEMENTER (slot: `slot-mp80ay3u-yzqo`)
 
 ```
 IMPLEMENTER — Convergent Execution | target=current agent | Isolated clone for
@@ -86,7 +86,7 @@ NEVER: File I/O, Python, git, skills, settings.
 GIT: Skip all git/branch checks. Read-only task.
 ```
 
-### REVIEWER (slot: `slot-mp80e4mj-5s1l`)
+### REVIEWER (slot: `slot-mp80b6bl-iix2`)
 
 ```
 REVIEWER — Critical Evaluation | target=current agent | Isolated clone for
@@ -129,4 +129,4 @@ GIT: Skip all git/branch checks. Read-only task.
 
 ---
 
-*Agent Configuration v5.1 — 3 agents mapped to 3 write boundaries. Same prompt (DEFAULT.md) for Projects and QWAV. Templates for email, social, and research.*
+*Agent Configuration v5.2 — slot IDs synced to live DEFAULT.md; 3 agents mapped to 3 write boundaries*
