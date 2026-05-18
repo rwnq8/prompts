@@ -975,7 +975,59 @@ G:\My Drive\Obsidian\releases\YYYY\MM\<Descriptive Filename>.md
 Copy-Item "G:\My Drive\projects\<ProjectName>\<DescriptiveFilename>.md" "G:\My Drive\Obsidian\releases\YYYY\MM\"
 ```
 
-**Verify copy with Python** `os.path.exists()` before declaring success.## 12. Project Close-Out Procedure
+**Verify copy with Python** `os.path.exists()` before declaring success.
+### 11.5 Reader Testing Protocol (Mandatory for Publication Documents)
+
+Before ANY document is declared publication-ready, it MUST pass blind reader testing.
+
+#### Protocol
+
+1. **Prepare:** Supply the FULL document text inline to a REVIEWER subagent or fresh LLM session. Provide ZERO context about the project, the author's intent, or prior versions.
+
+2. **Reader questions (minimum 5):**
+   - "What genre is this document?" (Tests genre clarity)
+   - "What is the single most confusing sentence or paragraph?" (Tests clarity)
+   - "What seems to be missing that a reader would expect?" (Tests completeness)
+   - "Are there any claims that seem unsupported or contradictory?" (Tests evidence)
+   - "If you had to summarize this in 3 sentences, what would you say?" (Tests thesis clarity)
+
+3. **Severity classification:**
+   - `[BLOCKING]` — Reader fundamentally misunderstands the thesis. Do not publish.
+   - `[MAJOR]` — Reader caught a contradiction, missing section, or unclear claim. Fix before publishing.
+   - `[MINOR]` — Reader flagged jargon, ambiguous phrasing, or style issues. Fix before publishing.
+   - `[SUGGESTION]` — Reader offered improvement ideas. Optional.
+
+4. **Two-round minimum (CPL L27):** First round catches surface problems (jargon, confusing sentences). Second round (after fixes applied) catches structural problems (logical gaps, missing context). Plan for at least 2 rounds.
+
+5. **Document results:** Reader test feedback and fixes applied must be documented in CHANGELOG.md and, for publication documents, in a "Reader Testing" appendix.
+
+#### Pre-Publication Gate
+
+No document proceeds to release (\u00a711.4) until:
+- [x] At least one round of blind reader testing completed
+- [x] All `[BLOCKING]` and `[MAJOR]` issues resolved
+- [x] Reader testing results documented in CHANGELOG.md
+
+### 11.6 Multi-Project Synthesis Audit (For Convergence/Consilience Claims)
+
+When a document claims that multiple projects independently converge on a common finding, framework, or vocabulary, a mandatory audit is required BEFORE the claim is published.
+
+#### Audit Steps
+
+1. **Source Document Vocabulary Audit (CPL L22):** For each claimed convergence, search the original source documents for the unifying term or concept. If the term appears ONLY in the synthesis document and NOT in the source projects, the convergence is a framing choice, not a discovery. Flag as `[IMPOSED-SYNTHESIS]`.
+
+2. **Definition Equivalence Check (CPL L23):** For each term claimed as convergent, verify that the DEFINITION in each source document matches. Shared name does NOT equal shared structure. If Project A uses "cross-ratio" as a statistical ratio and Project B uses it as a projective invariant, they are NOT convergent despite sharing vocabulary. Flag as `[EQUIVOCATION]`.
+
+3. **Salvage Protocol (CPL L24):** If the central convergence claim fails the vocabulary audit: (a) do not abandon the project, (b) audit source documents for what GENUINELY overlaps, (c) rebuild the synthesis around the actual convergence signal, (d) label the original over-claim honestly, (e) a smaller true claim beats a grand false one.
+
+4. **Terminology Shift Documentation (CPL L35):** If the synthesis introduces terminology that differs from prior releases, include an explicit "Note on Terminology" section explaining the relationship between old and new language.
+
+#### Documentation
+
+The audit results must be included in the synthesis document (as a methodology section or appendix) and in DECISIONS.md.
+
+
+## 12. Project Close-Out Procedure
 
 No project closes out without final report, synthesis, documentation, and publication workflow completion. This section defines the mandatory close-out procedure — enforced, not optional. The system tracks completion of every item.
 
