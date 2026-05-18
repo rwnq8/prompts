@@ -11,7 +11,7 @@
 |:------|:-------------|:---------------|
 | **Projects** | DEFAULT.md v1.11 | `G:\My Drive\projects\<name>\` |
 | **QWAV** | DEFAULT.md v1.11 | `G:\My Drive\QWAV\` |
-| **Prompts** | META-PROMPT-DEEPSEEK.md v4.1 | `G:\My Drive\prompts\` |
+| **Prompts** | META-PROMPT-DEEPSEEK.md v4.2 | `G:\My Drive\prompts\` |
 
 **Design principle:** Agent = filesystem write boundary. Email, social media, image generation are templates consumed within the Projects/QWAV agents — not separate agents.
 

@@ -66,7 +66,7 @@ Workflow: **EXPLORER → IMPLEMENTER → REVIEWER**
 - Due diligence (§0.8) must search `QWAV/`, `Archive/QWAV/`, and `Obsidian/releases/` for prior work
 
 ### Publication Pipeline
-- Papers follow §11 formatting (YAML frontmatter, curly quotes, descriptive filenames)
+- Papers follow §11 formatting (Visible Author Block, curly quotes, descriptive filenames)
 - Completed work copied to `Obsidian/releases/` (§11.4)
 - Publication triggers SOCIAL-ORCHESTRATOR template (§12)
 

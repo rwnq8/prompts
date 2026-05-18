@@ -28,8 +28,8 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 
 | System Prompt | Version | Loaded By | Scope |
 |:--------------|:--------|:----------|:------|
-| `DEFAULT.md` | v1.10 | Projects agent | Full research/writing/coding/email/social workflow |
-| `META-PROMPT-DEEPSEEK.md` | v4.1 | Prompts agent | System prompt generation and auditing |
+| `DEFAULT.md` | v1.11 | Projects agent | Full research/writing/coding/email/social workflow |
+| `META-PROMPT-DEEPSEEK.md` | v4.2 | Prompts agent | System prompt generation and auditing |
 | `EMAIL-AGENT-v1.2.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
 
@@ -216,9 +216,9 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 | File | Purpose | Version |
 |:-----|:--------|:--------|
 | `ARCHITECTURE.md` | This document — high-level taxonomy | v1.2 |
-| `DEFAULT.md` | System prompt for the Projects agent | v1.10 |
-| `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.1 |
-| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.1 |
+| `DEFAULT.md` | System prompt for the Projects agent | v1.11 |
+| `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.2 |
+| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.2 |
 | `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.0 |
 | `email/EMAIL-AGENT-v1.2.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
