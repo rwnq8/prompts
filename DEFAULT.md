@@ -875,28 +875,54 @@ When a project produces a publication-ready document (paper, manuscript, whitepa
 - Documents still undergoing revision within the project
 - Any file not intended for external release
 
-### 11.2 YAML Frontmatter (MANDATORY for Publication Documents)
+### 11.2 Visible Author Block (MANDATORY for ALL Release Documents)
 
-Every publication-ready document MUST begin with YAML frontmatter delimited by `---` on its own line before and after:
+Every release document published to `G:\My Drive\Obsidian\releases\` MUST begin with a **visible author block** — human-readable markdown, NOT hidden in YAML frontmatter. This block appears at the top of the rendered document:
+
+```
+# Full Publication Title
+
+**Author**: [Rowan Brad Quni-Gudzinas](mailto://rowan.quni@outlook.com)
+**ORCID:** [0009-0002-4317-5604](https://orcid.org/0009-0002-4317-5604)
+**DOI:** [10.5281/zenodo.XXXXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXXXX)
+**Date**: YYYY-MM-DD
+
+**Abstract**: Full abstract text, &lt;250 words, accessible to educated non-specialists.
+
+[BEGIN DOCUMENT]
+```
+
+**Required fields:** Title (H1), Author (with mailto link), ORCID (with link), DOI (with Zenodo link), Date (YYYY-MM-DD), Abstract (&lt;250 words).
+
+**Placement rules:**
+- The author block begins on **line 1** of the document. Absolutely nothing precedes it.
+- **NO horizontal rules** (`---`), no dividers, no YAML frontmatter, no metadata blocks of any kind precede or interrupt the author block.
+- The `[BEGIN DOCUMENT]` marker is a **literal marker** — it separates the author block from the document body. No horizontal rule precedes or follows this marker. Document content begins on the line after `[BEGIN DOCUMENT]`.
+
+**DOI placeholder:** During drafting, use `10.5281/zenodo.########` as a placeholder. Replace with the actual DOI (e.g., `10.5281/zenodo.15107688`) after Zenodo registration. Run a Python scan before finalizing to confirm no placeholder remains:
+```python
+import re
+with open(path, 'r', encoding='utf-8') as f:
+    text = f.read()
+if '########' in text:
+    print("WARNING: DOI placeholder still present — replace with actual DOI")
+```
+
+**YAML frontmatter (optional complement):** For machine-readability (Obsidian Dataview, Zotero, citation managers), YAML frontmatter may be placed AFTER the `[BEGIN DOCUMENT]` marker as a supplementary metadata block — delimited by `---` on its own line before and after. The visible author block remains the authoritative human-readable header and must always be present.
 
 ```yaml
 ---
 title: "Full Publication Title in Title Case"
-authors: "Author Name(s)"
+authors: "Rowan Brad Quni-Gudzinas"
 date: "YYYY-MM-DD"
 doi: "10.5281/zenodo.XXXXXXXXX"
 version: "vX.Y"
 abstract: >
-  Full abstract text here. The folded block scalar (>) treats
-  newlines as spaces, producing a single paragraph. Keep the
-  abstract accessible to educated non-specialists.
+  Full abstract text.
 keywords: ["keyword1", "keyword2", "keyword3"]
 license: "CC-BY-4.0"
 ---
 ```
-
-**Required fields:** title, authors, date, doi, abstract
-**Optional fields:** version, keywords, license
 
 ### 11.3 Curly/Smart Typographic Quotes (MANDATORY)
 
