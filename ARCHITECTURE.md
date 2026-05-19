@@ -1,4 +1,4 @@
-# DeepChat Agent System Architecture v1.2
+# DeepChat Agent System Architecture v1.3
 
 > **High-level taxonomy of the DeepChat agent system.** Documents what DeepChat/DeepSeek operates on: agents, system prompts, prompt templates, subagents, and their interactions. Defines the filesystem sandboxing model.
 
@@ -17,9 +17,9 @@ Configured in DeepChat Settings → Agents. Each agent loads ONE system prompt a
 
 | Agent | System Prompt | Write Sandbox | Read Scope | Purpose |
 |:------|:-------------|:--------------|:-----------|:--------|
-| **Projects** | `DEFAULT.md` | `G:\My Drive\projects\<name>\` | ALL directories | All project work — research, writing, coding, email, social media |
+| **Projects** | `DEFAULT.md` | `G:\My Drive\projects\<name>\` | ALL directories | Project Executor — research, writing, coding, email, social media. §0.9 defines Independent Project Executor role. |
 | **Prompts** | `META-PROMPT-DEEPSEEK.md` | `G:\My Drive\prompts\` | ALL directories | System prompt engineering — create, edit, audit prompts |
-| **QWAV** | `QWAV-DEFAULT.md` (TBD) | `G:\My Drive\QWAV\` | ALL directories | Ultrametric Quantum Computing & AI — passive fault tolerance, glass-based q-computing |
+| **QWAV** | `QWAV-DEFAULT.md` | `G:\My Drive\QWAV\` | ALL directories | Strategy Program Manager — portfolio strategy, documentation, handoff, coordination. §0.9 defines QWAV role boundary. Forked from DEFAULT.md. |
 
 **Design principle:** An agent exists ONLY when it has a unique filesystem write boundary. Everything else (email, image generation, social media) is consumed as a template or sub-prompt WITHIN the writing agent — typically the Projects agent.
 
@@ -28,7 +28,8 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 
 | System Prompt | Version | Loaded By | Scope |
 |:--------------|:--------|:----------|:------|
-| `DEFAULT.md` | v1.11 | Projects agent | Full research/writing/coding/email/social workflow |
+| `DEFAULT.md` | v1.12 | Projects agent | Project Executor — full research/writing/coding/email/social workflow. §0.9: Independent Project Executor role. |
+| `QWAV-DEFAULT.md` | v1.0 | QWAV agent | Strategy Program Manager — portfolio strategy, documentation, handoff, coordination. §0.9: QWAV role boundary. Forked from DEFAULT.md. |
 | `META-PROMPT-DEEPSEEK.md` | v4.2 | Prompts agent | System prompt generation and auditing |
 | `EMAIL-AGENT-v1.3.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
@@ -63,7 +64,7 @@ Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files te
 | File | Audience | Purpose |
 |:-----|:---------|:--------|
 | `agents/PROJECTS-AGENT.md` | Projects agent | Full research/writing/email/social lifecycle, subagent delegation patterns |
-| `agents/QWAV-AGENT.md` | QWAV agent | Ultrametric quantum computing & AI, same DEFAULT.md, separate sandbox |
+| `agents/QWAV-AGENT.md` | QWAV agent | Strategy Program Manager — uses QWAV-DEFAULT.md, §0.9 role boundary, separate sandbox |
 | `agents/PROMPTS-AGENT.md` | Prompts agent | System prompt engineering, 9-section template, no subagent delegation |
 | `agents/subagents/EXPLORER-SUBAGENT.md` | All agents | Divergent thinking — brainstorming, alternatives, edge cases |
 | `agents/subagents/IMPLEMENTER-SUBAGENT.md` | All agents | Convergent execution — drafting, structured output from specs |
@@ -228,4 +229,4 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 ---
 
-*Architecture v1.2 — slot IDs synced to live DEFAULT.md; documents the DeepChat agent system taxonomy*
+*Architecture v1.3 — QWAV uses QWAV-DEFAULT.md (forked from DEFAULT.md with §0.9 Strategy Program Manager role); Projects uses DEFAULT.md with §0.9 Project Executor role; documents the DeepChat agent system taxonomy*

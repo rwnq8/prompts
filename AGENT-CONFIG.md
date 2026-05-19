@@ -26,14 +26,14 @@
 | Field | Value |
 |:------|:------|
 | **Name** | `QWAV` |
-| **System Prompt** | Paste ENTIRE contents of `DEFAULT.md` |
+| **System Prompt** | Paste ENTIRE contents of `QWAV-DEFAULT.md` |
 
 **Write boundary:** `G:\My Drive\QWAV\` ✅ Active since 2026-05-11
 **Scope:** Ultrametric Quantum Computing & AI — passive fault tolerance, glass-based q-computing. Full 7-file documentation + outreach emails + arxiv submission guide.
 **MOVE to:** `Archive\QWAV\`, `Obsidian\releases\`
 **Tools:** Same as Projects agent
 
-**Note:** QWAV uses the SAME system prompt as Projects (`DEFAULT.md`). This ensures email/social media/due diligence/sandboxing capabilities are identical. Separation is by chat thread, not by prompt content.
+**Note:** QWAV uses `QWAV-DEFAULT.md` (forked from `DEFAULT.md` with QWAV-specific §0.9 Strategy Program Manager role boundary). Both prompts share identical email/social media/due diligence/sandboxing capabilities. The only difference is §0.9: QWAV gets the Strategy Program Manager role, Projects gets the Project Executor role. Separation is by chat thread AND by prompt role definition.
 
 ---
 
@@ -129,4 +129,4 @@ GIT: Skip all git/branch checks. Read-only task.
 
 ---
 
-*Agent Configuration v5.2 — slot IDs synced to live DEFAULT.md; 3 agents mapped to 3 write boundaries*
+*Agent Configuration v5.3 — slot IDs synced; QWAV now uses QWAV-DEFAULT.md (forked from DEFAULT.md with §0.9 Strategy Program Manager role); 3 agents mapped to 3 write boundaries*

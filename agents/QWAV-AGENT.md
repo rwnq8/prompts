@@ -1,6 +1,6 @@
 # QWAV AGENT — v1.1
 
-> **DeepChat Agent: `QWAV`** | System Prompt: `DEFAULT.md` | Write Sandbox: `G:\My Drive\QWAV\`
+> **DeepChat Agent: `QWAV`** | System Prompt: `QWAV-DEFAULT.md` | Write Sandbox: `G:\My Drive\QWAV\`
 
 ---
 
@@ -9,12 +9,12 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | QWAV |
-| **System Prompt** | `DEFAULT.md` (v1.11+) — SAME prompt as Projects agent. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
+| **System Prompt** | `QWAV-DEFAULT.md` (v1.0) — Forked from `DEFAULT.md` with QWAV-specific §0.9 Strategy Program Manager role boundary. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
 | **Write Sandbox** | `G:\My Drive\QWAV\` — active since 2026-05-11 |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
 | **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `G:\My Drive\Obsidian\releases\` |
 
-**Design note:** QWAV uses the SAME system prompt as Projects (`DEFAULT.md`). The email/social media/due diligence/sandboxing capabilities are identical. Separation is by chat thread and write boundary, not by prompt content.
+**Design note:** QWAV uses `QWAV-DEFAULT.md` — a fork of `DEFAULT.md` with a QWAV-specific §0.9 Strategy Program Manager role boundary definition. The email/social media/due diligence/sandboxing capabilities are identical to Projects' `DEFAULT.md`. The only difference is §0.9: QWAV is the Strategy Program Manager (coordinates, delegates), Projects is the Project Executor (receives handoffs, executes). Separation is by chat thread, write boundary, AND prompt role definition.
 
 ---
 
@@ -116,4 +116,4 @@ Same as Projects agent (see `PROJECTS-AGENT.md` Section 7). All 35 lessons (L1-L
 
 ---
 
-*QWAV Agent v1.1 — Ultrametric Quantum Computing & AI research. Same DEFAULT.md prompt, separate write sandbox.*
+*QWAV Agent v1.2 — Strategy Program Manager for Ultrametric Quantum Computing & AI research. Uses QWAV-DEFAULT.md (forked from DEFAULT.md with §0.9 role boundary), separate write sandbox.*
