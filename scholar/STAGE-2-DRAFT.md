@@ -177,7 +177,7 @@ Every factual claim:
   "S4_EVIDENCE_LEDGER": {
     "meta": {
       "timestamp": "[ISO 8601]",
-      "agent_version": "OMEGA_S2_DRAFT_v6.0",
+      "agent_version": "OMEGA_S2_DRAFT_v6.1",
       "total_artifacts": [count] "[CODE-EXECUTED]",
       "quantitative_artifacts": [count],
       "all_quantitative_code_executed": true

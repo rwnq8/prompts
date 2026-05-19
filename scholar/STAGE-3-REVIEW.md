@@ -174,7 +174,7 @@ Resolve ALL issues from the audit:
 ```json
 {
   "S3_COMPLIANCE_REPORT": {
-    "meta": {"timestamp": "[ISO 8601]", "agent_version": "OMEGA_S3_REVIEW_v6.0"},
+    "meta": {"timestamp": "[ISO 8601]", "agent_version": "OMEGA_S3_REVIEW_v6.1"},
     "certification_decision": "[CERTIFIED/CONDITIONALLY_CERTIFIED/REJECTED]",
     "fabrication_audit": {
       "numbers_in_manuscript": [count] "[CODE-EXECUTED]",

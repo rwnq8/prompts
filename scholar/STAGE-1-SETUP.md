@@ -196,7 +196,7 @@ For each section, specify exactly what evidence Stage 2 needs:
   "RESEARCH_STAGE1_OUTPUT": {
     "meta": {
       "timestamp": "[ISO 8601]",
-      "agent_version": "RESEARCH_SETUP_v6.0",
+      "agent_version": "RESEARCH_SETUP_v6.1",
       "source_mode": "FILE_BACKED",
       "sources_imported": [count],
       "research_title": "[Generated title] [LLM-INFERRED]"

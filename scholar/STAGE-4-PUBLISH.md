@@ -128,7 +128,7 @@ For each appendix placeholder, insert FULL original content:
 # [TITLE]
 **Authors:** [From Stage 1] | **Date:** [Current — verified via Python datetime.date.today()]
 **DOI:** [Real DOI — NEVER a placeholder. If unknown, use `[DOI-PENDING]` and flag for user.]
-**Version:** research pipeline v6.0 — Final Publication
+**Version:** research pipeline v6.1 — Final Publication
 **Source Classification:** All quantitative results [CODE-EXECUTED]. All citations [EXTERNAL-SOURCE]. Narrative [LLM-INFERRED].
 **Certification:** CERTIFIED — Zero fabrications, 100% source-backed
 ```
@@ -247,12 +247,12 @@ Single continuous Markdown document with preserved source labels throughout:
 
 ---
 
-**research pipeline v6.0 | Pipeline Complete**
+**research pipeline v6.1 | Pipeline Complete**
 **Source Integrity:** 100% [CODE-EXECUTED] quantitative | 100% [EXTERNAL-SOURCE] citations | [LLM-INFERRED] narrative
 **Generated:** [Timestamp] | **Words:** [count] [CODE-EXECUTED] | **References:** [count] | **Artifacts:** [count]
 ```
 
 **FOLLOWED IMMEDIATELY BY:**
-`[research pipeline v6.0 — Phase 5 USER APPROVAL REQUIRED] -> DO NOT PUBLISH WITHOUT EXPLICIT USER CONSENT`
+`[research pipeline v6.1 — Phase 5 USER APPROVAL REQUIRED] -> DO NOT PUBLISH WITHOUT EXPLICIT USER CONSENT`
 
 **REMINDER:** This agent COMPILES the document. It does NOT decide to publish. Phase 5 (User Approval Gate) is mandatory. The document stays in the workspace until the user explicitly approves publication to `G:\My Drive\Obsidian\releases\`.

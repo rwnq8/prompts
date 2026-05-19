@@ -1365,11 +1365,11 @@ This ensures full traceability of autonomous actions — every autonomous step i
 
 ## 13. Version & Metadata
 
-**Version:** v1.11
+**Version:** v1.12
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
 **Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, mandatory 7-file documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
-**Last updated:** 2026-05-18
+**Last updated:** 2026-05-19
 
 ---
 
