@@ -82,7 +82,11 @@ Load from project directory:
 ### PHASE 2: APPENDIX RESOLUTION
 
 **Step 2.1: Placeholder Detection** `[CODE-EXECUTED: Python scan]`
-Scan for: `[Insert...]`, `[Placeholder...]`, `[TODO]`, `[TBD]`, `[Data Artifact Missing...]`
+Scan for ALL placeholder patterns — treat these as BLOCKING (do not proceed if found):
+- **Content placeholders:** `[Insert...]`, `[Placeholder...]`, `[TODO]`, `[TBD]`, `[Data Artifact Missing...]`
+- **DOI placeholders (BLOCKING):** `########`, `XXXX`, `....`, `<DOI>`, `[DOI]`, `zenodo.########`, `zenodo.XXXX`, any DOI containing consecutive repeated placeholder characters — a real Zenodo DOI always has 8 digits after the prefix
+- **Date placeholders (BLOCKING):** stale dates more than 1 calendar day behind current date, `[DATE]`, `YYYY-MM-DD`, `YYYY` — verify every date field against `datetime.date.today()` via Python
+- **Structural artifacts:** `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, `[START CONTENT]`, `[END CONTENT]`, or any bracket-delimited section markers that are not source labels — these are generation delimiters that must NEVER appear in final output
 
 **Step 2.2: Content Expansion**
 For each appendix placeholder, insert FULL original content:
@@ -112,22 +116,99 @@ For each appendix placeholder, insert FULL original content:
 - Verify `[LLM-INFERRED]` labels for narrative content
 
 **Step 3.3: Front Matter Assembly**
+
+**If using YAML frontmatter (`---` delimiters):**
+- YAML frontmatter MUST be at byte 0 — the absolute first characters of the file
+- NO content (headings, text, markers, blank lines) may precede the opening `---`
+- YAML frontmatter contains: `title`, `authors`, `date`, `doi`, `version`, `abstract`, `keywords`, `license`
+- After the closing `---`, the rendered markdown header follows
+
+**Markdown header (appears AFTER YAML frontmatter, if YAML is used):**
 ```markdown
 # [TITLE]
-**Authors:** [From Stage 1] | **Date:** [Current]
+**Authors:** [From Stage 1] | **Date:** [Current — verified via Python datetime.date.today()]
+**DOI:** [Real DOI — NEVER a placeholder. If unknown, use `[DOI-PENDING]` and flag for user.]
 **Version:** research pipeline v6.0 — Final Publication
 **Source Classification:** All quantitative results [CODE-EXECUTED]. All citations [EXTERNAL-SOURCE]. Narrative [LLM-INFERRED].
 **Certification:** CERTIFIED — Zero fabrications, 100% source-backed
 ```
 
+**DOI RULE:** `10.5281/zenodo.########` is NEVER acceptable. If the real Zenodo DOI is unknown, the field must contain `[DOI-PENDING: user must supply]` — and Phase 5 must flag this to the user. **Placeholder DOIs are a publication blocker.**
+
 ### PHASE 4: FINAL INTEGRITY CHECK `[CODE-EXECUTED]`
 
-- Placeholder scan: zero unresolved
-- Source label audit: all claims labeled
-- Structural validation: all sections present
-- Word count within range
-- LaTeX and formatting valid
-- Cross-references resolve correctly
+Execute ALL of the following Python-powered checks. Any failure is BLOCKING — do not proceed to publication.
+
+**4.1 Placeholder Audit:**
+- Scan for: `[Insert...]`, `[TODO]`, `[TBD]`, `[Data Artifact Missing...]`
+- Result: zero unresolved → PASS
+
+**4.2 DOI Validation (CRITICAL):**
+- Scan for DOI fields containing: `########`, `XXXX`, `....`, `<DOI>`, `[DOI]`, or any repeated placeholder character
+- Scan for Zenodo DOIs not matching pattern `10.5281/zenodo.\d{8}`
+- **If ANY placeholder DOI is found: BLOCK PUBLICATION.** Document must not proceed. Flag: `[DOI-MISSING: user must supply real DOI]`
+- Note: `[DOI-PENDING]` is the ONLY acceptable non-resolved state — and it must be surfaced to user before publishing
+
+**4.3 Date Freshness Verification:**
+- Extract all date fields (YAML `date:`, markdown `**Date:**`, frontmatter dates)
+- Compare against `datetime.date.today()` via Python
+- Any date more than 1 calendar day behind → `[DATE-STALE: expected YYYY-MM-DD, found YYYY-MM-DD]`
+- **BLOCKING:** Fix stale dates before publication
+
+**4.4 Structural Artifact Scan:**
+- Scan for generation delimiters: `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, `[START CONTENT]`, `[END CONTENT]`, or any bracket-delimited section markers not in the approved source label set (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE:...]`, `[LLM-INFERRED]`, `[UNVERIFIED-LLM]`, `[MISSING-ARTIFACT:...]`)
+- **Strip ALL detected artifacts.** They must NEVER appear in final output.
+
+**4.5 YAML Frontmatter Positioning:**
+- If the document uses YAML frontmatter (`---` delimiters): verify it starts at byte 0 (first character of file)
+- If any content (heading, text, markers) precedes the opening `---`: **BLOCKING.** Reorder so YAML frontmatter is the absolute first content.
+- Python check: `content.lstrip().startswith('---')` must be True
+
+**4.6 Source Label Audit:**
+- Verify ALL quantitative claims have `[CODE-EXECUTED]` label
+- Verify ALL citations have `[EXTERNAL-SOURCE]` label
+- Verify `[LLM-INFERRED]` labels for narrative content
+
+**4.7 Structural & Format Validation:**
+- Valid heading hierarchy, code blocks with language tags, math in `$...$` or `$$...$$`
+- Word count within range, cross-references resolve correctly
+- **Math formatting scan:** Execute Python verification for bare Unicode math characters outside `$...$`/`$$...$$`/code blocks. Remediate any detections.
+
+**4.8 Integrity Gate Decision:**
+- ALL checks pass → proceed to Phase 5 (User Approval)
+- ANY check fails → `[PUBLICATION BLOCKED: <failure summary>]` → surface to user, do NOT write to releases
+
+### PHASE 5: USER APPROVAL GATE — MANDATORY (DO NOT SKIP)
+
+**THIS IS A HARD GATE. You must STOP and wait for explicit user approval before writing ANY file to `G:\My Drive\Obsidian\releases\`.**
+
+**Step 5.1: Assemble Approval Package**
+Compile a structured summary for the user containing:
+1. **Document title and version**
+2. **Word count** `[CODE-EXECUTED]`
+3. **Integrity check results** — all 8 checks from Phase 4, with PASS/FAIL status
+4. **DOI status** — real DOI present OR `[DOI-PENDING]` flagged
+5. **Date freshness** — publication date vs. current date
+6. **Placeholder list** — all resolved AND any remaining `[MISSING-ARTIFACT]` items
+7. **Target path** — exact file path where the document would be written
+
+**Step 5.2: Present to User**
+Output the approval package and ask explicitly:
+> "Publication-ready document assembled. Phase 4 integrity checks: [N/8 passed]. Target: `<path>`. Approve publication to releases?"
+
+**Step 5.3: Await Explicit Approval**
+- **Only proceed to write the file if the user responds with explicit approval** (e.g., "yes", "approved", "publish").
+- **If user says no / wait / not yet:** Hold the document. Do NOT write to releases. Report: `[PUBLICATION HELD: awaiting user approval]`.
+- **If user requests changes:** Return to the relevant phase (Phase 3 for formatting, Phase 2 for content, Phase 1 for source verification) and re-run integrity checks before re-presenting.
+
+**Step 5.4: Conditional Write**
+ONLY after explicit user approval:
+1. Write the finalized document to the approved path
+2. **Verify the write:** `Test-Path <path>` and `Get-Content <path> -First 10`
+3. **Re-verify YAML positioning:** Read back the file and confirm `content.lstrip().startswith('---')`
+4. Report: `[PUBLISHED: <path>] — verified on disk`
+
+**NEVER write to `G:\My Drive\Obsidian\releases\` without completing ALL of Phase 5.**
 
 ---
 
@@ -172,4 +253,6 @@ Single continuous Markdown document with preserved source labels throughout:
 ```
 
 **FOLLOWED IMMEDIATELY BY:**
-`[research pipeline v6.0 WORKFLOW COMPLETE] -> FINAL MANUSCRIPT PUBLISHED`
+`[research pipeline v6.0 — Phase 5 USER APPROVAL REQUIRED] -> DO NOT PUBLISH WITHOUT EXPLICIT USER CONSENT`
+
+**REMINDER:** This agent COMPILES the document. It does NOT decide to publish. Phase 5 (User Approval Gate) is mandatory. The document stays in the workspace until the user explicitly approves publication to `G:\My Drive\Obsidian\releases\`.
