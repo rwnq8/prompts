@@ -6,10 +6,18 @@
 For scholarly research, you may access:
 - `G:\My Drive\prompts\scholar\` — Active research pipeline prompts
 - `G:\My Drive\Archive\` — Archived historical research
-- `G:\My Drive\Obsidian\releases\` — Research publications and reference materials
+- `G:\My Drive\Obsidian\releases\` — Research publications and reference materials **(READ-ONLY for this stage; writes to releases require STAGE-4 user-approval gate)**
 - `G:\My Drive\prompts\` — Project workspace (current research files)
 
 Use Python `os.path.exists()` to check paths before reading.
+
+**RELEASE PUBLISHING RULE:** This stage (Review) does NOT write to `G:\My Drive\Obsidian\releases\`. Publication happens ONLY through STAGE-4, which requires explicit user approval. Do not autonomously place files in the releases directory.
+
+**CRITICAL REVIEW ADDITIONS — The following must be verified during review:**
+1. **DOI integrity:** Scan for placeholder patterns (`########`, `XXXX`, `....`, `<DOI>`, `[DOI]`). If found: `[BLOCKING: placeholder DOI detected]`. A real Zenodo DOI matches `10.5281/zenodo.\d{8}`.
+2. **Date freshness:** Verify all date fields match or are within 1 day of `datetime.date.today()`. Stale dates: `[BLOCKING: date is stale]`.
+3. **Structural artifacts:** Scan for `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, and similar generation delimiters. Strip all. Their presence is `[BLOCKING: generation artifact in output]`.
+4. **YAML frontmatter positioning:** If YAML frontmatter is used, verify it starts at byte 0 of the file. Content preceding `---` is `[BLOCKING: YAML frontmatter not at byte 0]`.
 
 ## 0.5 FILE NAMING CONVENTION (PROVENANCE & AUDIT)
 
@@ -194,4 +202,4 @@ Resolve ALL issues from the audit:
 [Complete, purified manuscript — ready for Stage 4]
 
 **FOLLOWED IMMEDIATELY BY:**
-`[STAGE_3_COMPLETE: MANUSCRIPT_CERTIFIED] -> READY FOR STAGE 4 (PUBLISH)`
+`[STAGE_3_COMPLETE: MANUSCRIPT_CERTIFIED — includes DOI, date, artifact, and YAML checks] -> READY FOR STAGE 4 (PUBLISH — REQUIRES USER APPROVAL)`
