@@ -68,6 +68,10 @@ Agents may MOVE completed or archived work OUT of their write sandbox and INTO r
 
 **HARD RULES:**
 - NEVER write directly to `Archive\` or `Obsidian\releases\`. ONLY move into them.
+- **ANY move/publish to `Obsidian\releases\` requires EXPLICIT USER APPROVAL.** No agent may autonomously place files in the releases directory. The agent must assemble an approval package (title, word count, integrity check results, DOI status, target path) and await the user's explicit "yes/approved/publish" before executing the move.
+- **Placeholder DOIs are BLOCKING for any release.** `10.5281/zenodo.########` (or any DOI with repeated placeholder characters) must NEVER appear in any file moved to `Obsidian\releases\`. If the real DOI is unknown, publication must be held with `[DOI-PENDING: user must supply]`.
+- **Date fields must be fresh.** Any date in a published document more than 1 calendar day behind `datetime.date.today()` is a publication blocker. Verify via Python before any move to releases.
+- **Generation delimiters must be stripped.** `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, and similar structural markers are LLM artifacts that must NEVER appear in final output. Scan and strip before any file write.
 - Before ANY write operation: verify the target path starts with your assigned sandbox. If not → `[ISOLATION-VIOLATION]` and STOP.
 - MOVE = relocate the file. COPY + DELETE source = equivalent. Never leave stale copies behind.
 - The parent directory `G:\My Drive\projects\` is a CONTAINER of independent projects, not a workspace. Never write to the projects root.
@@ -456,6 +460,12 @@ Adapt your approach based on task type:
 5. Review for completeness: does the document answer its stated questions?
 6. Verify all quantitative claims are `[CODE-EXECUTED]`, all citations are `[EXTERNAL-SOURCE]`
 7. **Verify math formatting:** Execute a Python scan for bare Unicode math characters outside $...$ / $$...$$ / code blocks. Remediate any detections before final output.
+8. **Pre-Delivery Integrity Scan (MANDATORY before any file write):**
+   - Scan for placeholder DOIs (`########`, `XXXX`) → block if found, replace with `[DOI-PENDING]`
+   - Verify date freshness → `datetime.date.today()` via Python
+   - Strip generation artifacts (`[BEGIN DOCUMENT]`, `[END DOCUMENT]`)
+   - Verify YAML frontmatter at byte 0 if used → `content.lstrip().startswith('---')`
+   - **If target is `Obsidian\releases\`: STOP and get explicit user approval**
 
 ### Analysis / Critique
 **Characteristics:** Evaluating existing work, finding flaws, improving quality.
@@ -598,6 +608,9 @@ These standards apply to ALL scholarly and research output:
 6. **Error Correction:** When errors are discovered, acknowledge and correct them immediately. Document the correction.
 7. **Pre-Registration:** Research questions, methods, and success criteria must be defined BEFORE execution (per the research protocol).
 8. **Separation of Fact and Interpretation:** Clearly distinguish between what the evidence shows (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE]`) and what it means (`[LLM-INFERRED]`).
+9. **DOI Integrity:** Placeholder DOIs (`10.5281/zenodo.########`, `XXXX`, `....`, or any repeated placeholder characters) are PROHIBITED in all output. If a real DOI is unknown, use `[DOI-PENDING: user must supply]`. A real Zenodo DOI matches `10.5281/zenodo.\d{8}`. Verify via Python regex before any file write.
+10. **Date Freshness:** All date fields in generated documents must be verified against `datetime.date.today()` via Python. Dates more than 1 calendar day stale are a delivery blocker — fix before output.
+11. **Output Purity:** Generation delimiters (`[BEGIN DOCUMENT]`, `[END DOCUMENT]`, `[START CONTENT]`, `[END CONTENT]`) must NEVER appear in final output. These are LLM generation artifacts — scan and strip via Python before delivering any file. YAML frontmatter (if used) must be at byte 0 of the file — no content may precede the opening `---`.
 
 ---
 
@@ -657,6 +670,39 @@ If ANY output contains bare Unicode math characters outside of `$$...$$`, `$...$
 3. **Verify the fix** with a second scan before delivery.
 4. **If unable to fix programmatically:** surface the exact locations to the user.
 5. **NEVER** deliver raw Unicode math (alpha, epsilon_0, hbar, right arrow, approx, superscript 2, etc.) in mixed English/math text.
+
+### Placeholder DOI Detected
+If Python scan detects `########`, `XXXX`, `....`, `<DOI>`, `[DOI]`, or any repeated placeholder characters in a DOI field:
+1. **BLOCK the file write.** Do not save or deliver output containing a placeholder DOI.
+2. **Replace with `[DOI-PENDING: user must supply real DOI]`.**
+3. **Surface to user** with the exact location of the placeholder.
+4. **NEVER** fabricate a DOI. If the real one is unknown, it stays pending.
+
+### Generation Artifact Leaked into Output
+If output contains `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, or similar bracket-delimited section markers:
+1. **Strip all detected artifacts via Python** before delivering output.
+2. **Do not deliver output containing these markers.**
+3. These are LLM generation scaffolding — they have no place in final content.
+
+### YAML Frontmatter Not at Byte 0
+If a markdown file uses YAML frontmatter (`---` delimiters) but content precedes the opening `---`:
+1. **Reorder the file:** YAML frontmatter must be the absolute first content.
+2. **Verify via Python:** `content.lstrip().startswith('---')` must be True.
+3. **Re-read the file after writing** to confirm positioning is correct.
+
+### Auto-Publish Without User Approval
+If any workflow would result in a file being written to `G:\My Drive\Obsidian\releases\`:
+1. **STOP.** Do not write the file.
+2. **Assemble an approval package:** title, word count, integrity check results, DOI status, date freshness, target path.
+3. **Present to user** and await explicit approval ("yes", "approved", "publish").
+4. **Only proceed** after receiving explicit user consent.
+5. This applies to MOVEs as well as direct writes.
+
+### Stale Date in Output
+If Python date check reveals a date field more than 1 calendar day behind `datetime.date.today()`:
+1. **Update the date to current date** via Python.
+2. **If the date must be historical** (e.g., publication date of a cited work), verify it was intentional — flag to user.
+3. **Re-verify after update** before delivering output.
 
 ### Quantitative Work
 **All quantitative output MUST be `[CODE-EXECUTED]`.** If Python is unavailable, report the limitation — do not substitute LLM inference for computational results.
