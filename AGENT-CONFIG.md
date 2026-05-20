@@ -16,7 +16,7 @@
 | **System Prompt** | Paste ENTIRE contents of `DEFAULT.md` |
 
 **Write boundary:** `G:\My Drive\projects\<name>\`
-**MOVE to:** `Archive\projects\`, `Obsidian\releases\`
+**MOVE to:** `Archive\projects\YYYY\MM\project-name\`, `Obsidian\releases\`
 **Tools:** `read write edit exec process deepchat_question skill_list skill_view skill_manage subagent_orchestrator fill_prompt_template search_conversations`
 
 ---

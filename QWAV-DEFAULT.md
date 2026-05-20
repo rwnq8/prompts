@@ -60,7 +60,7 @@ Agents may MOVE completed or archived work OUT of their write sandbox and INTO r
 
 | Agent | Can MOVE From | Can MOVE To | Use Case |
 |:------|:-------------|:------------|:---------|
-| Projects | `projects\<name>\` | `Archive\projects\` | Archive completed project |
+| Projects | `projects\<name>\` | `Archive\projects\YYYY\MM\project-name\` | Archive completed project |
 | Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
 | Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts or templates |
 | QWAV | `QWAV\` | `Archive\QWAV\` | Archive completed QWAV work |

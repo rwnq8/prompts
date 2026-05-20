@@ -27,6 +27,7 @@ CONFIGURATION:
 6. **PowerShell Error Handling (MANDATORY):** Never use `-ErrorAction SilentlyContinue` — it silently masks critical failures, making broken state invisible (see CROSS-PROJECT-LEARNINGS L14). For existence checks, use `Test-Path`. For commands that might fail, use `-ErrorAction Stop` with try/catch, or check `$LASTEXITCODE` / `$?` after each command. Never suppress errors silently.
 7. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication
 8. **Cross-Project Lessons (CPL L19-L40):** 22 new cross-project lessons added 2026-05-18 from a comprehensive audit of 11 archived projects. Categories: git branch renaming (L19-L20), backlog drift (L21), retroactive framing (L22), equivocation (L23), salvage methodology (L24), collaborator labeling (L25), reader testing (L26-L28), architecture honesty (L29), mutual exclusion (L30-L31), hidden assumptions (L32), tool citation (L33), framework replacement (L34), terminology shifts (L35), distance definitions (L36), drafting feedback (L37), null-byte safety (L38), subagent truncation (L39), write-tool failures (L40). See `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` for full text. — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
+9. **Archive Organization — YYYY/MM (MANDATORY):** All archived projects go under `G:\My Drive\Archive\projects\YYYY\MM\project-name\`. Never place project directories directly in the root of `Archive\projects\`. The archive is organized by year and month. When MOVE-ing completed work into the archive, determine the current year and month, and place the project accordingly. This applies to ALL agents.
 
 ---
 
@@ -54,7 +55,7 @@ ALL agents have READ access to the entire drive for due diligence, cross-project
 | `G:\My Drive\prompts\` | **Write** (Prompts agent) / **Read** (all agents) | System prompts, templates, email scripts |
 | `G:\My Drive\QWAV\` | **Write** (QWAV agent) / **Read** (all agents) | QWAV work (pending) |
 | `G:\My Drive\Obsidian\releases\` | **Read-only** (all agents) | Published research, finalized papers, releases |
-| `G:\My Drive\Archive\` | **Read-only** (all agents) | Historical work — all subdirectories |
+| `G:\My Drive\Archive\` | **Read-only** (all agents) | Historical work — organized as `Archive\projects\YYYY\MM\<project>\` |
 
 ### 0.6.3 Cross-Directory MOVE Permissions
 
@@ -62,7 +63,7 @@ Agents may MOVE completed or archived work OUT of their write sandbox and INTO r
 
 | Agent | Can MOVE From | Can MOVE To | Use Case |
 |:------|:-------------|:------------|:---------|
-| Projects | `projects\<name>\` | `Archive\projects\` | Archive completed project |
+| Projects | `projects\<name>\` | `Archive\projects\YYYY\MM\project-name\` | Archive completed project |
 | Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
 | Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts or templates |
 | QWAV | `QWAV\` | `Archive\QWAV\` | Archive completed QWAV work |
@@ -228,7 +229,7 @@ These 7 files use fixed names and are never versioned: `README.md`, `PROJECT STA
 | `G:\My Drive\projects\` | Active project directories | Full read/write (within assigned project) |
 | `G:\My Drive\projects\_shared\` | Cross-project knowledge base — `CROSS-PROJECT-LEARNINGS.md` | Read-only |
 | `G:\My Drive\Obsidian\releases\` | Published and finalized research, papers, releases | Read-only |
-| `G:\My Drive\Archive\` | Historical work — subdivided into `Archive\prompts\`, `Archive\Obsidian\`, `Archive\backup\`, `Archive\prompts safety back-up\` | Read-only (deep search) |
+| `G:\My Drive\Archive\` | Historical work — subdivided into `Archive\projects\YYYY\MM\`, `Archive\prompts\`, `Archive\Obsidian\`, `Archive\backup\`, `Archive\prompts safety back-up\` | Read-only (deep search) |
 | `G:\My Drive\prompts\` | System prompt engineering — this directory | This session's workspace |
 
 **Unconfirmed locations** (user must clarify if referenced):
@@ -1809,7 +1810,7 @@ Before composing any substantive reply, search the user's knowledge base. The ca
 |:----------|:-----------------|
 | `G:\My Drive\projects\` | Active project work — papers, drafts, documentation |
 | `G:\My Drive\Obsidian\releases\` | Published research, finalized papers, releases |
-| `G:\My Drive\Archive\` | Historical work, past projects, reference materials |
+| `G:\My Drive\Archive\` | Historical work — organized as `Archive\projects\YYYY\MM\<project>\`, past projects, reference materials |
 | `G:\My Drive\projects\_shared\` | Cross-project learnings (`CROSS-PROJECT-LEARNINGS.md`) |
 
 Search workflow: match keywords → read project docs → check CROSS-PROJECT-LEARNINGS → check releases → if nothing found, ASK.
