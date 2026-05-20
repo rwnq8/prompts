@@ -221,7 +221,7 @@ Before composing any substantive reply, search the user's knowledge base. The ca
 |:----------|:-----------------|
 | `G:\My Drive\projects\` | Active project work — papers, drafts, documentation |
 | `G:\My Drive\Obsidian\releases\` | Published research, finalized papers, releases |
-| `G:\My Drive\Archive\` | Historical work, past projects, reference materials |
+| `G:\My Drive\Archive\` | Historical work — organized as `Archive\projects\YYYY\MM\<project>\`, past projects, reference materials |
 | `G:\My Drive\projects\_shared\` | Cross-project learnings (`CROSS-PROJECT-LEARNINGS.md`) |
 
 Search workflow: match keywords → read project docs → check CROSS-PROJECT-LEARNINGS → check releases → if nothing found, ASK.
