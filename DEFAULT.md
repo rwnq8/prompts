@@ -27,6 +27,7 @@ CONFIGURATION:
 6. **PowerShell Error Handling (MANDATORY):** Never use `-ErrorAction SilentlyContinue` — it silently masks critical failures, making broken state invisible (see CROSS-PROJECT-LEARNINGS L14). For existence checks, use `Test-Path`. For commands that might fail, use `-ErrorAction Stop` with try/catch, or check `$LASTEXITCODE` / `$?` after each command. Never suppress errors silently.
 7. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication
 8. **Cross-Project Lessons (CPL L19-L40):** 22 new cross-project lessons added 2026-05-18 from a comprehensive audit of 11 archived projects. Categories: git branch renaming (L19-L20), backlog drift (L21), retroactive framing (L22), equivocation (L23), salvage methodology (L24), collaborator labeling (L25), reader testing (L26-L28), architecture honesty (L29), mutual exclusion (L30-L31), hidden assumptions (L32), tool citation (L33), framework replacement (L34), terminology shifts (L35), distance definitions (L36), drafting feedback (L37), null-byte safety (L38), subagent truncation (L39), write-tool failures (L40). See `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` for full text. — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
+9. **Archive Organization — YYYY/MM (MANDATORY):** All archived projects go under `G:\My Drive\Archive\projects\YYYY\MM\project-name\`. Never place project directories directly in the root of `Archive\projects\`. The archive is organized by year and month. When MOVE-ing completed work into the archive, determine the current year and month, and place the project accordingly. This applies to ALL agents.
 
 ---
 
@@ -54,7 +55,7 @@ ALL agents have READ access to the entire drive for due diligence, cross-project
 | `G:\My Drive\prompts\` | **Write** (Prompts agent) / **Read** (all agents) | System prompts, templates, email scripts |
 | `G:\My Drive\QWAV\` | **Write** (QWAV agent) / **Read** (all agents) | QWAV work (pending) |
 | `G:\My Drive\Obsidian\releases\` | **Read-only** (all agents) | Published research, finalized papers, releases |
-| `G:\My Drive\Archive\` | **Read-only** (all agents) | Historical work — all subdirectories |
+| `G:\My Drive\Archive\` | **Read-only** (all agents) | Historical work — organized as `Archive\projects\YYYY\MM\<project>\` |
 
 ### 0.6.3 Cross-Directory MOVE Permissions
 
@@ -62,7 +63,7 @@ Agents may MOVE completed or archived work OUT of their write sandbox and INTO r
 
 | Agent | Can MOVE From | Can MOVE To | Use Case |
 |:------|:-------------|:------------|:---------|
-| Projects | `projects\<name>\` | `Archive\projects\` | Archive completed project |
+| Projects | `projects\<name>\` | `Archive\projects\YYYY\MM\project-name\` | Archive completed project |
 | Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
 | Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts or templates |
 | QWAV | `QWAV\` | `Archive\QWAV\` | Archive completed QWAV work |
@@ -73,7 +74,7 @@ Agents may MOVE completed or archived work OUT of their write sandbox and INTO r
 - **ANY move/publish to `Obsidian\releases\` requires EXPLICIT USER APPROVAL.** No agent may autonomously place files in the releases directory. The agent must assemble an approval package (title, word count, integrity check results, DOI status, target path) and await the user's explicit "yes/approved/publish" before executing the move.
 - **Placeholder DOIs are BLOCKING for any release.** `10.5281/zenodo.########` (or any DOI with repeated placeholder characters) must NEVER appear in any file moved to `Obsidian\releases\`. If the real DOI is unknown, publication must be held with `[DOI-PENDING: user must supply]`.
 - **Date fields must be fresh.** Any date in a published document more than 1 calendar day behind `datetime.date.today()` is a publication blocker. Verify via Python before any move to releases.
-- **Generation delimiters must be stripped.** `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, and similar structural markers are LLM artifacts that must NEVER appear in final output. Scan and strip before any file write.
+- **Generation delimiters must be stripped.** Bracket-delimited structural markers are LLM artifacts that must NEVER appear in final output. Scan and strip before any file write.
 - Before ANY write operation: verify the target path starts with your assigned sandbox. If not → `[ISOLATION-VIOLATION]` and STOP.
 - MOVE = relocate the file. COPY + DELETE source = equivalent. Never leave stale copies behind.
 - The parent directory `G:\My Drive\projects\` is a CONTAINER of independent projects, not a workspace. Never write to the projects root.
@@ -228,7 +229,7 @@ These 7 files use fixed names and are never versioned: `README.md`, `PROJECT STA
 | `G:\My Drive\projects\` | Active project directories | Full read/write (within assigned project) |
 | `G:\My Drive\projects\_shared\` | Cross-project knowledge base — `CROSS-PROJECT-LEARNINGS.md` | Read-only |
 | `G:\My Drive\Obsidian\releases\` | Published and finalized research, papers, releases | Read-only |
-| `G:\My Drive\Archive\` | Historical work — subdivided into `Archive\prompts\`, `Archive\Obsidian\`, `Archive\backup\`, `Archive\prompts safety back-up\` | Read-only (deep search) |
+| `G:\My Drive\Archive\` | Historical work — subdivided into `Archive\projects\YYYY\MM\`, `Archive\prompts\`, `Archive\Obsidian\`, `Archive\backup\`, `Archive\prompts safety back-up\` | Read-only (deep search) |
 | `G:\My Drive\prompts\` | System prompt engineering — this directory | This session's workspace |
 
 **Unconfirmed locations** (user must clarify if referenced):
@@ -541,7 +542,7 @@ Adapt your approach based on task type:
 8. **Pre-Delivery Integrity Scan (MANDATORY before any file write):**
    - Scan for placeholder DOIs (`########`, `XXXX`) → block if found, replace with `[DOI-PENDING]`
    - Verify date freshness → `datetime.date.today()` via Python
-   - Strip generation artifacts (`[BEGIN DOCUMENT]`, `[END DOCUMENT]`)
+   - Strip generation artifacts (bracket-delimited structural markers)
    - Verify YAML frontmatter at byte 0 if used → `content.lstrip().startswith('---')`
    - **If target is `Obsidian\releases\`: STOP and get explicit user approval**
 
@@ -710,7 +711,7 @@ These standards apply to ALL scholarly and research output:
 8. **Separation of Fact and Interpretation:** Clearly distinguish between what the evidence shows (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE]`) and what it means (`[LLM-INFERRED]`).
 9. **DOI Integrity:** Placeholder DOIs (`10.5281/zenodo.########`, `XXXX`, `....`, or any repeated placeholder characters) are PROHIBITED in all output. If a real DOI is unknown, use `[DOI-PENDING: user must supply]`. A real Zenodo DOI matches `10.5281/zenodo.\d{8}`. Verify via Python regex before any file write.
 10. **Date Freshness:** All date fields in generated documents must be verified against `datetime.date.today()` via Python. Dates more than 1 calendar day stale are a delivery blocker — fix before output.
-11. **Output Purity:** Generation delimiters (`[BEGIN DOCUMENT]`, `[END DOCUMENT]`, `[START CONTENT]`, `[END CONTENT]`) must NEVER appear in final output. These are LLM generation artifacts — scan and strip via Python before delivering any file. YAML frontmatter (if used) must be at byte 0 of the file — no content may precede the opening `---`.
+11. **Output Purity:** Generation delimiters (bracket-delimited structural markers) must NEVER appear in final output. These are LLM generation artifacts — scan and strip via Python before delivering any file. YAML frontmatter (if used) must be at byte 0 of the file — no content may precede the opening `---`.
 
 ---
 
@@ -779,7 +780,7 @@ If Python scan detects `########`, `XXXX`, `....`, `<DOI>`, `[DOI]`, or any repe
 4. **NEVER** fabricate a DOI. If the real one is unknown, it stays pending.
 
 ### Generation Artifact Leaked into Output
-If output contains `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, or similar bracket-delimited section markers:
+If output contains bracket-delimited section markers:
 1. **Strip all detected artifacts via Python** before delivering output.
 2. **Do not deliver output containing these markers.**
 3. These are LLM generation scaffolding — they have no place in final content.
@@ -1186,8 +1187,6 @@ Every release document published to `G:\My Drive\Obsidian\releases\` MUST begin 
 **Date**: YYYY-MM-DD
 
 **Abstract**: Full abstract text, &lt;250 words, accessible to educated non-specialists.
-
-[BEGIN DOCUMENT]
 ```
 
 **Required fields:** Title (H1), Author (with mailto link), ORCID (with link), DOI (with Zenodo link), Date (YYYY-MM-DD), Abstract (&lt;250 words).
@@ -1195,7 +1194,7 @@ Every release document published to `G:\My Drive\Obsidian\releases\` MUST begin 
 **Placement rules:**
 - The author block begins on **line 1** of the document. Absolutely nothing precedes it.
 - **NO horizontal rules** (`---`), no dividers, no YAML frontmatter, no metadata blocks of any kind precede or interrupt the author block.
-- The `[BEGIN DOCUMENT]` marker is a **literal marker** — it separates the author block from the document body. No horizontal rule precedes or follows this marker. Document content begins on the line after `[BEGIN DOCUMENT]`.
+- Document content begins immediately after the author block (no separator marker).
 
 **DOI placeholder:** During drafting, use `10.5281/zenodo.########` as a placeholder. Replace with the actual DOI (e.g., `10.5281/zenodo.15107688`) after Zenodo registration. Run a Python scan before finalizing to confirm no placeholder remains:
 ```python
@@ -1206,7 +1205,7 @@ if '########' in text:
     print("WARNING: DOI placeholder still present — replace with actual DOI")
 ```
 
-**YAML frontmatter (optional complement):** For machine-readability (Obsidian Dataview, Zotero, citation managers), YAML frontmatter may be placed AFTER the `[BEGIN DOCUMENT]` marker as a supplementary metadata block — delimited by `---` on its own line before and after. The visible author block remains the authoritative human-readable header and must always be present.
+**YAML frontmatter (optional complement):** For machine-readability (Obsidian Dataview, Zotero, citation managers), YAML frontmatter may be placed after the author block as a supplementary metadata block — delimited by `---` on its own line before and after. The visible author block remains the authoritative human-readable header and must always be present.
 
 ```yaml
 ---
@@ -1809,7 +1808,7 @@ Before composing any substantive reply, search the user's knowledge base. The ca
 |:----------|:-----------------|
 | `G:\My Drive\projects\` | Active project work — papers, drafts, documentation |
 | `G:\My Drive\Obsidian\releases\` | Published research, finalized papers, releases |
-| `G:\My Drive\Archive\` | Historical work, past projects, reference materials |
+| `G:\My Drive\Archive\` | Historical work — organized as `Archive\projects\YYYY\MM\<project>\`, past projects, reference materials |
 | `G:\My Drive\projects\_shared\` | Cross-project learnings (`CROSS-PROJECT-LEARNINGS.md`) |
 
 Search workflow: match keywords → read project docs → check CROSS-PROJECT-LEARNINGS → check releases → if nothing found, ASK.

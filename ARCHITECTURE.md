@@ -88,7 +88,7 @@ Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files te
 │  ├── QWAV\              ← WRITE: QWAV agent (pending)   │
 │  ├── Obsidian\releases\ ← READ-ONLY: all agents         │
 │  └── Archive\           ← READ-ONLY: all agents         │
-│      ├── projects\      ← MOVE target (completed)       │
+│      ├── projects\YYYY\MM\ ← MOVE target (completed)    │
 │      ├── prompts\       ← MOVE target (archived prompts)│
 │      └── backup\        ← MOVE target                   │
 └─────────────────────────────────────────────────────────┘
@@ -100,7 +100,7 @@ Agents may MOVE completed/archived work OUT of their write sandbox and INTO read
 
 | Agent | Can MOVE from | Can MOVE to | Use Case |
 |:------|:-------------|:------------|:---------|
-| Projects | `projects\<name>\` | `Archive\projects\` | Archive completed project |
+| Projects | `projects\<name>\` | `Archive\projects\YYYY\MM\project-name\` | Archive completed project |
 | Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
 | Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts |
 | QWAV | `QWAV\` | `Archive\QWAV\` | Archive completed QWAV work |

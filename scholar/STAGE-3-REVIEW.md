@@ -16,7 +16,7 @@ Use Python `os.path.exists()` to check paths before reading.
 **CRITICAL REVIEW ADDITIONS — The following must be verified during review:**
 1. **DOI integrity:** Scan for placeholder patterns (`########`, `XXXX`, `....`, `<DOI>`, `[DOI]`). If found: `[BLOCKING: placeholder DOI detected]`. A real Zenodo DOI matches `10.5281/zenodo.\d{8}`.
 2. **Date freshness:** Verify all date fields match or are within 1 day of `datetime.date.today()`. Stale dates: `[BLOCKING: date is stale]`.
-3. **Structural artifacts:** Scan for `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, and similar generation delimiters. Strip all. Their presence is `[BLOCKING: generation artifact in output]`.
+3. **Structural artifacts:** Scan for bracket-delimited generation delimiters. Strip all. Their presence is `[BLOCKING: generation artifact in output]`.
 4. **YAML frontmatter positioning:** If YAML frontmatter is used, verify it starts at byte 0 of the file. Content preceding `---` is `[BLOCKING: YAML frontmatter not at byte 0]`.
 
 ## 0.5 FILE NAMING CONVENTION (PROVENANCE & AUDIT)

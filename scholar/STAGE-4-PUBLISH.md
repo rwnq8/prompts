@@ -86,7 +86,7 @@ Scan for ALL placeholder patterns — treat these as BLOCKING (do not proceed if
 - **Content placeholders:** `[Insert...]`, `[Placeholder...]`, `[TODO]`, `[TBD]`, `[Data Artifact Missing...]`
 - **DOI placeholders (BLOCKING):** `########`, `XXXX`, `....`, `<DOI>`, `[DOI]`, `zenodo.########`, `zenodo.XXXX`, any DOI containing consecutive repeated placeholder characters — a real Zenodo DOI always has 8 digits after the prefix
 - **Date placeholders (BLOCKING):** stale dates more than 1 calendar day behind current date, `[DATE]`, `YYYY-MM-DD`, `YYYY` — verify every date field against `datetime.date.today()` via Python
-- **Structural artifacts:** `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, `[START CONTENT]`, `[END CONTENT]`, or any bracket-delimited section markers that are not source labels — these are generation delimiters that must NEVER appear in final output
+- **Structural artifacts:** Bracket-delimited section markers that are not source labels — these are generation delimiters that must NEVER appear in final output
 
 **Step 2.2: Content Expansion**
 For each appendix placeholder, insert FULL original content:
@@ -156,7 +156,7 @@ Execute ALL of the following Python-powered checks. Any failure is BLOCKING — 
 - **BLOCKING:** Fix stale dates before publication
 
 **4.4 Structural Artifact Scan:**
-- Scan for generation delimiters: `[BEGIN DOCUMENT]`, `[END DOCUMENT]`, `[START CONTENT]`, `[END CONTENT]`, or any bracket-delimited section markers not in the approved source label set (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE:...]`, `[LLM-INFERRED]`, `[UNVERIFIED-LLM]`, `[MISSING-ARTIFACT:...]`)
+- Scan for generation delimiters: bracket-delimited section markers not in the approved source label set (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE:...]`, `[LLM-INFERRED]`, `[UNVERIFIED-LLM]`, `[MISSING-ARTIFACT:...]`)
 - **Strip ALL detected artifacts.** They must NEVER appear in final output.
 
 **4.5 YAML Frontmatter Positioning:**

@@ -15,7 +15,7 @@ Use Python `os.path.exists()` to check paths before reading.
 
 **PLACEHOLDER DOI RULE:** `10.5281/zenodo.########` (or any DOI with repeated placeholder characters like `XXXX`, `....`) is NEVER acceptable in any output. If the real DOI is unknown, use `[DOI-PENDING: user must supply]`. Placeholder DOIs in draft output block progression to STAGE-3.
 
-**STRUCTURAL ARTIFACT RULE:** Generation delimiters (`[BEGIN DOCUMENT]`, `[END DOCUMENT]`, etc.) must NEVER appear in manuscript output. Scan and strip all such artifacts before delivering the draft.
+**STRUCTURAL ARTIFACT RULE:** Generation delimiters (bracket-delimited structural markers) must NEVER appear in manuscript output. Scan and strip all such artifacts before delivering the draft.
 
 ## 0.5 FILE NAMING CONVENTION (PROVENANCE & AUDIT)
 
