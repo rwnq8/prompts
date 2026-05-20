@@ -966,7 +966,7 @@ When a project produces a publication-ready document (paper, manuscript, whitepa
 
 ### 11.2 Visible Author Block (MANDATORY for ALL Release Documents)
 
-Every release document published to `G:\My Drive\Obsidian\releases\` MUST begin with a **visible author block** — human-readable markdown, NOT hidden in YAML frontmatter. This block appears at the top of the rendered document:
+Every release document published to `G:\My Drive\Obsidian\releases\` MUST include a **visible author block** — human-readable markdown that appears at the top of the rendered document. If YAML frontmatter is used, it occupies byte 0; the visible author block follows immediately after the closing `---` (with a single blank line separator). If no YAML frontmatter is used, the author block occupies line 1.
 
 ```
 # Full Publication Title
@@ -982,9 +982,15 @@ Every release document published to `G:\My Drive\Obsidian\releases\` MUST begin 
 **Required fields:** Title (H1), Author (with mailto link), ORCID (with link), DOI (with Zenodo link), Date (YYYY-MM-DD), Abstract (&lt;250 words).
 
 **Placement rules:**
-- The author block begins on **line 1** of the document. Absolutely nothing precedes it.
-- **NO horizontal rules** (`---`), no dividers, no YAML frontmatter, no metadata blocks of any kind precede or interrupt the author block.
+- **YAML frontmatter (if used) is at byte 0** — the absolute first characters of the file. No content (headings, text, markers, blank lines) may precede the opening `---`.
+- The **visible author block** follows immediately after the YAML frontmatter closing `---` (with a single blank line separator). If no YAML frontmatter is used, the author block occupies line 1.
+- **NO horizontal rules**, no dividers, no bracket-delimited markers, and no other metadata blocks precede or interrupt the author block.
 - Document content begins immediately after the author block (no separator marker).
+
+**Duplicate prevention:**
+- Only ONE visible author block per document. No duplicate title lines (H1), author lines, ORCID links, DOI links, date lines, or abstract sections may appear anywhere in the document.
+- Author information in YAML frontmatter and the visible author block must be consistent but serve different purposes (machine-readable vs. human-readable). Both may coexist.
+- Scan for duplicate `# Title`, `**Author**`, `**Abstract**`, `## Abstract`, and repeated DOI/ORCID patterns via Python before finalizing. Duplicate detection is a **BLOCKING** issue.
 
 **DOI placeholder:** During drafting, use `10.5281/zenodo.########` as a placeholder. Replace with the actual DOI (e.g., `10.5281/zenodo.15107688`) after Zenodo registration. Run a Python scan before finalizing to confirm no placeholder remains:
 ```python
@@ -995,7 +1001,7 @@ if '########' in text:
     print("WARNING: DOI placeholder still present — replace with actual DOI")
 ```
 
-**YAML frontmatter (optional complement):** For machine-readability (Obsidian Dataview, Zotero, citation managers), YAML frontmatter may be placed after the author block as a supplementary metadata block — delimited by `---` on its own line before and after. The visible author block remains the authoritative human-readable header and must always be present.
+**YAML frontmatter (optional but recommended):** For machine-readability (Obsidian Dataview, Zotero, citation managers), YAML frontmatter MUST be at byte 0 (first characters of the file) — delimited by `---` on its own line before and after. The visible author block follows after the closing `---`. The visible author block remains the authoritative human-readable header and must always be present.
 
 ```yaml
 ---
