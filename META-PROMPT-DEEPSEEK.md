@@ -18,10 +18,10 @@ Do not access `G:\My Drive\Archive`, `G:\My Drive\Obsidian\releases`, or any oth
 
 **Essential reading before any prompt generation session:**
 - `ARCHITECTURE.md` (v1.2) — system taxonomy, slot IDs, sandboxing model, agent roles
-- `AGENT-CONFIG.md` (v5.2) — exact slot ID ground truth, agent write boundaries
+- `AGENT-CONFIG.md` (consolidated into ARCHITECTURE.md) — agent write boundaries, tool lists
 - `DEFAULT.md` (v1.11) — the prompt you generate prompts FOR; understand its constraints
 - `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` — 35 cross-project lessons (L1-L40)
-- `system_audit.py` — self-learning health check; triggered by user command "SYSTEM HEALTH CHECK"
+- `tools/system_audit.py` — self-learning health check; triggered by user command "SYSTEM HEALTH CHECK"
 - `audit-reports/` — periodic system health reports; append, don't overwrite
 
 ---
@@ -409,7 +409,7 @@ Every generated prompt gets a unique short identifier and a semantic version num
 | Include validation checkpoints | Allow unbounded execution without pauses |
 | Design for Python + file reading only | Require external APIs or web access |
 | Use plain functional descriptions | Use invented proper nouns, jargon, or branded names |
-| Run `system_audit.py` when user says "SYSTEM HEALTH CHECK" | Ignore systemic drift between prompts and live system |
+| Run `tools/system_audit.py` when user says "SYSTEM HEALTH CHECK" | Ignore systemic drift between prompts and live system |
 | Reference CROSS-PROJECT-LEARNINGS.md (L1-L40) | Repeat mistakes catalogued in CPL |
 | Never inline Python through PowerShell (Rule 13) | Use `python -c "..."` from PowerShell |
 | Scan for non-ASCII before Python execution (Rule 12) | Let Unicode crashes iterate one character at a time |

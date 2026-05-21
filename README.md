@@ -16,19 +16,19 @@
 | **QWAV agent → System Prompt** | Entire contents of `QWAV-DEFAULT.md` |
 | **Prompts agent → System Prompt** | Entire contents of `META-PROMPT-DEEPSEEK.md` |
 | **Each Subagent → Description** | Short block from `agents/subagents/EXPLORER-SUBAGENT.md` (etc.) |
-| **Agent names, tools, slot IDs** | Reference `AGENT-CONFIG.md` for the exact values |
+| **Agent names, tools, slot IDs** | See `ARCHITECTURE.md` §1 for the exact values |
 
 ### Reference files (read, don't paste)
 | File | Purpose |
 |:-----|:--------|
-| `AGENT-CONFIG.md` | Configuration reference — agent names, tools, slot IDs, write boundaries |
+| `ARCHITECTURE.md` | System design, agent config, tool lists, slot IDs |
 | `agents/PROJECTS-AGENT.md` | Detailed Projects agent execution spec (LLM reads this, you don't need to) |
 | `agents/PROMPTS-AGENT.md` | Detailed Prompts agent execution spec |
 | `agents/QWAV-AGENT.md` | Detailed QWAV agent execution spec |
 | `agents/subagents/*.md` | Subagent descriptions (paste the short block) + execution specs (LLM reference) |
 
 ### Ongoing (occasional)
-- Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `system_audit.py`
+- Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `tools/system_audit.py`
 - Check `CHANGELOG.md` to see what changed
 - Check `ARCHITECTURE.md` for how the system is designed
 
@@ -84,14 +84,14 @@
 ```
 prompts\
 ├── README.md                     ← YOU ARE HERE (human reference)
-├── AGENT-CONFIG.md               ← Configuration reference (agent names, tools, slot IDs)
-├── ARCHITECTURE.md               ← System taxonomy (LLM reference)
+├── ARCHITECTURE.md               ← System taxonomy + agent config (LLM + human reference)
 ├── CHANGELOG.md                  ← Change history
 │
 ├── META-PROMPT-DEEPSEEK.md       ← THE FACTORY: generates all system prompts
 ├── DEFAULT.md                    ← System prompt for Projects agent
 ├── QWAV-DEFAULT.md               ← System prompt for QWAV agent
-├── system_audit.py               ← Health check (type "SYSTEM HEALTH CHECK")
+│
+├── tools\                         ← Utility scripts (system_audit.py)
 │
 ├── agents\                        ← Agent & subagent execution specs (LLM reference)
 │   ├── PROJECTS-AGENT.md
@@ -137,7 +137,7 @@ prompts\
 |:---------|:------|
 | **HUMAN** (you) | `README.md`, `CHANGELOG.md` |
 | **HUMAN — paste into DeepChat** | `DEFAULT.md`, `QWAV-DEFAULT.md`, `META-PROMPT-DEEPSEEK.md`, subagent descriptions from `agents/subagents/` |
-| **HUMAN — reference only** | `AGENT-CONFIG.md` (agent names, tools, slot IDs), `ARCHITECTURE.md` (system design) |
+| **HUMAN — reference only** | `ARCHITECTURE.md` (system design, agent config, tools, slot IDs) |
 | **LLM** (agents) | Everything else |
 
 **If you're ever confused about a file:** ask any agent "Why does this file exist? Is it for me or for you?"
