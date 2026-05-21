@@ -9,7 +9,7 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | Prompts |
-| **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.2+) — paste ENTIRE contents into DeepChat Settings → Agents → Prompts → System Prompt |
+| **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.5+) — paste ENTIRE contents into DeepChat Settings → Agents → Prompts → System Prompt |
 | **Write Sandbox** | `G:\My Drive\prompts\` — the git-tracked prompt engineering workspace |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
 | **MOVE Destination** | `G:\My Drive\Archive\prompts\` |
@@ -24,7 +24,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 | Function | Description |
 |:---------|:------------|
-| **Prompt Creation** | Design new system prompts using the 9-section template |
+| **Prompt Creation** | Design new system prompts using the 11-section template with embedded structural gates |
 | **Prompt Review** | Audit existing prompts for compliance with core rules |
 | **Prompt Modification** | Apply targeted edits to existing prompts |
 | **Versioning** | Assign semantic version numbers, track changes via git |
@@ -67,7 +67,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 **Implication:** The Prompts agent works alone. When the user says "SYSTEM HEALTH CHECK," run `system_audit.py` and report findings.
 
-**Essential reading:** ARCHITECTURE.md (v1.2), AGENT-CONFIG.md (v5.2), DEFAULT.md (v1.11), CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
+**Essential reading:** ARCHITECTURE.md (v1.3), AGENT-CONFIG.md (v5.2), DEFAULT.md, CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
 
 ---
 

@@ -1,4 +1,4 @@
-# QWAV AGENT — v1.1
+# QWAV AGENT — v1.2
 
 > **DeepChat Agent: `QWAV`** | System Prompt: `QWAV-DEFAULT.md` | Write Sandbox: `G:\My Drive\QWAV\`
 
@@ -9,7 +9,7 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | QWAV |
-| **System Prompt** | `QWAV-DEFAULT.md` (v1.0) — Forked from `DEFAULT.md` with QWAV-specific §0.9 Strategy Program Manager role boundary. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
+| **System Prompt** | `QWAV-DEFAULT.md` — Forked from `DEFAULT.md` with QWAV-specific §0.9 Strategy Program Manager role boundary. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
 | **Write Sandbox** | `G:\My Drive\QWAV\` — active since 2026-05-11 |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
 | **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `G:\My Drive\Obsidian\releases\` |

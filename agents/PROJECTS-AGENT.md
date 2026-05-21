@@ -9,7 +9,7 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | Projects |
-| **System Prompt** | `DEFAULT.md` (v1.11+) — paste ENTIRE contents into DeepChat Settings → Agents → Projects → System Prompt |
+| **System Prompt** | `DEFAULT.md` — paste ENTIRE contents into DeepChat Settings → Agents → Projects → System Prompt |
 | **Write Sandbox** | `G:\My Drive\projects\<name>\` — one project subdirectory per session |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
 | **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\project-name\`, `G:\My Drive\Obsidian\releases\` |

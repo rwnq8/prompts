@@ -89,4 +89,90 @@ if os.path.exists(releases_dir):
         release_count += len([f for f in files if f.endswith('.md')])
     print(f"  D4/D5. Release documents: {release_count}")
 
+
+# PART E: CROSS-FILE VERSION CONSISTENCY
+print("\nPART E: CROSS-FILE VERSION CONSISTENCY")
+
+# Ground truth - extract actual versions from file headers
+def extract_version(filepath):
+    """Extract version from first 3 lines of a file (pattern: vX.Y or vX.Y.Z)"""
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, 'r', encoding='utf-8') as f:
+        header = ''.join(f.readline() for _ in range(5))
+    m = re.search(r'\bv(\d+)\.(\d+)(?:\.(\d+))?\b', header)
+    return f"v{m.group(1)}.{m.group(2)}" if m else None
+
+# Expected versions from ARCHITECTURE.md version table
+expected = {}
+arch_path = os.path.join(prompts_dir, "ARCHITECTURE.md")
+if os.path.exists(arch_path):
+    with open(arch_path, 'r', encoding='utf-8') as f:
+        arch = f.read()
+    # Parse version table
+    for m in re.finditer(r'\| `([^`]+\.md)` \| ([^|]+) \| (v[\d.]+|\u2014) \|', arch):
+        fname, desc, ver = m.group(1), m.group(2).strip(), m.group(3)
+        if ver != '—' and ver != '--':
+            expected[fname] = ver
+
+# Check actual versions against ARCHITECTURE.md
+checks = [
+    ("ARCHITECTURE.md", r"G:\My Drive\prompts\ARCHITECTURE.md"),
+    ("META-PROMPT-DEEPSEEK.md", r"G:\My Drive\prompts\META-PROMPT-DEEPSEEK.md"),
+    ("AGENT-CONFIG.md", r"G:\My Drive\prompts\AGENT-CONFIG.md"),
+    ("agents/PROJECTS-AGENT.md", r"G:\My Drive\prompts\agents\PROJECTS-AGENT.md"),
+    ("agents/PROMPTS-AGENT.md", r"G:\My Drive\prompts\agents\PROMPTS-AGENT.md"),
+    ("agents/QWAV-AGENT.md", r"G:\My Drive\prompts\agents\QWAV-AGENT.md"),
+    ("agents/subagents/EXPLORER-SUBAGENT.md", r"G:\My Drive\prompts\agents\subagents\EXPLORER-SUBAGENT.md"),
+    ("agents/subagents/IMPLEMENTER-SUBAGENT.md", r"G:\My Drive\prompts\agents\subagents\IMPLEMENTER-SUBAGENT.md"),
+    ("agents/subagents/REVIEWER-SUBAGENT.md", r"G:\My Drive\prompts\agents\subagents\REVIEWER-SUBAGENT.md"),
+]
+
+issues = []
+for fname, fpath in checks:
+    actual = extract_version(fpath)
+    exp = expected.get(fname)
+    if actual and exp and actual != exp:
+        issues.append(f"  E1. {fname}: ARCHITECTURE.md says {exp}, file header says {actual} MISMATCH")
+
+# Check that ARCHITECTURE.md doesn't contradict itself
+if os.path.exists(arch_path):
+    arch_header_ver = extract_version(arch_path)
+    if arch_header_ver and expected.get("ARCHITECTURE.md"):
+        if arch_header_ver != expected["ARCHITECTURE.md"]:
+            issues.append(f"  E2. ARCHITECTURE.md: header says {arch_header_ver}, own version table says {expected['ARCHITECTURE.md']} SELF-CONTRADICTION")
+
+# Check slot ID consistency across files
+slot_files = {
+    "AGENT-CONFIG.md": r"G:\My Drive\prompts\AGENT-CONFIG.md",
+    "ARCHITECTURE.md": r"G:\My Drive\prompts\ARCHITECTURE.md",
+}
+gt_slots = {"slot-mp80a5ry-e7hn", "slot-mp80ay3u-yzqo", "slot-mp80b6bl-iix2"}
+for fname, fpath in slot_files.items():
+    if os.path.exists(fpath):
+        with open(fpath, 'r', encoding='utf-8') as f:
+            fslots = set(re.findall(r"slot-mp80[a-z0-9]{4}-[a-z0-9]{4}", f.read()))
+        if fslots and fslots != gt_slots:
+            issues.append(f"  E3. {fname} slots: {fslots} vs expected {gt_slots} MISMATCH")
+
+# Check for stale template/section references
+stale_patterns = {
+    "9-section template": r"G:\My Drive\prompts\agents\PROMPTS-AGENT.md",
+    r"v4\.2": r"G:\My Drive\prompts\ARCHITECTURE.md",
+    r"v1\.11": r"G:\My Drive\prompts\agents\PROJECTS-AGENT.md",
+}
+for pattern, fpath in stale_patterns.items():
+    if os.path.exists(fpath):
+        with open(fpath, 'r', encoding='utf-8') as f:
+            if re.search(pattern, f.read()):
+                issues.append(f"  E4. {fpath.split(chr(92))[-1]}: stale reference '{pattern}' found STALE")
+
+if issues:
+    for i in issues:
+        print(i)
+    print(f"  E_RESULT: {len(issues)} inconsistency(ies) found WARNING: FAIL")
+else:
+    print("  E_RESULT: All cross-file versions and references consistent PASS")
+
+
 print(f"\n=== AUDIT COMPLETE ===")

@@ -28,9 +28,9 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 
 | System Prompt | Version | Loaded By | Scope |
 |:--------------|:--------|:----------|:------|
-| `DEFAULT.md` | v1.12 | Projects agent | Project Executor — full research/writing/coding/email/social workflow. §0.9: Independent Project Executor role. |
-| `QWAV-DEFAULT.md` | v1.0 | QWAV agent | Strategy Program Manager — portfolio strategy, documentation, handoff, coordination. §0.9: QWAV role boundary. Forked from DEFAULT.md. |
-| `META-PROMPT-DEEPSEEK.md` | v4.2 | Prompts agent | System prompt generation and auditing |
+| `DEFAULT.md` | — | Projects agent | Project Executor — full research/writing/coding/email/social workflow. §0.9: Independent Project Executor role. |
+| `QWAV-DEFAULT.md` | — | QWAV agent | Strategy Program Manager — portfolio strategy, documentation, handoff, coordination. §0.9: QWAV role boundary. Forked from DEFAULT.md. |
+| `META-PROMPT-DEEPSEEK.md` | v4.5 | Prompts agent | System prompt generation and auditing |
 | `EMAIL-AGENT-v1.3.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
 
@@ -65,7 +65,7 @@ Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files te
 |:-----|:---------|:--------|
 | `agents/PROJECTS-AGENT.md` | Projects agent | Full research/writing/email/social lifecycle, subagent delegation patterns |
 | `agents/QWAV-AGENT.md` | QWAV agent | Strategy Program Manager — uses QWAV-DEFAULT.md, §0.9 role boundary, separate sandbox |
-| `agents/PROMPTS-AGENT.md` | Prompts agent | System prompt engineering, 9-section template, no subagent delegation |
+| `agents/PROMPTS-AGENT.md` | Prompts agent | System prompt engineering, 11-section template with embedded structural gates, no subagent delegation |
 | `agents/subagents/EXPLORER-SUBAGENT.md` | All agents | Divergent thinking — brainstorming, alternatives, edge cases |
 | `agents/subagents/IMPLEMENTER-SUBAGENT.md` | All agents | Convergent execution — drafting, structured output from specs |
 | `agents/subagents/REVIEWER-SUBAGENT.md` | All agents | Critical evaluation — blind validation, reader testing, gap analysis |
@@ -216,11 +216,11 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 | File | Purpose | Version |
 |:-----|:--------|:--------|
-| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.2 |
-| `DEFAULT.md` | System prompt for the Projects agent | v1.11 |
-| `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.2 |
+| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.3 |
+| `DEFAULT.md` | System prompt for the Projects agent | — |
+| `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.5 |
 | `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.2 |
-| `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.0 |
+| `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.1 |
 | `email/EMAIL-AGENT-v1.3.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
 | `email/EMAIL-CAPABILITIES.md` | Drop-in prompt module for email capabilities | v1.2 |
