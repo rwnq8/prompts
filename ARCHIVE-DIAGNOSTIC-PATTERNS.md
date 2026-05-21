@@ -2,7 +2,7 @@
 
 **Source:** Cross-project analysis of 15 Archive LEARNINGS.md files (2026-05-21)
 **Target:** `G:\My Drive\projects\Hierarchy as Ultrametricity\SYSTEM-PROMPT-DIAGNOSTIC.md`
-**Status:** Documented here pending transfer to target (outside prompts write boundary)
+**Status:** Documented here pending transfer to target. SYSTEM-PROMPT-DIAGNOSTIC.md not found at expected path (2026-05-21 check) — file may have been moved or deleted. Patterns preserved here for future reference.
 
 ---
 

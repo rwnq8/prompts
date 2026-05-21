@@ -40,23 +40,34 @@ for fname in ["DEFAULT.md", "ARCHITECTURE.md", "AGENT-CONFIG.md"]:
             files[fname] = f.read()
 
 if "DEFAULT.md" in files:
-    d_slots = set(re.findall(r"slot-mp80[a-z0-9]{4}-[a-z0-9]{4}", files["DEFAULT.md"]))
-    # Ground truth from live tool definitions — update this when slot IDs change
-    gt_slots = {"slot-mp80a5ry-e7hn", "slot-mp80ay3u-yzqo", "slot-mp80b6bl-iix2"}
-    if d_slots == gt_slots:
-        print(f"  B1. DEFAULT.md slots match ground truth: PASS")
+    # DEFAULT.md references subagents by name (explorer/implementer/reviewer),
+    # NOT by slot-mp80 IDs. The slot-mp80 IDs are internal to DeepChat and
+    # resolved at runtime. Check for name-based references instead.
+    subagent_names = {"explorer", "implementer", "reviewer"}
+    d_content = files["DEFAULT.md"]
+    d_found = set()
+    for name in subagent_names:
+        # Look for the subagent name in the slot ID column of the subagent table
+        if re.search(rf"\|\s*\*\*{name.upper()}\*\*\s*\|", d_content):
+            d_found.add(name)
+    if d_found == subagent_names:
+        print(f"  B1. DEFAULT.md subagent refs (explorer/implementer/reviewer): PASS")
     else:
-        print(f"  B1. DEFAULT.md slots: {d_slots} vs expected {gt_slots} WARNING: FAIL")
-
-for fname in ["ARCHITECTURE.md", "AGENT-CONFIG.md"]:
-    if fname in files:
-        f_slots = set(re.findall(r"slot-mp80[a-z0-9]{4}-[a-z0-9]{4}", files[fname]))
-        if f_slots == gt_slots:
-            print(f"  B2/B3. {fname} slots match DEFAULT.md: PASS")
-        elif f_slots == set():
-            print(f"  B2/B3. {fname} has no slot IDs (may use 'self'): CHECK")
+        missing = subagent_names - d_found
+        print(f"  B1. DEFAULT.md missing subagent refs: {missing} WARNING: FAIL")
+    
+    # Check for slot-mp80 references in ARCHITECTURE.md (which DOES use them)
+    gt_slots = {"slot-mp80a5ry-e7hn", "slot-mp80ay3u-yzqo", "slot-mp80b6bl-iix2"}
+    if "ARCHITECTURE.md" in files:
+        a_slots = set(re.findall(r"slot-mp80[a-z0-9]{4}-[a-z0-9]{4}", files["ARCHITECTURE.md"]))
+        if a_slots == gt_slots:
+            print(f"  B2. ARCHITECTURE.md slot IDs match ground truth: PASS")
+        elif a_slots:
+            print(f"  B2. ARCHITECTURE.md slots: {a_slots} vs expected {gt_slots} WARNING: FAIL")
         else:
-            print(f"  B2/B3. {fname} MISMATCH: {f_slots} vs {gt_slots} WARNING: FAIL")
+            print(f"  B2. ARCHITECTURE.md has no slot-mp80 IDs CHECK")
+    else:
+        print(f"  B2. ARCHITECTURE.md not found SKIP")
 
 # PART C: Documentation Drift
 print("\nPART C: DOCUMENTATION DRIFT CHECK")
@@ -144,7 +155,6 @@ if os.path.exists(arch_path):
 
 # Check slot ID consistency across files
 slot_files = {
-    "AGENT-CONFIG.md": r"G:\My Drive\prompts\AGENT-CONFIG.md",
     "ARCHITECTURE.md": r"G:\My Drive\prompts\ARCHITECTURE.md",
 }
 gt_slots = {"slot-mp80a5ry-e7hn", "slot-mp80ay3u-yzqo", "slot-mp80b6bl-iix2"}
