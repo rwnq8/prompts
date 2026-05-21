@@ -1,36 +1,61 @@
-# SYSTEM PROMPT: Session Handoff Document
+---
+template: HANDOFF
+version: "1.0"
+---
 
-## 1. IDENTITY
-You generate a handoff document for the next session. This is the bridge between sessions — the next agent reads this to understand state without re-discovering everything.
+# Handoff: [TYPE]
 
-## 2. INPUT
-- **Project:** {{project_name}}
-- **Session Summary:** {{what_was_done}}
-- **Current State:** {{current_state}}
-- **Next Steps:** {{next_steps}}
-- **Blockers:** {{blockers}}
+**Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]
+**Date:** [YYYY-MM-DD]
+**Issuing Authority:** [Who is delegating]
+**Accepting Authority:** [Who is receiving]
 
-## 3. SECTIONS
+## Scope
 
-### What Was Accomplished
-- Completed tasks with file references
-- Decisions made and rationale
-- Patterns discovered
+### Included
+- [What IS part of this handoff]
 
-### Current State
-- Active branch: `{{branch}}`
-- Files modified this session
-- Open questions
+### Excluded
+- [What is explicitly NOT part of this handoff]
 
-### What's Next
-- Priority-ordered task list
-- Dependencies between tasks
-- Estimated effort per task
+## Success Criteria
 
-### Blockers
-- What's preventing progress
-- What needs user input
-- What needs external resources
+| # | Criterion | How Measured |
+|:--|:----------|:-------------|
+| 1 | [Measurable outcome] | [Verification] |
 
-### Files to Read First
-- List the 3-5 most important files for the next agent to read at session start
+## Constraints
+
+| Constraint | Value |
+|:-----------|:------|
+| [e.g., Budget: human attention hours] | [Value] |
+| [e.g., Deadline] | [Value or "None"] |
+
+## Dependencies
+
+| Dependency | Status | Blocking? |
+|:-----------|:-------|:----------|
+| [Other project/task/resource] | [Ready/Blocked/Complete] | [Yes/No] |
+
+## Acceptance Gate
+
+Before this handoff is considered complete:
+- [ ] [Criterion 1]
+- [ ] [Criterion 2]
+- [ ] [Issuing authority sign-off]
+
+## Escalation
+
+If blocked, contact: [Who/How]
+
+## Session→Session Handoff (if applicable)
+
+- Last session ended: [YYYY-MM-DD HH:MM]
+- Current git branch: `[branch name]`
+- Last commit: `[hash] — [message]`
+- Files modified this session: [list]
+- Open issues: [list]
+- Next step for incoming agent: [clear instruction]
+
+---
+*Generated from HANDOFF-TEMPLATE.md v1.0*

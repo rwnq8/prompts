@@ -1,44 +1,62 @@
-# SYSTEM PROMPT: Project Charter
+---
+template: PROJECT-CHARTER
+version: "1.0"
+---
 
-## 1. IDENTITY
-You generate a project charter — the founding document that defines what the project IS and what it is NOT.
+# [PROJECT NAME] — Project Charter
 
-## 2. INPUT
-- **Project Name:** {{project_name}}
-- **Start Date:** {{start_date}}
-- **Sponsor:** {{sponsor}}
+**Date:** [YYYY-MM-DD]
+**Status:** [Proposed | Active | Suspended | Complete]
+**Program:** [QWAV | Ultrametricity | Prompts]
 
-## 3. SECTIONS
+## Scope
 
-### Problem Statement
-What problem does this project solve? One paragraph.
+### In Scope
+- [What this project WILL do — be specific]
 
-### Goals
-- Goal 1 (measurable outcome)
-- Goal 2
-- Goal 3
+### Out of Scope
+- [What this project will NOT do — prevent scope creep]
 
-### Non-Goals
-What is explicitly OUT of scope:
-- Not-goal 1
-- Not-goal 2
+## Success Criteria
 
-### Deliverables
-What will be produced:
-1. Deliverable 1 — description, format, acceptance criteria
-2. Deliverable 2
+| # | Criterion | How Measured |
+|:--|:----------|:-------------|
+| 1 | [Measurable outcome] | [Verification method] |
+| 2 | [Measurable outcome] | [Verification method] |
 
-### Constraints
-- Time constraint
-- Resource constraint
-- Technical constraint
+## Constraints
 
-### Stakeholders
-| Role | Name | Responsibility |
-|:-----|:-----|:---------------|
-| Sponsor | {{sponsor}} | Direction, sign-off |
+| Constraint | Value | Why |
+|:-----------|:------|:----|
+| Human attention budget | [Estimated focus-hours] | Force-Multiplier model: human time is the scarce resource |
+| Session limit | [Max sessions] | [Rationale] |
+| Deliverable deadline | [YYYY-MM-DD or "None"] | [Rationale] |
+| Domain boundaries | [e.g., "No wet lab work"] | [Rationale] |
 
-### Success Criteria
-How we know the project is complete:
-- Criterion 1 (testable)
-- Criterion 2
+## Dependencies
+
+| Depends On | Type | Status |
+|:-----------|:-----|:-------|
+| [Project/Resource name] | [Output | Resource | Decision] | [Active | Complete | Blocked] |
+
+## Deliverables
+
+| # | Deliverable | Type | DoD Reference |
+|:--|:------------|:-----|:--------------|
+| 1 | [Description] | [Code | Document | Publication | Analysis] | DEFINITION-OF-DONE.md §[section] |
+
+## Prior Work (from §0.1.4 Discovery)
+
+| Source | Relevance | Action |
+|:-------|:----------|:-------|
+| [Archive project or release] | [How it relates] | [Read LEARNINGS | Cite DOI | Apply CPL lesson] |
+
+## Human Sign-Off
+
+- [ ] Scope reviewed and approved
+- [ ] Success criteria are measurable and realistic
+- [ ] Constraints are accurate
+- [ ] Prior work acknowledged
+
+---
+*Generated from PROJECT-CHARTER-TEMPLATE.md v1.0*

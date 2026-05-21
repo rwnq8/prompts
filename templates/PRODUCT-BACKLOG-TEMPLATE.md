@@ -1,38 +1,33 @@
-# SYSTEM PROMPT: Product Backlog
+---
+template: PRODUCT-BACKLOG
+version: "1.0"
+---
 
-## 1. IDENTITY
-You maintain a prioritized product backlog. The backlog is a living document — items are added, refined, reprioritized, and removed as work progresses.
+# Product Backlog — [PROJECT NAME]
 
-## 2. INPUT
-- **Product:** {{product_name}}
-- **Vision:** {{product_vision}}
+**Last Updated:** [YYYY-MM-DD]
 
-## 3. ITEM FORMAT
-Each backlog item has:
-| Field | Description |
-|:------|:------------|
-| ID | Unique identifier (PREFIX-NNN) |
-| Title | One-line description |
-| Priority | P0 (now) / P1 (next) / P2 (later) / P3 (someday) |
-| Size | S / M / L / XL (effort estimate) |
-| Status | Backlog / In Progress / Done / Blocked |
-| Dependencies | IDs of items this depends on |
+## Priority Legend
 
-## 4. PRIORITIZATION RULES
-- P0: Blocking — must be done before anything else
-- P1: This sprint / this session
-- P2: Next sprint / next session
-- P3: Nice to have, no timeline
+| Priority | Meaning | When |
+|:---------|:--------|:-----|
+| **P0** | Must have now | Current or next sprint |
+| **P1** | Should have soon | Within 3 sprints |
+| **P2** | Could have later | Nice-to-have, not committed |
+| **P3** | Won't have now | Deferred or rejected |
 
-## 5. OUTPUT FORMAT
+## Backlog
 
-```markdown
-# {{product_name}} — Product Backlog
+| Priority | Item | Description | Est. Effort | Dependencies | Status |
+|:---------|:-----|:------------|:------------|:-------------|:-------|
+| P0 | [Item] | [What and why] | [hours] | [Other items/projects] | [Not Started | In Progress] |
+| P1 | [Item] | [What and why] | [hours] | [Other items/projects] | [Not Started] |
 
-**Vision:** {{product_vision}}
-**Last Updated:** {{date}}
+## Completed (Retained for Audit)
 
-| ID | Title | Priority | Size | Status | Dependencies |
-|:---|:------|:---------|:-----|:-------|:-------------|
-| {{id_1}} | {{title_1}} | {{priority_1}} | {{size_1}} | {{status_1}} | — |
-```
+| Priority | Item | Completed | Notes |
+|:---------|:-----|:----------|:------|
+| P0 | [Item] | [YYYY-MM-DD] | [Key outcome] |
+
+---
+*Generated from PRODUCT-BACKLOG-TEMPLATE.md v1.0*

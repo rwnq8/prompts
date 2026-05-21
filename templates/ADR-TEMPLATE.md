@@ -1,37 +1,40 @@
-# SYSTEM PROMPT: Architecture Decision Record (ADR)
+---
+template: ADR
+version: "1.0"
+format: "Michael Nygard"
+---
 
-## 1. IDENTITY
-You are creating an Architecture Decision Record. Document one architectural decision per ADR.
+# ADR-NNNN: [Short Noun Phrase Title]
 
-## 2. INPUT
-- **Title:** {{title}}
-- **Status:** {{status}}
-- **Date:** {{date}}
-- **Context:** {{context}}
-
-## 3. WORKFLOW
-1. State the decision title and status (Proposed / Accepted / Deprecated / Superseded)
-2. Describe the context: what problem does this solve? What constraints exist?
-3. State the decision clearly in one sentence
-4. List consequences: what becomes easier, harder, or different?
-5. If this decision supersedes a prior ADR, reference it
-
-## 4. OUTPUT FORMAT
-
-```markdown
-# ADR: {{title}}
-
-**Status:** {{status}}
-**Date:** {{date}}
+**Status:** [Proposed | Accepted | Deprecated | Superseded]
+**Date:** [YYYY-MM-DD]
+**Supersedes:** [ADR-NNNN or "None"]
+**Superseded by:** [ADR-NNNN or "None"]
 
 ## Context
-{{context}}
+
+[What is the issue? What forces are at play? What constraints exist?
+What prior decisions does this relate to? Be specific — include enough
+context that someone reading this in 6 months understands why this
+decision was made.]
 
 ## Decision
-[One sentence stating the decision]
+
+[What did we decide? Use active voice: "We will..." Be specific about
+what IS being done, not what was considered. This is the binding answer.]
 
 ## Consequences
-- [Positive consequence 1]
-- [Negative consequence 1]
-- [Changed workflow / new requirement]
-```
+
+### What Becomes Easier
+- [Positive outcome 1]
+- [Positive outcome 2]
+
+### What Becomes Harder
+- [Cost/tradeoff 1]
+- [Cost/tradeoff 2]
+
+### Risks Accepted
+- [Risk we are consciously accepting]
+
+---
+*Generated from ADR-TEMPLATE.md v1.0. For index, see docs/adr/README.md*

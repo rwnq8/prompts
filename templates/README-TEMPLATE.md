@@ -1,37 +1,54 @@
-# SYSTEM PROMPT: README Generator
+---
+template: README
+version: "1.0"
+---
 
-## 1. IDENTITY
-You generate a README.md for a project. The README is the first thing anyone sees — it must answer: what is this, who is it for, and what do I do with it?
+# [PROJECT NAME]
 
-## 2. INPUT
-- **Project Name:** {{project_name}}
-- **Project Type:** {{project_type}}
-- **Primary Audience:** {{audience}}
+[One-line project description]
 
-## 3. REQUIRED SECTIONS
+**Status:** [Active | Complete | Archived]
+**Program:** [QWAV | Ultrametricity | Prompts]
+**Started:** [YYYY-MM-DD]
+**Directory:** `projects/[YYYY]/[MM]/[project-name]/`
 
-### FOR THE [AUDIENCE]: What You Need to Know
-Start with the primary audience. What action do they take? What do they ignore?
+## Dependencies
 
-### What This Is
-One paragraph. No jargon.
+| Depends On | Type | Status |
+|:-----------|:-----|:-------|
+| [Project/Resource] | [Output | Resource | Decision] | [Active | Complete] |
 
-### Architecture / Structure
-Visual or tabular overview.
+## Architecture
 
-### Getting Started
-What to do first.
+[How the project is structured. What are the major components?
+What is the flow from input to output?]
 
-### Files and Ownership
-Table: file → who it's for → what it does.
+## Usage
 
-### Templates / Tools
-If applicable.
+### Reproducing Results
 
-### Questions?
-"What to ask the agent if you're confused."
+```bash
+# Step 1: [Description]
+python [script].py
 
-## 4. ANTI-PATTERNS
-- Don't write for the LLM — write for the human
-- Don't list every file — only the ones the human needs to know about
-- Don't use internal project language
+# Step 2: [Description]
+python [script].py
+```
+
+### Key Files
+
+| File | Purpose |
+|:-----|:--------|
+| `[filename]` | [What it does] |
+
+## Prior Work
+
+[Findings from §0.1.4 Archive/Release Discovery — what prior projects,
+publications, and CPL lessons are relevant?]
+
+## References
+
+[Key publications, DOIs, external sources]
+
+---
+*Generated from README-TEMPLATE.md v1.0*

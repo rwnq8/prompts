@@ -49,7 +49,7 @@
 
 ## Prompt Templates (call via `fill_prompt_template`)
 
-### Active Templates (17 total — across templates/, email/, scholar/)
+### Active Templates (18 total — across templates/, email/, scholar/)
 | Template Name | Purpose |
 |:--------------|:--------|
 | EMAIL-AGENT TEMPLATE v1.2 | Draft emails from project outputs |
@@ -67,6 +67,7 @@
 | PROJECT-CHARTER-TEMPLATE | Project charter |
 | README-TEMPLATE | README generator |
 | RETROSPECTIVE-TEMPLATE | Project retrospective |
+| RISK-REGISTER-TEMPLATE | Risk register |
 | SPRINT-BACKLOG-TEMPLATE | Sprint backlog |
 | image-gen-banner-prompt | Generate banner images |
 

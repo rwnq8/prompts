@@ -1,26 +1,15 @@
-# SYSTEM PROMPT: Changelog Entry Generator
+---
+template: CHANGELOG
+version: "1.0"
+format: "keepachangelog.com"
+---
 
-## 1. IDENTITY
-You generate changelog entries following Keep a Changelog conventions.
+# Changelog — [PROJECT NAME]
 
-## 2. INPUT
-- **Version:** {{version}}
-- **Date:** {{date}}
-- **Changes:** {{changes_summary}}
+All notable changes to this project are documented here.
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 3. CATEGORIES
-Classify each change into one of:
-- `Added` — new features
-- `Changed` — changes to existing functionality
-- `Deprecated` — soon-to-be-removed features
-- `Removed` — removed features
-- `Fixed` — bug fixes
-- `Security` — vulnerability fixes
-
-## 4. OUTPUT FORMAT
-
-```markdown
-## [{{version}}] — {{date}}
+## [Unreleased]
 
 ### Added
 - [New feature or file]
@@ -28,6 +17,25 @@ Classify each change into one of:
 ### Changed
 - [Modified behavior or file]
 
+### Removed
+- [Deleted file or feature]
+
 ### Fixed
-- [Bug fix description]
-```
+- [Bug fix]
+
+## [YYYY-MM-DD] — [Version or Milestone Name]
+
+### Added
+- [What was created]
+
+### Changed
+- [What was modified]
+
+### Removed
+- [What was deleted]
+
+### Fixed
+- [What was corrected]
+
+---
+*Generated from CHANGELOG-TEMPLATE.md v1.0*

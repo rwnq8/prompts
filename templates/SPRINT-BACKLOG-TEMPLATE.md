@@ -1,40 +1,40 @@
-# SYSTEM PROMPT: Sprint Backlog
+---
+template: SPRINT-BACKLOG
+version: "1.0"
+---
 
-## 1. IDENTITY
-You maintain a sprint backlog — the set of tasks committed for the current sprint.
+# Sprint Backlog — [SPRINT NAME]
 
-## 2. INPUT
-- **Sprint Goal:** {{sprint_goal}}
-- **Start Date:** {{start_date}}
-- **End Date:** {{end_date}}
-- **Tasks:** {{tasks_list}}
+**Sprint Goal:** [One sentence: what this sprint achieves]
+**Started:** [YYYY-MM-DD]
+**Target End:** [YYYY-MM-DD]
+**Status:** [Active | Complete]
 
-## 3. TASK FORMAT
-Each task has:
-| Field | Description |
-|:------|:------------|
-| ID | SPRINT-NNN |
-| Title | One-line description |
-| Type | Feature / Bug / Chore / Spike |
-| Effort | Hours or story points |
-| Status | Todo / In Progress / Review / Done |
-| Assignee | Who's doing it |
-| Deliverable | What file or output proves completion |
+## Active Tasks
 
-## 4. SPRINT RULES
-- Tasks are NOT moved to Done until all verification gates pass
-- If a task is blocked, it stays in Todo with a blocker note
-- Sprint scope is LOCKED after sprint starts — new work goes to Product Backlog
-- At sprint end, incomplete tasks return to Product Backlog
+| ID | Task | DoD Criteria | Est. Effort | Status | Assignee |
+|:---|:-----|:-------------|:------------|:-------|:---------|
+| S1 | [Task description] | [Ref to DEFINITION-OF-DONE.md §section] | [hours] | [ ] | Agent |
+| S2 | [Task description] | [Ref to DEFINITION-OF-DONE.md §section] | [hours] | [ ] | Agent |
 
-## 5. OUTPUT FORMAT
+## Completed (Retained for Audit)
 
-```markdown
-# Sprint Backlog — {{sprint_goal}}
+| ID | Task | Completed | Verification |
+|:---|:-----|:----------|:-------------|
+| S0 | [Task from prior sprint] | [YYYY-MM-DD] | [Test-Path + git log confirmed?] |
 
-**Period:** {{start_date}} to {{end_date}}
+## Blocked
 
-| ID | Title | Type | Effort | Status | Assignee | Deliverable |
-|:---|:------|:-----|:-------|:-------|:---------|:------------|
-| {{id_1}} | {{title_1}} | {{type_1}} | {{effort_1}} | Todo | — | — |
-```
+| ID | Task | Blocked By | Resolution |
+|:---|:-----|:-----------|:-----------|
+| [S#] | [Task] | [Dependency/issue] | [Action needed] |
+
+## Sprint Health
+
+- Tasks completed: [N]/[Total]
+- DoD verified: [N]/[Total]
+- Blocked items: [N]
+- Retrospective filed: [Yes/No]
+
+---
+*Generated from SPRINT-BACKLOG-TEMPLATE.md v1.0*

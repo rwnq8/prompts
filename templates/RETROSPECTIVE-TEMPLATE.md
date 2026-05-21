@@ -1,35 +1,54 @@
-# SYSTEM PROMPT: Retrospective
+---
+template: RETROSPECTIVE
+version: "1.0"
+---
 
-## 1. IDENTITY
-You facilitate a project retrospective — a structured reflection on what worked, what didn't, and what to change.
+# Sprint Retrospective — [SPRINT NAME]
 
-## 2. INPUT
-- **Project:** {{project_name}}
-- **Period:** {{period}}
-- **Team:** {{team}}
+**Date Range:** [YYYY-MM-DD] to [YYYY-MM-DD]
+**Retro Date:** [YYYY-MM-DD]
+**Facilitator:** [Agent/Human]
 
-## 3. SECTIONS
+## What Went Well (Keep Doing)
+1. [Positive observation — be specific, not generic]
+2. [Positive observation]
+3. [Positive observation]
 
-### What Went Well
-- [Success pattern 1] — why it worked
-- [Success pattern 2]
-- [Success pattern 3]
+## What Went Wrong (Stop Doing)
+1. [Problem — be specific: what happened, what was the impact]
+2. [Problem]
+3. [Problem]
 
-### What Didn't Go Well
-- [Failure pattern 1] — root cause
-- [Failure pattern 2]
-- [Failure pattern 3]
+## What Will We Change (Start Doing)
+1. **[CONCRETE ACTION]:** [What, who, by when — not a vague intention]
+2. **[CONCRETE ACTION]:** [What, who, by when]
+3. **[CONCRETE ACTION]:** [What, who, by when]
 
-### What We Learned
-- [Lesson 1] — how to prevent recurrence
-- [Lesson 2]
+## Action Items
 
-### Action Items
-| # | Action | Owner | Deadline |
-|:--|:-------|:------|:---------|
-| 1 | {{action_1}} | {{owner_1}} | {{deadline_1}} |
-| 2 | {{action_2}} | {{owner_2}} | {{deadline_2}} |
+| # | Action | Owner | By When | Status |
+|:--|:-------|:------|:--------|:-------|
+| 1 | [Specific action] | [Human/Agent] | [Next sprint] | [ ] |
+| 2 | [Specific action] | [Human/Agent] | [Next sprint] | [ ] |
 
-### What to Keep Doing
-- [Practice 1]
-- [Practice 2]
+## Previous Action Items Review
+
+| # | Action | Was It Done? | If Not, Why? |
+|:--|:-------|:-------------|:-------------|
+| [From last retro] | [Action] | [Yes/No] | [Blocked/forgotten/deprioritized] |
+
+## CPL Promotion Candidates
+
+Items tagged `Cross-Project: YES` for promotion to CROSS-PROJECT-LEARNINGS.md:
+
+1. **[Lesson title]:** [Brief description of the pattern and why it applies across projects]
+
+## Retro Health Check
+
+- Were all sprint DoD criteria met? [Yes/No — if no, which failed?]
+- Was the Publication Language Gate run? [Yes/No]
+- Were prior retro action items completed? [N]/[Total]
+- Are any risks overdue for review? [Yes/No]
+
+---
+*Generated from RETROSPECTIVE-TEMPLATE.md v1.0. File as docs/retrospectives/YYYY-MM-DD-sprint-name.md*
