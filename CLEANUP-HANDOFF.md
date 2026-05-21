@@ -4,7 +4,7 @@
 - Export 1: `export_deepchat_2026-05-21_14-51-06.md` — Original scope-creep thread
 - Export 2: `export_deepchat_2026-05-21_14-51-25.md` — Hierarchy diagnostic thread
 
-**Successor:** This document was reconstructed and all action items implemented on 2026-05-21.
+**Successor:** This document was reconstructed and all action items implemented on 2026-05-21. Updated 2026-05-21 (second session) with remaining gate validations and generator end-to-end test results.
 
 ---
 
@@ -69,9 +69,33 @@ All 6 structural gates confirmed embedded in §5 output template:
 
 ---
 
-## REMAINING ITEMS (Future Work)
+## REMAINING ITEMS (Updated 2026-05-21 Session 2)
 
-1. **Address system health warnings:** Git contamination in projects/, DEFAULT.md slot mismatch, orphan file
-2. **Test remaining gates:** Rule 13 (inline Python block), §9.11 (per-response audit), §11.7 (publication language gate)
+### All Gates Now Validated
+
+| Gate | Status | Validation |
+|:-----|:-------|:-----------|
+| Rule 12 — Unicode Safety Scan | ✅ | Tested: 8 non-ASCII detected, blocked, replaced, re-scan clean, fixed runs (exit 0), unsafe crashes (exit 1) |
+| Rule 13 — Never Inline Python | ✅ | Tested: temp-file approach works (exit 0), inline would be corrupted by PowerShell |
+| §9.11 — Task Execution Audit | ✅ | Tested: false claims caught before response delivery, true claims verified |
+| §11.7 — Publication Language Gate | ✅ | Tested: 11 internal markers detected and blocked; clean document passes |
+
+### New Finding: DEFAULT.md Not Regenerated From Fixed Factory
+
+| Gate | In Factory (META-PROMPT) | In Generated (DEFAULT.md) |
+|:-----|:------------------------|:--------------------------|
+| Rule 12 (Unicode Scan) | ✅ §5 template | ❌ NOT PRESENT |
+| Rule 13 (Never Inline Python) | ✅ §5 template | ✅ §0 item 3 |
+| PS Error Handling | ✅ §5 template | ✅ §0 item 6 |
+| §9.11 (Task Exec Audit) | ✅ §5 template | ✅ §9.11 |
+| File Lifecycle Classification | ✅ §5 template | ❌ NOT PRESENT |
+| §11.7 (Publication Language Gate) | ✅ §5 template | ❌ NOT PRESENT |
+
+**Action needed:** Regenerate DEFAULT.md from META-PROMPT-DEEPSEEK.md to inherit all 6 structural gates. The factory is fixed but the product hasn't been rebuilt from it yet.
+
+### Still Open
+
+1. **Regenerate DEFAULT.md** from the fixed factory (inherits all 6 gates)
+2. **Address system health warnings:** Git contamination in projects/, DEFAULT.md slot mismatch, orphan file
 3. **Add F22-F24 to SYSTEM-PROMPT-DIAGNOSTIC.md** in the Hierarchy project
 4. **Re-validate original publication:** Does the Hierarchy as Ultrametricity publication still fail?
