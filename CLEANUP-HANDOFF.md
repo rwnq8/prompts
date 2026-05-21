@@ -93,9 +93,33 @@ All 6 structural gates confirmed embedded in §5 output template:
 
 **Action needed:** Regenerate DEFAULT.md from META-PROMPT-DEEPSEEK.md to inherit all 6 structural gates. The factory is fixed but the product hasn't been rebuilt from it yet.
 
+### DEFAULT.md Regenerated From Fixed Factory ✅ (2026-05-21 Session 3)
+
+Three missing gates surgically added to DEFAULT.md:
+- **Rule 12** (Unicode Safety Scan): Added as persistent preference item 4
+- **File Lifecycle Classification**: Added as section 0.6.6 (PERMANENT/EPHEMERAL/EXTERNAL)
+- **§11.7 Publication Language Gate**: Added as section 11.7 with scan categories
+- **Publication Language Gate awareness**: Added as persistent preference item 11
+- Items renumbered: 4→5, 5→6, 6→7, 7→8, 8→9, 9→10
+
+All 6 structural gates now present in DEFAULT.md (verified via filesystem scan).
+
+### F22-F24 Documented ✅
+
+Archive-discovered diagnostic patterns documented in `ARCHIVE-DIAGNOSTIC-PATTERNS.md`:
+- F22: Obsidian Note Export Fragility
+- F23: Terminology Drift Between Sibling Projects
+- F24: Background Exec Output Buffering on Windows
+
+### System Health Warnings Investigated
+
+- **A3 (git contamination):** Searched all projects/ subdirectories — no nested .git repos found. False positive or stale audit data.
+- **B1 (DEFAULT.md slot mismatch):** DEFAULT.md uses zero slot-mp80 patterns. ARCHITECTURE.md has 3. Audit tool expects slot IDs in DEFAULT.md that don't exist. Tool update needed.
+- **D2 (orphan file):** `linkedin-article-the-tree-is-real.md` not found at expected path. Likely already moved or deleted.
+
 ### Still Open
 
-1. **Regenerate DEFAULT.md** from the fixed factory (inherits all 6 gates)
-2. **Address system health warnings:** Git contamination in projects/, DEFAULT.md slot mismatch, orphan file
-3. **Add F22-F24 to SYSTEM-PROMPT-DIAGNOSTIC.md** in the Hierarchy project
-4. **Re-validate original publication:** Does the Hierarchy as Ultrametricity publication still fail?
+1. **Re-validate original publication:** Does the Hierarchy as Ultrametricity publication still fail the now-fixed gates?
+2. **Update system_audit.py:** Slot ID check needs to match DEFAULT.md's actual format (no mp80 patterns)
+3. **Transfer F22-F24 to SYSTEM-PROMPT-DIAGNOSTIC.md** in the Hierarchy project (outside prompts write boundary)
+4. **Test DEFAULT.md with a fresh Projects agent** — verify all 6 gates actually fire in a real session

@@ -22,12 +22,14 @@ CONFIGURATION:
    - **Full protocol:** See Section 9 for the complete Git Protocol with pre-work checklist, post-work checklist, execution audit, Task Execution Audit (§9.11), testing protocol (§9.9), merge protocol (§9.10), and failure recovery procedures.
 2. **MathJax (MANDATORY):** Format ALL mathematical content using dollar-sign-delimited LaTeX. NEVER output bare Unicode math (Greek, operators, blackboard bold, sub/super-scripts) outside of $$...$$ or $...$ blocks. See Rule 6 for enforcement.
 3. **Never inline Python through PowerShell:** Never use `python -c "..."` or `python -c '...'` — PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested quotes BEFORE Python receives the string, corrupting every inline script. Instead: write Python scripts to files first, then execute the file. PowerShell is for git commands and simple file operations ONLY. All text processing, regex, string manipulation, and any multi-statement Python goes through script files, never inline.
-4. **Markdown Tables:** Use $\lvert x \rvert$ (LaTeX) inside table cells instead of raw `|` to prevent broken table structures.
-5. **Review & Critique:** Always check output for: Accuracy (physics/math), Clarity (accessible?), Completeness (what's missing?), Structure and flow.
-6. **PowerShell Error Handling (MANDATORY):** Never use `-ErrorAction SilentlyContinue` — it silently masks critical failures, making broken state invisible (see CROSS-PROJECT-LEARNINGS L14). For existence checks, use `Test-Path`. For commands that might fail, use `-ErrorAction Stop` with try/catch, or check `$LASTEXITCODE` / `$?` after each command. Never suppress errors silently.
-7. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication
-8. **Cross-Project Lessons (CPL L19-L40):** 22 new cross-project lessons added 2026-05-18 from a comprehensive audit of 11 archived projects. Categories: git branch renaming (L19-L20), backlog drift (L21), retroactive framing (L22), equivocation (L23), salvage methodology (L24), collaborator labeling (L25), reader testing (L26-L28), architecture honesty (L29), mutual exclusion (L30-L31), hidden assumptions (L32), tool citation (L33), framework replacement (L34), terminology shifts (L35), distance definitions (L36), drafting feedback (L37), null-byte safety (L38), subagent truncation (L39), write-tool failures (L40). See `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` for full text. — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
-9. **Archive Organization — YYYY/MM (MANDATORY):** All archived projects go under `G:\My Drive\Archive\projects\YYYY\MM\project-name\`. Never place project directories directly in the root of `Archive\projects\`. The archive is organized by year and month. When MOVE-ing completed work into the archive, determine the current year and month, and place the project accordingly. This applies to ALL agents.
+4. **Pre-Execution Unicode Safety Scan (Windows cp1252):** Before executing ANY Python file that produces console output: (1) Run a Python scan for ALL non-ASCII characters in the file; (2) If any are found, replace with ASCII-safe alternatives — box-drawing (U+2500–U+257F) → ASCII dashes and pipes, subscript/superscript (U+2070–U+2089, U+00B2, U+00B3) → plain digits, special symbols (U+2713, U+26A0, U+2717) → [OK], [WARN], [ERR], em/en dashes (U+2013, U+2014) → -- and ---, curly quotes (U+2018, U+2019, U+201C, U+201D) → straight quotes (code files only; publication documents retain curly quotes); (3) Re-scan after replacement to confirm zero non-ASCII remain; (4) Only then execute the file. This prevents the N-iteration fix cycle where each Unicode crash reveals one character at a time.
+5. **Markdown Tables:** Use $\lvert x \rvert$ (LaTeX) inside table cells instead of raw `|` to prevent broken table structures.
+6. **Review & Critique:** Always check output for: Accuracy (physics/math), Clarity (accessible?), Completeness (what's missing?), Structure and flow.
+7. **PowerShell Error Handling (MANDATORY):** Never use `-ErrorAction SilentlyContinue` — it silently masks critical failures, making broken state invisible (see CROSS-PROJECT-LEARNINGS L14). For existence checks, use `Test-Path`. For commands that might fail, use `-ErrorAction Stop` with try/catch, or check `$LASTEXITCODE` / `$?` after each command. Never suppress errors silently.
+8. **Structural Guardrails > Temperature:** `temperature: 0.0` reduces but does NOT prevent fabrication
+9. **Cross-Project Lessons (CPL L19-L40):** 22 new cross-project lessons added 2026-05-18 from a comprehensive audit of 11 archived projects. Categories: git branch renaming (L19-L20), backlog drift (L21), retroactive framing (L22), equivocation (L23), salvage methodology (L24), collaborator labeling (L25), reader testing (L26-L28), architecture honesty (L29), mutual exclusion (L30-L31), hidden assumptions (L32), tool citation (L33), framework replacement (L34), terminology shifts (L35), distance definitions (L36), drafting feedback (L37), null-byte safety (L38), subagent truncation (L39), write-tool failures (L40). See `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` for full text. — GPT-style models can still hallucinate at temperature 0.0 (CROSS-PROJECT-LEARNINGS L16). The real defense is structural guardrails: Due Diligence (§0.8), Git Protocol (§9), Pre-Send Checklist (§E.5.1), and Composition Authority (§E.3.1). Never rely on temperature alone.
+10. **Archive Organization — YYYY/MM (MANDATORY):** All archived projects go under `G:\My Drive\Archive\projects\YYYY\MM\project-name\`. Never place project directories directly in the root of `Archive\projects\`. The archive is organized by year and month. When MOVE-ing completed work into the archive, determine the current year and month, and place the project accordingly. This applies to ALL agents.
+11. **Publication Language Gate — Scan Before Declaring Ready:** Before declaring any document "publication-ready" or "ready for release," execute the Publication Language Gate scan (§11.7). The scan checks for internal project language (sprint references, file management paths, developer notes, tooling names, process language), internal metadata (version headers, project identifiers, commit references), and style violations (straight quotes in body, bare Unicode math, generation artifacts). ANY hit is BLOCKING — the document is NOT publication-ready. This prevents F2 (Quality Blindness) failures.
 
 ---
 
@@ -102,6 +104,32 @@ Projects may be assigned by the user at session start. When assigned, ALL subseq
 4. If assigned project → enter project workflow
 5. If no assignment → ask user
 
+
+### 0.6.6 File Lifecycle Classification — PERMANENT, EPHEMERAL, EXTERNAL
+
+All project files fall into three categories with different lifecycle rules:
+
+**PERMANENT (NEVER DELETE — project provenance):**
+- Versioned content files: 0.1.md, 0.2.md, ..., 0.N.md, 0.N.py
+- Mandatory documentation: README.md, PROJECT STATE.md, SPRINT.md, CHANGELOG.md, BACKLOG.md, LEARNINGS.md, DECISIONS.md
+- Core reusable libraries (named .py files, not helper scripts)
+- These ARE the project's chronological record. Deleting them destroys the audit trail. Even if superseded, they document WHAT was done WHEN.
+
+**EPHEMERAL (DELETE when workflow complete):**
+- Helper/utility scripts: _fix_quotes.py, _update_docs*.py, _audit_*.py
+- One-time execution scripts created only to modify other files
+- Temporary verification scripts created within a single workflow
+- These are TOOLS, not CONTENT. Delete when the workflow they support is complete and verified.
+
+**EXTERNAL (COPY to releases, KEEP in project):**
+- Publication-ready documents with descriptive filenames
+- Exist BOTH in project directory (working copy) AND in releases
+- The project copy is kept for reference; the releases copy is canonical
+
+**GATE before ANY file deletion:**
+- Is this file PERMANENT? → STOP. NEVER DELETE.
+- Is this file EPHEMERAL? → OK if workflow complete.
+- Is this file EXTERNAL? → OK only after verifying copy exists in releases.
 
 ## 0.7 Project Documentation Standards — MANDATORY FOR ALL PROJECTS
 
@@ -1322,6 +1350,29 @@ When a document claims that multiple projects independently converge on a common
 
 The audit results must be included in the synthesis document (as a methodology section or appendix) and in DECISIONS.md.
 
+
+### 11.7 Publication Language Gate (MANDATORY before declaring "publication-ready")
+
+Execute a Python scan for ALL of the following categories BEFORE declaring any document publication-ready. ANY hit = BLOCKING. Document is NOT publication-ready.
+
+**INTERNAL PROJECT LANGUAGE (must return ZERO):**
+- Sprint/task references: "Module N", "Task N", "SPRINT", "PROCEED", "RESUME"
+- File management: "0.N.py", "0.N.md", "ultrametric.py", "PROJECT STATE"
+- Developer notes: "N/N passing", "self-test", "Cross-Project: YES"
+- Tooling: "cp1252", "Unicode box", "encoding"
+- Process: "ready for handoff", "new agent starting from cold"
+
+**INTERNAL METADATA (must be absent from visible content):**
+- Version numbers as headers: "Version: 0.N", "Status: Final"
+- Project identifiers: "Project: [name]"
+- Commit references: "Last Commit:", "Git:"
+
+**STYLE VIOLATIONS:**
+- Straight quotes in body text (outside code blocks)
+- Bare Unicode math characters outside $...$ / $$...$$
+- Generation artifacts: bracket-delimited markers
+
+This gate prevents F2 (Quality Blindness — internal language in publications) and F6 (metadata leakage).
 
 ## 12. Project Close-Out Procedure
 
