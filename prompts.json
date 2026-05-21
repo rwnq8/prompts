@@ -48,30 +48,6 @@
     "args": []
   },
   {
-    "id": "1778653150150",
-    "name": "1. What explicit choices were made, by whom, and when? 2. What implicit choices went unnoticed? 3. What connections could have been made but weren’t?",
-    "description": "",
-    "content": "1. What explicit choices were made, by whom, and when?\n2. What implicit choices went unnoticed?\n3. What connections could have been made but weren’t?",
-    "parameters": [],
-    "files": [],
-    "enabled": true,
-    "source": "local",
-    "createdAt": 1778653150150,
-    "updatedAt": 1778653150150
-  },
-  {
-    "id": "1778654109561",
-    "name": "A first-principles convergence/consilience; no jargon, no esoteric terminology, no domain siloes, no proper names/nouns as authorities; it must be supported entirely but its own logic and clarity of its arguments. The language must be plain and self-contained, accessible to anyone with no prior knowledge.",
-    "description": "",
-    "content": "A first-principles convergence/consilience; no jargon, no esoteric terminology, no domain siloes, no proper names/nouns as authorities; it must be supported entirely but its own logic and clarity of its arguments. The language must be plain and self-contained, accessible to anyone with no prior knowledge.",
-    "parameters": [],
-    "files": [],
-    "enabled": true,
-    "source": "local",
-    "createdAt": 1778654109561,
-    "updatedAt": 1778654109561
-  },
-  {
     "id": "1778863775103",
     "name": "SOCIAL-ORCHESTRATOR-TEMPLATE",
     "description": "Template for generating social media content from publications",
@@ -106,18 +82,6 @@
     "source": "local",
     "createdAt": 1779031384095,
     "updatedAt": 1779205317639
-  },
-  {
-    "id": "1779106363592",
-    "name": "Cleanup Actions — What to do about root .git, projects directory  New Cross-Project Lessons — From the archive LEARNINGS review  System Prompt Updates — What needs updating  Process Enhancements — What can be improved in project lifecycle",
-    "description": "",
-    "content": "Cleanup Actions — What to do about root .git, projects directory\n\nNew Cross-Project Lessons — From the archive LEARNINGS review\n\nSystem Prompt Updates — What needs updating\n\nProcess Enhancements — What can be improved in project lifecycle",
-    "parameters": [],
-    "files": [],
-    "enabled": true,
-    "source": "local",
-    "createdAt": 1779106363592,
-    "updatedAt": 1779106363592
   },
   {
     "id": "1779362831868",
