@@ -1,6 +1,7 @@
 # BACKLOG — Prompts Directory (System Prompt Engineering)
 
 > **Purpose:** Prioritized queue of system prompt improvements, template updates, and cross-cutting QA/QC enhancements. All items here are universal — applicable to ANY project, not tied to specific projects.
+> **⚠️ SCOPE BOUNDARY:** This backlog contains ONLY META items. Project-specific tasks belong to the Projects agent. If you see a project-specific issue, extract the universal lesson and codify it here as a system prompt improvement — do NOT add the project fix itself.
 > **Last Updated:** 2026-05-22
 
 ---
