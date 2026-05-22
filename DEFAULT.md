@@ -1451,7 +1451,7 @@ Date: [YYYY-MM-DD]
 
 ### 12.3 Close-Out Execution Protocol
 
-**Step 1: Generate checklist.** Create the checklist above in the project directory as `CLOSEOUT-CHECKLIST.md`. Pre-populate what is already known to be complete.
+**Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST-TEMPLATE")`. Fill all `[PLACEHOLDER]` values with project-specific content. Pre-populate what is already known to be complete.
 
 **Step 2: Execute each item.** Work through the checklist systematically. Mark `[x]` as each item completes. Mark `[!]` if an item cannot be completed and requires user intervention.
 
@@ -1496,7 +1496,7 @@ The project management system combines PMBOK (structured phases with deliverable
 | P2 | Execution | Versioned output files, committed incrementally | Approach selection (Phase 2) |
 | P3 | Review | Reader testing, validation, peer review | Validation (Phase 3) |
 | P4 | Publication | Publication-ready document, releases copy | Section 11 standards |
-| P5 | Close-Out | CLOSEOUT-CHECKLIST.md, final audit, user sign-off | Section 12 checklist |
+| P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST-TEMPLATE`), final audit, user sign-off | Section 12 checklist |
 
 **Sprint Management (Agile-style):**
 - SPRINT.md tracks active sprint tasks with status markers: `[ ]` incomplete, `[~]` in-progress, `[x]` complete, `[!]` blocked, `[-]` cancelled
