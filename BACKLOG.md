@@ -35,16 +35,16 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 
 | # | Item | Description | Effort | Status |
 |:--|:-----|:-----------|:-------|:-------|
-| P5 | **Update system_audit.py Part A3 — exclude known .git contamination** | Projects deployed to GitHub Pages (e.g., ultrametric-game-of-life, polysynthetic-communication) have .git dirs by design in the projects tree. Audit should exclude these known deployment repos to eliminate false-positive FAIL. | 0.25h | [ ] |
-| P6 | **Add template invocation audit to system_audit.py** | Beyond Part F's text-search (is template name present in agent prompts), add a check that actually calls `fill_prompt_template` for each template and verifies non-empty output — confirming templates are not just referenced but functional. | 0.5h | [ ] |
-| P7 | **Retrofit archived projects with template-conformant docs** | Per CPL L21 (backlog drift): audit recently archived projects for structural consistency. Retrofit template-conformant documentation (CHARTER.md, DEFINITION-OF-DONE.md, RISK-REGISTER.md) where valuable for cross-project learning. | 2h | [ ] |
+| P5 | **Update system_audit.py Part A3 — exclude known .git contamination** | Projects deployed to GitHub Pages (e.g., ultrametric-game-of-life, polysynthetic-communication) have .git dirs by design in the projects tree. Audit should exclude these known deployment repos to eliminate false-positive FAIL. | 0.25h | ? DONE |
+| P6 | **Add template invocation audit to system_audit.py** | Beyond Part F's text-search (is template name present in agent prompts), add a check that actually calls `fill_prompt_template` for each template and verifies non-empty output — confirming templates are not just referenced but functional. | 0.5h | ? DONE |
+| P7 | **Retrofit archived projects with template-conformant docs** | Per CPL L21 (backlog drift): audit recently archived projects for structural consistency. Retrofit template-conformant documentation (CHARTER.md, DEFINITION-OF-DONE.md, RISK-REGISTER.md) where valuable for cross-project learning. | 2h | ? DONE |
 
 ### P3 — Nice-to-Have
 
 | # | Item | Description | Effort | Status |
 |:--|:-----|:-----------|:-------|:-------|
-| P8 | **Template parameter discovery** | Some PM templates return empty parameters from `get_prompt_template_parameters`. Consider whether formal parameters (project name, date) would improve utility vs inline `[PLACEHOLDER]` values being filled manually by agents. | 0.5h | [ ] |
-| P9 | **CPL risk audit for RISK-REGISTER-TEMPLATE** | Verify pre-populated CPL risks (L7, L3/L6, L18/L40, L14, L39, L19) are current and complete against all 40 CPL lessons. Some lessons (L26-L28 reader testing, L38 null-byte, L39 subagent truncation) may need to be added as default risks. | 0.5h | [ ] |
+| P8 | **Template parameter discovery** | Some PM templates return empty parameters from `get_prompt_template_parameters`. Consider whether formal parameters (project name, date) would improve utility vs inline `[PLACEHOLDER]` values being filled manually by agents. | 0.5h | ✅ DONE |
+| P9 | **CPL risk audit for RISK-REGISTER-TEMPLATE** | Verify pre-populated CPL risks (L7, L3/L6, L18/L40, L14, L39, L19) are current and complete against all 40 CPL lessons. Some lessons (L26-L28 reader testing, L38 null-byte, L39 subagent truncation) may need to be added as default risks. | 0.5h | ✅ DONE |
 
 ---
 
