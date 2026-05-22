@@ -204,6 +204,7 @@ pm_templates = {
     "LEARNINGS-TEMPLATE": "LEARNINGS.md",
     "CLOSEOUT-CHECKLIST-TEMPLATE": "CLOSEOUT-CHECKLIST.md",
     "WEB-APP-RELEASE-CHECKLIST": "web app pre-deployment gate",
+    "TEST-EVIDENCE-TEMPLATE": "test execution evidence",
     "RETROSPECTIVE-TEMPLATE": "sprint retrospective",
 }
 

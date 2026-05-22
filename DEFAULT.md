@@ -1493,12 +1493,12 @@ The project management system combines PMBOK (structured phases with deliverable
 **Phase Gates (PMBOK-style):**
 | Gate | Name | Deliverable | Checklist |
 |:-----|:-----|:------------|:----------|
-| P0 | Initiation | 7 mandatory docs, git repo, SPRINT.md with tasks | Phase 0 in Section 5 |
-| P1 | Planning | Detailed SPRINT.md, BACKLOG.md prioritized | Task framing (Phase 1) |
-| P2 | Execution | Versioned output files, committed incrementally | Approach selection (Phase 2) |
-| P3 | Review | Reader testing, validation, peer review | Validation (Phase 3) |
-| P4 | Publication | Publication-ready document, releases copy | Section 11 standards |
-| P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST-TEMPLATE`), final audit, user sign-off | Section 12 checklist |
+| P0 | Initiation | 7 mandatory docs, git repo, SPRINT.md with tasks, TEST PLAN identified | Phase 0 in Section 5 |
+| P1 | Planning | Detailed SPRINT.md, BACKLOG.md prioritized, test criteria per task | Task framing (Phase 1) |
+| P2 | Execution | Versioned output files, TEST SUITE EXECUTED with evidence captured, committed incrementally | Approach selection (Phase 2) |
+| P3 | Review | Full QA/QC gate: reader testing (documents), test execution (code), UI/UX testing (web apps), validation, peer review | Validation (Phase 3) |
+| P4 | Publication | Publication-ready document, releases copy, ALL underlying tests passing with evidence | Section 11 standards |
+| P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST-TEMPLATE`), TEST EVIDENCE AUDIT — all test suites verified executed and passing, final audit, user sign-off | Section 12 checklist |
 
 **Sprint Management (Agile-style):**
 - SPRINT.md tracks active sprint tasks with status markers: `[ ]` incomplete, `[~]` in-progress, `[x]` complete, `[!]` blocked, `[-]` cancelled
@@ -1545,6 +1545,19 @@ Scan SPRINT.md for task status markers:
 **Selection rule:** Pick the FIRST `[ ]` task from the top of SPRINT.md (highest priority first). If none, fall back to first `[~]`. If none of either, report all tasks complete.
 
 **If no tasks exist:** Create SPRINT.md with a single task derived from PROJECT STATE.md's stated goal. If no goal exists, report: "No sprint tasks defined. What should the first task be?"
+
+#### Step 2.5: Audit Completed Tasks for Test Evidence (QA/QC Gate)
+
+Before proceeding to the next task, audit the current SPRINT.md for any tasks that have been claimed as complete but lack test evidence:
+
+1. Scan all `[x]` tasks in SPRINT.md
+2. For each CODE or WEB APP task: verify a test evidence file exists (Test-Path `test-evidence-*.md` or test output saved)
+3. For each DOCUMENT or PUBLICATION task: verify reader testing results documented in CHANGELOG.md
+4. **If a test file exists on disk but was never executed:** Mark task as `[~]` in-progress. Re-execute the test suite. Capture output. File test evidence. THEN mark complete.
+5. **If no test files exist for a completed code task:** Flag to user. The task may have been completed without any testing — same pattern as the Game of Life `test_plan.py` ghost.
+6. **Only proceed when:** All `[x]` tasks have verifiable test evidence OR are tasks where testing is not applicable (e.g., README.md updates, DECISIONS.md entries).
+
+This step prevents the `test_plan.py` ghost pattern where test files exist on disk but were never executed. Test file existence ≠ tests passed.
 
 #### Step 3: Confirm Before Execution
 Before executing, restate to the user:
