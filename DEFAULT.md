@@ -149,13 +149,26 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 
 ### Startup Procedure (Execute at Session Start)
 
+**Step 1: Verify all 7 mandatory documentation files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `[PLACEHOLDER]` values with project-specific content before writing to disk:
+
+| # | Required File | Template | `fill_prompt_template` Call |
+|:--|:-------------|:---------|:----------------------------|
+| 1 | `README.md` | README-TEMPLATE | `fill_prompt_template("README-TEMPLATE")` |
+| 2 | `PROJECT STATE.md` | — (no template) | Create manually with: current status, active branch, current phase, constraints, files modified this session, next agent instructions |
+| 3 | `SPRINT.md` | SPRINT-BACKLOG-TEMPLATE | `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")` |
+| 4 | `CHANGELOG.md` | CHANGELOG-TEMPLATE | `fill_prompt_template("CHANGELOG-TEMPLATE")` |
+| 5 | `BACKLOG.md` | PRODUCT-BACKLOG-TEMPLATE | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` |
+| 6 | `LEARNINGS.md` | — (no template) | Create manually with header `# Project Learnings` and format `## L<N>: <one-line summary>` per LEARNINGS.md Format below |
+| 7 | `DECISIONS.md` | ADR-TEMPLATE | `fill_prompt_template("ADR-TEMPLATE")` for individual decisions appended to the decisions log |
+
+**Step 2: After file verification, read documentation in order:**
+
 ```
-1. Verify ALL 7 files exist in the project directory. If any are missing, create them.
-2. Read PROJECT STATE.md → understand current status, constraints, next steps.
-3. Read SPRINT.md → identify the active task.
-4. Read LEARNINGS.md → avoid repeating past mistakes.
-5. Read CHANGELOG.md (last entry) → know what just changed.
-6. Read G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md → learn from other projects.
+1. Read PROJECT STATE.md → understand current status, constraints, next steps.
+2. Read SPRINT.md → identify the active task.
+3. Read LEARNINGS.md → avoid repeating past mistakes.
+4. Read CHANGELOG.md (last entry) → know what just changed.
+5. Read G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md → learn from other projects.
 ```
 
 ### Session Close Procedure — MONITORING & CLOSE-OUT PROTOCOL (Execute Before Ending Every Session)
