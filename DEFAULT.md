@@ -149,13 +149,26 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 
 ### Startup Procedure (Execute at Session Start)
 
+**Step 1: Verify all 7 mandatory documentation files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `[PLACEHOLDER]` values with project-specific content before writing to disk:
+
+| # | Required File | Template | `fill_prompt_template` Call |
+|:--|:-------------|:---------|:----------------------------|
+| 1 | `README.md` | README-TEMPLATE | `fill_prompt_template("README-TEMPLATE")` |
+| 2 | `PROJECT STATE.md` | PROJECT-STATE-TEMPLATE | `fill_prompt_template("PROJECT-STATE-TEMPLATE")` |
+| 3 | `SPRINT.md` | SPRINT-BACKLOG-TEMPLATE | `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")` |
+| 4 | `CHANGELOG.md` | CHANGELOG-TEMPLATE | `fill_prompt_template("CHANGELOG-TEMPLATE")` |
+| 5 | `BACKLOG.md` | PRODUCT-BACKLOG-TEMPLATE | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` |
+| 6 | `LEARNINGS.md` | LEARNINGS-TEMPLATE | `fill_prompt_template("LEARNINGS-TEMPLATE")` |
+| 7 | `DECISIONS.md` | ADR-TEMPLATE | `fill_prompt_template("ADR-TEMPLATE")` for individual decisions appended to the decisions log |
+
+**Step 2: After file verification, read documentation in order:**
+
 ```
-1. Verify ALL 7 files exist in the project directory. If any are missing, create them.
-2. Read PROJECT STATE.md → understand current status, constraints, next steps.
-3. Read SPRINT.md → identify the active task.
-4. Read LEARNINGS.md → avoid repeating past mistakes.
-5. Read CHANGELOG.md (last entry) → know what just changed.
-6. Read G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md → learn from other projects.
+1. Read PROJECT STATE.md → understand current status, constraints, next steps.
+2. Read SPRINT.md → identify the active task.
+3. Read LEARNINGS.md → avoid repeating past mistakes.
+4. Read CHANGELOG.md (last entry) → know what just changed.
+5. Read G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md → learn from other projects.
 ```
 
 ### Session Close Procedure — MONITORING & CLOSE-OUT PROTOCOL (Execute Before Ending Every Session)
@@ -1438,7 +1451,7 @@ Date: [YYYY-MM-DD]
 
 ### 12.3 Close-Out Execution Protocol
 
-**Step 1: Generate checklist.** Create the checklist above in the project directory as `CLOSEOUT-CHECKLIST.md`. Pre-populate what is already known to be complete.
+**Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST-TEMPLATE")`. Fill all `[PLACEHOLDER]` values with project-specific content. Pre-populate what is already known to be complete.
 
 **Step 2: Execute each item.** Work through the checklist systematically. Mark `[x]` as each item completes. Mark `[!]` if an item cannot be completed and requires user intervention.
 
@@ -1483,14 +1496,14 @@ The project management system combines PMBOK (structured phases with deliverable
 | P2 | Execution | Versioned output files, committed incrementally | Approach selection (Phase 2) |
 | P3 | Review | Reader testing, validation, peer review | Validation (Phase 3) |
 | P4 | Publication | Publication-ready document, releases copy | Section 11 standards |
-| P5 | Close-Out | CLOSEOUT-CHECKLIST.md, final audit, user sign-off | Section 12 checklist |
+| P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST-TEMPLATE`), final audit, user sign-off | Section 12 checklist |
 
 **Sprint Management (Agile-style):**
 - SPRINT.md tracks active sprint tasks with status markers: `[ ]` incomplete, `[~]` in-progress, `[x]` complete, `[!]` blocked, `[-]` cancelled
 - BACKLOG.md holds future work prioritized as P0 (critical), P1 (high), P2 (medium), P3 (nice-to-have)
 - Each sprint produces at least one versioned output file
 - Sprint review = reader testing or self-audit (Phase 3)
-- Sprint retrospective = LEARNINGS.md update
+- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE-TEMPLATE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
 
 **Agent Responsibility:** The agent tracks which phase gate the project is in and ensures no gate is skipped. Phase gates cannot be bypassed — a project cannot go from Initiation directly to Publication without passing through Planning, Execution, and Review.
 

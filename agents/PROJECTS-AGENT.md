@@ -46,7 +46,7 @@ The Projects agent is the **primary workhorse** for all project-based work. It h
 | `deepchat_question` | Ask user for clarification / confirmation |
 | `skill_list`, `skill_view`, `skill_manage` | Skill management |
 | `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
-| `fill_prompt_template` | Invoke prompt templates (email, social, scholar) |
+| `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, sprint, backlog, DoD, risk register, retrospective, handoff, ADR, README, CHANGELOG, CONTRIBUTING) |
 | `search_conversations` | Search historical conversation records |
 
 ### Write-then-Verify Protocol (§9.3 Step 0)

@@ -35,7 +35,9 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
 
 ### Layer 5: Prompt Templates (Parameterized Sub-Prompts)
-Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`. Templates are called BY agents (usually Projects) to handle specialized tasks without needing a separate agent instance.
+Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`. Templates are called BY agents (Projects and QWAV) to handle specialized tasks without needing a separate agent instance.
+
+**Functional Templates (Task-Specific):**
 
 | Template | Parameters | Called From | Produces |
 |:---------|:-----------|:------------|:---------|
@@ -45,6 +47,25 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 | `Research Writing Agent — Step 2 of 4: Draft` | — | Research pipeline | Research draft |
 | `Research Review Agent — Step 3 of 4: Quality Check` | — | Research pipeline | Quality review |
 | `Research Publication Agent — Step 4 of 4: Final Assembly` | — | Research pipeline | Final publication |
+
+**Project Management Templates (Project Lifecycle):**
+
+| Template | Parameters | Called From | Produces |
+|:---------|:-----------|:------------|:---------|
+| `PROJECT-CHARTER-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `CHARTER.md` — scope, success criteria, constraints, deliverables |
+| `DEFINITION-OF-DONE-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `DEFINITION-OF-DONE.md` — CODE/DOC/PUBLICATION/ANALYSIS gates |
+| `RISK-REGISTER-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `RISK-REGISTER.md` — CPL + project-specific risks |
+| `README-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `README.md` — dependencies, architecture, usage |
+| `SPRINT-BACKLOG-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `SPRINT.md` — tasks with DoD references |
+| `PRODUCT-BACKLOG-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `BACKLOG.md` — P0-P3 prioritized queue |
+| `CHANGELOG-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `CHANGELOG.md` — keepachangelog.com format |
+| `CONTRIBUTING-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `CONTRIBUTING.md` — project rules, domain rules, escalation |
+| `HANDOFF-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | Handoff document — scope, criteria, acceptance gate |
+| `ADR-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | Individual ADR appended to `DECISIONS.md` |
+| `RETROSPECTIVE-TEMPLATE` | — | QWAV agent, Projects agent (Â§12 close-out) | Sprint retrospective — start/stop/continue + CPL candidates |
+| `PROJECT-STATE-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
+| `LEARNINGS-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — kaizen engine, cross-project tags |
+| `CLOSEOUT-CHECKLIST-TEMPLATE` | — | Projects agent (§12 close-out) | `CLOSEOUT-CHECKLIST.md` — 7-item close-out checklist with human sign-off |
 
 ### Layer 6: Subagents (Isolated Clones)
 Called via `subagent_orchestrator`. Self-clones of the current agent with ~35% chance of file I/O tools. Used for parallel or pipelined work.
