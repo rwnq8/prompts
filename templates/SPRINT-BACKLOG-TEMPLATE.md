@@ -14,14 +14,14 @@ version: "1.0"
 
 | ID | Task | DoD Criteria | Est. Effort | Status | Assignee |
 |:---|:-----|:-------------|:------------|:-------|:---------|
-| S1 | [Task description] | [Ref to DEFINITION-OF-DONE.md §section] | [hours] | [ ] | Agent |
-| S2 | [Task description] | [Ref to DEFINITION-OF-DONE.md §section] | [hours] | [ ] | Agent |
+| S1 | [Task description] | [Ref to DEFINITION-OF-DONE.md §section] | [hours] | [x] | Agent |
+| [task ID] | [Next task] | [DoD ref] | [hours] | [~] | Agent |
 
 ## Completed (Retained for Audit)
 
 | ID | Task | Completed | Verification |
 |:---|:-----|:----------|:-------------|
-| S0 | [Task from prior sprint] | [YYYY-MM-DD] | [Test-Path + git log confirmed?] |
+| [task ID] | [Task] | [YYYY-MM-DD] | **Test evidence:** Test-Path test_file.py + re-executed: [N] passed, [0] failed. For non-code tasks: reader test / manual verification method documented. |
 
 ## Blocked
 

@@ -1,28 +1,30 @@
-# Sprint Backlog — Template Integration Wiring
+# Sprint Backlog — QA/QC Process Overhaul
 
-**Sprint Goal:** Wire all 11 project management templates into agent workflows so new projects are initiated with template-driven documentation, not manual ad-hoc scaffolding.
+**Sprint Goal:** Bake comprehensive quality control (testing, verification, iteration) into the entire project lifecycle — documents, code, web apps, and analysis deliverables. Prevent the test_plan.py ghost pattern where test files exist but were never executed.
 **Started:** 2026-05-22
 **Target End:** 2026-05-22
-**Status:** Complete
+**Status:** Active
 
 ## Active Tasks
 
 | ID | Task | DoD Criteria | Est. Effort | Status | Assignee |
 |:---|:-----|:-------------|:------------|:-------|:---------|
-| — | All tasks complete | — | — | — | — |
+| Q1 | Add WEB APP section to DEFINITION-OF-DONE-TEMPLATE | DOCUMENT: functionality, cross-browser, error handling, accessibility, deployment verification checks | 0.5h | [~] | Agent |
+| Q2 | Create WEB-APP-RELEASE-CHECKLIST template | DOCUMENT: pre-deployment gate checking all Q1 DoD items + LEARNINGS.md populated + live URL verification | 0.5h | [ ] | Agent |
+| Q3 | Wire web app templates into agent workflows | DOCUMENT: DEFAULT.md §0.7, §12 close-out, ARCHITECTURE.md Layer 5, system_audit.py Part F | 0.5h | [ ] | Agent |
+| Q4 | Create universal QA/QC Testing Protocol template | DOCUMENT: covers DOCUMENT, CODE, WEB APP, ANALYSIS deliverable types with test plan, execution evidence, pass/fail gate, iteration loop | 1h | [ ] | Agent |
+| Q5 | Update DEFINITION-OF-DONE-TEMPLATE with test execution gates | DOCUMENT: CODE TEST, WEB APP, ANALYSIS TEST sections requiring test suite execution evidence | 0.5h | [ ] | Agent |
+| Q6 | Wire QA/QC gates into DEFAULT.md phase workflow P0-P5 | DOCUMENT: P0 test plan creation, P2 test execution gate, P3 universal QA/QC gate, WHAT'S NEXT? PROCEED Step 2.5 | 1h | [ ] | Agent |
+| Q7 | Add test evidence requirement to SPRINT task format | DOCUMENT: distinguish "wrote test file" from "executed test suite" in task verification | 0.5h | [ ] | Agent |
+| Q8 | Add testing gate to WHAT'S NEXT? PROCEED | DOCUMENT: Step 2.5 audit completed tasks for test evidence, re-execute if missing | 0.5h | [ ] | Agent |
+| Q9 | Create TEST-EVIDENCE-TEMPLATE | DOCUMENT: standardized test execution evidence document | 0.25h | [ ] | Agent |
 
 ## Completed (Retained for Audit)
 
 | ID | Task | Completed | Verification |
 |:---|:-----|:----------|:-------------|
-| S7 | Create CLOSEOUT-CHECKLIST-TEMPLATE.md | 2026-05-22 | Test-Path + git log: template created, wired into DEFAULT.md §12.3 and §12.5, ARCHITECTURE.md, system_audit.py (14/14 PASS) |
-| S6 | Create PROJECT-STATE-TEMPLATE.md and LEARNINGS-TEMPLATE.md | 2026-05-22 | Test-Path + git log: both templates created, wired into DEFAULT.md §0.7 and QWAV-DEFAULT.md §0.9 (10-step protocol) |
-| S5 | Add Part F (Template Integration) to system_audit.py | 2026-05-22 | Python audit: F_RESULT PASS — all 14 PM templates wired, dynamic counts, detects dead code |
-| S4 | Update PROJECTS-AGENT.md tool description | 2026-05-22 | Git log: fill_prompt_template expanded to full template inventory (functional + PM) |
-| S3 | Update ARCHITECTURE.md Layer 5 | 2026-05-22 | Git log: Layer 5 expanded 6→19 rows (6 functional + 13 PM + 1 close-out) |
-| S2 | Wire templates into QWAV-DEFAULT.md §0.9 Project Initiation | 2026-05-22 | Git log: 10-step template-driven initiation protocol replaces "scaffold all 7 docs" |
-| S1 | Wire templates into DEFAULT.md §0.7 Startup Procedure | 2026-05-22 | Git log: all 7 required files now mapped to templates with fill_prompt_template calls |
-| S0 | Template integration audit — 8 findings, 10 recommendations | 2026-05-22 | Test-Path audit-reports/audit-2026-05-22_template-integration.md + git log confirmed |
+| P1 | Merge feature/template-integration-audit to main | 2026-05-22 | Git log: e937005 merge commit, branch deleted, system_audit.py Part F PASS |
+| S0-S7 | Template integration wiring sprint | 2026-05-22 | 14 commits, 14/14 templates wired |
 
 ## Blocked
 
@@ -32,8 +34,8 @@
 
 ## Sprint Health
 
-- Tasks completed: 8/8
-- DoD verified: 7/7
+- Tasks completed: 1/10
+- DoD verified: 0/9 remaining
 - Blocked items: 0
 - Retrospective filed: No
 
