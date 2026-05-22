@@ -1503,7 +1503,7 @@ The project management system combines PMBOK (structured phases with deliverable
 - BACKLOG.md holds future work prioritized as P0 (critical), P1 (high), P2 (medium), P3 (nice-to-have)
 - Each sprint produces at least one versioned output file
 - Sprint review = reader testing or self-audit (Phase 3)
-- Sprint retrospective = LEARNINGS.md update
+- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE-TEMPLATE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
 
 **Agent Responsibility:** The agent tracks which phase gate the project is in and ensures no gate is skipped. Phase gates cannot be bypassed — a project cannot go from Initiation directly to Publication without passing through Planning, Execution, and Review.
 
