@@ -9,8 +9,8 @@
 
 | ID | Task | DoD Criteria | Est. Effort | Status | Assignee |
 |:---|:-----|:-------------|:------------|:-------|:---------|
-| S1 | Wire templates into DEFAULT.md §0.7 Startup Procedure | DOCUMENT: file passes Publication Language Gate, curly quotes, committed | 1h | [~] | Agent |
-| S2 | Wire templates into QWAV-DEFAULT.md §0.9 Project Initiation | DOCUMENT: structured template sequence replaces "scaffold all 7 docs" | 1h | [ ] | Agent |
+| S1 | Wire templates into DEFAULT.md §0.7 Startup Procedure | DOCUMENT: file passes Publication Language Gate, curly quotes, committed | 1h | [x] | Agent |
+| S2 | Wire templates into QWAV-DEFAULT.md §0.9 Project Initiation | DOCUMENT: structured template sequence replaces "scaffold all 7 docs" | 1h | [~] | Agent |
 | S3 | Update ARCHITECTURE.md Layer 5 — add all 11 PM templates | DOCUMENT: template table complete | 0.5h | [ ] | Agent |
 | S4 | Update PROJECTS-AGENT.md tool description | DOCUMENT: fill_prompt_template purpose expanded | 0.25h | [ ] | Agent |
 | S5 | Add Part F (Template Integration) to system_audit.py | CODE: detects unwired templates, passes/fails correctly | 0.5h | [ ] | Agent |
@@ -21,6 +21,7 @@
 
 | ID | Task | Completed | Verification |
 |:---|:-----|:----------|:-------------|
+| S1 | Wire templates into DEFAULT.md §0.7 Startup Procedure | 2026-05-22 | Test-Path DEFAULT.md + git log confirmed: 5 PM templates (README, SPRINT-BACKLOG, CHANGELOG, PRODUCT-BACKLOG, ADR) now wired into §0.7 |
 | S0 | Template integration audit — 8 findings, 10 recommendations | 2026-05-22 | Test-Path audit-reports/audit-2026-05-22_template-integration.md + git log confirmed |
 
 ## Blocked
@@ -31,8 +32,8 @@
 
 ## Sprint Health
 
-- Tasks completed: 1/8
-- DoD verified: 0/7 remaining
+- Tasks completed: 2/8
+- DoD verified: 1/7 remaining
 - Blocked items: 0
 - Retrospective filed: No
 
