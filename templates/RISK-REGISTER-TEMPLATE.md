@@ -28,7 +28,7 @@ version: "1.0"
 | L18/L40 | Write tool silent failure after multiple calls | Medium | High | §0.6.1: Verify after every write; fall back to Python exec for batch ops |
 | L19 | Git branch renamed by parallel process | Low | Medium | §9.0.1: Check branch name before every commit against session-start recorded name |
 | L20 | Branch reuse across projects — cross-contamination | Low | High | §9.5: Never reuse branches — feature/kebab-case-unique per project |
-| L21 | Backlog drift — 7 mandatory docs become stale when files deleted by parallel sessions | Low | Medium | §0.7 Startup Procedure: verify all 7 docs at session start; audit against deleted files |
+| L21 | Backlog drift — docs become stale when files deleted by parallel sessions | Low | Medium | §0.7 Startup Procedure: verify all Tier 1-3 docs at session start; audit against deleted files |
 | L38 | Null-byte placeholder math fix corrupts files | Low | High | Use ASCII-safe markers only; Python scan for null bytes before file writes |
 | L39 | Subagent output truncation at ~32K tokens — content lost mid-generation | High | Medium | §3.1: Break long-form generation into sections; parent completes truncated output |
 

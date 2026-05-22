@@ -21,7 +21,7 @@ Every item must be verified and marked `[x]` before the session ends. Items mark
 - [ ] Copied to `G:\My Drive\Obsidian\releases\YYYY\MM\`
 - [ ] Copy verified with `Test-Path`
 
-## 3. ALL 7 MANDATORY DOCS UPDATED
+## 3. ALL CORE + PHASE DOCS UPDATED
 - [ ] `PROJECT STATE.md` — final state recorded
 - [ ] `SPRINT.md` — all tasks marked `[x]`, `[-]`, or triaged
 - [ ] `CHANGELOG.md` — close-out entry added
@@ -48,7 +48,7 @@ Every item must be verified and marked `[x]` before the session ends. Items mark
 - [ ] `.gitignore` covers build artifacts
 
 ## 7. FINAL AUDIT
-- [ ] Python script verifies: all 7 docs exist and are non-empty
+- [ ] Python script verifies: all core docs exist and are non-empty
 - [ ] Publication file exists in releases (Test-Path confirmed)
 - [ ] `git worktree` clean
 - [ ] No `__pycache__` or `.pyc` files

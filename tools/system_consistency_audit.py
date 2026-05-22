@@ -234,6 +234,44 @@ def check_cpl_references(result):
         result.add_failure(f'CPL: Stale "7 docs" reference: {match.strip()[:100]}')
 
 
+def check_template_files(result):
+    """F. Check template .md files in templates/ directory for stale references."""
+    templates_dir = PROMPTS_DIR / 'templates'
+    if not templates_dir.exists():
+        result.add_warning('F. templates/ directory not found')
+        return
+
+    template_files = [f for f in os.listdir(templates_dir) if f.endswith('.md')]
+    if not template_files:
+        result.add_warning('F. No template .md files found')
+        return
+
+    # Patterns that indicate stale "7" references in template content
+    stale_patterns = [
+        (r'\bALL\s+7\s+MANDATORY\s+DOCS', 'ALL 7 MANDATORY DOCS'),
+        (r'\ball\s+7\s+docs?\b', 'all 7 docs'),
+        (r'\b7\s+mandatory\s+docs?\b', '7 mandatory doc(s)'),
+        (r'\bverify\s+all\s+7\s+docs?\b', 'verify all 7 docs'),
+    ]
+
+    found_any = False
+    for fname in sorted(template_files):
+        fpath = templates_dir / fname
+        with open(fpath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        for pattern, desc in stale_patterns:
+            for m in re.finditer(pattern, content, re.IGNORECASE):
+                line_num = content[:m.start()].count('\n') + 1
+                ctx = content[max(0,m.start()-20):m.end()+30].replace('\n',' ')
+                result.add_failure(
+                    f'templates/{fname}:{line_num}: Stale "{desc}" -- found: "...{ctx}..."'
+                )
+                found_any = True
+
+    if not found_any:
+        result.add_pass('F. Template files clean — no stale "7" references')
+
+
 def run_full_audit():
     """Run all consistency checks."""
     result = AuditResult()
@@ -250,6 +288,7 @@ def run_full_audit():
     check_cross_references(result)
     check_template_registry(result)
     check_cpl_references(result)
+    check_template_files(result)
 
     print()
     print('--- RESULTS ---')
