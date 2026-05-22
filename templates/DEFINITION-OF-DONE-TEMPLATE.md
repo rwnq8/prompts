@@ -16,11 +16,22 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`
 - [ ] `git log -1 --oneline` confirms commit exists
 
+## CODE TEST TASK
+
+- [ ] ALL test files for this module executed — verified by re-execution (NOT by checking file existence)
+- [ ] Test suite output: [N] passed, [0] failed, [K] skipped
+- [ ] Edge cases covered: empty input, boundary values, error conditions
+- [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
+- [ ] If any tests failed: root cause documented, fix applied, re-executed to zero failures
+- [ ] Regression check: re-ran ALL related test files after fix — no new failures
+
 ## DOCUMENT TASK
 
 - [ ] Document passes Publication Language Gate (§11.7) — zero internal project language
 - [ ] Curly quotes throughout body text (Python scan confirmation)
 - [ ] YAML frontmatter present and valid
+- [ ] Reader testing: minimum 1 round (2 rounds for publication documents per §11.5)
+- [ ] All [BLOCKING] and [MAJOR] reader testing issues resolved
 - [ ] File committed with format
 - [ ] If replacing prior version: old version deleted per File Replacement Protocol (§10.5)
 
@@ -42,6 +53,14 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] Limit checks performed on derivations
 - [ ] Web-retrieved claims verified per §0.8.6 Web Research Protocol
 - [ ] Results saved in structured format (JSON/CSV)
+
+## ANALYSIS TEST TASK
+
+- [ ] ALL analysis scripts re-executed — verified output matches claimed results
+- [ ] Reproducibility confirmed: same input → same output (seed-controlled)
+- [ ] Limit/boundary checks performed and documented
+- [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
+- [ ] Discrepancies between claimed and re-executed results documented with rationale
 
 ## WEB APP TASK
 
