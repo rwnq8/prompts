@@ -43,5 +43,22 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] Web-retrieved claims verified per §0.8.6 Web Research Protocol
 - [ ] Results saved in structured format (JSON/CSV)
 
+## WEB APP TASK
+
+- [ ] All interactive features verified working — click every button, test every input, confirm every mode
+- [ ] Error states handled: empty config, broken JSON, missing DOM elements show user-facing messages (not console errors)
+- [ ] Cross-browser screenshots captured: Chrome + Firefox (minimum)
+- [ ] Console audit: zero unexpected errors on page load and during ALL interaction paths
+- [ ] Mobile responsiveness check OR explicit "desktop-only" declaration visible in UI
+- [ ] Accessibility baseline: color contrast ratios pass WCAG AA, keyboard-navigable, alt text on key visuals
+- [ ] All assets load from live URL (zero 404s on JS/CSS/images — verify with browser network tab)
+- [ ] `<title>`, `<meta description>`, and Open Graph tags present in `<head>`
+- [ ] `.nojekyll` file present at root (GitHub Pages requirement)
+- [ ] Test suite executed with zero failures — verified by re-execution, NOT by checking file existence
+- [ ] LEARNINGS.md updated with any issues found during testing
+- [ ] BACKLOG.md: all P1 items triaged (complete, migrate to next sprint, or explicitly defer with rationale)
+- [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`
+- [ ] `git log -1 --oneline` confirms commit exists
+
 ---
 *Generated from DEFINITION-OF-DONE-TEMPLATE.md v1.0*
