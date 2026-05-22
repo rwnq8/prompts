@@ -200,6 +200,8 @@ pm_templates = {
     "CONTRIBUTING-TEMPLATE": "CONTRIBUTING.md",
     "HANDOFF-TEMPLATE": "handoff document",
     "ADR-TEMPLATE": "DECISIONS.md",
+    "PROJECT-STATE-TEMPLATE": "PROJECT STATE.md",
+    "LEARNINGS-TEMPLATE": "LEARNINGS.md",
     "RETROSPECTIVE-TEMPLATE": "sprint retrospective",
 }
 
@@ -225,23 +227,23 @@ if os.path.exists(qwav_path):
 all_wired = default_wired | qwav_wired
 unwired = set(pm_templates.keys()) - all_wired
 
-print(f"  F1. DEFAULT.md wired: {len(default_wired)}/11")
+print(f"  F1. DEFAULT.md wired: {len(default_wired)}/{len(pm_templates)}")
 for tmpl in sorted(pm_templates.keys()):
     status = "WIRED" if tmpl in default_wired else "MISSING"
     print(f"    {status}: {tmpl}")
 
-print(f"  F2. QWAV-DEFAULT.md wired: {len(qwav_wired)}/11")
+print(f"  F2. QWAV-DEFAULT.md wired: {len(qwav_wired)}/{len(pm_templates)}")
 for tmpl in sorted(pm_templates.keys()):
     status = "WIRED" if tmpl in qwav_wired else "MISSING"
     print(f"    {status}: {tmpl}")
 
 if unwired:
-    print(f"  F3. UNWIRED (dead code): {len(unwired)}/11 {sorted(unwired)}")
+    print(f"  F3. UNWIRED (dead code): {len(unwired)}/{len(pm_templates)} {sorted(unwired)}")
 else:
-    print(f"  F3. All 11 templates wired in at least one agent")
+    print(f"  F3. All {len(pm_templates)} templates wired in at least one agent")
 
 if len(unwired) == 0:
-    print("  F_RESULT: All project management templates wired PASS")
+    print(f"  F_RESULT: All {len(pm_templates)} project management templates wired PASS")
 elif len(unwired) <= 2:
     print(f"  F_RESULT: {len(unwired)} templates unwired WARNING")
 else:

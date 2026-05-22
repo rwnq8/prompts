@@ -63,6 +63,8 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 | `HANDOFF-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | Handoff document — scope, criteria, acceptance gate |
 | `ADR-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | Individual ADR appended to `DECISIONS.md` |
 | `RETROSPECTIVE-TEMPLATE` | — | QWAV agent, Projects agent (Â§12 close-out) | Sprint retrospective — start/stop/continue + CPL candidates |
+| `PROJECT-STATE-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
+| `LEARNINGS-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — kaizen engine, cross-project tags |
 
 ### Layer 6: Subagents (Isolated Clones)
 Called via `subagent_orchestrator`. Self-clones of the current agent with ~35% chance of file I/O tools. Used for parallel or pipelined work.

@@ -154,11 +154,11 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 | # | Required File | Template | `fill_prompt_template` Call |
 |:--|:-------------|:---------|:----------------------------|
 | 1 | `README.md` | README-TEMPLATE | `fill_prompt_template("README-TEMPLATE")` |
-| 2 | `PROJECT STATE.md` | — (no template) | Create manually with: current status, active branch, current phase, constraints, files modified this session, next agent instructions |
+| 2 | `PROJECT STATE.md` | PROJECT-STATE-TEMPLATE | `fill_prompt_template("PROJECT-STATE-TEMPLATE")` |
 | 3 | `SPRINT.md` | SPRINT-BACKLOG-TEMPLATE | `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")` |
 | 4 | `CHANGELOG.md` | CHANGELOG-TEMPLATE | `fill_prompt_template("CHANGELOG-TEMPLATE")` |
 | 5 | `BACKLOG.md` | PRODUCT-BACKLOG-TEMPLATE | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` |
-| 6 | `LEARNINGS.md` | — (no template) | Create manually with header `# Project Learnings` and format `## L<N>: <one-line summary>` per LEARNINGS.md Format below |
+| 6 | `LEARNINGS.md` | LEARNINGS-TEMPLATE | `fill_prompt_template("LEARNINGS-TEMPLATE")` |
 | 7 | `DECISIONS.md` | ADR-TEMPLATE | `fill_prompt_template("ADR-TEMPLATE")` for individual decisions appended to the decisions log |
 
 **Step 2: After file verification, read documentation in order:**

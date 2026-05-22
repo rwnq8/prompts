@@ -337,10 +337,10 @@ When initiating a new project, create the directory under `G:\My Drive\projects\
 | 6 | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` | `BACKLOG.md` | P0-P3 prioritized future work queue |
 | 7 | `fill_prompt_template("CHANGELOG-TEMPLATE")` | `CHANGELOG.md` | keepachangelog.com format changelog |
 | 8 | `fill_prompt_template("CONTRIBUTING-TEMPLATE")` | `CONTRIBUTING.md` | Project-specific rules, domain rules, escalation |
+| 9 | `fill_prompt_template("PROJECT-STATE-TEMPLATE")` | `PROJECT STATE.md` | Current status, active branch, phase, constraints |
+| 10 | `fill_prompt_template("LEARNINGS-TEMPLATE")` | `LEARNINGS.md` | Kaizen engine — lessons with cross-project tags |
 
-**Manual creation (no templates yet):**
-- `PROJECT STATE.md` — current status, active branch, phase, constraints, next agent instructions
-- `LEARNINGS.md` — header `# Project Learnings` with format `## L<N>: <one-line summary>`
+**Manual creation (no templates):** *(All files now have templates — see above)*
 
 **Decisions log:** Create `DECISIONS.md` and append individual ADRs via `fill_prompt_template("ADR-TEMPLATE")` as decisions are made.
 
