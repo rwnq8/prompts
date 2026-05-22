@@ -1453,6 +1453,8 @@ Date: [YYYY-MM-DD]
 
 **Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST-TEMPLATE")`. Fill all `[PLACEHOLDER]` values with project-specific content. Pre-populate what is already known to be complete.
 
+**For web app projects:** Additionally generate `RELEASE-CHECKLIST-[version].md` using `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")`. This 9-section pre-deployment gate (functionality, error handling, cross-browser, accessibility, asset loading, test execution, documentation, deployment, post-deployment) MUST be completed before §12.4 social orchestration. Web app projects cannot close out through the general checklist alone.
+
 **Step 2: Execute each item.** Work through the checklist systematically. Mark `[x]` as each item completes. Mark `[!]` if an item cannot be completed and requires user intervention.
 
 **Step 3: Final audit.** Run a Python audit script that verifies every checklist item. Output: `[PASS/FAIL]` for each.

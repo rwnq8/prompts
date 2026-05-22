@@ -66,6 +66,7 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 | `PROJECT-STATE-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
 | `LEARNINGS-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — kaizen engine, cross-project tags |
 | `CLOSEOUT-CHECKLIST-TEMPLATE` | — | Projects agent (§12 close-out) | `CLOSEOUT-CHECKLIST.md` — 7-item close-out checklist with human sign-off |
+| `WEB-APP-RELEASE-CHECKLIST` | — | Projects agent (§12 close-out, web app releases) | Pre-deployment gate — 9-section checklist for web app releases to GitHub Pages |
 
 ### Layer 6: Subagents (Isolated Clones)
 Called via `subagent_orchestrator`. Self-clones of the current agent with ~35% chance of file I/O tools. Used for parallel or pipelined work.
