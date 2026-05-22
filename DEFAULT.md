@@ -88,7 +88,8 @@ Templates and sub-prompts consumed within the Projects agent:
 | Sub-Prompt | Template Name | How to Access |
 |:-----------|:-------------|:--------------|
 | **Email drafting** | `EMAIL-AGENT TEMPLATE v1.2` | `fill_prompt_template("EMAIL-AGENT TEMPLATE v1.2", {...})` |
-| **Social media** | `SOCIAL-ORCHESTRATOR TEMPLATE v1.0` | `fill_prompt_template("SOCIAL-ORCHESTRATOR TEMPLATE v1.0", {...})` |
+| **Web app release checklist** | `WEB-APP-RELEASE-CHECKLIST` | `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")` |
+| **Test evidence** | `TEST-EVIDENCE-TEMPLATE` | `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")` |
 | **Image generation** | `image-gen-banner-prompt.md` | Load as sub-prompt or use `algorithmic-art` / `frontend-design` skills |
 
 These are NOT separate agents. They are consumed within the Projects agent (or QWAV agent) and operate within the calling agent's sandbox.

@@ -63,6 +63,8 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 | `HANDOFF-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | Handoff document — scope, criteria, acceptance gate |
 | `ADR-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | Individual ADR appended to `DECISIONS.md` |
 | `RETROSPECTIVE-TEMPLATE` | — | QWAV agent, Projects agent (Â§12 close-out) | Sprint retrospective — start/stop/continue + CPL candidates |
+| \TEST-EVIDENCE-TEMPLATE\ | — | Projects agent (§5 Phase workflow, DoD) | Standardized test execution evidence document |
+| \QA-QC-TESTING-PROTOCOL\ | — | All agents (reference) | Universal QA/QC framework — deliverable type testing matrix, phase gate integration |
 | `PROJECT-STATE-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
 | `LEARNINGS-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — kaizen engine, cross-project tags |
 | `CLOSEOUT-CHECKLIST-TEMPLATE` | — | Projects agent (§12 close-out) | `CLOSEOUT-CHECKLIST.md` — 7-item close-out checklist with human sign-off |
