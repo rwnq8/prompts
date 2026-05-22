@@ -16,6 +16,12 @@ shared_git = os.path.exists(r"G:\My Drive\projects\_shared\.git")
 print(f"  A2. _shared .git exists: {shared_git} {'WARNING: FAIL' if shared_git else 'PASS'}")
 
 # Deep scan for .git contamination
+KNOWN_DEPLOYMENT_REPOS = {
+    # GitHub Pages deployment repos — these are legitimate project repos, not contamination
+    r"G:\My Drive\projects\ultrametric-game-of-life\.git",
+    r"G:\My Drive\projects\polysynthetic-communication\.git",
+}  # Updated by P5: add new deployment repos here as projects deploy to GitHub Pages
+
 git_dirs = []
 for root, dirs, files in os.walk(r"G:\My Drive\projects"):
     depth = root.replace(r"G:\My Drive\projects", "").count(os.sep)
@@ -23,7 +29,10 @@ for root, dirs, files in os.walk(r"G:\My Drive\projects"):
         dirs.clear()  # Don't go deeper
         continue
     if ".git" in dirs:
-        git_dirs.append(os.path.join(root, ".git"))
+        git_dir = os.path.join(root, ".git")
+        if git_dir in KNOWN_DEPLOYMENT_REPOS:
+            continue  # Known deployment repo — skip, this is by design
+        git_dirs.append(git_dir)
 if git_dirs:
     print(f"  A3. Found .git contamination: {git_dirs} WARNING: FAIL")
 else:
@@ -252,5 +261,35 @@ elif len(unwired) <= 2:
 else:
     print(f"  F_RESULT: {len(unwired)} templates unwired (dead code) FAIL")
 
+
+# PART G: Template File Content Verification
+print("\nPART G: TEMPLATE FILE CONTENT CHECK")
+templates_dir = os.path.join(prompts_dir, "templates")
+missing_files = []
+empty_files = []
+if os.path.exists(templates_dir):
+    for fname in os.listdir(templates_dir):
+        if not fname.endswith('.md'):
+            continue
+        fpath = os.path.join(templates_dir, fname)
+        if not os.path.isfile(fpath):
+            missing_files.append(fname)
+            continue
+        with open(fpath, 'r', encoding='utf-8') as f:
+            content = f.read().strip()
+        if len(content) < 50:  # Must have YAML frontmatter + at least some body
+            empty_files.append(fname)
+if missing_files:
+    print(f"  G1. Missing template files: {missing_files} FAIL")
+else:
+    print(f"  G1. All template files present: PASS")
+if empty_files:
+    print(f"  G2. Empty/near-empty templates: {empty_files} FAIL")
+else:
+    print(f"  G2. All template files have content: PASS")
+if not missing_files and not empty_files:
+    print("  G_RESULT: Template file integrity PASS")
+else:
+    print("  G_RESULT: Template file integrity FAIL")
 
 print(f"\n=== AUDIT COMPLETE ===")
