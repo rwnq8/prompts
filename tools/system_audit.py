@@ -185,4 +185,67 @@ else:
     print("  E_RESULT: All cross-file versions and references consistent PASS")
 
 
+# PART F: Template Integration Check
+print("\nPART F: TEMPLATE INTEGRATION CHECK")
+
+# Project management template names
+pm_templates = {
+    "PROJECT-CHARTER-TEMPLATE": "CHARTER.md",
+    "DEFINITION-OF-DONE-TEMPLATE": "DEFINITION-OF-DONE.md",
+    "RISK-REGISTER-TEMPLATE": "RISK-REGISTER.md",
+    "README-TEMPLATE": "README.md",
+    "SPRINT-BACKLOG-TEMPLATE": "SPRINT.md",
+    "PRODUCT-BACKLOG-TEMPLATE": "BACKLOG.md",
+    "CHANGELOG-TEMPLATE": "CHANGELOG.md",
+    "CONTRIBUTING-TEMPLATE": "CONTRIBUTING.md",
+    "HANDOFF-TEMPLATE": "handoff document",
+    "ADR-TEMPLATE": "DECISIONS.md",
+    "RETROSPECTIVE-TEMPLATE": "sprint retrospective",
+}
+
+default_path = os.path.join(prompts_dir, "DEFAULT.md")
+qwav_path = os.path.join(prompts_dir, "QWAV-DEFAULT.md")
+default_wired = set()
+qwav_wired = set()
+
+if os.path.exists(default_path):
+    with open(default_path, 'r', encoding='utf-8') as f:
+        d_content = f.read()
+    for tmpl_name in pm_templates:
+        if tmpl_name in d_content:
+            default_wired.add(tmpl_name)
+
+if os.path.exists(qwav_path):
+    with open(qwav_path, 'r', encoding='utf-8') as f:
+        q_content = f.read()
+    for tmpl_name in pm_templates:
+        if tmpl_name in q_content:
+            qwav_wired.add(tmpl_name)
+
+all_wired = default_wired | qwav_wired
+unwired = set(pm_templates.keys()) - all_wired
+
+print(f"  F1. DEFAULT.md wired: {len(default_wired)}/11")
+for tmpl in sorted(pm_templates.keys()):
+    status = "WIRED" if tmpl in default_wired else "MISSING"
+    print(f"    {status}: {tmpl}")
+
+print(f"  F2. QWAV-DEFAULT.md wired: {len(qwav_wired)}/11")
+for tmpl in sorted(pm_templates.keys()):
+    status = "WIRED" if tmpl in qwav_wired else "MISSING"
+    print(f"    {status}: {tmpl}")
+
+if unwired:
+    print(f"  F3. UNWIRED (dead code): {len(unwired)}/11 {sorted(unwired)}")
+else:
+    print(f"  F3. All 11 templates wired in at least one agent")
+
+if len(unwired) == 0:
+    print("  F_RESULT: All project management templates wired PASS")
+elif len(unwired) <= 2:
+    print(f"  F_RESULT: {len(unwired)} templates unwired WARNING")
+else:
+    print(f"  F_RESULT: {len(unwired)} templates unwired (dead code) FAIL")
+
+
 print(f"\n=== AUDIT COMPLETE ===")
