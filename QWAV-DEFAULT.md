@@ -100,7 +100,7 @@ Projects may be assigned by the user at session start. When assigned, ALL subseq
 5. If no assignment → ask user
 
 
-## 0.7 Project Documentation Standards — MANDATORY FOR ALL PROJECTS
+## 0.7 Project Documentation Standards — THREE-TIER MODEL
 
 Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\` itself) MUST maintain the following documentation files. These enable agent handoff across sessions, cross-project learning (kaizen), and sprint-based workflow management without requiring the human to re-explain context.
 
@@ -119,7 +119,7 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 ### Startup Procedure (Execute at Session Start)
 
 ```
-1. Verify ALL 7 files exist in the project directory. If any are missing, create them.
+1. Verify ALL Tier 1 core files exist in the project directory. If any are missing, create them.
 2. Read PROJECT STATE.md → understand current status, constraints, next steps.
 3. Read SPRINT.md → identify the active task.
 4. Read LEARNINGS.md → avoid repeating past mistakes.
@@ -157,7 +157,7 @@ Each lesson in LEARNINGS.md follows this format:
 
 ### File Naming Exception
 
-These 7 files use fixed names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
+Tier 1 core files use fixed names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
 
 ### Cross-Project Learning
 
@@ -273,7 +273,7 @@ TRIGGER 5 — Context needed from prior conversations:
 This due diligence protocol connects to Section 0.7 (Project Documentation Standards). The startup procedure is now:
 
 ```
-1. Verify ALL 7 documentation files exist (Section 0.7 procedure)
+1. Verify ALL Tier 1 core files exist (Section 0.7 procedure)
    ↓
 2. Execute Due Diligence Protocol (Section 0.8, Steps 1-8)
    ↓
@@ -560,7 +560,7 @@ Before doing anything else, establish your git identity and record it explicitly
 3. \git status --short\ → Understand current repo state before any work.
 
 **0.1.5 Project Documentation Verification (Run ONCE at session start):**
-1. Verify all 7 mandatory documentation files exist in the project directory (Section 0.7).
+1. Verify all Tier 1 core files exist in the project directory (Section 0.7).
 2. If any are missing: create them using the formats in Section 0.7.
 3. Read them in order: PROJECT STATE.md → SPRINT.md → LEARNINGS.md → CHANGELOG.md (last entry).
 4. If SPRINT.md has active tasks: identify the next task to work on.
@@ -1175,7 +1175,7 @@ Date: [YYYY-MM-DD]
        [ ] 2e. Copied to G:\My Drive\Obsidian\releases\YYYY\MM\
        [ ] 2f. Copy verified with os.path.exists()
 
-[ ] 3. ALL 7 MANDATORY DOCS UPDATED — PROJECT STATE.md (final state), SPRINT.md 
+[ ] 3. ALL CORE + PHASE DOCS UPDATED — PROJECT STATE.md (final state), SPRINT.md 
        (all tasks marked), CHANGELOG.md (close-out entry), LEARNINGS.md (final 
        lessons), DECISIONS.md (final decisions), BACKLOG.md (remaining items 
        triaged), README.md (project summary updated)
@@ -1195,7 +1195,7 @@ Date: [YYYY-MM-DD]
        from cold can read PROJECT STATE.md and understand everything. No 
        broken references. No temp files. .gitignore covers build artifacts.
 
-[ ] 7. FINAL AUDIT — Python script verifies: all 7 docs exist and are non-empty, 
+[ ] 7. FINAL AUDIT — Python script verifies: all core docs exist and are non-empty, 
        publication file exists in releases, git worktree clean, no temp files, 
        no __pycache__, no .pyc files.
 ```
@@ -1242,7 +1242,7 @@ The project management system combines PMBOK (structured phases with deliverable
 **Phase Gates (PMBOK-style):**
 | Gate | Name | Deliverable | Checklist |
 |:-----|:-----|:------------|:----------|
-| P0 | Initiation | 7 mandatory docs, git repo, SPRINT.md with tasks | Phase 0 in Section 5 |
+| P0 | Initiation | Core init files, git repo, SPRINT.md with tasks | Phase 0 in Section 5 |
 | P1 | Planning | Detailed SPRINT.md, BACKLOG.md prioritized | Task framing (Phase 1) |
 | P2 | Execution | Versioned output files, committed incrementally | Approach selection (Phase 2) |
 | P3 | Review | Reader testing, validation, peer review | Validation (Phase 3) |
@@ -1433,7 +1433,7 @@ This ensures full traceability of autonomous actions — every autonomous step i
 **Version:** v1.12
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, mandatory 7-file documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, tiered documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
 **Last updated:** 2026-05-19
 
 ---

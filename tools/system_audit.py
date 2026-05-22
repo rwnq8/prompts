@@ -293,3 +293,19 @@ else:
     print("  G_RESULT: Template file integrity FAIL")
 
 print(f"\n=== AUDIT COMPLETE ===")
+
+# PART H: SYSTEM CONSISTENCY AUDIT (template count drift, cross-references)
+print("\nPART H: SYSTEM CONSISTENCY AUDIT (template drift detection)")
+consistency_script = os.path.join(prompts_dir, "tools", "system_consistency_audit.py")
+if os.path.exists(consistency_script):
+    result = subprocess.run([sys.executable, consistency_script], capture_output=True, text=True, cwd=prompts_dir)
+    if result.returncode == 0:
+        print("  H_RESULT: System consistency audit PASS")
+    else:
+        print(f"  H_RESULT: System consistency audit FAIL (exit code {result.returncode})")
+        # Print last 10 lines of output
+        output_lines = result.stdout.strip().split('\n')
+        for line in output_lines[-10:]:
+            print(f"    {line}")
+else:
+    print(f"  H_RESULT: Consistency audit script not found at {consistency_script}")

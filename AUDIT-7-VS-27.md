@@ -218,12 +218,41 @@ If Option A is chosen, the following files need updates:
 
 ---
 
-## 9. DECISION REQUIRED
+## 9. RESOLUTION (2026-05-22)
 
-The audit is complete. The system has 27 hardcoded "7" references that need updating. 
+**Implemented Option A: Tiered Documentation Model**
 
-**Question for user:** Which fix approach?
+### Files Updated
 
-- **Option A:** Tiered documentation model (best long-term)
-- **Option B:** Minimal language fix only
-- **Option C:** Expand mandatory set to 9
+| File | Changes |
+|:-----|:--------|
+| `DEFAULT.md` | §0.7 rewritten with 3-tier model + full template catalog. All 19 hardcoded "7" references replaced. |
+| `QWAV-DEFAULT.md` | All 7 hardcoded "7" references replaced with tiered language. |
+| `META-PROMPT-DEEPSEEK.md` | CPL L21: "audit all 7 documentation files" -> "audit ALL documentation files (Tier 1-3)" |
+| `projects/_shared/CROSS-PROJECT-LEARNINGS.md` | L21: "update all 7 docs" -> "update all Tier 1-3 docs" |
+| `tools/system_consistency_audit.py` | NEW - Proactive audit tool that catches hardcoded count drift |
+
+### New Tiered Model
+
+| Tier | Count | Description | Examples |
+|:-----|:------|:-----------|:---------|
+| Tier 1: Core Init | 7 | Always created at P0 | README, SPRINT, CHANGELOG |
+| Tier 2: Phase-Gated | 5 | Created at specific phases | DEFINITION-OF-DONE (P0), CLOSEOUT-CHECKLIST (P5) |
+| Tier 3: Situational | 5 | Created when applicable | WEB-APP-RELEASE-CHECKLIST, TEST-EVIDENCE |
+| Non-file templates | 10 | Process/analysis only | STAGE-1 through STAGE-4, EMAIL-AGENT |
+| Total | 27 | | |
+
+### Proactive Audit System
+
+`tools/system_consistency_audit.py` checks:
+- A. Hardcoded numeric claims vs actual counts
+- B. Template count claims accuracy
+- C. Cross-references between templates
+- D. Template registry completeness
+- E. CPL lesson reference staleness
+
+Trigger: `python tools/system_consistency_audit.py` or integrated into `system_audit.py`.
+
+### Template Content Note
+
+Two templates (CLOSEOUT-CHECKLIST-TEMPLATE, RISK-REGISTER-TEMPLATE) still contain "7" in stored content. These are managed by the template system. Generated files will be correct because `fill_prompt_template` returns templates with `[PLACEHOLDER]` markers that agents fill from the updated DEFAULT.md tiered model.

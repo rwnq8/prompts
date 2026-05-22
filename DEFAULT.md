@@ -112,7 +112,7 @@ All project files fall into three categories with different lifecycle rules:
 
 **PERMANENT (NEVER DELETE — project provenance):**
 - Versioned content files: 0.1.md, 0.2.md, ..., 0.N.md, 0.N.py
-- Mandatory documentation: README.md, PROJECT STATE.md, SPRINT.md, CHANGELOG.md, BACKLOG.md, LEARNINGS.md, DECISIONS.md
+- Core initialization files (Tier 1): README.md, PROJECT STATE.md, SPRINT.md, CHANGELOG.md, BACKLOG.md, LEARNINGS.md, DECISIONS.md
 - Core reusable libraries (named .py files, not helper scripts)
 - These ARE the project's chronological record. Deleting them destroys the audit trail. Even if superseded, they document WHAT was done WHEN.
 
@@ -132,25 +132,57 @@ All project files fall into three categories with different lifecycle rules:
 - Is this file EPHEMERAL? → OK if workflow complete.
 - Is this file EXTERNAL? → OK only after verifying copy exists in releases.
 
-## 0.7 Project Documentation Standards — MANDATORY FOR ALL PROJECTS
+## 0.7 Project Documentation Standards — THREE-TIER MODEL
 
 Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\` itself) MUST maintain the following documentation files. These enable agent handoff across sessions, cross-project learning (kaizen), and sprint-based workflow management without requiring the human to re-explain context.
 
-### Required Files
+### Tier 1: Core Initialization Files (ALWAYS present)
 
-| # | File | Purpose | Update |
-|:--|:-----|:--------|:-------|
-| 1 | `README.md` | Project identity, thesis, constraints | Milestones only |
-| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent — **read this first** | Every session end |
-| 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session |
-| 4 | `CHANGELOG.md` | Chronological versioned change log | Every session |
-| 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge |
-| 6 | `LEARNINGS.md` | Project-specific lessons (kaizen engine) — machine-readable format | When lessons emerge |
-| 7 | `DECISIONS.md` | Architecture/design decisions with rationale | When key decisions made |
+These 7 files are the minimum set for every project, created at P0:
 
-### Startup Procedure (Execute at Session Start)
+| # | File | Purpose | Update | Template |
+|:--|:-----|:--------|:-------|:---------|
+| 1 | `README.md` | Project identity, thesis, constraints | Milestones only | README-TEMPLATE |
+| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE-TEMPLATE |
+| 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session | SPRINT-BACKLOG-TEMPLATE |
+| 4 | `CHANGELOG.md` | Chronological versioned change log | Every session | CHANGELOG-TEMPLATE |
+| 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge | PRODUCT-BACKLOG-TEMPLATE |
+| 6 | `LEARNINGS.md` | Project-specific lessons (kaizen engine) | When lessons emerge | LEARNINGS-TEMPLATE |
+| 7 | `DECISIONS.md` | Architecture/design decisions with rationale | When key decisions made | ADR-TEMPLATE |
 
-**Step 1: Verify all 7 mandatory documentation files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `[PLACEHOLDER]` values with project-specific content before writing to disk:
+### Tier 2: Phase-Gated Files (created at specific phases)
+
+These files are mandatory at their respective lifecycle phases:
+
+| # | File | Template | Phase | When |
+|:--|:-----|:---------|:------|:-----|
+| 8 | `DEFINITION-OF-DONE.md` | DEFINITION-OF-DONE-TEMPLATE | P0 | Project initiation |
+| 9 | `CONTRIBUTING.md` | CONTRIBUTING-TEMPLATE | P0 | Project initiation |
+| 10 | `PROJECT-CHARTER.md` | PROJECT-CHARTER-TEMPLATE | P0 | Project initiation |
+| 11 | `RISK-REGISTER.md` | RISK-REGISTER-TEMPLATE | P1 | During planning |
+| 12 | `CLOSEOUT-CHECKLIST.md` | CLOSEOUT-CHECKLIST-TEMPLATE | P5 | Close-out |
+
+### Tier 3: Situational Files (created when applicable)
+
+Generated on demand based on project type and deliverables:
+
+| # | File | Template | When |
+|:--|:-----|:---------|:-----|
+| 13 | `QA-QC-TESTING-PROTOCOL.md` | QA-QC-TESTING-PROTOCOL | When testing is planned |
+| 14 | `test-evidence-*.md` | TEST-EVIDENCE-TEMPLATE | When tests are executed |
+| 15 | `RELEASE-CHECKLIST-*.md` | WEB-APP-RELEASE-CHECKLIST | Web app projects only |
+| 16 | `RETROSPECTIVE-*.md` | RETROSPECTIVE-TEMPLATE | Per sprint |
+| 17 | `HANDOFF-*.md` | HANDOFF-TEMPLATE | When delegating between agents |
+
+### Full Template Catalog (27 templates, 26 usable via `fill_prompt_template`)
+
+The system has 27 registered prompt templates. 17 generate project files (above); 10 are process/analysis templates (STAGE-1 through STAGE-4, EMAIL-AGENT, SOCIAL-ORCHESTRATOR, image-gen-banner-prompt, convergence document, retrospective question, cleanup actions).
+
+**To discover all available templates:** Use `list_all_prompt_template_names`. **To check template parameters:** Use `get_prompt_template_parameters("TEMPLATE-NAME")`.
+
+### Tier 1 Startup Procedure (Execute at Session Start)
+
+**Step 1: Verify all Tier 1 core files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `[PLACEHOLDER]` values with project-specific content before writing to disk:
 
 | # | Required File | Template | `fill_prompt_template` Call |
 |:--|:-------------|:---------|:----------------------------|
@@ -222,7 +254,7 @@ TASK EXECUTION AUDIT:
 #### Phase C: Final Integrity Sweep
 
 ```
-[ ] ALL 7 mandatory documentation files audited for stale references (§0.7)
+[ ] ALL core documentation files audited for stale references (§0.7)
 [ ] git status --short → CLEAN (no uncommitted changes)
 [ ] git log -1 --oneline → session close commit EXISTS
 [ ] system_audit.py (if in prompts workspace) → no new failures
@@ -249,7 +281,7 @@ Each lesson in LEARNINGS.md follows this format:
 
 ### File Naming Exception
 
-These 7 files use fixed names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
+Tier 1 core files use fixed names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
 
 ### Cross-Project Learning
 
@@ -365,7 +397,7 @@ TRIGGER 5 — Context needed from prior conversations:
 This due diligence protocol connects to Section 0.7 (Project Documentation Standards). The startup procedure is now:
 
 ```
-1. Verify ALL 7 documentation files exist (Section 0.7 procedure)
+1. Verify ALL Tier 1 core files exist (Section 0.7 procedure)
    ↓
 2. Execute Due Diligence Protocol (Section 0.8, Steps 1-8)
    ↓
@@ -620,7 +652,7 @@ Before doing anything else, establish your git identity and record it explicitly
 3. \git status --short\ → Understand current repo state before any work.
 
 **0.1.5 Project Documentation Verification (Run ONCE at session start):**
-1. Verify all 7 mandatory documentation files exist in the project directory (Section 0.7).
+1. Verify all Tier 1 core files exist in the project directory (Section 0.7).
 2. If any are missing: create them using the formats in Section 0.7.
 3. Read them in order: PROJECT STATE.md → SPRINT.md → LEARNINGS.md → CHANGELOG.md (last entry).
 4. If SPRINT.md has active tasks: identify the next task to work on.
@@ -1425,7 +1457,7 @@ Date: [YYYY-MM-DD]
        [ ] 2e. Copied to G:\My Drive\Obsidian\releases\YYYY\MM\
        [ ] 2f. Copy verified with os.path.exists()
 
-[ ] 3. ALL 7 MANDATORY DOCS UPDATED — PROJECT STATE.md (final state), SPRINT.md 
+[ ] 3. ALL CORE + PHASE DOCS UPDATED — PROJECT STATE.md (final state), SPRINT.md 
        (all tasks marked), CHANGELOG.md (close-out entry), LEARNINGS.md (final 
        lessons), DECISIONS.md (final decisions), BACKLOG.md (remaining items 
        triaged), README.md (project summary updated)
@@ -1445,7 +1477,7 @@ Date: [YYYY-MM-DD]
        from cold can read PROJECT STATE.md and understand everything. No 
        broken references. No temp files. .gitignore covers build artifacts.
 
-[ ] 7. FINAL AUDIT — Python script verifies: all 7 docs exist and are non-empty, 
+[ ] 7. FINAL AUDIT — Python script verifies: all core docs exist and are non-empty, 
        publication file exists in releases, git worktree clean, no temp files, 
        no __pycache__, no .pyc files.
 ```
@@ -1494,7 +1526,7 @@ The project management system combines PMBOK (structured phases with deliverable
 **Phase Gates (PMBOK-style):**
 | Gate | Name | Deliverable | Checklist |
 |:-----|:-----|:------------|:----------|
-| P0 | Initiation | 7 mandatory docs, git repo, SPRINT.md with tasks, TEST PLAN identified | Phase 0 in Section 5 |
+| P0 | Initiation | Core init files, git repo, SPRINT.md with tasks, TEST PLAN identified | Phase 0 in Section 5 |
 | P1 | Planning | Detailed SPRINT.md, BACKLOG.md prioritized, test criteria per task | Task framing (Phase 1) |
 | P2 | Execution | Versioned output files, TEST SUITE EXECUTED with evidence captured, committed incrementally | Approach selection (Phase 2) |
 | P3 | Review | Full QA/QC gate: reader testing (documents), test execution (code), UI/UX testing (web apps), validation, peer review | Validation (Phase 3) |
@@ -1698,7 +1730,7 @@ This ensures full traceability of autonomous actions — every autonomous step i
 **Version:** v1.14
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, mandatory 7-file documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, tiered documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
 **Last updated:** 2026-05-19
 
 ---
