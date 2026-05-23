@@ -215,6 +215,9 @@ pm_templates = {
     "WEB-APP-RELEASE-CHECKLIST": "web app pre-deployment gate",
     "TEST-EVIDENCE-TEMPLATE": "test execution evidence",
     "RETROSPECTIVE-TEMPLATE": "sprint retrospective",
+    "QA-QC-TESTING-PROTOCOL": "QA-QC-TESTING-PROTOCOL.md",
+    "PROJECT-INITIATION-TEMPLATE": "PROJECT-INITIATION.md",
+    "SOCIAL-ORCHESTRATOR-TEMPLATE": "social media orchestration",
 }
 
 default_path = os.path.join(prompts_dir, "DEFAULT.md")
