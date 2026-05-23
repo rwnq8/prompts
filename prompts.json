@@ -121,7 +121,7 @@
   },
   {
     "id": "1779362831868",
-    "name": "SPRINT-BACKLOG-TEMPLATE",
+    "name": "SPRINT-BACKLOG",
     "description": "",
     "content": "---\ntemplate: SPRINT-BACKLOG\nversion: \"1.0\"\n---\n\n# Sprint Backlog — [SPRINT NAME]\n\n**Sprint Goal:** [One sentence: what this sprint achieves]\n**Started:** [YYYY-MM-DD]\n**Target End:** [YYYY-MM-DD]\n**Status:** [Active | Complete]\n\n## Active Tasks\n\n| ID | Task | DoD Criteria | Est. Effort | Status | Assignee |\n|:---|:-----|:-------------|:------------|:-------|:---------|\n| S1 | [Task description] | [Ref to DEFINITION-OF-DONE.md §section] | [hours] | [x] | Agent |\n| [task ID] | [Next task] | [DoD ref] | [hours] | [~] | Agent |\n\n## Completed (Retained for Audit)\n\n| ID | Task | Completed | Verification |\n|:---|:-----|:----------|:-------------|\n| [task ID] | [Task] | [YYYY-MM-DD] | **Test evidence:** Test-Path test_file.py + re-executed: [N] passed, [0] failed. For non-code tasks: reader test / manual verification method documented. |\n\n## Blocked\n\n| ID | Task | Blocked By | Resolution |\n|:---|:-----|:-----------|:-----------|\n| [S#] | [Task] | [Dependency/issue] | [Action needed] |\n\n## Sprint Health\n\n- Tasks completed: [N]/[Total]\n- DoD verified: [N]/[Total]\n- Blocked items: [N]\n- Retrospective filed: [Yes/No]\n\n---\n*Generated from SPRINT-BACKLOG-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -129,11 +129,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779362831868,
-    "updatedAt": 1779435810380
+    "updatedAt": 1779509481859
   },
   {
     "id": "1779362871274",
-    "name": "PROJECT-CHARTER-TEMPLATE",
+    "name": "PROJECT-CHARTER",
     "description": "",
     "content": "---\ntemplate: PROJECT-CHARTER\nversion: \"1.0\"\n---\n\n# [PROJECT NAME] — Project Charter\n\n**Date:** [YYYY-MM-DD]\n**Status:** [Proposed | Active | Suspended | Complete]\n**Program:** [QWAV | Ultrametricity | Prompts]\n\n## Scope\n\n### In Scope\n- [What this project WILL do — be specific]\n\n### Out of Scope\n- [What this project will NOT do — prevent scope creep]\n\n## Success Criteria\n\n| # | Criterion | How Measured |\n|:--|:----------|:-------------|\n| 1 | [Measurable outcome] | [Verification method] |\n| 2 | [Measurable outcome] | [Verification method] |\n\n## Constraints\n\n| Constraint | Value | Why |\n|:-----------|:------|:----|\n| Human attention budget | [Estimated focus-hours] | Force-Multiplier model: human time is the scarce resource |\n| Session limit | [Max sessions] | [Rationale] |\n| Deliverable deadline | [YYYY-MM-DD or \"None\"] | [Rationale] |\n| Domain boundaries | [e.g., \"No wet lab work\"] | [Rationale] |\n\n## Dependencies\n\n| Depends On | Type | Status |\n|:-----------|:-----|:-------|\n| [Project/Resource name] | [Output | Resource | Decision] | [Active | Complete | Blocked] |\n\n## Deliverables\n\n| # | Deliverable | Type | DoD Reference |\n|:--|:------------|:-----|:--------------|\n| 1 | [Description] | [Code | Document | Publication | Analysis] | DEFINITION-OF-DONE.md §[section] |\n\n## Prior Work (from §0.1.4 Discovery)\n\n| Source | Relevance | Action |\n|:-------|:----------|:-------|\n| [Archive project or release] | [How it relates] | [Read LEARNINGS | Cite DOI | Apply CPL lesson] |\n\n## Human Sign-Off\n\n- [ ] Scope reviewed and approved\n- [ ] Success criteria are measurable and realistic\n- [ ] Constraints are accurate\n- [ ] Prior work acknowledged\n\n---\n*Generated from PROJECT-CHARTER-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -141,11 +141,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779362871274,
-    "updatedAt": 1779436074231
+    "updatedAt": 1779509476111
   },
   {
     "id": "1779362885097",
-    "name": "PRODUCT-BACKLOG-TEMPLATE",
+    "name": "PRODUCT-BACKLOG",
     "description": "",
     "content": "---\ntemplate: PRODUCT-BACKLOG\nversion: \"1.0\"\n---\n\n# Product Backlog — [PROJECT NAME]\n\n**Last Updated:** [YYYY-MM-DD]\n\n## Priority Legend\n\n| Priority | Meaning | When |\n|:---------|:--------|:-----|\n| **P0** | Must have now | Current or next sprint |\n| **P1** | Should have soon | Within 3 sprints |\n| **P2** | Could have later | Nice-to-have, not committed |\n| **P3** | Won't have now | Deferred or rejected |\n\n## Backlog\n\n| Priority | Item | Description | Est. Effort | Dependencies | Status |\n|:---------|:-----|:------------|:------------|:-------------|:-------|\n| P0 | [Item] | [What and why] | [hours] | [Other items/projects] | [Not Started | In Progress] |\n| P1 | [Item] | [What and why] | [hours] | [Other items/projects] | [Not Started] |\n\n## Completed (Retained for Audit)\n\n| Priority | Item | Completed | Notes |\n|:---------|:-----|:----------|:------|\n| P0 | [Item] | [YYYY-MM-DD] | [Key outcome] |\n\n---\n*Generated from PRODUCT-BACKLOG-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -153,11 +153,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779362885097,
-    "updatedAt": 1779436062009
+    "updatedAt": 1779509470751
   },
   {
     "id": "1779362900226",
-    "name": "RISK-REGISTER-TEMPLATE",
+    "name": "RISK-REGISTER",
     "description": "",
     "content": "---\ntemplate: RISK-REGISTER\nversion: \"1.0\"\n---\n\n# Risk Register — [PROJECT NAME]\n\n**Last Reviewed:** [YYYY-MM-DD]\n**Review Cadence:** Per sprint\n\n## Active Risks\n\n| ID | Description | Likelihood | Impact | Mitigation | Owner | Review Date | Status |\n|:---|:------------|:-----------|:-------|:-----------|:------|:------------|:-------|\n| R1 | [Risk] | [High/Med/Low] | [High/Med/Low] | [How we prevent/reduce] | [Human/Agent] | [YYYY-MM-DD] | [Active/Monitoring/Resolved] |\n\n## Pre-Populated Known Risks (from CPL)\n\n| CPL Ref | Risk | Default Likelihood | Default Impact | Default Mitigation |\n|:--------|:-----|:-------------------|:---------------|:-------------------|\n| L1 | Git repository contamination — .git dirs in projects tree | Low | High | system_audit.py Part A3 scans + excludes known deployment repos |\n| L3/L6 | Unicode cp1252 console crash on Windows | High | Low | Rule 12: Pre-execution Unicode safety scan |\n| L7 | Python -c string corruption on Windows (PowerShell) | High | Medium | Rule 13: HARD BLOCK — never inline Python through PowerShell |\n| L13 | Agent claims \"committed\" without git log verification | Medium | High | §9.3 Post-Work Checklist: git log -1 after every commit |\n| L14 | -ErrorAction SilentlyContinue masking critical failures | Medium | High | §0.6.3: Forbidden in verification — use Test-Path or try/catch |\n| L15/L17 | Write-then-verify gap — tool success ≠ file exists; audit relies on memory not filesystem | Medium | High | §0.6.1: Test-Path + Get-Content after every write/edit |\n| L16 | temperature: 0.0 insufficient for fabrication prevention | Medium | High | Structural guardrails: Due Diligence §0.8, Pre-Send Checklist §E.5.1, git log verification §9 |\n| L18/L40 | Write tool silent failure after multiple calls | Medium | High | §0.6.1: Verify after every write; fall back to Python exec for batch ops |\n| L19 | Git branch renamed by parallel process | Low | Medium | §9.0.1: Check branch name before every commit against session-start recorded name |\n| L20 | Branch reuse across projects — cross-contamination | Low | High | §9.5: Never reuse branches — feature/kebab-case-unique per project |\n| L21 | Backlog drift — docs become stale when files deleted by parallel sessions | Low | Medium | §0.7 Startup Procedure: verify all Tier 1-3 docs at session start; audit against deleted files |\n| L38 | Null-byte placeholder math fix corrupts files | Low | High | Use ASCII-safe markers only; Python scan for null bytes before file writes |\n| L39 | Subagent output truncation at ~32K tokens — content lost mid-generation | High | Medium | §3.1: Break long-form generation into sections; parent completes truncated output |\n\n## Resolved Risks\n\n| ID | Description | Resolution Date | Resolution |\n|:---|:------------|:----------------|:-----------|\n| [R#] | [Risk] | [YYYY-MM-DD] | [How resolved] |\n\n---\n*Generated from RISK-REGISTER-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -165,11 +165,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779362900226,
-    "updatedAt": 1779439689096
+    "updatedAt": 1779509652501
   },
   {
     "id": "1779362914922",
-    "name": "RETROSPECTIVE-TEMPLATE",
+    "name": "RETROSPECTIVE",
     "description": "",
     "content": "---\ntemplate: RETROSPECTIVE\nversion: \"1.0\"\n---\n\n# Sprint Retrospective — [SPRINT NAME]\n\n**Date Range:** [YYYY-MM-DD] to [YYYY-MM-DD]\n**Retro Date:** [YYYY-MM-DD]\n**Facilitator:** [Agent/Human]\n\n## What Went Well (Keep Doing)\n1. [Positive observation — be specific, not generic]\n2. [Positive observation]\n3. [Positive observation]\n\n## What Went Wrong (Stop Doing)\n1. [Problem — be specific: what happened, what was the impact]\n2. [Problem]\n3. [Problem]\n\n## What Will We Change (Start Doing)\n1. **[CONCRETE ACTION]:** [What, who, by when — not a vague intention]\n2. **[CONCRETE ACTION]:** [What, who, by when]\n3. **[CONCRETE ACTION]:** [What, who, by when]\n\n## Action Items\n\n| # | Action | Owner | By When | Status |\n|:--|:-------|:------|:--------|:-------|\n| 1 | [Specific action] | [Human/Agent] | [Next sprint] | [ ] |\n| 2 | [Specific action] | [Human/Agent] | [Next sprint] | [ ] |\n\n## Previous Action Items Review\n\n| # | Action | Was It Done? | If Not, Why? |\n|:--|:-------|:-------------|:-------------|\n| [From last retro] | [Action] | [Yes/No] | [Blocked/forgotten/deprioritized] |\n\n## CPL Promotion Candidates\n\nItems tagged `Cross-Project: YES` for promotion to CROSS-PROJECT-LEARNINGS.md:\n\n1. **[Lesson title]:** [Brief description of the pattern and why it applies across projects]\n\n## Retro Health Check\n\n- Were all sprint DoD criteria met? [Yes/No — if no, which failed?]\n- Was the Publication Language Gate run? [Yes/No]\n- Were prior retro action items completed? [N]/[Total]\n- Are any risks overdue for review? [Yes/No]\n\n---\n*Generated from RETROSPECTIVE-TEMPLATE.md v1.0. File as docs/retrospectives/YYYY-MM-DD-sprint-name.md*\n",
     "parameters": [],
@@ -177,11 +177,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779362914922,
-    "updatedAt": 1779436097409
+    "updatedAt": 1779509459015
   },
   {
     "id": "1779362932855",
-    "name": "README-TEMPLATE",
+    "name": "README",
     "description": "",
     "content": "---\ntemplate: README\nversion: \"1.0\"\n---\n\n# [PROJECT NAME]\n\n[One-line project description]\n\n**Status:** [Active | Complete | Archived]\n**Program:** [QWAV | Ultrametricity | Prompts]\n**Started:** [YYYY-MM-DD]\n**Directory:** `projects/[YYYY]/[MM]/[project-name]/`\n\n## Dependencies\n\n| Depends On | Type | Status |\n|:-----------|:-----|:-------|\n| [Project/Resource] | [Output | Resource | Decision] | [Active | Complete] |\n\n## Architecture\n\n[How the project is structured. What are the major components?\nWhat is the flow from input to output?]\n\n## Usage\n\n### Reproducing Results\n\n```bash\n# Step 1: [Description]\npython [script].py\n\n# Step 2: [Description]\npython [script].py\n```\n\n### Key Files\n\n| File | Purpose |\n|:-----|:--------|\n| `[filename]` | [What it does] |\n\n## Prior Work\n\n[Findings from §0.1.4 Archive/Release Discovery — what prior projects,\npublications, and CPL lessons are relevant?]\n\n## References\n\n[Key publications, DOIs, external sources]\n\n---\n*Generated from README-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -189,35 +189,35 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779362932855,
-    "updatedAt": 1779436085032
+    "updatedAt": 1779509453826
   },
   {
     "id": "1779363128811",
-    "name": "HANDOFF-TEMPLATE",
+    "name": "HANDOFF",
     "description": "",
-    "content": "---\ntemplate: HANDOFF\nversion: \"1.0\"\n---\n\n# Handoff: [TYPE]\n\n**Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]\n**Date:** [YYYY-MM-DD]\n**Issuing Authority:** [Who is delegating]\n**Accepting Authority:** [Who is receiving]\n\n## Scope\n\n### Included\n- [What IS part of this handoff]\n\n### Excluded\n- [What is explicitly NOT part of this handoff]\n\n## Success Criteria\n\n| # | Criterion | How Measured |\n|:--|:----------|:-------------|\n| 1 | [Measurable outcome] | [Verification] |\n\n## Constraints\n\n| Constraint | Value |\n|:-----------|:------|\n| [e.g., Budget: human attention hours] | [Value] |\n| [e.g., Deadline] | [Value or \"None\"] |\n\n## Dependencies\n\n| Dependency | Status | Blocking? |\n|:-----------|:-------|:----------|\n| [Other project/task/resource] | [Ready/Blocked/Complete] | [Yes/No] |\n\n## Acceptance Gate\n\nBefore this handoff is considered complete:\n- [ ] [Criterion 1]\n- [ ] [Criterion 2]\n- [ ] [Issuing authority sign-off]\n\n## Escalation\n\nIf blocked, contact: [Who/How]\n\n## Session→Session Handoff (if applicable)\n\n- Last session ended: [YYYY-MM-DD HH:MM]\n- Current git branch: `[branch name]`\n- Last commit: `[hash] — [message]`\n- Files modified this session: [list]\n- Open issues: [list]\n- Next step for incoming agent: [clear instruction]\n\n---\n*Generated from HANDOFF-TEMPLATE.md v1.0*\n",
+    "content": "---\ntemplate: HANDOFF\nversion: \"1.1\"\n---\n\n# Handoff: [TYPE]\n\n**Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]\n**Date:** [YYYY-MM-DD]\n**Issuing Authority:** [Who is delegating]\n**Accepting Authority:** [Who is receiving]\n\n## ⚠️ SEPARATION OF CONCERNS (CPL L42)\n\n**The agent that writes this handoff spec MUST NOT be the same agent instance that builds the deliverable and declares it complete.** The issuing authority provides the spec. The accepting authority builds from the spec. The issuing authority reviews against the spec + test results. Self-certification without independent verification produces untested output.\n\n**For spinoff repos:** Commit 1 = this handoff spec (from issuing authority). Commits 2+ = implementation (from accepting authority). Never: commit 1 = \"Initial commit... Ready for deploy\" containing a pre-built deliverable.\n\n## Scope\n\n### Included\n[List what IS part of this handoff]\n\n### Excluded\n[List what is explicitly NOT part of this handoff]\n\n## Success Criteria\n\n| # | Criterion | How Measured |\n|:--|:----------|:-------------|\n| 1 | [Measurable outcome] | [Verification method] |\n\n## Constraints\n\n| Constraint | Value |\n|:-----------|:------|\n| [e.g., Budget: human attention hours] | [Value] |\n| [e.g., Deadline] | [Value or \"None\"] |\n\n## Dependencies\n\n| Dependency | Status | Blocking? |\n|:-----------|:-------|:----------|\n| [Other project/task/resource] | [Ready/Blocked/Complete] | [Yes/No] |\n\n## Acceptance Gate\n\nBefore this handoff is considered complete:\n\n- [ ] **SPEC-VS-DELIVERABLE VERIFICATION (CPL L46):** Accepting authority re-reads original handoff spec. Each Success Criterion above is verified against the actual deliverable. Gaps are documented. No \"DEPLOYED\" or \"COMPLETE\" status until this audit passes.\n- [ ] **TEST PLAN EXECUTED:** Test file(s) exist, were actually run, output committed, pass/fail accounting honest\n- [ ] [Issuing authority sign-off]\n\n## Escalation\n\nIf blocked, contact: [Who/How]\n\n## Session→Session Handoff (if applicable)\n\n- Last session ended: [YYYY-MM-DD HH:MM]\n- Current git branch: [branch name]\n- Last commit: [hash] — [message]\n- Files modified this session: [list]\n- Open issues: [list]\n- Next step for incoming agent: [clear instruction]\n\n---\n*Generated from HANDOFF-TEMPLATE.md v1.1*\n",
     "parameters": [],
     "files": [],
     "enabled": true,
     "source": "local",
     "createdAt": 1779363128811,
-    "updatedAt": 1779436049175
+    "updatedAt": 1779509630815
   },
   {
     "id": "1779363142397",
-    "name": "DEFINITION-OF-DONE-TEMPLATE",
+    "name": "DEFINITION-OF-DONE",
     "description": "",
-    "content": "---\ntemplate: DEFINITION-OF-DONE\nversion: \"1.0\"\n---\n\n# Definition of Done — [PROJECT NAME]\n\nA task is NOT complete until ALL applicable criteria are met. DoD is verified by the human orchestrator per the Force-Multiplier Protocol, not self-assessed by the agent.\n\n## CODE TASK\n\n- [ ] File passes pre-execution Unicode safety scan (Rule 12)\n- [ ] File executes without errors on first run\n- [ ] Output verified against expected results\n- [ ] No `python -c` used (Rule 13: HARD BLOCK)\n- [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`\n- [ ] `git log -1 --oneline` confirms commit exists\n\n## CODE TEST TASK\n\n- [ ] ALL test files for this module executed — verified by re-execution (NOT by checking file existence)\n- [ ] Test suite output: [N] passed, [0] failed, [K] skipped\n- [ ] Edge cases covered: empty input, boundary values, error conditions\n- [ ] Test evidence saved via `fill_prompt_template(\"TEST-EVIDENCE-TEMPLATE\")`\n- [ ] If any tests failed: root cause documented, fix applied, re-executed to zero failures\n- [ ] Regression check: re-ran ALL related test files after fix — no new failures\n\n## DOCUMENT TASK\n\n- [ ] Document passes Publication Language Gate (§11.7) — zero internal project language\n- [ ] Curly quotes throughout body text (Python scan confirmation)\n- [ ] YAML frontmatter present and valid\n- [ ] Reader testing: minimum 1 round (2 rounds for publication documents per §11.5)\n- [ ] All [BLOCKING] and [MAJOR] reader testing issues resolved\n- [ ] File committed with format\n- [ ] If replacing prior version: old version deleted per File Replacement Protocol (§10.5)\n\n## PUBLICATION TASK\n\n- [ ] Publication Language Gate (§11.7): zero internal language hits\n- [ ] Standalone Publication Requirement (§11.8): zero project references\n- [ ] Reader testing: 2 rounds minimum, no truncation gaps (§3.1)\n- [ ] Curly quotes, YAML, author block per §11\n- [ ] `[DOI-PENDING]` replaced with actual DOI\n- [ ] Copy to `G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\` verified with Test-Path\n- [ ] Human review (G4) completed\n- [ ] File committed\n\n## ANALYSIS TASK\n\n- [ ] All quantitative claims verified via Python (re-executed, output matches)\n- [ ] All citations traceable to source files or labeled `[UNVERIFIED-LLM]`\n- [ ] Limit checks performed on derivations\n- [ ] Web-retrieved claims verified per §0.8.6 Web Research Protocol\n- [ ] Results saved in structured format (JSON/CSV)\n\n## ANALYSIS TEST TASK\n\n- [ ] ALL analysis scripts re-executed — verified output matches claimed results\n- [ ] Reproducibility confirmed: same input → same output (seed-controlled)\n- [ ] Limit/boundary checks performed and documented\n- [ ] Test evidence saved via `fill_prompt_template(\"TEST-EVIDENCE-TEMPLATE\")`\n- [ ] Discrepancies between claimed and re-executed results documented with rationale\n\n## WEB APP TASK\n\n- [ ] All interactive features verified working — click every button, test every input, confirm every mode\n- [ ] Error states handled: empty config, broken JSON, missing DOM elements show user-facing messages (not console errors)\n- [ ] Cross-browser screenshots captured: Chrome + Firefox (minimum)\n- [ ] Console audit: zero unexpected errors on page load and during ALL interaction paths\n- [ ] Mobile responsiveness check OR explicit \"desktop-only\" declaration visible in UI\n- [ ] Accessibility baseline: color contrast ratios pass WCAG AA, keyboard-navigable, alt text on key visuals\n- [ ] All assets load from live URL (zero 404s on JS/CSS/images — verify with browser network tab)\n- [ ] `<title>`, `<meta description>`, and Open Graph tags present in `<head>`\n- [ ] `.nojekyll` file present at root (GitHub Pages requirement)\n- [ ] Test suite executed with zero failures — verified by re-execution, NOT by checking file existence\n- [ ] LEARNINGS.md updated with any issues found during testing\n- [ ] BACKLOG.md: all P1 items triaged (complete, migrate to next sprint, or explicitly defer with rationale)\n- [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`\n- [ ] `git log -1 --oneline` confirms commit exists\n\n---\n*Generated from DEFINITION-OF-DONE-TEMPLATE.md v1.0*\n",
+    "content": "---\ntemplate: DEFINITION-OF-DONE\nversion: \"2.0\"\n---\n\n# Definition of Done — [PROJECT NAME]\n\nA task is NOT complete until ALL applicable criteria are met. DoD is verified by the human orchestrator per the Force-Multiplier Protocol, not self-assessed by the agent.\n\n## ⚠️ UNIVERSAL GATES — Apply to ALL Task Types (NON-NEGOTIABLE)\n\nThese gates apply regardless of task type. No exemption. Every `[x]` must reference evidence committed to the repository.\n\n- [ ] **TEST PLAN EXECUTED** — Minimum: (a) test file(s) exist and are committed, (b) tests were actually executed (re-run to verify — NOT \"I remember running them\"), (c) output/log is committed to repo, (d) pass/fail accounting is honest (document what failed, don't hide it). \"Tested manually\" without a committed test file/script = NOT DONE. \"Verified live URL\" is a smoke test, not a test plan.\n- [ ] **FILESYSTEM VERIFICATION** — Every file claimed as created/modified/deleted passes `Test-Path` verification (or absence verification for deletes). Tool success messages are NOT verification (CPL L15, L18).\n- [ ] **GIT VERIFICATION** — Every commit claimed passes `git log -1 --oneline` confirmation. Never claim a commit from memory (CPL L13).\n- [ ] **NO CHECKBOX THEATER** — If you mark `[x]` but didn't execute the verification, you are falsifying the DoD. Leave `[ ]` and document the gap honestly. Every `[x]` must trace to evidence on disk.\n\n⚠️ **ANTI-PATTERN (CPL L41/L45):** Marking all checkboxes `[x]` with \"ALL criteria met. Project is DONE\" when no test files exist and no tests were executed. This is checkbox theater. If evidence doesn't exist on disk, the checkbox stays empty.\n\n---\n\n## CODE TASK\n\n- [ ] File passes pre-execution Unicode safety scan (Rule 12)\n- [ ] File executes without errors on first run\n- [ ] Output verified against expected results\n- [ ] No `python -c` used (Rule 13: HARD BLOCK)\n- [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`\n- [ ] `git log -1 --oneline` confirms commit exists\n- [ ] UNIVERSAL GATES above satisfied (test plan executed, filesystem verified, git verified)\n\n## CODE TEST TASK\n\n- [ ] ALL test files for this module executed — verified by re-execution (NOT by checking file existence)\n- [ ] Test suite output: [N] passed, [0] failed, [K] skipped\n- [ ] Edge cases covered: empty input, boundary values, error conditions\n- [ ] Test evidence saved via `fill_prompt_template(\"TEST-EVIDENCE-TEMPLATE\")`\n- [ ] If any tests failed: root cause documented, fix applied, re-executed to zero failures\n- [ ] Regression check: re-ran ALL related test files after fix — no new failures\n- [ ] UNIVERSAL GATES above satisfied\n\n## DOCUMENT TASK\n\n- [ ] Document passes Publication Language Gate (§11.7) — zero internal project language\n- [ ] Curly quotes throughout body text (Python scan confirmation)\n- [ ] YAML frontmatter present and valid\n- [ ] Reader testing: minimum 1 round (2 rounds for publication documents per §11.5)\n- [ ] All [BLOCKING] and [MAJOR] reader testing issues resolved\n- [ ] File committed with format\n- [ ] If replacing prior version: old version deleted per File Replacement Protocol (§10.5)\n- [ ] UNIVERSAL GATES above satisfied\n\n## PUBLICATION TASK\n\n- [ ] Publication Language Gate (§11.7): zero internal language hits\n- [ ] Standalone Publication Requirement (§11.8): zero project references\n- [ ] Reader testing: 2 rounds minimum, no truncation gaps (§3.1)\n- [ ] Curly quotes, YAML, author block per §11\n- [ ] `[DOI-PENDING]` replaced with actual DOI\n- [ ] Copy to `G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\` verified with Test-Path\n- [ ] Human review (G4) completed\n- [ ] File committed\n- [ ] UNIVERSAL GATES above satisfied\n\n## ANALYSIS TASK\n\n- [ ] All quantitative claims verified via Python (re-executed, output matches)\n- [ ] All citations traceable to source files or labeled `[UNVERIFIED-LLM]`\n- [ ] Limit checks performed on derivations\n- [ ] Web-retrieved claims verified per §0.8.6 Web Research Protocol\n- [ ] Results saved in structured format (JSON/CSV)\n- [ ] UNIVERSAL GATES above satisfied\n\n## ANALYSIS TEST TASK\n\n- [ ] ALL analysis scripts re-executed — verified output matches claimed results\n- [ ] Reproducibility confirmed: same input → same output (seed-controlled)\n- [ ] Limit/boundary checks performed and documented\n- [ ] Test evidence saved via `fill_prompt_template(\"TEST-EVIDENCE-TEMPLATE\")`\n- [ ] Discrepancies between claimed and re-executed results documented with rationale\n- [ ] UNIVERSAL GATES above satisfied\n\n## WEB APP TASK\n\n- [ ] All interactive features verified working — click every button, test every input, confirm every mode\n- [ ] Error states handled: empty config, broken JSON, missing DOM elements show user-facing messages (not console errors)\n- [ ] Cross-browser screenshots captured: Chrome + Firefox (minimum)\n- [ ] Console audit: zero unexpected errors on page load and during ALL interaction paths\n- [ ] Mobile responsiveness check OR explicit \"desktop-only\" declaration visible in UI\n- [ ] Accessibility baseline: color contrast ratios pass WCAG AA, keyboard-navigable, alt text on key visuals\n- [ ] All assets load from live URL (zero 404s on JS/CSS/images — verify with browser network tab)\n- [ ] `<title>`, `<meta description>`, and Open Graph tags present in `<head>`\n- [ ] `.nojekyll` file present at root (GitHub Pages requirement)\n- [ ] Test suite executed with zero failures — verified by re-execution, NOT by checking file existence\n- [ ] LEARNINGS.md updated with any issues found during testing\n- [ ] BACKLOG.md: all P1 items triaged (complete, migrate to next sprint, or explicitly defer with rationale)\n- [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`\n- [ ] `git log -1 --oneline` confirms commit exists\n- [ ] UNIVERSAL GATES above satisfied\n\n---\n*Generated from DEFINITION-OF-DONE-TEMPLATE.md v2.0*\n",
     "parameters": [],
     "files": [],
     "enabled": true,
     "source": "local",
     "createdAt": 1779363142397,
-    "updatedAt": 1779435719839
+    "updatedAt": 1779509609390
   },
   {
     "id": "1779363159240",
-    "name": "CONTRIBUTING-TEMPLATE",
+    "name": "CONTRIBUTING",
     "description": "",
     "content": "---\ntemplate: CONTRIBUTING\nversion: \"1.0\"\n---\n\n# CONTRIBUTING.md — [PROJECT NAME]\n\nHow agents work in this project. Inherits all rules from `prompts/CONTRIBUTING.md`.\nThis file adds project-specific additions.\n\n## Project-Specific Definition of Done\n\n[Any DoD criteria beyond the standard ones in DEFINITION-OF-DONE.md]\n\n## Project-Specific Verification Gates\n\n[Any verification beyond §9.11, §11.7, §0.8.6]\n\n## Project-Specific Risks\n\n[Add to the pre-populated risks from RISK-REGISTER-TEMPLATE.md]\n\n## Domain Rules\n\n[QWAV-only: physics limit checks, math rigor requirements, etc.]\n[Ultrametricity: cophenetic correlation is the meaningful metric, etc.]\n[Prompts: template compliance, structural gate verification, etc.]\n\n## Git Conventions\n\n- Branch prefix: `feature/[project-slug]-[description]`\n- No branch reuse across projects (CPL L20)\n\n## Escalation\n\nIf blocked:\n1. Check RISK-REGISTER.md for known mitigations\n2. Check CROSS-PROJECT-LEARNINGS.md for applicable lessons\n3. Report blocking condition to human with: what was tried, what failed, alternatives\n\n---\n*Generated from CONTRIBUTING-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -225,11 +225,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779363159240,
-    "updatedAt": 1779436034470
+    "updatedAt": 1779509435675
   },
   {
     "id": "1779363179049",
-    "name": "CHANGELOG-TEMPLATE",
+    "name": "CHANGELOG",
     "description": "",
     "content": "---\ntemplate: CHANGELOG\nversion: \"1.0\"\nformat: \"keepachangelog.com\"\n---\n\n# Changelog — [PROJECT NAME]\n\nAll notable changes to this project are documented here.\nFormat based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).\n\n## [Unreleased]\n\n### Added\n- [New feature or file]\n\n### Changed\n- [Modified behavior or file]\n\n### Removed\n- [Deleted file or feature]\n\n### Fixed\n- [Bug fix]\n\n## [YYYY-MM-DD] — [Version or Milestone Name]\n\n### Added\n- [What was created]\n\n### Changed\n- [What was modified]\n\n### Removed\n- [What was deleted]\n\n### Fixed\n- [What was corrected]\n\n---\n*Generated from CHANGELOG-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -237,11 +237,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779363179049,
-    "updatedAt": 1779436020732
+    "updatedAt": 1779509429209
   },
   {
     "id": "1779363191417",
-    "name": "ADR-TEMPLATE",
+    "name": "ADR",
     "description": "",
     "content": "---\ntemplate: ADR\nversion: \"1.0\"\nformat: \"Michael Nygard\"\n---\n\n# ADR-NNNN: [Short Noun Phrase Title]\n\n**Status:** [Proposed | Accepted | Deprecated | Superseded]\n**Date:** [YYYY-MM-DD]\n**Supersedes:** [ADR-NNNN or \"None\"]\n**Superseded by:** [ADR-NNNN or \"None\"]\n\n## Context\n\n[What is the issue? What forces are at play? What constraints exist?\nWhat prior decisions does this relate to? Be specific — include enough\ncontext that someone reading this in 6 months understands why this\ndecision was made.]\n\n## Decision\n\n[What did we decide? Use active voice: \"We will...\" Be specific about\nwhat IS being done, not what was considered. This is the binding answer.]\n\n## Consequences\n\n### What Becomes Easier\n- [Positive outcome 1]\n- [Positive outcome 2]\n\n### What Becomes Harder\n- [Cost/tradeoff 1]\n- [Cost/tradeoff 2]\n\n### Risks Accepted\n- [Risk we are consciously accepting]\n\n---\n*Generated from ADR-TEMPLATE.md v1.0. For index, see docs/adr/README.md*\n",
     "parameters": [],
@@ -249,7 +249,7 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779363191417,
-    "updatedAt": 1779436007660
+    "updatedAt": 1779509419985
   },
   {
     "id": "1779435747852",
@@ -261,11 +261,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779435747852,
-    "updatedAt": 1779435747852
+    "updatedAt": 1779509398346
   },
   {
     "id": "1779435833439",
-    "name": "TEST-EVIDENCE-TEMPLATE",
+    "name": "TEST-EVIDENCE",
     "description": "",
     "content": "---\ntemplate: TEST-EVIDENCE\nversion: \"1.0\"\n---\n\n# Test Evidence — [Test Suite Name]\n\n**Project:** [PROJECT NAME]\n**Date executed:** [YYYY-MM-DD HH:MM]\n**Executed by:** [Agent]\n**Phase gate:** [P2 Execution | P3 Review | P4 Publication | P5 Close-Out]\n\n## Test File\n\n**Path:** `[relative path to test file]`\n**Language:** [Python | JavaScript | Other]\n**Re-execution command:** `[exact command used to re-execute]`\n\n## Results\n\n**Passed:** [N]\n**Failed:** [M]\n**Skipped:** [K]\n**Total:** [N+M+K]\n\n**PASS/FAIL:** [PASS (zero failures) | FAIL ([M] failures)]\n\n## Output Captured\n\n```\n[Paste full test output here, or reference output file path]\n```\n\n## Failed Tests (if any)\n\n| Test Name | Expected | Actual | Error Message |\n|:----------|:---------|:-------|:--------------|\n| [name] | [expected] | [actual] | [error] |\n\n## Root Cause Analysis (if failures exist)\n\n[Why did these tests fail? What changed?]\n\n## Fixes Applied\n\n| Test | Fix | Re-executed? |\n|:-----|:----|:-------------|\n| [name] | [what was changed] | [Yes — now passes | No — deferred with rationale] |\n\n## Iteration Count\n\n**Rounds of test → fix → retest:** [N]\n**Current state:** [All passing | [M] failures remain — deferred with rationale]\n\n---\n\n## Audit Trail\n\n| Check | Status |\n|:------|:-------|\n| Test file exists on disk (Test-Path) | [✓] |\n| Re-executed in this session | [✓] |\n| Output captured and saved | [✓] |\n| Zero failures OR failures documented with rationale | [✓] |\n| Evidence file committed | [✓] |\n\n---\n\n*Generated from TEST-EVIDENCE-TEMPLATE.md v1.0. File as `test-evidence-[date]-[suite-name].md` in project directory.*\n",
     "parameters": [],
@@ -273,7 +273,7 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779435833439,
-    "updatedAt": 1779435833439
+    "updatedAt": 1779509392713
   },
   {
     "id": "1779435855654",
@@ -289,19 +289,19 @@
   },
   {
     "id": "1779435903286",
-    "name": "CLOSEOUT-CHECKLIST-TEMPLATE",
+    "name": "CLOSEOUT-CHECKLIST",
     "description": "",
-    "content": "---\ntemplate: CLOSEOUT-CHECKLIST\nversion: \"1.0\"\n---\n\n# PROJECT CLOSE-OUT CHECKLIST — [PROJECT NAME]\n\n**Date:** [YYYY-MM-DD]\n**Phase Gate:** P5 — Close-Out\n\nEvery item must be verified and marked `[x]` before the session ends. Items marked `[!]` indicate a blocker that prevents close-out.\n\n## 1. FINAL REPORT / SYNTHESIS\n- [ ] Comprehensive final document (or publication itself) summarizing: what was done, key results, what was NOT done, known limitations, lessons learned, and handoff recommendations for any continuation.\n\n## 2. PUBLICATION DOCUMENT (if applicable)\n- [ ] YAML frontmatter complete (title, authors, date, DOI, abstract)\n- [ ] Curly/smart quotes verified (Python scan — zero straight quotes)\n- [ ] Math formatting verified (Python scan — zero bare Unicode math)\n- [ ] Descriptive filename (not versioned)\n- [ ] Copied to `G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\`\n- [ ] Copy verified with `Test-Path`\n\n## 3. ALL CORE + PHASE DOCS UPDATED\n- [ ] `PROJECT STATE.md` — final state recorded\n- [ ] `SPRINT.md` — all tasks marked `[x]`, `[-]`, or triaged\n- [ ] `CHANGELOG.md` — close-out entry added\n- [ ] `LEARNINGS.md` — final lessons recorded\n- [ ] `DECISIONS.md` — final decisions documented\n- [ ] `BACKLOG.md` — remaining items triaged (migrate, archive, or abandon)\n- [ ] `README.md` — project summary updated\n\n## 4. GIT FINALIZED\n- [ ] All changes committed on feature branch\n- [ ] No uncommitted changes (`git status` clean)\n- [ ] Branch ready for merge to main or archival\n- [ ] Final commit message includes `PROJECT CLOSE-OUT` tag\n\n## 5. PUBLICATION WORKFLOW (if publication exists)\n- [ ] User prompted: \"Published to Zenodo? [YES/NO]\"\n- [ ] User prompted: \"Published to ResearchGate? [YES/NO]\"\n- [ ] If both confirmed: trigger SOCIAL-ORCHESTRATOR template via `fill_prompt_template(\"SOCIAL-ORCHESTRATOR TEMPLATE v1.0\", {...})`\n\n## 6. ARCHIVING\n- [ ] Project directory is self-contained — a new agent from cold can read `PROJECT STATE.md` and understand everything\n- [ ] No broken references (verify all linked files exist)\n- [ ] No temp files (scan for `_*.py`, `*.tmp`, `__pycache__`)\n- [ ] `.gitignore` covers build artifacts\n\n## 7. FINAL AUDIT\n- [ ] Python script verifies: all core docs exist and are non-empty\n- [ ] Publication file exists in releases (Test-Path confirmed)\n- [ ] `git worktree` clean\n- [ ] No `__pycache__` or `.pyc` files\n- [ ] `system_audit.py` run and reports PASS on all applicable checks\n\n## Human Sign-Off\n- [ ] Close-out checklist reviewed\n- [ ] All blockers resolved\n- [ ] Project approved for archive\n\n---\n*Generated from CLOSEOUT-CHECKLIST-TEMPLATE.md v1.0*\n",
+    "content": "---\ntemplate: CLOSEOUT-CHECKLIST\nversion: \"1.1\"\n---\n\n# PROJECT CLOSE-OUT CHECKLIST — [PROJECT NAME]\n\n**Date:** [YYYY-MM-DD]\n**Phase Gate:** P5 — Close-Out\n\nEvery item must be verified and marked `[x]` before the session ends. Items marked `[!]` indicate a blocker that prevents close-out.\n\n## 1. FINAL REPORT / SYNTHESIS\n- [ ] Comprehensive final document (or publication itself) summarizing: what was done, key results, what was NOT done, known limitations, lessons learned, and handoff recommendations for any continuation.\n\n## 2. PUBLICATION DOCUMENT (if applicable)\n- [ ] YAML frontmatter complete (title, authors, date, DOI, abstract)\n- [ ] Curly/smart quotes verified (Python scan — zero straight quotes)\n- [ ] Math formatting verified (Python scan — zero bare Unicode math)\n- [ ] Descriptive filename (not versioned)\n- [ ] Copied to `G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\`\n- [ ] Copy verified with `Test-Path`\n\n## 3. ALL CORE + PHASE DOCS UPDATED\n- [ ] `PROJECT STATE.md` — final state recorded\n- [ ] `SPRINT.md` — all tasks marked `[x]`, `[-]`, or triaged\n- [ ] `CHANGELOG.md` — close-out entry added\n- [ ] `LEARNINGS.md` — final lessons recorded\n- [ ] `DECISIONS.md` — final decisions documented\n- [ ] `BACKLOG.md` — remaining items triaged (migrate, archive, or abandon)\n- [ ] `README.md` — project summary updated\n\n## 4. GIT FINALIZED\n- [ ] All changes committed on feature branch\n- [ ] No uncommitted changes (`git status` clean)\n- [ ] Branch ready for merge to main or archival\n- [ ] Final commit message includes `PROJECT CLOSE-OUT` tag\n\n## 5. PUBLICATION WORKFLOW (if publication exists)\n- [ ] User prompted: \"Published to Zenodo? [YES/NO]\"\n- [ ] User prompted: \"Published to ResearchGate? [YES/NO]\"\n- [ ] If both confirmed: trigger SOCIAL-ORCHESTRATOR template via `fill_prompt_template(\"SOCIAL-ORCHESTRATOR TEMPLATE v1.0\", {...})`\n\n## 6. ARCHIVING (CPL L44)\n- [ ] Move project directory to `G:\\My Drive\\Archive\\projects\\YYYY\\MM\\` — use `Move-Item` or Python `shutil.move`\n- [ ] Verify move succeeded: `Test-Path` at archive location returns True, original location returns False\n- [ ] Update QWAV PROJECT STATE.md to reflect archival (if QWAV-managed project)\n- [ ] Remove project from active SPRINT.md and BACKLOG.md references\n- [ ] Project directory is self-contained — a new agent from cold can read `PROJECT STATE.md` and understand everything\n- [ ] No broken references (verify all linked files exist)\n- [ ] No temp files (scan for `_*.py`, `*.tmp`, `__pycache__`)\n- [ ] `.gitignore` covers build artifacts\n\n## 7. FINAL AUDIT\n- [ ] Python script verifies: all core docs exist and are non-empty\n- [ ] Publication file exists in releases (Test-Path confirmed)\n- [ ] `git worktree` clean\n- [ ] No `__pycache__` or `.pyc` files\n- [ ] `system_audit.py` run and reports PASS on all applicable checks\n\n## Human Sign-Off\n- [ ] Close-out checklist reviewed\n- [ ] All blockers resolved\n- [ ] Project approved for archive\n\n---\n*Generated from CLOSEOUT-CHECKLIST-TEMPLATE.md v1.1*\n",
     "parameters": [],
     "files": [],
     "enabled": true,
     "source": "local",
     "createdAt": 1779435903286,
-    "updatedAt": 1779439670935
+    "updatedAt": 1779509571307
   },
   {
     "id": "1779435956114",
-    "name": "LEARNINGS-TEMPLATE",
+    "name": "LEARNINGS",
     "description": "",
     "content": "---\ntemplate: LEARNINGS\nversion: \"1.0\"\n---\n\n# Project Learnings — [PROJECT NAME]\n\n> **Kaizen engine:** Every lesson is a prevented future mistake. Format: `## L<N>: <one-line summary>` followed by context and actionable rule.\n> Lessons tagged `Cross-Project: YES` are candidates for promotion to `G:\\My Drive\\projects\\_shared\\CROSS-PROJECT-LEARNINGS.md`.\n\n## L1: [One-line summary of the lesson]\n\n**When:** [YYYY-MM-DD] | **Phase:** [P0-P5] | **Cross-Project:** [YES/NO]\n\n**What happened:** [2-3 sentences: what was attempted, what went wrong or what was discovered]\n\n**Root cause:** [Why it happened — be specific, not generic]\n\n**Rule:** [Actionable statement of what to do differently. Use imperative: \"Always...\" \"Never...\" \"Verify... before...\"]\n\n**Detection:** [How to catch this before it causes damage next time]\n\n---\n\n## L2: [One-line summary]\n\n**When:** [YYYY-MM-DD] | **Phase:** [P0-P5] | **Cross-Project:** [YES/NO]\n\n**What happened:** [description]\n\n**Root cause:** [analysis]\n\n**Rule:** [imperative rule]\n\n**Detection:** [early warning sign]\n\n---\n\n*Generated from LEARNINGS-TEMPLATE.md v1.0. Add new lessons at the top (L1 is most recent). Periodically review for CPL promotion candidates.*\n",
     "parameters": [],
@@ -309,11 +309,11 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779435956114,
-    "updatedAt": 1779435956114
+    "updatedAt": 1779509372140
   },
   {
     "id": "1779435990622",
-    "name": "PROJECT-STATE-TEMPLATE",
+    "name": "PROJECT-STATE",
     "description": "",
     "content": "---\ntemplate: PROJECT-STATE\nversion: \"1.0\"\n---\n\n# PROJECT STATE — [PROJECT NAME]\n\n**Last Updated:** [YYYY-MM-DD]\n**Active Branch:** [branch name]\n**Current Phase:** [P0 Initiation | P1 Planning | P2 Execution | P3 Review | P4 Publication | P5 Close-Out]\n\n## What This Project Is\n\n[2-3 sentence summary: what the project does, what it produces, why it exists]\n\n## Current Status\n\n**Active task:** [task ID from SPRINT.md] — [one-line description]\n**Last completed:** [task ID] — [YYYY-MM-DD]\n**Blocked?** [No | Yes — what's blocking]\n\n## Next Agent Handoff\n\n[Numbered steps for the next agent picking up this project:\n1. Read SPRINT.md → identify active task\n2. Read LEARNINGS.md → avoid past mistakes\n3. Execute task through Phase 0-5 pipeline\n4. Update documentation and commit]\n\n## Constraints\n\n| Constraint | Value |\n|:-----------|:------|\n| Write sandbox | [path] |\n| Branch | [branch name] |\n| Merge target | [main] |\n| Session limit | [max sessions or none] |\n| [Additional constraint] | [value] |\n\n## Dependencies\n\n| Dependency | Type | Status | Blocking? |\n|:-----------|:-----|:-------|:----------|\n| [Project/resource] | [Output | Decision | Input] | [Ready | Blocked | Complete] | [Yes/No] |\n\n## Files Modified This Session\n\n| File | Action | Status |\n|:-----|:-------|:-------|\n| `[filename]` | [CREATE | EDIT | DELETE] | [Committed | Pending] |\n\n## Open Issues\n\n- [Issue 1 — what, impact, resolution plan]\n- [Issue 2]\n\n## Active Risks\n\n| Risk ID | Description | Status | Last Reviewed |\n|:--------|:------------|:-------|:--------------|\n| [R# from RISK-REGISTER.md] | [Brief] | [Active | Monitoring] | [YYYY-MM-DD] |\n\n---\n*Generated from PROJECT-STATE-TEMPLATE.md v1.0*\n",
     "parameters": [],
@@ -321,6 +321,18 @@
     "enabled": true,
     "source": "local",
     "createdAt": 1779435990622,
-    "updatedAt": 1779435990622
+    "updatedAt": 1779509363774
+  },
+  {
+    "id": "1779509550323",
+    "name": "PROJECT-INITIATION",
+    "description": "",
+    "content": "---\ntemplate: PROJECT-INITIATION\nversion: \"1.0\"\n---\n\n# Project Initiation Gate — [IDEA NAME]\n\n> **Purpose:** Moscow classification + size gate BEFORE project directory creation. Per CPL L43 (not every idea needs a repo) and CPL L47 (documentation must not outweigh the deliverable).\n> **When to use:** Before ANY `scaffold_template` or `git init` for a new project. If this gate says BLOCK or BACKLOG-ONLY, do NOT create a project directory.\n\n---\n\n## 1. IDEA SUMMARY\n\n**What:** [One-sentence description]\n**Why:** [Problem it solves or question it answers]\n**Source:** [Strategy document, research finding, cross-project insight, user request]\n**Program:** [QWAV | Ultrametricity | Tools | Research]\n\n---\n\n## 2. MOSCOW CLASSIFICATION (CPL L43) — SELECT ONE\n\nAnswer this question: **\"What happens to the program if this project does NOT exist?\"**\n\n| Classification | Meaning | Action |\n|:---------------|:--------|:-------|\n| **🔴 M — MUST HAVE** | Program fails without it. Core deliverable of active sprint. | PROCEED → Charter → Scaffold |\n| **🟡 S — SHOULD HAVE** | Important. Program can succeed temporarily without it, but gap is significant. | PROCEED → Charter → Scaffold |\n| **🟢 C — COULD HAVE** | Nice to have. Adds value, not essential. Would be nice if resources permit. | BACKLOG ONLY — add to BACKLOG.md, do NOT create directory |\n| **⚪ W — WON'T HAVE** | Not now. Maybe never. Interesting idea but no current program alignment. | BLOCK — record in strategy notes only, do NOT create directory or backlog item |\n\n**Classification:** [M / S / C / W]\n\n**Justification:** [1-3 sentences explaining WHY this classification. Reference program goals, current sprint priorities, resource constraints.]\n\n---\n\n## 3. PROJECT SIZE GATE (CPL L47) — FOR M/S PROJECTS ONLY\n\nSkip this section if classified C or W.\n\n| Factor | Threshold | This Project | Gate |\n|:-------|:----------|:-------------|:-----|\n| Expected sessions | >5 = Large, ≤5 = Small | [Estimate] | [Large / Small] |\n| Deliverable size | >20 KB = Large, ≤20 KB = Small | [Estimate] | [Large / Small] |\n| Expected commits | >10 = Large, ≤10 = Small | [Estimate] | [Large / Small] |\n\n**Size Classification:** [LARGE / SMALL]\n\n**Documentation Set:**\n\n| If LARGE | If SMALL |\n|:---------|:---------|\n| Full Tier 1 (7 files): README, PROJECT STATE, SPRINT, CHANGELOG, BACKLOG, LEARNINGS, DECISIONS | Reduced set (4 files): README, PROJECT STATE, SPRINT, DEFINITION-OF-DONE |\n| + Phase docs: DEFINITION-OF-DONE, CHARTER, RISK-REGISTER | + Optional: CHARTER (if stakeholder-facing) |\n| + Situational: CONTRIBUTING, RETROSPECTIVE, HANDOFF, etc. | DO NOT create: BACKLOG, CHANGELOG, LEARNINGS, DECISIONS, CONTRIBUTING, RISK-REGISTER (bloat for small projects) |\n\n---\n\n## 4. ROUTING DECISION\n\nBased on the gates above:\n\n- [ ] **PROCEED** — M/S classification, proceed to PROJECT-CHARTER-TEMPLATE, then scaffold with [FULL / REDUCED] documentation set\n- [ ] **BACKLOG ONLY** — C classification, add to BACKLOG.md with `[COULD HAVE]` tag, do NOT create project directory\n- [ ] **BLOCK** — W classification, record in strategy notes only, do NOT create project directory or backlog item\n\n---\n\n## 5. IF PROCEED — Pre-Flight Checklist\n\nBefore running `scaffold_template`:\n\n- [ ] Moscow classification documented above\n- [ ] Size gate documented above\n- [ ] Documentation set selected (FULL or REDUCED)\n- [ ] Human sign-off obtained (for M/S projects affecting shared resources)\n- [ ] Prior work checked via §0.1.4 Discovery (Archive search, CPL lessons, releases)\n\n---\n\n## 6. SIGN-OFF\n\n- [ ] Moscow classification reviewed — not every idea needs a repo\n- [ ] If M/S: project scope is clear enough for a charter\n- [ ] If C: backlog entry is sufficient for now\n- [ ] If W: idea is captured in strategy notes, no project directory created\n\n---\n*Generated from PROJECT-INITIATION-TEMPLATE.md v1.0*\n",
+    "parameters": [],
+    "files": [],
+    "enabled": true,
+    "source": "local",
+    "createdAt": 1779509550323,
+    "updatedAt": 1779509550323
   }
 ]
