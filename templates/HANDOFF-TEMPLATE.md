@@ -1,6 +1,6 @@
 ---
 template: HANDOFF
-version: "1.0"
+version: "1.1"
 ---
 
 # Handoff: [TYPE]
@@ -10,19 +10,25 @@ version: "1.0"
 **Issuing Authority:** [Who is delegating]
 **Accepting Authority:** [Who is receiving]
 
+## ⚠️ SEPARATION OF CONCERNS (CPL L42)
+
+**The agent that writes this handoff spec MUST NOT be the same agent instance that builds the deliverable and declares it complete.** The issuing authority provides the spec. The accepting authority builds from the spec. The issuing authority reviews against the spec + test results. Self-certification without independent verification produces untested output.
+
+**For spinoff repos:** Commit 1 = this handoff spec (from issuing authority). Commits 2+ = implementation (from accepting authority). Never: commit 1 = "Initial commit... Ready for deploy" containing a pre-built deliverable.
+
 ## Scope
 
 ### Included
-- [What IS part of this handoff]
+[List what IS part of this handoff]
 
 ### Excluded
-- [What is explicitly NOT part of this handoff]
+[List what is explicitly NOT part of this handoff]
 
 ## Success Criteria
 
 | # | Criterion | How Measured |
 |:--|:----------|:-------------|
-| 1 | [Measurable outcome] | [Verification] |
+| 1 | [Measurable outcome] | [Verification method] |
 
 ## Constraints
 
@@ -40,8 +46,9 @@ version: "1.0"
 ## Acceptance Gate
 
 Before this handoff is considered complete:
-- [ ] [Criterion 1]
-- [ ] [Criterion 2]
+
+- [ ] **SPEC-VS-DELIVERABLE VERIFICATION (CPL L46):** Accepting authority re-reads original handoff spec. Each Success Criterion above is verified against the actual deliverable. Gaps are documented. No "DEPLOYED" or "COMPLETE" status until this audit passes.
+- [ ] **TEST PLAN EXECUTED:** Test file(s) exist, were actually run, output committed, pass/fail accounting honest
 - [ ] [Issuing authority sign-off]
 
 ## Escalation
@@ -51,11 +58,11 @@ If blocked, contact: [Who/How]
 ## Session→Session Handoff (if applicable)
 
 - Last session ended: [YYYY-MM-DD HH:MM]
-- Current git branch: `[branch name]`
-- Last commit: `[hash] — [message]`
+- Current git branch: [branch name]
+- Last commit: [hash] — [message]
 - Files modified this session: [list]
 - Open issues: [list]
 - Next step for incoming agent: [clear instruction]
 
 ---
-*Generated from HANDOFF-TEMPLATE.md v1.0*
+*Generated from HANDOFF-TEMPLATE.md v1.1*
