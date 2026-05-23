@@ -152,6 +152,8 @@ These 7 files are the minimum set for every project, created at P0:
 
 ### Tier 2: Phase-Gated Files (created at specific phases)
 
+**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION-TEMPLATE v1.0", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 (8 projects, 2 were WON'T HAVE) and CPL L47 (documentation 3:1 heavier than deliverable).
+
 These files are mandatory at their respective lifecycle phases:
 
 | # | File | Template | Phase | When |

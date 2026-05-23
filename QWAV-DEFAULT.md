@@ -325,10 +325,13 @@ Before any action, ask: "Am I setting up work for someone else to do, or am I do
 
 When initiating a new project, create the directory under `G:\My Drive\projects\YYYY\MM\project-name\`, then generate ALL documentation from templates using `fill_prompt_template`. Fill all `[PLACEHOLDER]` values with project-specific content before writing to disk.
 
+**⚠️ PRE-INITIATION GATE (CPL L43/L47):** Before running ANY template, execute Step 0 below to classify the project M/S/C/W. W (Won't Have) = BLOCK — do NOT create a project directory. C (Could Have) = BACKLOG only — add to QWAV BACKLOG, no directory. M/S projects also select FULL vs REDUCED documentation set (CPL L47: small projects use 4 files, not 10+).
+
 **Template sequence (execute in order):**
 
 | Step | Template | Produces | Purpose |
 |:-----|:---------|:---------|:--------|
+| 0 | `fill_prompt_template("PROJECT-INITIATION-TEMPLATE")` | `PROJECT-INITIATION.md` | Moscow M/S/C/W gate + size gate. GATE — do not proceed to Step 1 if W or C. |
 | 1 | `fill_prompt_template("PROJECT-CHARTER-TEMPLATE")` | `CHARTER.md` | Scope, success criteria, constraints, deliverables |
 | 2 | `fill_prompt_template("DEFINITION-OF-DONE-TEMPLATE")` | `DEFINITION-OF-DONE.md` | CODE/DOC/PUBLICATION/ANALYSIS task completion gates |
 | 3 | `fill_prompt_template("RISK-REGISTER-TEMPLATE")` | `RISK-REGISTER.md` | Pre-populated CPL risks + project-specific risks |
