@@ -158,6 +158,30 @@ Projects may be assigned by the user at session start. When assigned, ALL subseq
 5. If no assignment → ask user
 
 
+### 0.6.6 Exogenous Information Protocol — Codified from QWAV L19
+
+> **Principle:** Information affecting legal, financial, or jurisdictional decisions exists OUTSIDE the project files. The agent cannot access it. Never assume.
+
+**Trigger conditions — flag for user verification when the task involves:**
+- Legal compliance, liability, or contractual obligations
+- Financial commitments, pricing, or monetary decisions
+- Jurisdictional applicability (which country's laws apply, tax implications)
+- Regulatory requirements (export controls, data protection, GDPR)
+- Intellectual property decisions (patent filing strategy, licensing terms)
+- Any decision where the facts needed to decide are NOT in project files
+
+**Protocol:**
+1. **DETECT** — Scan the task for legal/financial/jurisdictional implications.
+2. **FLAG** — Mark the task `[EXOGENOUS — REQUIRES USER INPUT]`.
+3. **SPECIFY** — List what specific information is needed from the user.
+4. **BLOCK** — Do NOT execute until user provides the exogenous information.
+5. **DOCUMENT** — Record the user's input and decision in DECISIONS.md.
+
+**Anti-pattern:** "Based on standard practice..." or "Typically this would..." — these are guesses about exogenous information. STOP. Flag for user.
+
+**Cross-reference:** QWAV L19 (Legal/financial/jurisdictional tasks require user verification), CPL Rule 5 (Never Invent Data or Citations).
+
+
 ## 0.7 Project Documentation Standards — THREE-TIER MODEL
 
 Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\` itself) MUST maintain the following documentation files. These enable agent handoff across sessions, cross-project learning (kaizen), and sprint-based workflow management without requiring the human to re-explain context.
