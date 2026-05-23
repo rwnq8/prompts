@@ -64,4 +64,4 @@ Every item must be verified and marked `[x]` before the session ends. Items mark
 - [ ] Project approved for archive
 
 ---
-*Generated from CLOSEOUT-CHECKLIST-TEMPLATE.md v1.0*
+*Generated from CLOSEOUT-CHECKLIST-TEMPLATE.md v1.1*
