@@ -87,9 +87,9 @@ Templates and sub-prompts consumed within the Projects agent:
 
 | Sub-Prompt | Template Name | How to Access |
 |:-----------|:-------------|:--------------|
-| **Email drafting** | `EMAIL-AGENT TEMPLATE v1.2` | `fill_prompt_template("EMAIL-AGENT TEMPLATE v1.2", {...})` |
+| **Email drafting** | `EMAIL-AGENT-TEMPLATE` | `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {...})` |
 | **Web app release checklist** | `WEB-APP-RELEASE-CHECKLIST` | `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")` |
-| **Test evidence** | `TEST-EVIDENCE-TEMPLATE` | `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")` |
+| **Test evidence** | `TEST-EVIDENCE` | `fill_prompt_template("TEST-EVIDENCE")` |
 | **Image generation** | `image-gen-banner-prompt.md` | Load as sub-prompt or use `algorithmic-art` / `frontend-design` skills |
 
 These are NOT separate agents. They are consumed within the Projects agent (or QWAV agent) and operate within the calling agent's sandbox.
@@ -142,27 +142,27 @@ These 7 files are the minimum set for every project, created at P0:
 
 | # | File | Purpose | Update | Template |
 |:--|:-----|:--------|:-------|:---------|
-| 1 | `README.md` | Project identity, thesis, constraints | Milestones only | README-TEMPLATE |
-| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE-TEMPLATE |
-| 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session | SPRINT-BACKLOG-TEMPLATE |
-| 4 | `CHANGELOG.md` | Chronological versioned change log | Every session | CHANGELOG-TEMPLATE |
-| 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge | PRODUCT-BACKLOG-TEMPLATE |
+| 1 | `README.md` | Project identity, thesis, constraints | Milestones only | README |
+| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE |
+| 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session | SPRINT-BACKLOG |
+| 4 | `CHANGELOG.md` | Chronological versioned change log | Every session | CHANGELOG |
+| 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge | PRODUCT-BACKLOG |
 | 6 | `LEARNINGS.md` | Project-specific lessons (kaizen engine) | When lessons emerge | LEARNINGS-TEMPLATE |
-| 7 | `DECISIONS.md` | Architecture/design decisions with rationale | When key decisions made | ADR-TEMPLATE |
+| 7 | `DECISIONS.md` | Architecture/design decisions with rationale | When key decisions made | ADR |
 
 ### Tier 2: Phase-Gated Files (created at specific phases)
 
-**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION-TEMPLATE v1.0", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 (8 projects, 2 were WON'T HAVE) and CPL L47 (documentation 3:1 heavier than deliverable).
+**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 (8 projects, 2 were WON'T HAVE) and CPL L47 (documentation 3:1 heavier than deliverable).
 
 These files are mandatory at their respective lifecycle phases:
 
 | # | File | Template | Phase | When |
 |:--|:-----|:---------|:------|:-----|
-| 8 | `DEFINITION-OF-DONE.md` | DEFINITION-OF-DONE-TEMPLATE | P0 | Project initiation |
-| 9 | `CONTRIBUTING.md` | CONTRIBUTING-TEMPLATE | P0 | Project initiation |
-| 10 | `PROJECT-CHARTER.md` | PROJECT-CHARTER-TEMPLATE | P0 | Project initiation |
-| 11 | `RISK-REGISTER.md` | RISK-REGISTER-TEMPLATE | P1 | During planning |
-| 12 | `CLOSEOUT-CHECKLIST.md` | CLOSEOUT-CHECKLIST-TEMPLATE | P5 | Close-out |
+| 8 | `DEFINITION-OF-DONE.md` | DEFINITION-OF-DONE | P0 | Project initiation |
+| 9 | `CONTRIBUTING.md` | CONTRIBUTING | P0 | Project initiation |
+| 10 | `PROJECT-CHARTER.md` | PROJECT-CHARTER | P0 | Project initiation |
+| 11 | `RISK-REGISTER.md` | RISK-REGISTER | P1 | During planning |
+| 12 | `CLOSEOUT-CHECKLIST.md` | CLOSEOUT-CHECKLIST | P5 | Close-out |
 
 ### Tier 3: Situational Files (created when applicable)
 
@@ -171,10 +171,10 @@ Generated on demand based on project type and deliverables:
 | # | File | Template | When |
 |:--|:-----|:---------|:-----|
 | 13 | `QA-QC-TESTING-PROTOCOL.md` | QA-QC-TESTING-PROTOCOL | When testing is planned |
-| 14 | `test-evidence-*.md` | TEST-EVIDENCE-TEMPLATE | When tests are executed |
+| 14 | `test-evidence-*.md` | TEST-EVIDENCE | When tests are executed |
 | 15 | `RELEASE-CHECKLIST-*.md` | WEB-APP-RELEASE-CHECKLIST | Web app projects only |
-| 16 | `RETROSPECTIVE-*.md` | RETROSPECTIVE-TEMPLATE | Per sprint |
-| 17 | `HANDOFF-*.md` | HANDOFF-TEMPLATE | When delegating between agents |
+| 16 | `RETROSPECTIVE-*.md` | RETROSPECTIVE | Per sprint |
+| 17 | `HANDOFF-*.md` | HANDOFF | When delegating between agents |
 
 ### Full Template Catalog (27 templates, 26 usable via `fill_prompt_template`)
 
@@ -188,13 +188,13 @@ The system has 27 registered prompt templates. 17 generate project files (above)
 
 | # | Required File | Template | `fill_prompt_template` Call |
 |:--|:-------------|:---------|:----------------------------|
-| 1 | `README.md` | README-TEMPLATE | `fill_prompt_template("README-TEMPLATE")` |
-| 2 | `PROJECT STATE.md` | PROJECT-STATE-TEMPLATE | `fill_prompt_template("PROJECT-STATE-TEMPLATE")` |
-| 3 | `SPRINT.md` | SPRINT-BACKLOG-TEMPLATE | `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")` |
-| 4 | `CHANGELOG.md` | CHANGELOG-TEMPLATE | `fill_prompt_template("CHANGELOG-TEMPLATE")` |
-| 5 | `BACKLOG.md` | PRODUCT-BACKLOG-TEMPLATE | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` |
+| 1 | `README.md` | README | `fill_prompt_template("README")` |
+| 2 | `PROJECT STATE.md` | PROJECT-STATE | `fill_prompt_template("PROJECT-STATE")` |
+| 3 | `SPRINT.md` | SPRINT-BACKLOG | `fill_prompt_template("SPRINT-BACKLOG")` |
+| 4 | `CHANGELOG.md` | CHANGELOG | `fill_prompt_template("CHANGELOG")` |
+| 5 | `BACKLOG.md` | PRODUCT-BACKLOG | `fill_prompt_template("PRODUCT-BACKLOG")` |
 | 6 | `LEARNINGS.md` | LEARNINGS-TEMPLATE | `fill_prompt_template("LEARNINGS")` |
-| 7 | `DECISIONS.md` | ADR-TEMPLATE | `fill_prompt_template("ADR-TEMPLATE")` for individual decisions appended to the decisions log |
+| 7 | `DECISIONS.md` | ADR | `fill_prompt_template("ADR")` for individual decisions appended to the decisions log |
 
 **Step 2: After file verification, read documentation in order:**
 
@@ -1486,7 +1486,7 @@ Date: [YYYY-MM-DD]
 
 ### 12.3 Close-Out Execution Protocol
 
-**Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST-TEMPLATE")`. Fill all `[PLACEHOLDER]` values with project-specific content. Pre-populate what is already known to be complete.
+**Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST")`. Fill all `[PLACEHOLDER]` values with project-specific content. Pre-populate what is already known to be complete.
 
 **For web app projects:** Additionally generate `RELEASE-CHECKLIST-[version].md` using `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")`. This 9-section pre-deployment gate (functionality, error handling, cross-browser, accessibility, asset loading, test execution, documentation, deployment, post-deployment) MUST be completed before §12.4 social orchestration. Web app projects cannot close out through the general checklist alone.
 
@@ -1511,9 +1511,9 @@ When a publication has been released (user confirms Zenodo + ResearchGate), the 
 
 **Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`.
 
-**EMAIL-AGENT TEMPLATE v1.2** — for drafting emails from project outputs:
+**EMAIL-AGENT-TEMPLATE** — for drafting emails from project outputs:
   1. Call `fill_prompt_template` with:
-     - `templateName`: `"EMAIL-AGENT TEMPLATE v1.2"`
+     - `templateName`: `"EMAIL-AGENT-TEMPLATE"`
      - `templateArgs`: `{"recipient": "...", "subject": "...", "context": "...", "bodyDraft": "...", "attachmentPath": "...", "doiLink": "..."}`
   2. Template extracts facts from context, asks user for body if missing, produces `email_draft.py` command
   3. Execute the command: `python "G:\My Drive\prompts\email\email_draft.py" --to "..." --subject "..." --body "..."`
@@ -1533,14 +1533,14 @@ The project management system combines PMBOK (structured phases with deliverable
 | P2 | Execution | Versioned output files, TEST SUITE EXECUTED with evidence captured, committed incrementally | Approach selection (Phase 2) |
 | P3 | Review | Full QA/QC gate: reader testing (documents), test execution (code), UI/UX testing (web apps), validation, peer review | Validation (Phase 3) |
 | P4 | Publication | Publication-ready document, releases copy, ALL underlying tests passing with evidence | Section 11 standards |
-| P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST-TEMPLATE`), TEST EVIDENCE AUDIT — all test suites verified executed and passing, final audit, user sign-off | Section 12 checklist |
+| P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST`), TEST EVIDENCE AUDIT — all test suites verified executed and passing, final audit, user sign-off | Section 12 checklist |
 
 **Sprint Management (Agile-style):**
 - SPRINT.md tracks active sprint tasks with status markers: `[ ]` incomplete, `[~]` in-progress, `[x]` complete, `[!]` blocked, `[-]` cancelled
 - BACKLOG.md holds future work prioritized as P0 (critical), P1 (high), P2 (medium), P3 (nice-to-have)
 - Each sprint produces at least one versioned output file
 - Sprint review = reader testing or self-audit (Phase 3)
-- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE-TEMPLATE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
+- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
 
 **Agent Responsibility:** The agent tracks which phase gate the project is in and ensures no gate is skipped. Phase gates cannot be bypassed — a project cannot go from Initiation directly to Publication without passing through Planning, Execution, and Review.
 

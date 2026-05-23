@@ -82,9 +82,12 @@ Templates and sub-prompts consumed within the Projects agent:
 
 | Sub-Prompt | Template Name | How to Access |
 |:-----------|:-------------|:--------------|
-| **Email drafting** | `EMAIL-AGENT TEMPLATE v1.2` | `fill_prompt_template("EMAIL-AGENT TEMPLATE v1.2", {...})` |
-| **Social media** | `SOCIAL-ORCHESTRATOR TEMPLATE v1.0` | `fill_prompt_template("SOCIAL-ORCHESTRATOR TEMPLATE v1.0", {...})` |
+| **Email drafting** | `EMAIL-AGENT-TEMPLATE` | `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {...})` |
+| **Social media** | `SOCIAL-ORCHESTRATOR-TEMPLATE` | `fill_prompt_template("SOCIAL-ORCHESTRATOR-TEMPLATE", {...})` |
 | **Image generation** | `image-gen-banner-prompt.md` | Load as sub-prompt or use `algorithmic-art` / `frontend-design` skills |
+| **Web app release checklist** | `WEB-APP-RELEASE-CHECKLIST` | `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")` |
+| **Test evidence** | `TEST-EVIDENCE` | `fill_prompt_template("TEST-EVIDENCE")` |
+| **QA/QC testing protocol** | `QA-QC-TESTING-PROTOCOL` | `fill_prompt_template("QA-QC-TESTING-PROTOCOL")` |
 
 These are NOT separate agents. They are consumed within the Projects agent (or QWAV agent) and operate within the calling agent's sandbox.
 
@@ -386,23 +389,23 @@ When initiating a new project, create the directory under `G:\My Drive\projects\
 
 | Step | Template | Produces | Purpose |
 |:-----|:---------|:---------|:--------|
-| 0 | `fill_prompt_template("PROJECT-INITIATION-TEMPLATE")` | `PROJECT-INITIATION.md` | Moscow M/S/C/W gate + size gate. GATE — do not proceed to Step 1 if W or C. |
-| 1 | `fill_prompt_template("PROJECT-CHARTER-TEMPLATE")` | `CHARTER.md` | Scope, success criteria, constraints, deliverables |
-| 2 | `fill_prompt_template("DEFINITION-OF-DONE-TEMPLATE")` | `DEFINITION-OF-DONE.md` | CODE/DOC/PUBLICATION/ANALYSIS task completion gates |
-| 3 | `fill_prompt_template("RISK-REGISTER-TEMPLATE")` | `RISK-REGISTER.md` | Pre-populated CPL risks + project-specific risks |
-| 4 | `fill_prompt_template("README-TEMPLATE")` | `README.md` | Dependencies, architecture, usage, prior work |
-| 5 | `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")` | `SPRINT.md` | Active tasks with DoD references, sprint health |
-| 6 | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` | `BACKLOG.md` | P0-P3 prioritized future work queue |
-| 7 | `fill_prompt_template("CHANGELOG-TEMPLATE")` | `CHANGELOG.md` | keepachangelog.com format changelog |
-| 8 | `fill_prompt_template("CONTRIBUTING-TEMPLATE")` | `CONTRIBUTING.md` | Project-specific rules, domain rules, escalation |
-| 9 | `fill_prompt_template("PROJECT-STATE-TEMPLATE")` | `PROJECT STATE.md` | Current status, active branch, phase, constraints |
+| 0 | `fill_prompt_template("PROJECT-INITIATION")` | `PROJECT-INITIATION.md` | Moscow M/S/C/W gate + size gate. GATE — do not proceed to Step 1 if W or C. |
+| 1 | `fill_prompt_template("PROJECT-CHARTER")` | `CHARTER.md` | Scope, success criteria, constraints, deliverables |
+| 2 | `fill_prompt_template("DEFINITION-OF-DONE")` | `DEFINITION-OF-DONE.md` | CODE/DOC/PUBLICATION/ANALYSIS task completion gates |
+| 3 | `fill_prompt_template("RISK-REGISTER")` | `RISK-REGISTER.md` | Pre-populated CPL risks + project-specific risks |
+| 4 | `fill_prompt_template("README")` | `README.md` | Dependencies, architecture, usage, prior work |
+| 5 | `fill_prompt_template("SPRINT-BACKLOG")` | `SPRINT.md` | Active tasks with DoD references, sprint health |
+| 6 | `fill_prompt_template("PRODUCT-BACKLOG")` | `BACKLOG.md` | P0-P3 prioritized future work queue |
+| 7 | `fill_prompt_template("CHANGELOG")` | `CHANGELOG.md` | keepachangelog.com format changelog |
+| 8 | `fill_prompt_template("CONTRIBUTING")` | `CONTRIBUTING.md` | Project-specific rules, domain rules, escalation |
+| 9 | `fill_prompt_template("PROJECT-STATE")` | `PROJECT STATE.md` | Current status, active branch, phase, constraints |
 | 10 | `fill_prompt_template("LEARNINGS")` | `LEARNINGS.md` | Kaizen engine — lessons with cross-project tags |
 
 **Manual creation (no templates):** *(All files now have templates — see above)*
 
-**Decisions log:** Create `DECISIONS.md` and append individual ADRs via `fill_prompt_template("ADR-TEMPLATE")` as decisions are made.
+**Decisions log:** Create `DECISIONS.md` and append individual ADRs via `fill_prompt_template("ADR")` as decisions are made.
 
-**Handoff to Projects agent:** After scaffolding, create the handoff document via `fill_prompt_template("HANDOFF-TEMPLATE")` with type `Program→Project`, scope, success criteria, constraints, and acceptance gate. Then update `PROJECT STATE.md` with the handoff status.
+**Handoff to Projects agent:** After scaffolding, create the handoff document via `fill_prompt_template("HANDOFF")` with type `Program→Project`, scope, success criteria, constraints, and acceptance gate. Then update `PROJECT STATE.md` with the handoff status.
 
 ## 1. Core Operating Rules
 
@@ -1275,17 +1278,17 @@ Date: [YYYY-MM-DD]
 When a publication has been released (user confirms Zenodo + ResearchGate), the agent MUST trigger the social media content generation workflow:
 
 1. Call `fill_prompt_template` with:
-   - `templateName`: `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"`
+   - `templateName`: `"SOCIAL-ORCHESTRATOR-TEMPLATE"`
    - `templateArgs`: `{"publicationTitle": "...", "publicationAuthors": "...", "publicationDOI": "...", "publicationAbstract": "...", "publicationFindings": "...", "publicationPath": "G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\<filename>.md"}`
    
 2. Execute the filled prompt (either as a subagent or in a new thread)
 3. Deliver the generated social media content to the user for copy/paste to platforms
 
-**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`.
+**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR-TEMPLATE"` and callable via `fill_prompt_template`.
 
-**EMAIL-AGENT TEMPLATE v1.2** — for drafting emails from project outputs:
+**EMAIL-AGENT-TEMPLATE** — for drafting emails from project outputs:
   1. Call `fill_prompt_template` with:
-     - `templateName`: `"EMAIL-AGENT TEMPLATE v1.2"`
+     - `templateName`: `"EMAIL-AGENT-TEMPLATE"`
      - `templateArgs`: `{"recipient": "...", "subject": "...", "context": "...", "bodyDraft": "...", "attachmentPath": "...", "doiLink": "..."}`
   2. Template extracts facts from context, asks user for body if missing, produces `email_draft.py` command
   3. Execute the command: `python "G:\My Drive\prompts\email\email_draft.py" --to "..." --subject "..." --body "..."`
@@ -1312,7 +1315,7 @@ The project management system combines PMBOK (structured phases with deliverable
 - BACKLOG.md holds future work prioritized as P0 (critical), P1 (high), P2 (medium), P3 (nice-to-have)
 - Each sprint produces at least one versioned output file
 - Sprint review = reader testing or self-audit (Phase 3)
-- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE-TEMPLATE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
+- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
 
 **Agent Responsibility:** The agent tracks which phase gate the project is in and ensures no gate is skipped. Phase gates cannot be bypassed — a project cannot go from Initiation directly to Publication without passing through Planning, Execution, and Review.
 
