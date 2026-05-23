@@ -35,7 +35,7 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 
 | # | Item | Description | Effort | Status |
 |:--|:-----|:-----------|:-------|:-------|
-| P5 | **Update system_audit.py Part A3 — exclude known .git contamination** | Projects deployed to GitHub Pages (e.g., ultrametric-game-of-life, polysynthetic-communication) have .git dirs by design in the projects tree. Audit should exclude these known deployment repos to eliminate false-positive FAIL. | 0.25h | ? DONE |
+| P5 | **Update system_audit.py Part A3 — exclude known .git contamination** | Projects deployed to GitHub Pages (e.g., ultrametric-game-of-life, polysynthetic-communication) have .git dirs by design in the projects tree. Audit should exclude these known deployment repos to eliminate false-positive FAIL. | 0.25h | ✅ DONE — Replaced whitelist approach with depth-based logic (depth 1 = legitimate per CPL L1). Added A4 counter for legitimate repos. |
 | P6 | **Add template invocation audit to system_audit.py** | Beyond Part F's text-search (is template name present in agent prompts), add a check that actually calls `fill_prompt_template` for each template and verifies non-empty output — confirming templates are not just referenced but functional. | 0.5h | ? DONE |
 | P7 | **Retrofit archived projects with template-conformant docs** | Per CPL L21 (backlog drift): audit recently archived projects for structural consistency. Retrofit template-conformant documentation (CHARTER.md, DEFINITION-OF-DONE.md, RISK-REGISTER.md) where valuable for cross-project learning. | 2h | ? DONE |
 
