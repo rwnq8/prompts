@@ -50,8 +50,8 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 
 | # | Item | Description | Effort | Status |
 |:--|:-----|:-----------|:-------|:-------|
-| P10 | **Add Moscow gate to Project Initiation Protocol** | Per CPL L43: Before `scaffold_template` runs, classify project M/S/C/W. W (Won't Have) items are blocked from directory creation. C (Could Have) items go to BACKLOG only. Need new PROJECT-INITIATION-TEMPLATE or update to scaffolding workflow. | 1h | 🔴 TODO |
-| P11 | **Add project size gate for reduced documentation** | Per CPL L47: For projects under threshold (<5 sessions, <20 KB deliverable), use reduced documentation set (README + PROJECT STATE + SPRINT + DoD only) instead of full Tier 1-3 suite. Gate goes in Project Initiation Protocol alongside P10. | 0.5h | 🔴 TODO |
+| P10 | **Add Moscow gate to Project Initiation Protocol** | Per CPL L43: Before `scaffold_template` runs, classify project M/S/C/W. W (Won't Have) items are blocked from directory creation. C (Could Have) items go to BACKLOG only. Need new PROJECT-INITIATION-TEMPLATE or update to scaffolding workflow. | 1h | ✅ DONE |
+| P11 | **Add project size gate for reduced documentation** | Per CPL L47: For projects under threshold (<5 sessions, <20 KB deliverable), use reduced documentation set (README + PROJECT STATE + SPRINT + DoD only) instead of full Tier 1-3 suite. Gate goes in Project Initiation Protocol alongside P10. | 0.5h | ✅ DONE |
 
 ---
 
@@ -106,6 +106,12 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 **Lesson:** Completed projects left in the active directory create the illusion of ongoing work and consume audit attention. The archive directory existed but was never used for project close-out — no template included the move step.
 
 **Implemented in:** CLOSEOUT-CHECKLIST-TEMPLATE v1.1 — explicit "Move to Archive" step with verification (`Test-Path` at both locations), QWAV PROJECT STATE update, and removal from active references.
+
+### Pattern 9: Moscow Gate Before Project Creation (CPL L43/L47)
+
+**Lesson:** When every idea becomes a project directory, WON'T HAVE and COULD HAVE items consume documentation effort, git history, and directory clutter. Documentation bloat (11-12 MD files for single-file deliverables) obscures actual work. A prioritization gate before directory creation prevents both problems.
+
+**Implemented in:** PROJECT-INITIATION-TEMPLATE v1.0 — Moscow M/S/C/W classification with automatic routing (M/S → proceed to charter, C → BACKLOG only, W → BLOCK). Size gate selects FULL (7 files) vs REDUCED (4 files) documentation set based on expected session count and deliverable size. Wired into DEFAULT.md (PRE-TIER-2 gate) and QWAV-DEFAULT.md (Step 0 in template sequence).
 
 ---
 
