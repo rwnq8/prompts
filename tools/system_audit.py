@@ -15,14 +15,13 @@ print(f"  A1. Parent .git exists: {parent_git} {'WARNING: FAIL' if parent_git el
 shared_git = os.path.exists(r"G:\My Drive\projects\_shared\.git")
 print(f"  A2. _shared .git exists: {shared_git} {'WARNING: FAIL' if shared_git else 'PASS'}")
 
-# Deep scan for .git contamination
-KNOWN_DEPLOYMENT_REPOS = {
-    # GitHub Pages deployment repos — these are legitimate project repos, not contamination
-    r"G:\My Drive\projects\ultrametric-game-of-life\.git",
-    r"G:\My Drive\projects\polysynthetic-communication\.git",
-}  # Updated by P5: add new deployment repos here as projects deploy to GitHub Pages
-
+# Deep scan for .git contamination (CPL L1: each project gets its own .git)
+# depth 0 = projects/ root (caught by A1) or projects/_shared/ (caught by A2)
+# depth 1 = projects/<project>/.git — LEGITIMATE per CPL L1, NOT contamination
+# depth 2+ = nested .git inside a project subdirectory — TRUE contamination
+# Only flag unexpected .git placements, not standard project repos.
 git_dirs = []
+legitimate_repos = []
 for root, dirs, files in os.walk(r"G:\My Drive\projects"):
     depth = root.replace(r"G:\My Drive\projects", "").count(os.sep)
     if depth > 3:
@@ -30,13 +29,18 @@ for root, dirs, files in os.walk(r"G:\My Drive\projects"):
         continue
     if ".git" in dirs:
         git_dir = os.path.join(root, ".git")
-        if git_dir in KNOWN_DEPLOYMENT_REPOS:
-            continue  # Known deployment repo — skip, this is by design
-        git_dirs.append(git_dir)
+        if depth == 1:
+            # Standard project repo — legitimate per CPL L1
+            legitimate_repos.append(git_dir)
+        else:
+            # Unexpected depth — true contamination
+            git_dirs.append(git_dir)
 if git_dirs:
-    print(f"  A3. Found .git contamination: {git_dirs} WARNING: FAIL")
+    print(f"  A3. Git at unexpected depth (contamination): {git_dirs} WARNING: FAIL")
 else:
     print(f"  A3. No .git contamination in projects tree: PASS")
+if legitimate_repos:
+    print(f"  A4. Legitimate project repos (CPL L1): {len(legitimate_repos)} — all at depth 2, PASS")
 
 # PART B: Prompt Consistency
 print("\nPART B: PROMPT CONSISTENCY CHECK")
