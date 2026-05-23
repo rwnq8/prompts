@@ -1,5 +1,21 @@
 # Prompts Workspace Changelog
 
+## 2026-05-23 — Web Artifact Smoke Test Tool + Template
+
+**Source:** User request for a smoke test that fetches live artifact pages and checks HTTP-level functional indicators (buttons, canvases, animations, JS console errors, DOM changes).
+
+| File | Action | Description |
+|:-----|:-------|:------------|
+| `tools/smoke_test_artifacts.py` | CREATE | 671-line HTTP-level smoke test engine. Fetches artifact URLs, parses HTML for interactive elements (buttons, inputs, selects, textareas, on* handlers), media (canvas, video, audio, SVG), animation indicators (@keyframes, animation/transition properties, HTML animation classes), assets (scripts, stylesheets), SEO/meta tags, and error patterns. Validates against expected behaviors (has_buttons, has_canvas, has_animation, title_contains, min_scripts, min_stylesheets). Generates formatted reports. Proven against example.com and httpbin.org (2/2 artifacts PASS, 6/6 expectation checks). |
+| `templates/SMOKE-TEST.md` | CREATE | 319-line prompt template for 2-layer smoke testing protocol: Layer 1 (HTTP via smoke_test_artifacts.py) and Layer 2 (Browser via YoBrowser CDP commands). Layer 2 includes console error interception, MutationObserver DOM change detection, button click simulation with coordinate-safe DOM.getBoxModel, canvas 2D pixel inspection, animation detection via document.getAnimations(), and screenshot capture. Integrates with WEB-APP-RELEASE-CHECKLIST as pre-deployment prerequisite. |
+
+### Integration
+- SMOKE-TEST → WEB-APP-RELEASE-CHECKLIST pipeline established
+- Template will auto-discover next session (session-level cache)
+- Feature branch merged to main, branch deleted per no-orphan rule
+
+---
+
 ## 2026-05-22 — Template Integration Wiring + QA/QC Overhaul + Scope Codification
 
 **Source:** Template integration audit (`audit-reports/audit-2026-05-22_template-integration.md`) found 11/18 PM templates were dead code — registered but never invoked by any agent workflow.
