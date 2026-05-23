@@ -193,7 +193,7 @@ The system has 27 registered prompt templates. 17 generate project files (above)
 | 3 | `SPRINT.md` | SPRINT-BACKLOG-TEMPLATE | `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")` |
 | 4 | `CHANGELOG.md` | CHANGELOG-TEMPLATE | `fill_prompt_template("CHANGELOG-TEMPLATE")` |
 | 5 | `BACKLOG.md` | PRODUCT-BACKLOG-TEMPLATE | `fill_prompt_template("PRODUCT-BACKLOG-TEMPLATE")` |
-| 6 | `LEARNINGS.md` | LEARNINGS-TEMPLATE | `fill_prompt_template("LEARNINGS-TEMPLATE")` |
+| 6 | `LEARNINGS.md` | LEARNINGS-TEMPLATE | `fill_prompt_template("LEARNINGS")` |
 | 7 | `DECISIONS.md` | ADR-TEMPLATE | `fill_prompt_template("ADR-TEMPLATE")` for individual decisions appended to the decisions log |
 
 **Step 2: After file verification, read documentation in order:**

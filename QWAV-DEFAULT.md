@@ -341,7 +341,7 @@ When initiating a new project, create the directory under `G:\My Drive\projects\
 | 7 | `fill_prompt_template("CHANGELOG-TEMPLATE")` | `CHANGELOG.md` | keepachangelog.com format changelog |
 | 8 | `fill_prompt_template("CONTRIBUTING-TEMPLATE")` | `CONTRIBUTING.md` | Project-specific rules, domain rules, escalation |
 | 9 | `fill_prompt_template("PROJECT-STATE-TEMPLATE")` | `PROJECT STATE.md` | Current status, active branch, phase, constraints |
-| 10 | `fill_prompt_template("LEARNINGS-TEMPLATE")` | `LEARNINGS.md` | Kaizen engine — lessons with cross-project tags |
+| 10 | `fill_prompt_template("LEARNINGS")` | `LEARNINGS.md` | Kaizen engine — lessons with cross-project tags |
 
 **Manual creation (no templates):** *(All files now have templates — see above)*
 
