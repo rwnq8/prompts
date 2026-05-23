@@ -88,6 +88,61 @@ Templates and sub-prompts consumed within the Projects agent:
 
 These are NOT separate agents. They are consumed within the Projects agent (or QWAV agent) and operate within the calling agent's sandbox.
 
+### 0.6.4.1 Email Outreach Decision Framework — WHO / WHEN / WHAT
+
+> **Codified from L26 + L27 (QWAV/LEARNINGS.md).** Every email outreach decision must pass through this gate before the EMAIL-AGENT TEMPLATE is invoked. The default answer to "should I send this email?" is **NO** unless all three gates clear.
+
+#### WHO Gate — Right Person?
+
+| DO (Proceed) | DON'T (Block) |
+|:-------------|:--------------|
+| Named individual with published work on the EXACT topic | info@company.com, generic departmental addresses |
+| arXiv author, conference organizer, postdoc in relevant lab | C-level executives without warm introduction |
+| Person who can answer a BINARY question in 30 seconds | Anyone requiring a long pitch to understand relevance |
+| Gatekeeper to a community (conference organizer, journal editor) | Random LinkedIn connections with tangential interests |
+
+**Rule:** If you can't name the specific paper they wrote that relates to QWAV, you don't know them well enough to email.
+
+#### WHEN Gate — Right Time?
+
+| DO (Proceed) | DON'T (Block) |
+|:-------------|:--------------|
+| You have a NEW artifact (DOI, preprint, working paper) to share | "Checking in" or "following up" without new substance |
+| Conference deadline approaching (abstract submission) | No time pressure — "someday would be nice to connect" |
+| Founder has explicitly approved the outreach | Agent-initiated outreach without founder sign-off |
+| Recipient's recent publication creates a natural opening | Cold outreach during holiday periods or weekends |
+
+**Rule:** Every outreach email costs founder attention. Default to conference abstract submissions and publication pipeline — those scale without attention cost.
+
+#### WHAT Gate — Right Message?
+
+| DO (Proceed) | DON'T (Block) |
+|:-------------|:--------------|
+| One link, one paragraph, $\leq$8 sentences | Multiple links, attachments, long narratives |
+| Binary or constrained question (yes/no, date?, open to unaffiliated?) | Open-ended "would love to collaborate" |
+| References a SPECIFIC paper/artifact by DOI | "I've been following your work" without citing anything |
+| Positions founder as peer (shared research interest) | Positions founder as supplicant ("I would be honored if...") |
+| Plain language, no booster words | "groundbreaking," "revolutionary," "48x," "proves" |
+| Written-first, introvert-compatible tone | Sales pitch, urgency, "limited time," "exclusive opportunity" |
+
+**Rule:** If the email can't be answered in 30 seconds, it's too long. If it uses booster language, delete the booster words — the work speaks for itself.
+
+#### Decision Flow
+
+```
+START -> Is recipient a NAMED INDIVIDUAL with published work on this exact topic?
+  +-- NO -> STOP. Do not email.
+  +-- YES -> Do you have a NEW ARTIFACT (DOI/preprint) to share?
+       +-- NO -> STOP. Build something first.
+       +-- YES -> Can you phrase the ask as a BINARY or 30-SECOND question?
+            +-- NO -> STOP. Simplify the ask.
+            +-- YES -> Has FOUNDER approved this outreach?
+                 +-- NO -> STOP. Draft only. Flag for founder review.
+                 +-- YES -> PROCEED to EMAIL-AGENT TEMPLATE.
+```
+
+**Cross-reference:** L26 (booster language ban, specific individuals only), L27 (introvert path constraint, default to publication pipeline), L11 (binary-question gatekeeper strategy). All in QWAV/LEARNINGS.md.
+
 ### 0.6.5 Agent Appointment
 
 Projects may be assigned by the user at session start. When assigned, ALL subsequent file I/O, Python execution, and git operations are confined to the assigned project directory.
