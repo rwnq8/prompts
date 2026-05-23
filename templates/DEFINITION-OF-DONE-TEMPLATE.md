@@ -1,11 +1,24 @@
 ---
 template: DEFINITION-OF-DONE
-version: "1.0"
+version: "2.0"
 ---
 
 # Definition of Done — [PROJECT NAME]
 
 A task is NOT complete until ALL applicable criteria are met. DoD is verified by the human orchestrator per the Force-Multiplier Protocol, not self-assessed by the agent.
+
+## ⚠️ UNIVERSAL GATES — Apply to ALL Task Types (NON-NEGOTIABLE)
+
+These gates apply regardless of task type. No exemption. Every `[x]` must reference evidence committed to the repository.
+
+- [ ] **TEST PLAN EXECUTED** — Minimum: (a) test file(s) exist and are committed, (b) tests were actually executed (re-run to verify — NOT "I remember running them"), (c) output/log is committed to repo, (d) pass/fail accounting is honest (document what failed, don't hide it). "Tested manually" without a committed test file/script = NOT DONE. "Verified live URL" is a smoke test, not a test plan.
+- [ ] **FILESYSTEM VERIFICATION** — Every file claimed as created/modified/deleted passes `Test-Path` verification (or absence verification for deletes). Tool success messages are NOT verification (CPL L15, L18).
+- [ ] **GIT VERIFICATION** — Every commit claimed passes `git log -1 --oneline` confirmation. Never claim a commit from memory (CPL L13).
+- [ ] **NO CHECKBOX THEATER** — If you mark `[x]` but didn't execute the verification, you are falsifying the DoD. Leave `[ ]` and document the gap honestly. Every `[x]` must trace to evidence on disk.
+
+⚠️ **ANTI-PATTERN (CPL L41/L45):** Marking all checkboxes `[x]` with "ALL criteria met. Project is DONE" when no test files exist and no tests were executed. This is checkbox theater. If evidence doesn't exist on disk, the checkbox stays empty.
+
+---
 
 ## CODE TASK
 
@@ -15,6 +28,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] No `python -c` used (Rule 13: HARD BLOCK)
 - [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`
 - [ ] `git log -1 --oneline` confirms commit exists
+- [ ] UNIVERSAL GATES above satisfied (test plan executed, filesystem verified, git verified)
 
 ## CODE TEST TASK
 
@@ -24,6 +38,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
 - [ ] If any tests failed: root cause documented, fix applied, re-executed to zero failures
 - [ ] Regression check: re-ran ALL related test files after fix — no new failures
+- [ ] UNIVERSAL GATES above satisfied
 
 ## DOCUMENT TASK
 
@@ -34,6 +49,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] All [BLOCKING] and [MAJOR] reader testing issues resolved
 - [ ] File committed with format
 - [ ] If replacing prior version: old version deleted per File Replacement Protocol (§10.5)
+- [ ] UNIVERSAL GATES above satisfied
 
 ## PUBLICATION TASK
 
@@ -45,6 +61,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] Copy to `G:\My Drive\Obsidian\releases\YYYY\MM\` verified with Test-Path
 - [ ] Human review (G4) completed
 - [ ] File committed
+- [ ] UNIVERSAL GATES above satisfied
 
 ## ANALYSIS TASK
 
@@ -53,6 +70,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] Limit checks performed on derivations
 - [ ] Web-retrieved claims verified per §0.8.6 Web Research Protocol
 - [ ] Results saved in structured format (JSON/CSV)
+- [ ] UNIVERSAL GATES above satisfied
 
 ## ANALYSIS TEST TASK
 
@@ -61,6 +79,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] Limit/boundary checks performed and documented
 - [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
 - [ ] Discrepancies between claimed and re-executed results documented with rationale
+- [ ] UNIVERSAL GATES above satisfied
 
 ## WEB APP TASK
 
@@ -78,6 +97,7 @@ A task is NOT complete until ALL applicable criteria are met. DoD is verified by
 - [ ] BACKLOG.md: all P1 items triaged (complete, migrate to next sprint, or explicitly defer with rationale)
 - [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`
 - [ ] `git log -1 --oneline` confirms commit exists
+- [ ] UNIVERSAL GATES above satisfied
 
 ---
-*Generated from DEFINITION-OF-DONE-TEMPLATE.md v1.0*
+*Generated from DEFINITION-OF-DONE-TEMPLATE.md v2.0*
