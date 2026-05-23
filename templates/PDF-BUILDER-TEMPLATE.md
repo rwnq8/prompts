@@ -55,7 +55,8 @@ You take a Markdown file path (and optional parameters) from a calling agent and
 |:----------|:---------|:------------|
 | `markdownPath` | **Yes** | Absolute or relative path to the input Markdown file |
 | `outputPdfPath` | No | Output PDF path. Default: same dir as input, same base name + `.pdf` |
-| `cssPath` | No | Custom CSS file path. Default: embedded academic stylesheet |
+| `cssPath` | No | Custom CSS file path (overrides `style`) |
+| `style` | No | CSS preset: "academic" (default), "modern", or "minimal" |
 | `title` | No | Override title from frontmatter |
 | `noMath` | No | Set to "true" to skip MathJax rendering |
 | `htmlOnly` | No | Set to "true" to stop after HTML (no PDF) |
@@ -93,6 +94,7 @@ Command format (PowerShell):
   python "BUILD_SCRIPT" ^
     --input "MARKDOWN_PATH" ^
     [--output "OUTPUT_PATH"] ^
+    [--style STYLE] ^
     [--css "CSS_PATH"] ^
     [--title "TITLE"] ^
     [--no-math] ^

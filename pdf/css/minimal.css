@@ -1,0 +1,118 @@
+/* minimal.css v3.0 -- Plain serif stylesheet, minimal HTML footprint
+   Usage: python build_pdf.py --style minimal
+   Best for: plain-text papers, preprints, arXiv-style submissions */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.65;
+  color: #000;
+  max-width: 6.5in;
+  margin: 0 auto;
+  padding: 0;
+  background: white;
+}
+
+h1.title {
+  font-size: 20pt;
+  font-weight: 700;
+  text-align: center;
+  margin: 0.6in 0 0.2in 0;
+  line-height: 1.2;
+}
+
+h1, h2, h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #000;
+}
+h1 {
+  font-size: 16pt;
+  font-weight: 700;
+  margin: 0.5in 0 0.2in 0;
+  page-break-before: always;
+  page-break-after: avoid;
+}
+h2 { font-size: 13pt; font-weight: 700; margin: 0.8em 0 0.3em 0; }
+h3 { font-size: 11pt; font-weight: 700; font-style: italic; margin: 0.7em 0 0.2em 0; }
+
+p { margin: 0 0 0.7em 0; line-height: 1.65; }
+
+/* Author block -- plain style */
+.author-block {
+  margin: 0.15in 0 0.3in 0;
+  font-size: 10pt;
+  line-height: 1.5;
+  text-align: center;
+}
+.author-block p { margin: 0.1em 0; }
+.author-block strong { font-weight: 700; }
+.author-block a { color: #000; text-decoration: underline; }
+.author-block .abstract-label { display: block; margin-top: 0.5em; font-weight: 700; font-size: 10pt; text-align: left; }
+.author-block .abstract-text { margin-top: 0.2em; text-align: left; }
+
+/* Lists */
+ul, ol { margin: 0.7em 0; padding-left: 2em; }
+li { margin-bottom: 0.3em; line-height: 1.5; }
+
+/* Code */
+code {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.85em;
+  line-height: 1.4;
+  margin: 0.8em 0;
+  padding: 0.5em 0.7em;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre code {
+  font-size: inherit;
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 0.4em 0.5em;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+th { border-bottom: 2px solid #000; font-weight: 700; }
+
+/* Blockquotes */
+blockquote {
+  margin: 0.8em 0;
+  padding: 0.3em 0 0.3em 1em;
+  border-left: 2px solid #999;
+  font-style: italic;
+}
+
+/* Links */
+a { color: #000; text-decoration: underline; }
+
+/* MathJax */
+mjx-container { overflow-x: auto; max-width: 100%; }
+mjx-container[display="true"] { display: block; margin: 0.7em 0; text-align: center; }
+
+/* Print */
+@media print {
+  @page {
+    size: A4;
+    margin: 0.8in 0.9in 0.8in 0.9in;
+  }
+  body { padding: 0; max-width: 100%; }
+}

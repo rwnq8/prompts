@@ -30,6 +30,12 @@ python "G:\My Drive\prompts\pdf\build_pdf.py" --input paper.md --output out/rele
 # Custom CSS (overrides embedded academic stylesheet)
 python "G:\My Drive\prompts\pdf\build_pdf.py" --input paper.md --css custom.css
 
+# Style preset: modern (system fonts, dark code blocks, card-style metadata)
+python "G:\My Drive\prompts\pdf\build_pdf.py" --input paper.md --style modern
+
+# Style preset: minimal (Georgia serif, plain text, smallest HTML footprint)
+python "G:\My Drive\prompts\pdf\build_pdf.py" --input paper.md --style minimal
+
 # HTML only (no PDF -- preview or debug)
 python "G:\My Drive\prompts\pdf\build_pdf.py" --input paper.md --html-only
 
@@ -90,11 +96,26 @@ All fields are optional. Missing fields are omitted from the author block.
 
 ---
 
+## CSS Presets
+
+Three built-in styles, no CSS knowledge required. Use `--style <name>`.
+
+| Preset | Font | Code Style | Best For |
+|:-------|:-----|:-----------|:---------|
+| `academic` | Inter (Google Fonts) | Color-coded, light bg | Research papers, formal documents |
+| `modern` | System font stack | Dark bg, pastel colors | Reports, presentations, web-native |
+| `minimal` | Georgia (serif) | Plain, no color | Preprints, plain-text, smallest file |
+
+Custom CSS always takes priority: `--css` overrides `--style`.
+
 ## Files
 
 | File | Purpose |
 |:-----|:--------|
 | `build_pdf.py` | Main pipeline script (CLI entry point) |
+| `css/academic.css` | Default academic stylesheet (Inter, A4, print-ready) |
+| `css/modern.css` | Modern stylesheet (system fonts, dark code blocks) |
+| `css/minimal.css` | Minimal stylesheet (Georgia serif, plain text, smallest) |
 | `README.md` | This documentation |
 
 ---

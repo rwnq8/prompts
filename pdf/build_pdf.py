@@ -83,14 +83,41 @@ def find_browser():
     return None
 
 
-def load_css(css_path=None):
-    """Load CSS from file or return embedded default."""
+# CSS preset directory (relative to this script)
+CSS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "css")
+
+# Named style presets map to css/<name>.css files
+STYLE_PRESETS = {
+    "academic": os.path.join(CSS_DIR, "academic.css"),
+    "modern": os.path.join(CSS_DIR, "modern.css"),
+    "minimal": os.path.join(CSS_DIR, "minimal.css"),
+}
+
+
+def resolve_css(style=None, css_path=None):
+    """Resolve CSS content from style preset, CSS file, or embedded default.
+
+    Priority: --css overrides --style overrides embedded default.
+    Returns (css_content, source_label) tuple.
+    """
+    # 1. Explicit CSS file (highest priority)
     if css_path:
         if not os.path.exists(css_path):
             raise FileNotFoundError(f"CSS file not found: {css_path}")
         with open(css_path, "r", encoding="utf-8") as f:
-            return f.read()
-    return EMBEDDED_CSS
+            return f.read(), css_path
+
+    # 2. Named style preset
+    if style and style in STYLE_PRESETS:
+        preset_path = STYLE_PRESETS[style]
+        if not os.path.exists(preset_path):
+            print(f"WARNING: Style preset '{style}' not found at {preset_path}, falling back to embedded.", file=sys.stderr)
+        else:
+            with open(preset_path, "r", encoding="utf-8") as f:
+                return f.read(), f"{style} (preset: {preset_path})"
+
+    # 3. Embedded default (fallback)
+    return EMBEDDED_CSS, "(embedded default)"
 
 
 def parse_frontmatter(text):
@@ -240,9 +267,10 @@ def main():
 Examples:
   python build_pdf.py --input paper.md
   python build_pdf.py --input paper.md --output out.pdf
+  python build_pdf.py --input paper.md --style modern
+  python build_pdf.py --input paper.md --style minimal --no-math
   python build_pdf.py --input paper.md --css custom.css
   python build_pdf.py --input paper.md --html-only
-  python build_pdf.py --input paper.md --no-math
   python build_pdf.py --input paper.md --title "My Paper Title"
         """,
     )
@@ -253,7 +281,11 @@ Examples:
         "--output", "-o", default=None, help="Output PDF path (default: input name + .pdf)"
     )
     parser.add_argument(
-        "--css", default=None, help="Custom CSS file (default: embedded academic stylesheet)"
+        "--style", choices=["academic", "modern", "minimal"], default=None,
+        help="CSS style preset: academic (default), modern, or minimal"
+    )
+    parser.add_argument(
+        "--css", default=None, help="Custom CSS file (overrides --style)"
     )
     parser.add_argument(
         "--title", default=None, help="Override title from YAML frontmatter"
@@ -296,10 +328,9 @@ Examples:
     print(f"  Input:     {args.input}")
     print(f"  Output:    {pdf_path}")
 
-    # Step 1: Load CSS (file or embedded)
+    # Step 1: Load CSS (style preset, custom file, or embedded default)
     try:
-        css_content = load_css(args.css)
-        css_source = args.css or "(embedded)"
+        css_content, css_source = resolve_css(style=args.style, css_path=args.css)
         print(f"  CSS:       {css_source}")
     except FileNotFoundError as e:
         print(f"ERROR: {e}", file=sys.stderr)
