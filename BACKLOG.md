@@ -59,6 +59,12 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 |:--|:-----|:-----------|:-------|:-------|
 | P12 | **Fix systemic template name mismatch across system prompts** | `prompts.json` has most templates registered WITHOUT "-TEMPLATE" suffix (e.g., "SPRINT-BACKLOG", "PROJECT-CHARTER", "LEARNINGS"), but DEFAULT.md and QWAV-DEFAULT.md reference ALL templates WITH the suffix (e.g., `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")`). Only SOCIAL-ORCHESTRATOR-TEMPLATE and EMAIL-AGENT-TEMPLATE retain the suffix in both places. Impact: ~11 `fill_prompt_template` calls across both system prompts reference non-existent template names. LEARNINGS fixed in this session; remaining ~10 references need reconciliation. | 1h | ✅ DONE — All 31 template name references fixed across DEFAULT.md (16), QWAV-DEFAULT.md (15), and system_audit.py (16). Added missing templates (QA-QC-TESTING-PROTOCOL, TEST-EVIDENCE, WEB-APP-RELEASE-CHECKLIST) to QWAV-DEFAULT.md §0.6.4. System audit now shows 19/19 wired in both system prompts. |
 
+### P6 — Template Parameter Modernization (Identified 2026-05-23)
+
+| # | Item | Description | Effort | Status |
+|:--|:-----|:-----------|:-------|:-------|
+| P13 | **Migrate templates from `[PLACEHOLDER]` to `{{variable}}` syntax** | DeepChat custom prompts support `{{variable}}` parameter syntax with formal parameter definitions. Currently 18 of 19 templates use `[PLACEHOLDER]` square-bracket format with manual agent filling. Only SOCIAL-ORCHESTRATOR-TEMPLATE uses `{{variable}}` — and even it has empty `parameters: []`. Migrating to `{{variable}}` would: (a) enable `fill_prompt_template` with `templateArgs` (currently unused), (b) auto-detect parameters via `get_prompt_template_parameters`, (c) align with DeepChat's native UI for template filling. Also: EMAIL-AGENT-TEMPLATE has no `.md` file on disk (lives only in `prompts.json`) — needs to be extracted or the registry-to-file link fixed. | 2h | 🟡 TODO |
+
 ---
 
 ## 🔴 CROSS-CUTTING — Universal QA/QC Lessons (Baked into System Prompts)
