@@ -53,6 +53,12 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 | P10 | **Add Moscow gate to Project Initiation Protocol** | Per CPL L43: Before `scaffold_template` runs, classify project M/S/C/W. W (Won't Have) items are blocked from directory creation. C (Could Have) items go to BACKLOG only. Need new PROJECT-INITIATION-TEMPLATE or update to scaffolding workflow. | 1h | ✅ DONE |
 | P11 | **Add project size gate for reduced documentation** | Per CPL L47: For projects under threshold (<5 sessions, <20 KB deliverable), use reduced documentation set (README + PROJECT STATE + SPRINT + DoD only) instead of full Tier 1-3 suite. Gate goes in Project Initiation Protocol alongside P10. | 0.5h | ✅ DONE |
 
+### P5 — Template Naming Reconciliation (Discovered 2026-05-23)
+
+| # | Item | Description | Effort | Status |
+|:--|:-----|:-----------|:-------|:-------|
+| P12 | **Fix systemic template name mismatch across system prompts** | `prompts.json` has most templates registered WITHOUT "-TEMPLATE" suffix (e.g., "SPRINT-BACKLOG", "PROJECT-CHARTER", "LEARNINGS"), but DEFAULT.md and QWAV-DEFAULT.md reference ALL templates WITH the suffix (e.g., `fill_prompt_template("SPRINT-BACKLOG-TEMPLATE")`). Only SOCIAL-ORCHESTRATOR-TEMPLATE and EMAIL-AGENT-TEMPLATE retain the suffix in both places. Impact: ~11 `fill_prompt_template` calls across both system prompts reference non-existent template names. LEARNINGS fixed in this session; remaining ~10 references need reconciliation. | 1h | 🟡 IN PROGRESS — LEARNINGS fixed (P12a). Remaining: SPRINT-BACKLOG, PROJECT-CHARTER, PRODUCT-BACKLOG, RISK-REGISTER, RETROSPECTIVE, README, HANDOFF, DEFINITION-OF-DONE, CONTRIBUTING, CHANGELOG, ADR, PROJECT-STATE, PROJECT-INITIATION, CLOSEOUT-CHECKLIST. |
+
 ---
 
 ## 🔴 CROSS-CUTTING — Universal QA/QC Lessons (Baked into System Prompts)
