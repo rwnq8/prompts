@@ -1,5 +1,5 @@
 # save as: G:\My Drive\prompts\system_audit.py
-import os, re, subprocess
+import os, re, subprocess, sys
 from datetime import datetime
 
 def run(cmd):

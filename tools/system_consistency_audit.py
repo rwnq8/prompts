@@ -21,6 +21,7 @@ Output: Pass/Fail per check with specific line numbers for violations.
 import os
 import re
 import json
+import sys
 from pathlib import Path
 
 # === CONFIGURATION ===
