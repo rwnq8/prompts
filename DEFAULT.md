@@ -88,6 +88,7 @@ Templates and sub-prompts consumed within the Projects agent:
 | Sub-Prompt | Template Name | How to Access |
 |:-----------|:-------------|:--------------|
 | **Email drafting** | `EMAIL-AGENT-TEMPLATE` | `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {...})` |
+| **PDF building** | `PDF-BUILDER-TEMPLATE` | `fill_prompt_template("PDF-BUILDER-TEMPLATE", {...})` |
 | **Web app release checklist** | `WEB-APP-RELEASE-CHECKLIST` | `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")` |
 | **Test evidence** | `TEST-EVIDENCE` | `fill_prompt_template("TEST-EVIDENCE")` |
 | **Image generation** | `image-gen-banner-prompt.md` | Load as sub-prompt or use `algorithmic-art` / `frontend-design` skills |
@@ -202,7 +203,7 @@ Generated on demand based on project type and deliverables:
 
 ### Full Template Catalog (27 templates, 26 usable via `fill_prompt_template`)
 
-The system has 27 registered prompt templates. 17 generate project files (above); 10 are process/analysis templates (STAGE-1 through STAGE-4, EMAIL-AGENT, SOCIAL-ORCHESTRATOR, image-gen-banner-prompt, convergence document, retrospective question, cleanup actions).
+The system has 29 registered prompt templates. 17 generate project files (above); 12 are process/analysis templates (STAGE-1 through STAGE-4, EMAIL-AGENT, SOCIAL-ORCHESTRATOR, PDF-BUILDER, image-gen-banner-prompt, convergence document, retrospective question, cleanup actions).
 
 **To discover all available templates:** Use `list_all_prompt_template_names`. **To check template parameters:** Use `get_prompt_template_parameters("TEMPLATE-NAME")`.
 
@@ -1544,6 +1545,19 @@ When a publication has been released (user confirms Zenodo + ResearchGate), the 
   4. User reviews draft in Outlook, confirms, then send or execute `email_send.py`
 
 **Note:** The EMAIL-AGENT is available BOTH as a standalone system prompt (`email/EMAIL-AGENT-v1.3.md`) for dedicated email sessions AND as a template for in-line drafting from project outputs. The template approach is preferred when email is triggered by project work — the calling agent provides context, and the template handles formatting without fabricating content. If the template name is not found, instruct the user to verify registration in DeepChat Settings > Prompts. The template file is at `G:\My Drive\prompts\SOCIAL-ORCHESTRATOR-TEMPLATE.md`."
+
+**PDF-BUILDER-TEMPLATE** -- for converting Markdown files to professional A4 PDFs:
+  1. Call `fill_prompt_template` with:
+     - `templateName`: `"PDF-BUILDER-TEMPLATE"`
+     - `templateArgs`: `{"markdownPath": "...", "outputPdfPath": "...", "style": "academic", "cssPath": "...", "title": "...", "noMath": "...", "htmlOnly": "..."}`
+  2. Template validates inputs, produces `build_pdf.py` command
+  3. Execute the command: `python "G:\My Drive\prompts\pdf\build_pdf.py" --input "paper.md" --style academic`
+  4. Verify output: `Test-Path paper.pdf` -- builds take 10-30s (headless browser renders JavaScript/MathJax)
+  5. (Optional) Post-process with the `pdf` skill: merge chapters, add watermarks, extract metadata
+
+**CSS Presets:** `academic` (Inter font, A4, print-ready), `modern` (system fonts, dark code blocks), `minimal` (Georgia serif, 32% smaller HTML). Priority: `--css` (custom file) > `--style` (preset) > embedded default.
+
+**Note:** The `markdown-pdf` skill auto-triggers in the DEFAULT agent when the user mentions "convert to PDF" or "build PDF from markdown". For explicit subagent control, use the template via `fill_prompt_template`. The build script is at `G:\My Drive\prompts\pdf\build_pdf.py` (v3.0). Configuration details at `G:\My Drive\prompts\pdf\QUICKSTART.md`.
 
 ### 12.5 Project Management System (PMBOK/Agile Hybrid)
 
