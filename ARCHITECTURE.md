@@ -43,6 +43,7 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 |:---------|:-----------|:------------|:---------|
 | `SOCIAL-ORCHESTRATOR TEMPLATE v1.0` | publicationTitle, publicationAuthors, publicationAbstract, publicationDOI, publicationFindings, publicationPath | Projects agent | Social media post text → published via Buffer API |
 | `EMAIL-AGENT TEMPLATE v1.2` | recipient, subject, context, bodyDraft, attachmentPath, doiLink | Projects agent | `email_draft.py` / `email_send.py` command → executed by calling agent |
+| `PDF-BUILDER-TEMPLATE v1.0` | markdownPath, outputPdfPath, cssPath, title, noMath, htmlOnly | Projects agent | `pdf/build_pdf.py` command → executed by calling agent |
 | `Research Planning Agent — Step 1 of 4: Setup` | — | Research pipeline | Project setup plan |
 | `Research Writing Agent — Step 2 of 4: Draft` | — | Research pipeline | Research draft |
 | `Research Review Agent — Step 3 of 4: Quality Check` | — | Research pipeline | Quality review |
@@ -249,6 +250,8 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |
 | `email/EMAIL-CAPABILITIES.md` | Drop-in prompt module for email capabilities | v1.2 |
 | `email/README.md` | Setup and usage guide for email system | — |
+| `pdf/build_pdf.py` | Reusable Markdown → HTML → PDF CLI pipeline (v3.0) | v3.0 |
+| `pdf/README.md` | Setup and usage guide for pdf builder | — |
 | `SOCIAL-ORCHESTRATOR-TEMPLATE.md` | Prompt template for social media generation | v1.0 |
 
 ---
