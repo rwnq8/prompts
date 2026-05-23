@@ -2,7 +2,7 @@
 
 > **Purpose:** Prioritized queue of system prompt improvements, template updates, and cross-cutting QA/QC enhancements. All items here are universal — applicable to ANY project, not tied to specific projects.
 > **⚠️ SCOPE BOUNDARY:** This backlog contains ONLY META items. Project-specific tasks belong to the Projects agent. If you see a project-specific issue, extract the universal lesson and codify it here as a system prompt improvement — do NOT add the project fix itself.
-> **Last Updated:** 2026-05-22
+> **Last Updated:** 2026-05-23
 
 ---
 
@@ -46,6 +46,13 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 | P8 | **Template parameter discovery** | Some PM templates return empty parameters from `get_prompt_template_parameters`. Consider whether formal parameters (project name, date) would improve utility vs inline `[PLACEHOLDER]` values being filled manually by agents. | 0.5h | ✅ DONE |
 | P9 | **CPL risk audit for RISK-REGISTER-TEMPLATE** | Verify pre-populated CPL risks (L7, L3/L6, L18/L40, L14, L39, L19) are current and complete against all 40 CPL lessons. Some lessons (L26-L28 reader testing, L38 null-byte, L39 subagent truncation) may need to be added as default risks. | 0.5h | ✅ DONE |
 
+### P4 — From CPL L41-L47 Audit (2026-05-23)
+
+| # | Item | Description | Effort | Status |
+|:--|:-----|:-----------|:-------|:-------|
+| P10 | **Add Moscow gate to Project Initiation Protocol** | Per CPL L43: Before `scaffold_template` runs, classify project M/S/C/W. W (Won't Have) items are blocked from directory creation. C (Could Have) items go to BACKLOG only. Need new PROJECT-INITIATION-TEMPLATE or update to scaffolding workflow. | 1h | 🔴 TODO |
+| P11 | **Add project size gate for reduced documentation** | Per CPL L47: For projects under threshold (<5 sessions, <20 KB deliverable), use reduced documentation set (README + PROJECT STATE + SPRINT + DoD only) instead of full Tier 1-3 suite. Gate goes in Project Initiation Protocol alongside P10. | 0.5h | 🔴 TODO |
+
 ---
 
 ## 🔴 CROSS-CUTTING — Universal QA/QC Lessons (Baked into System Prompts)
@@ -81,6 +88,24 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 **Lesson:** A general close-out checklist designed for documents (CLOSEOUT-CHECKLIST) cannot gate a web app deployment (which needs cross-browser verification, asset loading checks, and live URL testing). Each release type needs its own pre-deployment checklist.
 
 **Implemented in:** WEB-APP-RELEASE-CHECKLIST (9-section pre-deployment gate), DEFAULT.md §12.3 Step 1 (web app projects require web-specific checklist in addition to general close-out).
+
+### Pattern 6: Universal Non-Negotiable Testing Gate (CPL L41/L45)
+
+**Lesson:** When the DoD template lacks a universal testing requirement, agents omit testing from every task type. Checkbox theater — marking `[x]` without executing verification — becomes the norm. 6 of 8 audited projects had zero executed tests despite all checkboxes marked complete.
+
+**Implemented in:** DEFINITION-OF-DONE-TEMPLATE v2.0 — UNIVERSAL GATES section with four non-negotiable items (TEST PLAN EXECUTED, FILESYSTEM VERIFICATION, GIT VERIFICATION, NO CHECKBOX THEATER) that apply to ALL task types with no exemption.
+
+### Pattern 7: Spec-vs-Build Separation (CPL L42/L46)
+
+**Lesson:** When the agent that writes specs also builds and self-certifies the deliverable, quality gates collapse. Spec requirements drift undetected — what was built didn't match what was specified. Handoff return must include explicit spec-vs-deliverable verification.
+
+**Implemented in:** HANDOFF-TEMPLATE v1.1 — SEPARATION OF CONCERNS gate prohibiting self-certification, SPEC-VS-DELIVERABLE VERIFICATION in Acceptance Gate requiring explicit audit against original success criteria.
+
+### Pattern 8: Archive as Mandatory Close-Out Step (CPL L44)
+
+**Lesson:** Completed projects left in the active directory create the illusion of ongoing work and consume audit attention. The archive directory existed but was never used for project close-out — no template included the move step.
+
+**Implemented in:** CLOSEOUT-CHECKLIST-TEMPLATE v1.1 — explicit "Move to Archive" step with verification (`Test-Path` at both locations), QWAV PROJECT STATE update, and removal from active references.
 
 ---
 
