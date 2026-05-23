@@ -1,6 +1,6 @@
 ---
 template: CLOSEOUT-CHECKLIST
-version: "1.0"
+version: "1.1"
 ---
 
 # PROJECT CLOSE-OUT CHECKLIST — [PROJECT NAME]
@@ -41,7 +41,11 @@ Every item must be verified and marked `[x]` before the session ends. Items mark
 - [ ] User prompted: "Published to ResearchGate? [YES/NO]"
 - [ ] If both confirmed: trigger SOCIAL-ORCHESTRATOR template via `fill_prompt_template("SOCIAL-ORCHESTRATOR TEMPLATE v1.0", {...})`
 
-## 6. ARCHIVING
+## 6. ARCHIVING (CPL L44)
+- [ ] Move project directory to `G:\My Drive\Archive\projects\YYYY\MM\` — use `Move-Item` or Python `shutil.move`
+- [ ] Verify move succeeded: `Test-Path` at archive location returns True, original location returns False
+- [ ] Update QWAV PROJECT STATE.md to reflect archival (if QWAV-managed project)
+- [ ] Remove project from active SPRINT.md and BACKLOG.md references
 - [ ] Project directory is self-contained — a new agent from cold can read `PROJECT STATE.md` and understand everything
 - [ ] No broken references (verify all linked files exist)
 - [ ] No temp files (scan for `_*.py`, `*.tmp`, `__pycache__`)
