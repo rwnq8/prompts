@@ -14,6 +14,8 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] **TEST PLAN EXECUTED** — Minimum: (a) test file(s) exist and are committed, (b) tests were actually executed (re-run to verify — NOT "I remember running them"), (c) output/log is committed to repo, (d) pass/fail accounting is honest (document what failed, don't hide it). "Tested manually" without a committed test file/script = NOT DONE. "Verified live URL" is a smoke test, not a test plan.
 - [ ] **FILESYSTEM VERIFICATION** — Every file claimed as created/modified/deleted passes `Test-Path` verification (or absence verification for deletes). Tool success messages are NOT verification (CPL L15, L18).
 - [ ] **GIT VERIFICATION** — Every commit claimed passes `git log -1 --oneline` confirmation. Never claim a commit from memory (CPL L13).
+- [ ] **PLAN-EXECUTE-AUDIT CYCLE COMPLETE** — Every planned item was actually executed and audited before declaring DONE. "Planned but not executed" items are NOT DONE. Planning language ("let me fix X", "I will do Y") without corresponding write/exec/git tool invocation does not count as execution. If you cannot produce `Test-Path` or `git log` evidence for a claimed action, it was NOT executed.
+
 - [ ] **NO CHECKBOX THEATER** — If you mark `[x]` but didn't execute the verification, you are falsifying the DoD. Leave `[ ]` and document the gap honestly. Every `[x]` must trace to evidence on disk.
 
 ⚠️ **ANTI-PATTERN (CPL L41/L45):** Marking all checkboxes `[x]` with "ALL criteria met. Project is DONE" when no test files exist and no tests were executed. This is checkbox theater. If evidence doesn't exist on disk, the checkbox stays empty.

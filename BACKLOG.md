@@ -167,7 +167,12 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 ---
 
 ### M47 — Systemic Investigation: Plan↔Execute Gap Remediation [2026-05-24]
-**Status:** BACKLOG — investigation needed.
+**Status:** ✅ DONE — Fix implemented 2026-05-24.
+**Resolution:** Investigation identified the PLANNING SPIRAL as the root cause: agents can spend unlimited turns reading files, identifying problems, and verbally committing to execute ("let me fix X", "executing NOW") without ever invoking write/exec/git tools. Existing guards (Rule 14 ANTI-PHANTOM, Section 9.11 Task Execution Audit) only fired at response delivery time, not during mid-session planning spirals. Fixes applied to DEFAULT.md:
+1. Rule 14 clause 5 (new): Planning Spiral Detection — after 3 consecutive planning responses with zero tool invocations, force execution
+2. Section 9.11.0 (new): Planning Spiral Pre-Check — runs BEFORE the Pre-Response Gate
+3. Section 5 (new): Mid-Session Execution Checkpoint — between Phase 0 and Phase 1
+4. DEFINITION-OF-DONE template: PLAN-EXECUTE-AUDIT gate added to UNIVERSAL GATES
 **Category:** META — METHODOLOGY
 **Rationale:** Persistent pattern: agents produce text describing planned actions (talk/discussion/planning) but execution (code/action/implementation) is missing or claimed without evidence. User's repeated question — "ARE YOU SURE EVERYTHING PLANNED/DISCUSSED HAS BEEN FULLY IMPLEMENTED/EXECUTED?" — identifies a systemic gap between PLAN and DO/CHECK/ACT phases. CPL L62: 16-planned-12-executed. CPL L63: Talk≠Action. CPL L66: Issue Close≠Execution Complete.
 **Investigation scope:**

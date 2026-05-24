@@ -280,6 +280,22 @@ Required error handling:
 ## 5. STEP-BY-STEP WORKFLOW
 [Detailed execution sequence with decision points and validation checkpoints]
 
+### Mid-Session Execution Checkpoint (MANDATORY — integrated into Step-by-Step Workflow)
+
+The most common agent failure mode is the PLANNING SPIRAL: reading files,
+identifying problems, verbally committing to execute ("let me fix X, Y, Z"),
+then reading more files to discover more problems — without ever invoking
+write/exec/git tools. The Step-by-Step Workflow section MUST include a
+mid-session checkpoint between phases that:
+
+1. Counts planned-but-unexecuted items
+2. Counts files read since last execution
+3. Forces execution of the first planned item when (planned > 0) AND (reads >= 2)
+4. Detects repeated "let me" / "executing NOW" patterns with zero tool invocations
+
+This checkpoint prevents the pattern where planning language becomes a
+repeated verbal substitute for actual execution.
+
 ### Per-Response Task Execution Audit (MANDATORY — before delivering ANY output)
 
 Before delivering ANY response that contains claims about file operations,
