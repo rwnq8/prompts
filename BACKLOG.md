@@ -162,6 +162,23 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 - [ ] Archive existing file content to Archive before deletion
 **Blocked by:** None. `gh` CLI authenticated with full scope.
 
+
+
+---
+
+### M47 — Systemic Investigation: Plan↔Execute Gap Remediation [2026-05-24]
+**Status:** BACKLOG — investigation needed.
+**Category:** META — METHODOLOGY
+**Rationale:** Persistent pattern: agents produce text describing planned actions (talk/discussion/planning) but execution (code/action/implementation) is missing or claimed without evidence. User's repeated question — "ARE YOU SURE EVERYTHING PLANNED/DISCUSSED HAS BEEN FULLY IMPLEMENTED/EXECUTED?" — identifies a systemic gap between PLAN and DO/CHECK/ACT phases. CPL L62: 16-planned-12-executed. CPL L63: Talk≠Action. CPL L66: Issue Close≠Execution Complete.
+**Investigation scope:**
+- Audit all prompts for Plan→Do→Check→Act gate enforcement
+- Verify Rule 14 and §9.11.3 are at correct chokepoints
+- Add Plan↔Execute Gap Detection to system_audit.py Part I
+- Design mandatory "Evidence-Required Close" template for gh issue close
+- Investigate GitHub Project board automation closing Issues without verification
+- Design standard close-out Checklist gated on execution evidence
+**Cross-reference:** CPL L62, L63, L66. BACKLOG M43. Audit Part I I1-I4.
+
 ## Legend
 
 | Domain | Color | Scope |
