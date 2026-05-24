@@ -61,7 +61,7 @@ python scripts/zenodo_publish.py --token ... --doi "10.5281/zenodo.XXXXXXXX" ...
 | `--abstract` | No | title | Publication abstract |
 | `--keywords` | No | — | Comma-separated |
 | `--upload-type` | No | publication | publication, poster, presentation, dataset, image, video, software, lesson, other |
-| `--license` | No | cc-by-4.0 | License identifier |
+| `--license` | No | QNFO-COL-v1.1 | License identifier (https://github.com/QNFO/license/) |
 | `--orcid` | No | 0009-0002-4317-5604 | Author ORCID |
 | `--date` | No | today | YYYY-MM-DD |
 | `--doi` | No | — | Existing DOI for new version |

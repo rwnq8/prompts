@@ -1547,7 +1547,7 @@ version: "vX.Y"
 abstract: >
   Full abstract text.
 keywords: ["keyword1", "keyword2", "keyword3"]
-license: "CC-BY-4.0"
+license: "QNFO Content License Agreement v1.1 (https://github.com/QNFO/license/)"
 ---
 ```
 

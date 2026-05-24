@@ -8,7 +8,7 @@
 #   abstract    — Publication abstract (optional)
 #   keywords    — Comma-separated keywords (optional)
 #   upload_type — Zenodo type: publication|poster|presentation|dataset|image|video|software|lesson|other
-#   license     — License identifier (default: cc-by-4.0)
+#   license     — License identifier (default: QNFO-COL-v1.1 — https://github.com/QNFO/license/)
 #   doi         — Existing DOI for creating new version (optional)
 #   sandbox     — Set "true" for sandbox testing (default: false for production)
 #

@@ -190,7 +190,7 @@ python "G:\My Drive\projects\zenodo-automation\zenodo_publish.py" `
   --abstract "A comprehensive analysis of..." `
   --keywords "machine learning, optimization, convergence" `
   --upload-type "publication" `
-  --license "cc-by-4.0"
+  --license "QNFO-COL-v1.1"
 ```
 
 **The script will prompt:**
@@ -243,7 +243,7 @@ Zenodo creates a new version linked to the original record. The original DOI res
 | `--abstract` | No | title text | `--abstract "We show that..."` |
 | `--keywords` | No | — | `--keywords "kw1, kw2, kw3"` |
 | `--upload-type` | No | `publication` | `--upload-type dataset` |
-| `--license` | No | `cc-by-4.0` | `--license mit` |
+| `--license` | No | `QNFO-COL-v1.1` | `--license QNFO-COL-v1.1` |
 | `--orcid` | No | `0009-0002-4317-5604` | `--orcid 0000-0002-1825-0097` |
 | `--date` | No | today | `--date 2026-05-15` |
 | `--doi` | No | — | `--doi 10.5281/zenodo.XXXXXXXX` |
