@@ -308,44 +308,40 @@ print("\nPART I: ANTI-PHANTOM EXECUTION AUDIT (GitHub Issues Integrity)")
 import json as _json
 i_issues = []
 try:
-    result = subprocess.run(
-        ["gh", "issue", "list", "--repo", "QNFO/qwav", "--state", "closed", "--limit", "30", "--json", "title,body,number,closedAt,comments"],
-        capture_output=True, text=True, timeout=15
-    )
-    if result.returncode == 0:
+    cmd = 'gh issue list --repo QNFO/qwav --state closed --limit 30 --json title,body,number,closedAt,comments'
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+    if result.returncode == 0 and result.stdout and result.stdout.strip():
         closed = _json.loads(result.stdout)
-        # Red flags: closed with minimal body, no comments, no file references, no commit hashes
         for issue in closed:
             flags = []
             body = (issue.get("body") or "").strip()
             num = issue["number"]
             title = issue["title"]
-            
             if len(body) < 100 and "TEST" not in title.upper():
                 flags.append("MINIMAL-BODY")
             if issue.get("comments", 0) == 0:
                 flags.append("NO-COMMENTS")
             if not re.search(r"(?:Test-Path|git log|commits|verified|smoke_test|system_audit)", body):
-                if not re.search(r"`[a-f0-9]{7}`", body):  # No commit hash
+                if not re.search(r"`[a-f0-9]{7}`", body):
                     flags.append("NO-EVIDENCE")
             if "Token" in title and "scope" in title.lower() and not re.search(r"(?:refreshed|added scope|now has)", body):
                 flags.append("TOKEN-NOT-UPGRADED")
             if "Project board" in title and not re.search(r"(?:created|board exists)", body):
                 flags.append("BOARD-NOT-CREATED")
-            
             if flags:
                 i_issues.append((num, title, flags))
-        
         if i_issues:
             print(f"  I1. ANTI-PHANTOM detections: {len(i_issues)} closed Issues lack execution evidence")
             for num, title, flags in i_issues:
-                print(f"    #{num}: {title} — {', '.join(flags)}")
+                print(f"    #{num}: {title} -- {', '.join(flags)}")
             print(f"  I_RESULT: {len(i_issues)} Rule 14 violations found FAIL")
         else:
             print("  I1. No ANTI-PHANTOM patterns detected PASS")
             print("  I_RESULT: GitHub Issues execution integrity PASS")
+    elif result.returncode != 0:
+        print(f"  I1. GitHub Issues query failed (rc={result.returncode}): {result.stderr[:100]} SKIP")
     else:
-        print(f"  I1. Could not query GitHub Issues: {result.stderr[:100]} SKIP")
+        print("  I1. No closed Issues found PASS")
 except Exception as e:
     print(f"  I1. GitHub Issues check error: {e} SKIP")
 
@@ -370,18 +366,14 @@ try:
 except Exception as e:
     print(f"  I2. Token scope check error: {e} SKIP")
 
-# I3: Wiki content vs push state
+# I3: Wiki push state (check live wiki git repo, not local files)
 try:
-    wiki_pages_dir = r"G:\My Drive\projects\wiki-pages"
-    if os.path.exists(wiki_pages_dir):
-        page_files = [f for f in os.listdir(wiki_pages_dir) if f.endswith('.md')]
-        if page_files:
-            print(f"  I3. Wiki pages ready: {len(page_files)} files ({sum(os.path.getsize(os.path.join(wiki_pages_dir, f)) for f in page_files)} bytes) — NOT PUSHED")
-            print(f"     Action: Initialize wiki via web UI then push wiki-pages/")
-        else:
-            print("  I3. Wiki pages directory empty CHECK")
+    wresult = subprocess.run("git ls-remote https://github.com/QNFO/qwav.wiki.git", shell=True, capture_output=True, text=True, timeout=10)
+    if wresult.returncode == 0 and wresult.stdout.strip():
+        wiki_commits = wresult.stdout.strip().count('\n') + 1
+        print(f"  I3. Wiki git repo LIVE — {wiki_commits} ref(s) found PASS")
     else:
-        print("  I3. No wiki-pages directory CHECK")
+        print("  I3. Wiki git repo NOT ACCESSIBLE — needs web UI first-page init FAIL")
 except Exception as e:
     print(f"  I3. Wiki check error: {e} SKIP")
 
