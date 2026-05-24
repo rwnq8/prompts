@@ -1,6 +1,6 @@
-# DeepChat Agent System Architecture v1.3
+# DeepChat Agent System Architecture v1.4
 
-> **High-level taxonomy of the DeepChat agent system.** Documents what DeepChat/DeepSeek operates on: agents, system prompts, prompt templates, subagents, and their interactions. Defines the filesystem sandboxing model.
+> **High-level taxonomy of the DeepChat agent system.** Documents what DeepChat/DeepSeek operates on: agents, system prompts, prompt templates, subagents, and their interactions. Defines the filesystem sandboxing model and the Program Agent ↔ Project Agent separation.
 
 ---
 
@@ -17,9 +17,9 @@ Configured in DeepChat Settings → Agents. Each agent loads ONE system prompt a
 
 | Agent | System Prompt | Write Sandbox | Read Scope | Purpose |
 |:------|:-------------|:--------------|:-----------|:--------|
-| **Projects** | `DEFAULT.md` | `G:\My Drive\projects\<name>\` | ALL directories | Project Executor — research, writing, coding, email, social media. §0.9 defines Independent Project Executor role. |
+| **Projects** | `DEFAULT.md` | `G:\My Drive\projects\<name>\` | ALL directories | Project Executor — autonomous research, writing, coding. Receives handoff from Program Agent, executes Phases 0-5, returns deliverables. §0.9: Independent Project Executor role. Uses `gh` CLI for Issues/Projects (§0.6.8). |
 | **Prompts** | `META-PROMPT-DEEPSEEK.md` | `G:\My Drive\prompts\` | ALL directories | System prompt engineering — create, edit, audit prompts |
-| **QWAV** | `QWAV-DEFAULT.md` | `G:\My Drive\QWAV\` | ALL directories | Strategy Program Manager — portfolio strategy, documentation, handoff, coordination. §0.9 defines QWAV role boundary. Forked from DEFAULT.md. |
+| **QWAV** | `QWAV-DEFAULT.md` + `DEFAULT.md` | `G:\My Drive\projects\` | ALL directories | **Program/Portfolio Manager** — initiates projects via templates, coordinates across projects, manages GitHub Issues/Projects, quality-gates deliverables, manages social media (Buffer API). Inherits DEFAULT.md (Rules 1-6,12-14, Git, Email). QWAV-DEFAULT.md is program-specific delta (16K, not duplicate of DEFAULT.md). |
 
 **Design principle:** An agent exists ONLY when it has a unique filesystem write boundary. Everything else (email, image generation, social media) is consumed as a template or sub-prompt WITHIN the writing agent — typically the Projects agent.
 
@@ -28,9 +28,9 @@ Markdown files loaded as the system prompt when an agent starts. They define the
 
 | System Prompt | Version | Loaded By | Scope |
 |:--------------|:--------|:----------|:------|
-| `DEFAULT.md` | — | Projects agent | Project Executor — full research/writing/coding/email/social workflow. §0.9: Independent Project Executor role. |
-| `QWAV-DEFAULT.md` | — | QWAV agent | Strategy Program Manager — portfolio strategy, documentation, handoff, coordination. §0.9: QWAV role boundary. Forked from DEFAULT.md. |
-| `META-PROMPT-DEEPSEEK.md` | v4.5 | Prompts agent | System prompt generation and auditing |
+| `DEFAULT.md` | — | Projects agent | Project Executor — full research/writing/coding/email/social workflow. §0.9: Independent Project Executor role. §0.6.8: GitHub CLI integration. Rules 1-6, 12-14 (ANTI-PHANTOM). 142K chars. |
+| `QWAV-DEFAULT.md` | v2.0 | QWAV agent (appended to DEFAULT.md) | Program/Portfolio Manager — inherits all rules, protocols, and standards from DEFAULT.md. Adds ONLY program-specific delta (16K): Portfolio Manager role, email outreach framework, GitHub-native program management, Buffer social media, program↔project handoff protocol, project initiation via templates. NO duplication with DEFAULT.md. |
+| `META-PROMPT-DEEPSEEK.md` | v4.5 | Prompts agent | System prompt generation and auditing. Template includes all 9 core rules (1-6, 12-14) + 7 structural gates. |
 | `EMAIL-AGENT-v1.3.md` | v1.2 | *(Optional standalone email sessions)* | Dedicated email operations |
 | `image-gen-banner-prompt.md` | — | *(Consumed within Projects)* | Banner image generation |
 
@@ -53,21 +53,21 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 
 | Template | Parameters | Called From | Produces |
 |:---------|:-----------|:------------|:---------|
-| `PROJECT-CHARTER-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `CHARTER.md` — scope, success criteria, constraints, deliverables |
-| `DEFINITION-OF-DONE-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `DEFINITION-OF-DONE.md` — CODE/DOC/PUBLICATION/ANALYSIS gates |
-| `RISK-REGISTER-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `RISK-REGISTER.md` — CPL + project-specific risks |
-| `README-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `README.md` — dependencies, architecture, usage |
-| `SPRINT-BACKLOG-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `SPRINT.md` — tasks with DoD references |
-| `PRODUCT-BACKLOG-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `BACKLOG.md` — P0-P3 prioritized queue |
-| `CHANGELOG-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | `CHANGELOG.md` — keepachangelog.com format |
-| `CONTRIBUTING-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | `CONTRIBUTING.md` — project rules, domain rules, escalation |
-| `HANDOFF-TEMPLATE` | — | QWAV agent (Â§0.9 Initiation) | Handoff document — scope, criteria, acceptance gate |
-| `ADR-TEMPLATE` | — | QWAV agent (Â§0.9), Projects agent (Â§0.7) | Individual ADR appended to `DECISIONS.md` |
-| `RETROSPECTIVE-TEMPLATE` | — | QWAV agent, Projects agent (Â§12 close-out) | Sprint retrospective — start/stop/continue + CPL candidates |
+| `PROJECT-CHARTER-TEMPLATE` | — | Program agent (Â§0.9 Initiation) | `CHARTER.md` — scope, success criteria, constraints, deliverables |
+| `DEFINITION-OF-DONE-TEMPLATE` | — | Program agent (Â§0.9 Initiation) | `DEFINITION-OF-DONE.md` — CODE/DOC/PUBLICATION/ANALYSIS gates |
+| `RISK-REGISTER-TEMPLATE` | — | Program agent (Â§0.9 Initiation) | `RISK-REGISTER.md` — CPL + project-specific risks |
+| `README-TEMPLATE` | — | Program agent (Â§0.9), Projects agent (Â§0.7) | `README.md` — dependencies, architecture, usage |
+| `SPRINT-BACKLOG-TEMPLATE` | — | Program agent (Â§0.9), Projects agent (Â§0.7) | `SPRINT.md` — **DEPRECATED → GitHub Projects (§0.6.8)** |
+| `PRODUCT-BACKLOG-TEMPLATE` | — | Program agent (Â§0.9), Projects agent (Â§0.7) | `BACKLOG.md` — **DEPRECATED → GitHub Issues (§0.6.8)** |
+| `CHANGELOG-TEMPLATE` | — | Program agent (Â§0.9), Projects agent (Â§0.7) | `CHANGELOG.md` — **DEPRECATED → GitHub Releases (§0.6.8)** |
+| `CONTRIBUTING-TEMPLATE` | — | Program agent (Â§0.9 Initiation) | `CONTRIBUTING.md` — project rules, domain rules, escalation |
+| `HANDOFF-TEMPLATE` | — | Program agent (Â§0.9 Initiation) | Handoff document — scope, criteria, acceptance gate |
+| `ADR-TEMPLATE` | — | Program agent (Â§0.9), Projects agent (Â§0.7) | Individual ADR appended to `DECISIONS.md` — **DEPRECATED → GitHub Discussions (§0.6.8)** |
+| `RETROSPECTIVE-TEMPLATE` | — | Program agent, Projects agent (Â§12 close-out) | Sprint retrospective — start/stop/continue + CPL candidates |
 | \TEST-EVIDENCE-TEMPLATE\ | — | Projects agent (§5 Phase workflow, DoD) | Standardized test execution evidence document |
 | \QA-QC-TESTING-PROTOCOL\ | — | All agents (reference) | Universal QA/QC framework — deliverable type testing matrix, phase gate integration |
-| `PROJECT-STATE-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
-| `LEARNINGS-TEMPLATE` | — | QWAV agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — kaizen engine, cross-project tags |
+| `PROJECT-STATE-TEMPLATE` | — | Program agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
+| `LEARNINGS-TEMPLATE` | — | Program agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — **DEPRECATED → GitHub Wiki (§0.6.8)** |
 | `CLOSEOUT-CHECKLIST-TEMPLATE` | — | Projects agent (§12 close-out) | `CLOSEOUT-CHECKLIST.md` — 7-item close-out checklist with human sign-off |
 | `WEB-APP-RELEASE-CHECKLIST` | — | Projects agent (§12 close-out, web app releases) | Pre-deployment gate — 9-section checklist for web app releases to GitHub Pages |
 
@@ -89,7 +89,7 @@ Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files te
 | File | Audience | Purpose |
 |:-----|:---------|:--------|
 | `agents/PROJECTS-AGENT.md` | Projects agent | Full research/writing/email/social lifecycle, subagent delegation patterns |
-| `agents/QWAV-AGENT.md` | QWAV agent | Strategy Program Manager — uses QWAV-DEFAULT.md, §0.9 role boundary, separate sandbox |
+| `agents/QWAV-AGENT.md` | QWAV agent | Program/Portfolio Manager — uses QWAV-DEFAULT.md (appended to DEFAULT.md), §0.9 role boundary, coordinates across projects, manages GitHub Issues/Projects, initiates projects via templates |
 | `agents/PROMPTS-AGENT.md` | Prompts agent | System prompt engineering, 11-section template with embedded structural gates, no subagent delegation |
 | `agents/subagents/EXPLORER-SUBAGENT.md` | All agents | Divergent thinking — brainstorming, alternatives, edge cases |
 | `agents/subagents/IMPLEMENTER-SUBAGENT.md` | All agents | Convergent execution — drafting, structured output from specs |
@@ -128,8 +128,8 @@ Agents may MOVE completed/archived work OUT of their write sandbox and INTO read
 | Projects | `projects\<name>\` | `Archive\projects\YYYY\MM\project-name\` | Archive completed project |
 | Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
 | Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts |
-| QWAV | `QWAV\` | `Archive\QWAV\` | Archive completed QWAV work |
-| QWAV | `QWAV\` | `Obsidian\releases\` | Publish QWAV research |
+| QWAV | `projects\` | `Archive\projects\YYYY\MM\` | Archive completed project work |
+| QWAV | `projects\` | `Obsidian\releases\` | Publish program deliverables |
 
 **Rule:** MOVE is allowed. COPY+DELETE is equivalent. Never WRITE directly to Archive or releases — only MOVE into them.
 
@@ -213,6 +213,51 @@ PROJECTS AGENT (DEFAULT.md):
 ```
 PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
   User: "Create a new prompt template for X"
+  
+  Prompts agent designs prompt following 9-section template
+  
+  Writes to: G:\My Drive\prompts\<new-prompt>.md
+  
+  If replacing old prompt: MOVE old to Archive\prompts\
+  
+  Commit with: ACTION:CREATE FILE: ...
+```
+
+### 3.4 Program-Project Handoff (Program Agent -> Project Agent)
+
+```
+PROGRAM AGENT (QWAV-DEFAULT.md + DEFAULT.md):
+  User: "Start a new project for X"
+  
+  Complete Project Initiation Protocol (QWAV-DEFAULT.md S0.9.1)
+  Create project directory + scaffolding docs via fill_prompt_template
+  
+  Create handoff via fill_prompt_template("HANDOFF", {type: "Program->Project", ...})
+  Create GitHub Issue(s) for project tasks via gh issue create
+  
+  Update PROJECT STATE.md: STATUS: DELEGATED TO PROJECTS | HANDOFF: path
+  
+  PAUSE - wait for Projects agent
+  
+  PROJECTS AGENT (DEFAULT.md):
+  Read handoff document
+  Follow research trail (Archive, releases, active projects)
+  Execute Phases 0-5 (DEFAULT.md S5)
+  Place deliverables in Obsidian\releases\YYYY\MM\
+  Update PROJECT STATE.md: STATUS: COMPLETE | DELIVERABLE: path
+  Close GitHub Issue: gh issue close <num> --reason completed
+  
+  BACK TO PROGRAM AGENT:
+  Read PROJECT STATE.md - confirm STATUS: COMPLETE
+  Review deliverable in Obsidian\releases\
+  Quality check against DEFINITION-OF-DONE.md gates
+  If PASS: update program docs, plan next steps
+  If FAIL: re-open GitHub Issue, create new handoff
+```
+
+```
+PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
+  User: "Create a new prompt template for X"
   ↓
   Prompts agent designs prompt following 9-section template
   ↓
@@ -234,6 +279,7 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 | 3 | **Read-all, write-one** | Every agent can READ from any directory (for due diligence, context). Each agent WRITES to exactly one directory. |
 | 4 | **MOVE is not write** | Archiving or publishing work via MOVE is a handoff, not a write violation. |
 | 5 | **Subagents are text-only** | Subagents have unreliable file I/O. Use them for brainstorming, drafting, and validation — never for read/write/exec. |
+| 6 | **Program coordinates, Project executes** | The Program Agent initiates, monitors, and quality-gates. The Project Agent executes autonomously. Handoff uses `fill_prompt_template("HANDOFF")` with a 5-state machine. See QWAV-DEFAULT.md §0.9.2. |
 
 ---
 
@@ -256,4 +302,4 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 ---
 
-*Architecture v1.3 — QWAV uses QWAV-DEFAULT.md (forked from DEFAULT.md with §0.9 Strategy Program Manager role); Projects uses DEFAULT.md with §0.9 Project Executor role; documents the DeepChat agent system taxonomy*
+*Architecture v1.4 — QWAV-DEFAULT.md (v2.0, 16K) inherits from DEFAULT.md (142K) adding Program/Portfolio Manager role; Projects uses DEFAULT.md with §0.9 Project Executor role; §0.6.8 GitHub CLI integration; Rules 1-6, 12-14; program-project handoff via HANDOFF template with 5-state machine*
