@@ -48,7 +48,7 @@ version: "1.0"
 
 ### 6. TEST EXECUTION
 - [ ] Test suite re-executed immediately before deployment
-- [ ] Results: `[N] passed, [0] failed, [M] skipped`
+- [ ] Results: `{{count}} passed, [0] failed, {{m}} skipped`
 - [ ] Test output saved to project directory as evidence
 - [ ] Any pre-existing failures documented with rationale
 

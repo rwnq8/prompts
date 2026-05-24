@@ -10,7 +10,7 @@ version: "1.0"
 **Status:** [Active | Complete | Archived]
 **Program:** [QWAV | Ultrametricity | Prompts]
 **Started:** [YYYY-MM-DD]
-**Directory:** `projects/[YYYY]/[MM]/[project-name]/`
+**Directory:** `projects/{{year}}/{{month}}/[project-name]/`
 
 ## Dependencies
 

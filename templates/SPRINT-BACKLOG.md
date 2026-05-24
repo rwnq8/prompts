@@ -21,7 +21,7 @@ version: "1.0"
 
 | ID | Task | Completed | Verification |
 |:---|:-----|:----------|:-------------|
-| [task ID] | [Task] | [YYYY-MM-DD] | **Test evidence:** Test-Path test_file.py + re-executed: [N] passed, [0] failed. For non-code tasks: reader test / manual verification method documented. |
+| [task ID] | [Task] | [YYYY-MM-DD] | **Test evidence:** Test-Path test_file.py + re-executed: {{count}} passed, [0] failed. For non-code tasks: reader test / manual verification method documented. |
 
 ## Blocked
 
@@ -31,9 +31,9 @@ version: "1.0"
 
 ## Sprint Health
 
-- Tasks completed: [N]/[Total]
-- DoD verified: [N]/[Total]
-- Blocked items: [N]
+- Tasks completed: {{count}}/[Total]
+- DoD verified: {{count}}/[Total]
+- Blocked items: {{count}}
 - Retrospective filed: [Yes/No]
 
 ---

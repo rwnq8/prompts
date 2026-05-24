@@ -47,7 +47,7 @@ Items tagged `Cross-Project: YES` for promotion to CROSS-PROJECT-LEARNINGS.md:
 
 - Were all sprint DoD criteria met? [Yes/No — if no, which failed?]
 - Was the Publication Language Gate run? [Yes/No]
-- Were prior retro action items completed? [N]/[Total]
+- Were prior retro action items completed? {{count}}/[Total]
 - Are any risks overdue for review? [Yes/No]
 
 ---

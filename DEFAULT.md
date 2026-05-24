@@ -294,7 +294,7 @@ The system has 29 registered prompt templates. 17 generate project files (above)
 
 ### Tier 1 Startup Procedure (Execute at Session Start)
 
-**Step 1: Verify all Tier 1 core files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `[PLACEHOLDER]` values with project-specific content before writing to disk:
+**Step 1: Verify all Tier 1 core files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `{{placeholder}}` values with project-specific content before writing to disk:
 
 | # | Required File | Template | `fill_prompt_template` Call |
 |:--|:-------------|:---------|:----------------------------|
@@ -1734,7 +1734,7 @@ Date: [YYYY-MM-DD]
 
 ### 12.3 Close-Out Execution Protocol
 
-**Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST")`. Fill all `[PLACEHOLDER]` values with project-specific content. Pre-populate what is already known to be complete.
+**Step 1: Generate checklist.** Create the checklist in the project directory as `CLOSEOUT-CHECKLIST.md` using `fill_prompt_template("CLOSEOUT-CHECKLIST")`. Fill all `{{placeholder}}` values with project-specific content. Pre-populate what is already known to be complete.
 
 **For web app projects:** Additionally generate `RELEASE-CHECKLIST-[version].md` using `fill_prompt_template("WEB-APP-RELEASE-CHECKLIST")`. This 9-section pre-deployment gate (functionality, error handling, cross-browser, accessibility, asset loading, test execution, documentation, deployment, post-deployment) MUST be completed before §12.4 social orchestration. Web app projects cannot close out through the general checklist alone.
 

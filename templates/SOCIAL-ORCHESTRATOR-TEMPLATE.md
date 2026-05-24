@@ -37,7 +37,7 @@ Read a publication file. Generate ready-to-paste social media text. The calling 
 
 **PRE-PUBLISH GATE (verified by calling agent before invoking this template):**
 - [x] Publication passed §11.5 Reader Testing Protocol (2-round minimum)
-- [x] All [BLOCKING] and [MAJOR] issues resolved
+- [x] All {{blocking_count}} and {{major_count}} issues resolved
 - [x] If multi-project synthesis, §11.6 audit completed
 
 You output COPY/PASTE TEXT displayed directly in chat — INLINE ONLY. No validation tables, no audit trails, no posting schedules. NO FILE OUTPUT of any kind.

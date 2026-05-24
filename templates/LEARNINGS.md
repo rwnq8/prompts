@@ -30,4 +30,4 @@ version: 1.1
 
 ---
 
-*Generated from LEARNINGS-TEMPLATE.md v1.1. Add new lessons at the top (highest L-number = most recent). Periodically review for CPL promotion candidates. Archive obsolete lessons by marking `[ARCHIVED]` rather than deleting.*
+*Generated from LEARNINGS-TEMPLATE.md v1.1. Add new lessons at the top (highest L-number = most recent). Periodically review for CPL promotion candidates. Archive obsolete lessons by marking `{{archived_count}}` rather than deleting.*

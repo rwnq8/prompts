@@ -35,7 +35,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 ## CODE TEST TASK
 
 - [ ] ALL test files for this module executed — verified by re-execution (NOT by checking file existence)
-- [ ] Test suite output: [N] passed, [0] failed, [K] skipped
+- [ ] Test suite output: {{count}} passed, [0] failed, {{k}} skipped
 - [ ] Edge cases covered: empty input, boundary values, error conditions
 - [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
 - [ ] If any tests failed: root cause documented, fix applied, re-executed to zero failures
@@ -48,7 +48,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] Curly quotes throughout body text (Python scan confirmation)
 - [ ] YAML frontmatter present and valid
 - [ ] Reader testing: minimum 1 round (2 rounds for publication documents per §11.5)
-- [ ] All [BLOCKING] and [MAJOR] reader testing issues resolved
+- [ ] All {{blocking_count}} and {{major_count}} reader testing issues resolved
 - [ ] File committed with format
 - [ ] If replacing prior version: old version deleted per File Replacement Protocol (§10.5)
 - [ ] UNIVERSAL GATES above satisfied

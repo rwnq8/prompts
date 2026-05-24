@@ -170,7 +170,7 @@ All output must be labeled `[LLM-INFERRED]` since you cannot verify filesystem s
 | Path contains unsupported characters | FLAG -- parent must verify path works on their system |
 | Both `htmlOnly` and `outputPdfPath` provided | NOTE -- PDF path will not be used (HTML only) |
 | `title` contains double quotes | Sanitize -- use single quotes or escape |
-| Any parameter seems fabricated | FLAG -- mark as `[UNVERIFIED]` and ask parent to confirm |
+| Any parameter seems fabricated | FLAG -- mark as `{{unverified}}` and ask parent to confirm |
 
 ---
 

@@ -50,7 +50,7 @@ python "G:\My Drive\projects\zenodo-automation\zenodo_publish.py" `
   {{#keywords}}--keywords "{{keywords}}"{{/keywords}}
 ```
 
-**Success:** Deposition ID displayed, file uploaded, script reports `[SANDBOX] Testing complete.`
+**Success:** Deposition ID displayed, file uploaded, script reports `{{sandbox}} Testing complete.`
 **If fails:** Fix issues before proceeding. Do NOT skip to production.
 
 ### Phase 3: Production Publication

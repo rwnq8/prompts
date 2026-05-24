@@ -28,9 +28,9 @@ Every test claim must be backed by RE-EXECUTION — not file presence, not memor
 | **Publication Language** | §11.7 scan — zero internal project language hits | Python scan output |
 | **Math Format** | §6 scan — zero bare Unicode math | Python scan output |
 | **Quote Type** | Curly quotes throughout (Python scan) | Python scan output |
-| **Severity Gate** | All [BLOCKING] and [MAJOR] issues resolved before proceeding | Documented in CHANGELOG |
+| **Severity Gate** | All {{blocking_count}} and {{major_count}} issues resolved before proceeding | Documented in CHANGELOG |
 
-**Iteration loop:** Test → reader feedback → fix → retest. Repeat until zero [BLOCKING]/[MAJOR] issues.
+**Iteration loop:** Test → reader feedback → fix → retest. Repeat until zero {{blocking_count}}/{{major_count}} issues.
 
 ### 2. CODE
 
@@ -96,7 +96,7 @@ Every test execution must produce a test evidence document containing:
 **Executed by:** [Agent]
 **Test file:** [path]
 **Re-execution command:** [exact command used]
-**Result:** [N] passed, [M] failed, [K] skipped
+**Result:** {{count}} passed, {{m}} failed, {{k}} skipped
 **Output captured:** [path to output file or inline]
 ```
 

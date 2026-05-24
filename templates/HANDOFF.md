@@ -3,7 +3,7 @@ template: HANDOFF
 version: "1.1"
 ---
 
-# Handoff: [TYPE]
+# Handoff: {{type}}
 
 **Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]
 **Date:** [YYYY-MM-DD]

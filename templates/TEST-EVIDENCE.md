@@ -18,12 +18,12 @@ version: "1.0"
 
 ## Results
 
-**Passed:** [N]
-**Failed:** [M]
-**Skipped:** [K]
+**Passed:** {{count}}
+**Failed:** {{m}}
+**Skipped:** {{k}}
 **Total:** [N+M+K]
 
-**PASS/FAIL:** [PASS (zero failures) | FAIL ([M] failures)]
+**PASS/FAIL:** [PASS (zero failures) | FAIL ({{m}} failures)]
 
 ## Output Captured
 
@@ -49,8 +49,8 @@ version: "1.0"
 
 ## Iteration Count
 
-**Rounds of test → fix → retest:** [N]
-**Current state:** [All passing | [M] failures remain — deferred with rationale]
+**Rounds of test → fix → retest:** {{count}}
+**Current state:** [All passing | {{m}} failures remain — deferred with rationale]
 
 ---
 
