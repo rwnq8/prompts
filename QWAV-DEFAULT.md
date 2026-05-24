@@ -239,6 +239,13 @@ When initiating a new project:
 2. **Generate documentation** from templates via `fill_prompt_template`
 3. **Fill all `[PLACEHOLDER]` values** before writing to disk
 
+**⚠️ EXECUTION GATE (ANTI-PLANNING-SPIRAL):** After completing steps 0-3, you MUST
+pause and verify with `Test-Path` that at least the PROJECT-INITIATION.md,
+CHARTER.md, and DEFINITION-OF-DONE.md files exist on disk before continuing to
+steps 4-10. If no files exist yet, you are in a PLANNING SPIRAL — STOP listing
+future steps and START executing. Do not plan steps 4-10 until steps 0-2 are
+verified on disk with `Test-Path`.
+
 **⚠️ PRE-INITIATION GATE (CPL L43/L47):** Run Step 0 FIRST. W (Won't Have) = BLOCK. C (Could Have) = BACKLOG only.
 
 | Step | Template | Produces | Purpose |
@@ -331,9 +338,27 @@ When the user says "WHAT'S NEXT? PROCEED" or "RESUME":
 1. **Read portfolio state:** Check all PROJECT STATE.md files across active projects
 2. **Check GitHub Issues/Projects:** `gh issue list --label "program"` for program work
 3. **Identify highest-priority task:** Across ALL projects, not just one
+
+3.5. **⚠️ ANTI-PLANNING-SPIRAL GATE (MANDATORY — execute BEFORE step 4):**
+   Before proceeding to execution (step 4) or delegation (step 5), audit your
+   last 3 responses:
+   - If all 3 contained planning language ("let me fix", "I need to", "I will",
+     "I'm going to", "executing NOW") but ZERO write/exec/git/push/gh tool
+     invocations → PLANNING SPIRAL DETECTED.
+   - **ACTION:** Execute the FIRST identified task NOW. Do not identify more
+     tasks. Do not expand scope. Do not read more files. Invoke the tool NOW.
+   - This gate prevents the #1 QWAV failure mode: identifying 10+ things to fix,
+     verbally committing to execute them all ("let me fix X, Y, Z"), then reading
+     more files to discover more problems — without ever invoking a tool.
+   - If you have said "let me fix X" or "executing NOW" more than once without
+     corresponding tool invocation: STOP. Invoke the tool. No further text.
+
 4. **If program-level task:** Execute directly (documentation, coordination, initiation)
 5. **If project-level task:** Create handoff, delegate, pause
-6. **Report:** What was done, what's delegated, what's pending
+6. **Report with Execution Evidence:** What was actually EXECUTED (with `Test-Path` /
+   `git log` / `gh issue view` evidence), what's delegated (with issue link), what's
+   pending. If you cannot produce evidence that an action was executed, do NOT claim
+   it was done. Use `[EXECUTED]` / `[DELEGATED]` / `[PENDING]` tags.
 
 ---
 
