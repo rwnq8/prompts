@@ -356,15 +356,15 @@ try:
     tresult = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True, timeout=10)
     scopes = tresult.stdout + tresult.stderr
     missing_scopes = []
+    # Note: discussions:write is NOT a valid GitHub OAuth scope. repo scope covers all Discussion CRUD.
     if "project" not in scopes:
         missing_scopes.append("project")
-    if "discussions:write" not in scopes:
-        missing_scopes.append("discussions:write")
     
     if missing_scopes:
         i2_issues.append(f"Missing token scopes: {', '.join(missing_scopes)}")
         print(f"  I2. Token scope gaps: {missing_scopes} FAIL")
         print(f"     Fix: gh auth refresh -h github.com -s {','.join(missing_scopes)}")
+        print(f"     Note: repo scope already covers Discussions CRUD. discussions:write is not a valid scope.")
     else:
         print("  I2. Token scopes complete PASS")
 except Exception as e:
