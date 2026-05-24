@@ -156,6 +156,88 @@ All project files fall into three categories with different lifecycle rules:
 
 **Cross-reference:** QWAV L19, CPL Rule 5 (Never Invent Data or Citations).
 
+### 0.6.8 GitHub-Native Project Management — `gh` CLI Integration (v1.0)
+
+**GitHub CLI (`gh` v2.92.0+) is the PRIMARY project management tool.** File-based tracking (SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md) is DEPRECATED. All task tracking, documentation, and communication now use GitHub-native features.
+
+#### Available `gh` Commands
+
+The `gh` CLI is authenticated with scopes: `repo`, `workflow`, `read:org`, `gist`. Confirm with `gh auth status`.
+
+**Issues (replaces BACKLOG.md):**
+```bash
+gh issue list --repo OWNER/REPO --state open --limit 50
+gh issue list --repo OWNER/REPO --label "bug" --state open
+gh issue create --repo OWNER/REPO --title "..." --body "..." --label "bug,enhancement"
+gh issue view --repo OWNER/REPO <number>
+gh issue close --repo OWNER/REPO <number> --reason completed
+gh issue edit --repo OWNER/REPO <number> --add-label "in-progress" --remove-label "backlog"
+gh issue comment --repo OWNER/REPO <number> --body "..."
+```
+
+**Projects (replaces SPRINT.md):**
+```bash
+gh project list --owner OWNER
+gh project item-list <project-number> --owner OWNER --format json
+gh project item-create <project-number> --owner OWNER --title "..." --body "..."
+gh project item-edit --owner OWNER --id <item-id> --field "Status" --value "In Progress"
+gh project field-list <project-number> --owner OWNER
+```
+
+**Releases (replaces CHANGELOG.md):**
+```bash
+gh release list --repo OWNER/REPO
+gh release create v1.0.0 --repo OWNER/REPO --title "..." --notes "..."
+```
+
+**Wiki (replaces LEARNINGS.md, DECISIONS.md):**
+The wiki is a separate git repository at `OWNER/REPO.wiki.git`. Clone it, edit markdown pages, commit, and push.
+```bash
+gh repo clone OWNER/REPO.wiki wiki-dir
+# Edit pages in wiki-dir/
+cd wiki-dir && git add . && git commit -m "..." && git push
+```
+
+**Discussions (for Q&A, decisions):**
+```bash
+# Discussions use GraphQL API (no native CLI subcommand)
+gh api graphql -f query='
+  query($owner:String!, $repo:String!) {
+    repository(owner:$owner, name:$repo) {
+      discussions(first:20, orderBy:{field:UPDATED_AT, direction:DESC}) {
+        nodes { number title body url }
+      }
+    }
+  }
+' -f owner=OWNER -f repo=REPO
+```
+
+#### Startup Checklist — GitHub
+At session start, BEFORE reading any deprecated files:
+1. `gh auth status` — confirm authenticated
+2. `gh issue list --repo OWNER/REPO --state open` — current work queue
+3. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board
+
+#### Close-Out Checklist — GitHub
+At session end:
+1. Close completed issues: `gh issue close --repo OWNER/REPO <num>`
+2. Update project item statuses
+3. Create new issues for pending/blocked work
+
+#### File Deprecation Map
+
+| Deprecated File | Replacement | Command |
+|:----------------|:------------|:--------|
+| `SPRINT.md` | GitHub Projects | `gh project` |
+| `BACKLOG.md` | GitHub Issues | `gh issue` |
+| `CHANGELOG.md` | GitHub Releases | `gh release` |
+| `LEARNINGS.md` | GitHub Wiki | wiki git repo |
+| `DECISIONS.md` | GitHub Discussions | `gh api graphql` |
+
+**RETAINED:** `README.md` (repo landing page), `PROJECT STATE.md` (agent handoff) remain file-based.
+
+**Do NOT create or update deprecated files.** If you encounter them, note that they are stale and use the GitHub-native equivalent instead.
+
 
 ## 0.7 Project Documentation Standards — THREE-TIER MODEL
 
@@ -165,15 +247,17 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 
 These 7 files are the minimum set for every project, created at P0:
 
-| # | File | Purpose | Update | Template |
-|:--|:-----|:--------|:-------|:---------|
-| 1 | `README.md` | Project identity, thesis, constraints | Milestones only | README |
-| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE |
-| 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session | SPRINT-BACKLOG |
-| 4 | `CHANGELOG.md` | Chronological versioned change log | Every session | CHANGELOG |
-| 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge | PRODUCT-BACKLOG |
-| 6 | `LEARNINGS.md` | Project-specific lessons (kaizen engine) | When lessons emerge | LEARNINGS-TEMPLATE |
-| 7 | `DECISIONS.md` | Architecture/design decisions with rationale | When key decisions made | ADR |
+| # | File | Purpose | Update | Template | Status |
+|:--|:-----|:--------|:-------|:---------|:-------|
+| 1 | `README.md` | Project identity, thesis, constraints | Milestones only | README | **ACTIVE** |
+| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE | **ACTIVE** |
+| 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session | SPRINT-BACKLOG | **DEPRECATED → GitHub Projects** |
+| 4 | `CHANGELOG.md` | Chronological versioned change log | Every session | CHANGELOG | **DEPRECATED → GitHub Releases** |
+| 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge | PRODUCT-BACKLOG | **DEPRECATED → GitHub Issues** |
+| 6 | `LEARNINGS.md` | Project-specific lessons (kaizen engine) | When lessons emerge | LEARNINGS-TEMPLATE | **DEPRECATED → GitHub Wiki** |
+| 7 | `DECISIONS.md` | Architecture/design decisions with rationale | When key decisions made | ADR | **DEPRECATED → GitHub Discussions** |
+
+**DEPRECATED files:** Do NOT create or update these. Use the GitHub-native replacement instead (see §0.6.8). Existing deprecated files should be migrated (content → GitHub) and then removed.
 
 ### Tier 2: Phase-Gated Files (created at specific phases)
 
