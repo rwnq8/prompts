@@ -127,6 +127,41 @@ Universal QA/QC framework baked into the entire project lifecycle. Two new templ
 
 ---
 
+### M43 — Rule 14 (ANTI-PHANTOM): No Claim Without Execution Evidence [2026-05-24]
+**Status:** DONE. Added to DEFAULT.md, QWAV-DEFAULT.md, META-PROMPT-DEEPSEEK.md.
+**Category:** META — CORE OPERATING RULE
+**Rationale:** Export `export_deepchat_2026-05-24_05-03-29.md` showed the #1 agent failure: claiming actions (tests passed, files written, commits made) without ever invoking tools. Rule 14 is a HARD BLOCK: execution before claim, evidence-required, future-tense banned, pre-response phantom audit.
+**Changes:** Rules 12-14 inserted after Rule 6 in all prompts. §9.11.3 restructured as "MANDATORY Pre-Response Gate (HARD BLOCK)" with Phantom Claim Audit. §9.11.1 references export file. META-PROMPT-DEEPSEEK.md template updated for all 9 rules + 7 structural gates.
+**Commit:** `65cc7a7`
+
+### M44 — GitHub-Native Project Management: `gh` CLI Integration [2026-05-24]
+**Status:** PROMPT DONE. Execution SPINOFF → Projects Agent.
+**Category:** META — ARCHITECTURE
+**Rationale:** File-based tracking (SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md) is fragile, invisible to collaborators, and doesn't integrate with GitHub-native tooling. Migrate to GitHub Issues, Projects, Releases, Wiki, Discussions via `gh` CLI (v2.92.0+ installed, authenticated with `repo`, `workflow`, `read:org`, `gist`).
+**Prompt changes:** §0.6.8 GitHub-Native section with full command reference, startup/close-out checklists, File Deprecation Map. Tier 1 table updated with DEPRECATED status column.
+**SPINOFF (Projects Agent):** Actual migration — `gh issue create` for BACKLOG items, `gh project item-create` for sprint tasks, `gh release create` for changelog entries, wiki repo clone + push for learnings/decisions.
+**Commit:** `80132ad`
+
+### M45 — Prompt Refactoring: QWAV-DEFAULT.md 87% Reduction + Program/Project Separation [2026-05-24]
+**Status:** DONE.
+**Category:** META — ARCHITECTURE
+**Rationale:** QWAV-DEFAULT.md was 122K chars with ~80% duplication of DEFAULT.md. Refactored to inherit from DEFAULT.md (Section 0 lists all inherited sections), keeping only program-specific delta (16K chars): Portfolio Manager role, email outreach framework, GitHub-native program management, Buffer social media, program↔project handoff protocol, project initiation protocol. Generalized all QWAV-specific language to generic Program/Portfolio terminology.
+**Changes:** DEFAULT.md §0.9 generalized (QWAV → Program Agent). QWAV-DEFAULT.md replaced entirely (122K → 16K). Clear separation: program agent coordinates, project agent executes.
+**Commit:** `80387f7`
+
+### M46 — GitHub CLI Migration Execution [2026-05-24]
+**Status:** SPINOFF — delegated to Projects Agent.
+**Category:** SPINOFF
+**Tasks:**
+- [ ] `gh issue create` for existing BACKLOG items across repos
+- [ ] `gh project item-create` for sprint tasks under QNFO org
+- [ ] `gh release create` for changelog entries
+- [ ] Clone wiki repos and push learnings/decisions content
+- [ ] Enable GitHub Discussions for QNFO org repos
+- [ ] Remove deprecated files (SPRINT.md, BACKLOG.md, etc.) after migration verified
+- [ ] Archive existing file content to Archive before deletion
+**Blocked by:** None. `gh` CLI authenticated with full scope.
+
 ## Legend
 
 | Domain | Color | Scope |
