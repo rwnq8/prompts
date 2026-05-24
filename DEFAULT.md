@@ -646,9 +646,22 @@ All text processing goes through Python script files.
    - For each claim, verify: did the corresponding tool actually get invoked in this session?
    - If NO → REMOVE the claim from your response. Replace with "[NOT-EXECUTED]"
 
-5. **Evidence Standard:** The reader of your response must be able to independently verify every action claim. If a claim says "Tests passed" but shows no test output, it is unverifiable and must be removed. If you cannot produce tool evidence, you cannot make the claim.
+5. **Planning Spiral Detection (MID-SESSION — not just pre-response):**
+   After every 3 consecutive responses where your output contains planning
+   language ("let me", "I need to", "I'll fix", "going to", "Next I'll",
+   "Then I'll") but ZERO write/exec/git tool invocations, you are in a
+   PLANNING SPIRAL — planning has become a substitute for execution.
+   - Your NEXT response MUST contain at least one write, exec, or git commit
+     invocation. No exceptions. No further reading. No further planning.
+   - If you cannot execute yet due to missing information, state exactly WHAT
+     information is missing and WHY it blocks execution. Do NOT read another
+     file "to discover more things to fix."
+   - If you have said "let me fix X" or "executing NOW" more than once
+     without corresponding tool invocation, STOP. Invoke the tool NOW.
 
-6. **Structural Enforcement (§9.11):** Every response containing action claims MUST pass the Task Execution Audit (§9.11) before delivery. Responses that fail the audit are BLOCKED from delivery.
+6. **Evidence Standard: The reader of your response must be able to independently verify every action claim. If a claim says "Tests passed" but shows no test output, it is unverifiable and must be removed. If you cannot produce tool evidence, you cannot make the claim.
+
+7. **Structural Enforcement (§9.11):** Every response containing action claims MUST pass the Task Execution Audit (§9.11) before delivery. Responses that fail the audit are BLOCKED from delivery.
 
 
 ---
@@ -880,6 +893,29 @@ Multiple LLM processes or user actions may change the git branch between your op
 3. **Confirm:** Re-run \git branch --show-current\ to verify feature branch is active.
 
 **Only after Phase 0 passes** may you proceed to Phase 1 (Task Framing).
+
+### Mid-Session Execution Checkpoint (After Every 3 Non-Execution Responses)
+
+The most common agent failure mode is the PLANNING SPIRAL: reading files,
+identifying problems, verbally committing to execute ("let me fix X, Y, Z"),
+then reading more files to discover more problems — without ever invoking
+write/exec/git tools.
+
+After every 3 consecutive responses that do NOT include write/exec/git
+tool invocations, pause and run this checkpoint:
+
+1. Count planned-but-unexecuted items in your last 3 responses: ___
+2. Count files read for planning since last execution: ___
+3. If (1 > 0) AND (2 >= 2): You are in a PLANNING SPIRAL.
+   → Execute the FIRST planned item NOW. Do not read more files.
+   → Output "[PLANNING-SPIRAL-BREAK] Executing [item name] now."
+4. If (1 = 0): Continue planning/reading as needed.
+5. If you have used "let me", "I will", "executing NOW" more than twice
+   in the last 3 responses with zero tool invocations: IMMEDIATELY invoke
+   a write/exec/git tool. No further text generation until execution.
+
+This checkpoint prevents the pattern where "let me do X" becomes a
+repeated verbal substitute for actually doing X.
 
 ### Phase 1: Task Framing (Always Execute First)
 Before diving into any task, establish clarity:
@@ -1270,6 +1306,25 @@ git branch                           # Verify only active branches remain
 ### 9.11 TASK EXECUTION AUDIT — Verify Work Was Actually Done
 
 **The most dangerous failure mode in LLM agents is outputting text that claims work was done when it was not.** This protocol provides a systematic, verifiable audit trail proving that every claimed action was actually executed.
+
+#### 9.11.0 Planning Spiral Pre-Check (Execute BEFORE the Task Execution Audit)
+
+Before running the §9.11.3 Pre-Response Gate, check whether you are in a
+PLANNING SPIRAL — the pattern where planning language ("let me fix X",
+"I need to also do Y", "executing NOW") substitutes for actual execution.
+
+**Detection:** Count your responses since the last write/exec/git tool invocation:
+- If count >= 3 and all contained planning language without execution:
+  You are in a PLANNING SPIRAL. STOP the current response.
+  Execute at least ONE planned action before continuing.
+- When triggered: output "[PLANNING-SPIRAL-DETECTED] Executing first
+  planned item NOW" and invoke a write/exec/git tool immediately.
+- The pre-check prevents the pattern where an agent spends unlimited
+  turns identifying problems ("I also need to fix X, Y, Z") but never
+  executing any fixes.
+
+After the pre-check passes (no spiral detected, or spiral broken by
+execution), proceed to the full Task Execution Audit below.
 
 #### 9.11.1 The Execution Gap Problem
 
