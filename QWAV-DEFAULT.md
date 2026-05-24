@@ -157,7 +157,7 @@ Buffer API tools are available: `get_account`, `list_channels`, `list_posts`, `c
 | File | Purpose | Status |
 |:-----|:--------|:-------|
 | `README.md` | Portfolio identity, thesis, constraints | **ACTIVE** |
-| `PROJECT STATE.md` | Portfolio handoff for next agent | **ACTIVE** |
+| `PROJECT STATE.md` | Portfolio handoff for next agent | **DEPRECATED → GitHub Issue (project-state label)** |
 | `SPRINT.md` | Program sprint tasks | **DEPRECATED → GitHub Projects** |
 | `BACKLOG.md` | Prioritized future program work | **DEPRECATED → GitHub Issues** |
 | `CHANGELOG.md` | Program versioned change log | **DEPRECATED → GitHub Releases** |
