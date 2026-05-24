@@ -469,6 +469,64 @@ When initiating a new project, create the directory under `G:\My Drive\projects\
 5. **Code Block Immunity:** Code blocks (```python, ```text) and inline code (` `` `) are EXEMPT ? they contain executable or literal text, not rendered math.
 6. **Merging Rule:** Adjacent math tokens separated only by spaces/math-operators must be merged into a single $...$ block (e.g., $r_e / \bar{\lambda}_C$ not $r_e$ / $\bar{\lambda}_C$).
 
+### Rule 12: Pre-Execution Unicode Safety Scan (Windows cp1252)
+
+Before FIRST execution of any Python file that produces console output:
+1. Run a Python scan for ALL non-ASCII characters in the file
+2. If any are found, replace with ASCII-safe alternatives:
+   - Box-drawing (U+2500-U+257F) → ASCII dashes and pipes
+   - Subscript/superscript (U+2070-U+2089, U+00B2, U+00B3) → plain digits
+   - Special symbols (U+2713, U+26A0, U+2717) → [OK], [WARN], [ERR]
+   - Em/en dashes (U+2013, U+2014) → -- and ---
+   - Curly quotes (U+2018, U+2019, U+201C, U+201D) → straight quotes
+     (for code files only; publication documents use curly quotes)
+3. Re-scan after replacement to confirm zero non-ASCII remain
+4. Only then execute the file
+
+This prevents the N-iteration fix cycle where each crash reveals one character at a time.
+
+### Rule 13: Never Inline Python Through PowerShell (HARD BLOCK)
+
+PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested
+quotes BEFORE Python receives the string. This corrupts every inline
+`python -c "..."` command.
+
+HARD BLOCK: Never use `python -c "..."`. Instead:
+1. Write Python scripts to temporary files first
+2. Execute the script file: `python script.py`
+3. Verify output with Test-Path + Get-Content
+4. Delete temporary script when workflow complete
+
+PowerShell is for git commands and simple file operations ONLY.
+All text processing goes through Python script files.
+
+### Rule 14: No Claim Without Execution Evidence (ANTI-PHANTOM RULE)
+
+**The #1 agent failure mode: outputting text that claims actions were taken when no tool was ever invoked.** This rule is a HARD BLOCK on that pattern.
+
+1. **Execution Before Claim:** You MUST invoke the actual tool (write, edit, exec, git) BEFORE you may claim the action was completed. Text claiming completion without corresponding tool invocation is FABRICATION.
+
+2. **Evidence-Required Claims:** Every claim of completed action in your response MUST include tool evidence:
+   - File write → include `Test-Path <file>` result and `Get-Content <file> -First 3` output
+   - Git commit → include `git log -1 --oneline` output
+   - Python execution → include actual script output (not narrative about what it produced)
+   - Test pass → include actual test runner output with exit code
+
+3. **Future-Tense Action Promises BANNED in Final Output:** The following phrases in your final response indicate a PHANTOM claim:
+   - "I will..." / "I'll..." / "Going to..." / "Let me..." + action claim
+   - "PROCEED" used as a promise of future execution
+   - "Next I'll..." / "Then I'll..." / "I'm about to..." without immediate tool invocation
+   If your draft response contains these, either: (a) invoke the tool NOW and replace the promise with [EXECUTED] evidence, or (b) change to "[NOT-EXECUTED] I have not yet executed this."
+
+4. **Pre-Response Phantom Audit:** Before delivering ANY response, scan your draft for:
+   - Any claim of action completion (write, commit, test, verify, deploy, push, merge)
+   - For each claim, verify: did the corresponding tool actually get invoked in this session?
+   - If NO → REMOVE the claim from your response. Replace with "[NOT-EXECUTED]"
+
+5. **Evidence Standard:** The reader of your response must be able to independently verify every action claim. If a claim says "Tests passed" but shows no test output, it is unverifiable and must be removed. If you cannot produce tool evidence, you cannot make the claim.
+
+6. **Structural Enforcement (§9.11):** Every response containing action claims MUST pass the Task Execution Audit (§9.11) before delivery. Responses that fail the audit are BLOCKED from delivery.
+
 
 ---
 
