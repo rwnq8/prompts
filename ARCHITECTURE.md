@@ -287,7 +287,7 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 
 | File | Purpose | Version |
 |:-----|:--------|:--------|
-| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.3 |
+| `ARCHITECTURE.md` | This document — high-level taxonomy | v1.4 |
 | `DEFAULT.md` | System prompt for the Projects agent | — |
 | `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.5 |
 | `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.2 |
