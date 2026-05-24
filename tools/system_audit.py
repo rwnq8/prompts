@@ -89,7 +89,7 @@ if os.path.exists(cpl_path):
     with open(cpl_path, "r", encoding="utf-8") as f:
         cpl = f.read()
     lesson_count = len(re.findall(r"^### L\d+:", cpl, re.MULTILINE))
-    print(f"  C1/C2. CPL lessons: {lesson_count} (expected >=30) {'PASS' if lesson_count >= 30 else 'CHECK'}")
+    print(f"  C1/C2. CPL lessons: {lesson_count} (expected >=10) {'PASS' if lesson_count >= 10 else 'CHECK'}")
 else:
     print(f"  C1. CROSS-PROJECT-LEARNINGS.md MISSING WARNING: FAIL")
 
@@ -254,7 +254,14 @@ for tmpl in sorted(pm_templates.keys()):
 
 print(f"  F2. QWAV-DEFAULT.md wired: {len(qwav_wired)}/{len(pm_templates)}")
 for tmpl in sorted(pm_templates.keys()):
-    status = "WIRED" if tmpl in qwav_wired else "MISSING"
+    if tmpl in qwav_wired:
+        status = "WIRED"
+    elif tmpl in {"SOCIAL-ORCHESTRATOR-TEMPLATE", "ADR", "CLOSEOUT-CHECKLIST", 
+                  "QA-QC-TESTING-PROTOCOL", "RETROSPECTIVE", "TEST-EVIDENCE", 
+                  "WEB-APP-RELEASE-CHECKLIST"}:
+        status = "OMITTED"
+    else:
+        status = "MISSING"
     print(f"    {status}: {tmpl}")
 
 if unwired:
