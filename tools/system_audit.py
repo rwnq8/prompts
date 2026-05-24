@@ -301,6 +301,103 @@ else:
 
 print(f"\n=== AUDIT COMPLETE ===")
 
+# PART I: ANTI-PHANTOM EXECUTION AUDIT (Rule 14 Enforcement)
+print("\nPART I: ANTI-PHANTOM EXECUTION AUDIT (GitHub Issues Integrity)")
+
+# Check GitHub Issues for Rule 14 violations: closed without deliverable evidence
+import json as _json
+i_issues = []
+try:
+    result = subprocess.run(
+        ["gh", "issue", "list", "--repo", "QNFO/qwav", "--state", "closed", "--limit", "30", "--json", "title,body,number,closedAt,comments"],
+        capture_output=True, text=True, timeout=15
+    )
+    if result.returncode == 0:
+        closed = _json.loads(result.stdout)
+        # Red flags: closed with minimal body, no comments, no file references, no commit hashes
+        for issue in closed:
+            flags = []
+            body = (issue.get("body") or "").strip()
+            num = issue["number"]
+            title = issue["title"]
+            
+            if len(body) < 100 and "TEST" not in title.upper():
+                flags.append("MINIMAL-BODY")
+            if issue.get("comments", 0) == 0:
+                flags.append("NO-COMMENTS")
+            if not re.search(r"(?:Test-Path|git log|commits|verified|smoke_test|system_audit)", body):
+                if not re.search(r"`[a-f0-9]{7}`", body):  # No commit hash
+                    flags.append("NO-EVIDENCE")
+            if "Token" in title and "scope" in title.lower() and not re.search(r"(?:refreshed|added scope|now has)", body):
+                flags.append("TOKEN-NOT-UPGRADED")
+            if "Project board" in title and not re.search(r"(?:created|board exists)", body):
+                flags.append("BOARD-NOT-CREATED")
+            
+            if flags:
+                i_issues.append((num, title, flags))
+        
+        if i_issues:
+            print(f"  I1. ANTI-PHANTOM detections: {len(i_issues)} closed Issues lack execution evidence")
+            for num, title, flags in i_issues:
+                print(f"    #{num}: {title} — {', '.join(flags)}")
+            print(f"  I_RESULT: {len(i_issues)} Rule 14 violations found FAIL")
+        else:
+            print("  I1. No ANTI-PHANTOM patterns detected PASS")
+            print("  I_RESULT: GitHub Issues execution integrity PASS")
+    else:
+        print(f"  I1. Could not query GitHub Issues: {result.stderr[:100]} SKIP")
+except Exception as e:
+    print(f"  I1. GitHub Issues check error: {e} SKIP")
+
+# I2: Token scope gap check
+i2_issues = []
+try:
+    # Check current token scopes
+    tresult = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True, timeout=10)
+    scopes = tresult.stdout + tresult.stderr
+    missing_scopes = []
+    if "project" not in scopes:
+        missing_scopes.append("project")
+    if "discussions:write" not in scopes:
+        missing_scopes.append("discussions:write")
+    
+    if missing_scopes:
+        i2_issues.append(f"Missing token scopes: {', '.join(missing_scopes)}")
+        print(f"  I2. Token scope gaps: {missing_scopes} FAIL")
+        print(f"     Fix: gh auth refresh -h github.com -s {','.join(missing_scopes)}")
+    else:
+        print("  I2. Token scopes complete PASS")
+except Exception as e:
+    print(f"  I2. Token scope check error: {e} SKIP")
+
+# I3: Wiki content vs push state
+try:
+    wiki_pages_dir = r"G:\My Drive\projects\wiki-pages"
+    if os.path.exists(wiki_pages_dir):
+        page_files = [f for f in os.listdir(wiki_pages_dir) if f.endswith('.md')]
+        if page_files:
+            print(f"  I3. Wiki pages ready: {len(page_files)} files ({sum(os.path.getsize(os.path.join(wiki_pages_dir, f)) for f in page_files)} bytes) — NOT PUSHED")
+            print(f"     Action: Initialize wiki via web UI then push wiki-pages/")
+        else:
+            print("  I3. Wiki pages directory empty CHECK")
+    else:
+        print("  I3. No wiki-pages directory CHECK")
+except Exception as e:
+    print(f"  I3. Wiki check error: {e} SKIP")
+
+# I4: GitHub Releases vs CHANGELOG
+try:
+    rresult = subprocess.run(["gh", "release", "list", "--repo", "QNFO/qwav", "--limit", "5"], 
+                            capture_output=True, text=True, timeout=10)
+    releases = rresult.stdout.strip()
+    if not releases:
+        print("  I4. No GitHub Releases found — CHANGELOG migration not done FAIL")
+    else:
+        rc = len(releases.split('\n'))
+        print(f"  I4. {rc} GitHub Releases found PASS")
+except Exception as e:
+    print(f"  I4. Releases check error: {e} SKIP")
+
 # PART H: SYSTEM CONSISTENCY AUDIT (template count drift, cross-references)
 print("\nPART H: SYSTEM CONSISTENCY AUDIT (template drift detection)")
 consistency_script = os.path.join(prompts_dir, "tools", "system_consistency_audit.py")
