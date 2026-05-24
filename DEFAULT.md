@@ -246,7 +246,7 @@ Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\
 
 ### Tier 1: Core Initialization Files (ALWAYS present)
 
-These 7 files are the minimum set for every project, created at P0:
+README.md is the only mandatory file-based artifact. All other project management is GitHub-native per §0.6.8, created at P0:
 
 | # | File | Purpose | Update | Template | Status |
 |:--|:-----|:--------|:-------|:---------|:-------|
@@ -309,7 +309,7 @@ The system has 29 registered prompt templates. 17 generate project files (above)
 **Step 2: After file verification, read documentation in order:**
 
 ```
-1. Read PROJECT STATE.md → understand current status, constraints, next steps.
+1. Check GitHub Issue (label: `project-state`) → understand current status, constraints, next steps.
 2. Read SPRINT.md → identify the active task.
 3. Read LEARNINGS.md → avoid repeating past mistakes.
 4. Read CHANGELOG.md (last entry) → know what just changed.
@@ -358,7 +358,7 @@ TASK EXECUTION AUDIT:
 2. Update CHANGELOG.md → add entry: What Changed, Files Changed, Git info
 3. If lessons emerged → add to LEARNINGS.md
 4. If decisions made → add to DECISIONS.md
-5. Update PROJECT STATE.md → handoff for the next agent with Task Execution Audit summary
+5. Update GitHub Issue (project-state) → handoff for the next agent with Task Execution Audit summary
 6. Commit ALL documentation changes: git add + git commit
 7. If project is in close-out phase: execute Project Close-Out Procedure (Section 12)
 ```
@@ -393,7 +393,7 @@ Each lesson in LEARNINGS.md follows this format:
 
 ### File Naming Exception
 
-Tier 1 core files use fixed names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
+Tier 1 core files use fixed names and are never versioned: `README.md` only; all PM files (SPRINT.md, BACKLOG.md, etc.) are DEPRECATED per §0.6.8. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
 
 ### Cross-Project Learning
 
@@ -448,7 +448,7 @@ STEP 4 — ACTIVE PROJECT MAPPING:
 STEP 5 — PROJECT DOCUMENTATION REVIEW:
   For each relevant project, read:
   - README.md — project identity, thesis, constraints
-  - PROJECT STATE.md — current status, next steps
+  - GitHub Issue (project-state) — current status, next steps
   - SPRINT.md — active tasks, blockers
   - LEARNINGS.md — project-specific lessons (kaizen engine)
   - CHANGELOG.md — recent changes
@@ -533,7 +533,7 @@ You are a **Projects Executor** — you receive handoff instructions from the **
 - All Phase 0–5 workflow for project execution tasks
 
 ### What You Do NOT Do (Program-Level — Leave to Program Agent)
-- Update program-level documentation, PROJECT STATE.md, or program BACKLOG
+- Update program-level documentation, GitHub Issue (project-state), or GitHub Issues
 - Coordinate between multiple projects
 - Make strategic portfolio decisions (which project to pursue next)
 - Manage social media (Buffer API)
@@ -546,7 +546,7 @@ You are a **Projects Executor** — you receive handoff instructions from the **
 4. **Return:** Copy the final deliverable to `G:\My Drive\Obsidian\releases\YYYY\MM\` with a descriptive filename
 5. **Do NOT write directly to the program directory.** The Program Agent will pull the deliverable from releases.
 6. **Close GitHub Issue:** `gh issue close <num> --reason completed` with deliverable reference
-7. **Update PROJECT STATE.md:** Set `STATUS: COMPLETE | DELIVERABLE: path`
+7. **Update GitHub Issue (project-state):** Set `STATUS: COMPLETE | DELIVERABLE: path`
 
 ### Sub-Handoff Capability
 If a project requires sub-projects, you MAY create handoff documents for your own sub-Projects threads using the same protocol. But you do NOT manage program-level portfolio coordination.
@@ -853,7 +853,7 @@ Before doing anything else, establish your git identity and record it explicitly
 **0.1.5 Project Documentation Verification (Run ONCE at session start):**
 1. Verify all Tier 1 core files exist in the project directory (Section 0.7).
 2. If any are missing: create them using the formats in Section 0.7.
-3. Read them in order: PROJECT STATE.md → SPRINT.md → LEARNINGS.md → CHANGELOG.md (last entry).
+3. Check GitHub-native status: `gh issue list --label project-state`, Project board, GitHub Releases.
 4. If SPRINT.md has active tasks: identify the next task to work on.
 5. If no tasks: ask the human for direction or check BACKLOG.md.
 
@@ -893,7 +893,7 @@ Multiple LLM processes or user actions may change the git branch between your op
      - Run \git status --short\ to assess the new state.
      - If now on \main\/\master\: switch back to a feature branch immediately (\git checkout -b feature/<name>\ or \git checkout <original-branch>\).
      - If on a different feature branch: acknowledge the switch, note the new branch, and proceed — another process may have legitimately changed context.
-   - **If CHANGED to a RENAMED version of the same branch (e.g., \`feature/ultrametric-v2\` → \`feature/tree-distance\`):** A parallel process renamed the branch (CPL L19). Run \`git reflog\` to identify the rename point. Continue work on the renamed branch. Update PROJECT STATE.md with the new branch name.
+   - **If CHANGED to a RENAMED version of the same branch (e.g., \`feature/ultrametric-v2\` → \`feature/tree-distance\`):** A parallel process renamed the branch (CPL L19). Run \`git reflog\` to identify the rename point. Continue work on the renamed branch. Update project-state GitHub Issue with the new branch name.
    - **If UNCHANGED:** Proceed to 0.3.
 2. \git rev-parse HEAD\ → Has HEAD moved since your last check?
    - **If CHANGED to a DIFFERENT branch name:** Another process or user switched branches. Do NOT silently continue.
@@ -1193,7 +1193,7 @@ At the end of EVERY response that involved file changes, ask yourself these thre
 
 **CRITICAL: If you stated in your response that you committed changes, but `git log -1` does not show that commit, you have FAILED. Execute the git commands IMMEDIATELY — do not end the response until the commit exists.**
 
-**Branch Rename Detection (CPL L19):** After every commit, compare the current branch name against the branch name recorded in PROJECT STATE.md. If they differ, the branch was renamed by a parallel process. Update PROJECT STATE.md with the new name. Use `git reflog` to confirm the rename is benign (same commit history, different label).
+**Branch Rename Detection (CPL L19):** After every commit, compare the current branch name against the branch name recorded in the project-state GitHub Issue. If they differ, the branch was renamed by a parallel process. Update the project-state GitHub Issue with the new name. Use `git reflog` to confirm the rename is benign (same commit history, different label).
 
 ### 9.5 BRANCH NAMING CONVENTION
 
@@ -1239,7 +1239,7 @@ ACTION:[CREATE|EDIT|DELETE] FILES: <path1>, <path2>, <path3> RATIONALE:<brief-re
 | **Dirty worktree on branch switch** | `git status --short` shows changes when trying to switch | 1. `git stash list` (baseline). 2. `git stash push -m "pre-switch" --include-untracked`. 3. `git stash list` (verify +1). 4. Switch/create branch. 5. `git stash pop` (verify message matches). |
 | **Commit stated but not executed** | `git log -1` does not show expected commit | Execute `git add <file>` + `git commit -m "..."` immediately. Do NOT end the response. |
 | **Detached HEAD** | `git branch --show-current` returns nothing or error | `git checkout -b feature/recovery` to attach |
-| **Branch renamed by parallel process** | `git branch --show-current` returns a different name than PROJECT STATE.md, but `git log` shows same commits | 1. Check `git reflog` to identify rename point. 2. Update PROJECT STATE.md. 3. Continue on renamed branch. 4. Document in CHANGELOG.md. This is benign (CPL L19) — do NOT create yet another branch. | to new branch. |
+| **Branch renamed by parallel process** | `git branch --show-current` returns a different name than project-state GitHub Issue, but `git log` shows same commits | 1. Check `git reflog` to identify rename point. 2. Update project-state GitHub Issue. 3. Continue on renamed branch. 4. Document in CHANGELOG.md. This is benign (CPL L19) — do NOT create yet another branch. | to new branch. |
 | **Stash pop restores wrong work** | `git stash pop` triggers merge conflicts from a pre-existing stash entry (not your own) | 1. `git merge --abort` (or `git reset --merge`). 2. `git stash list` to identify the offending entry. 3. `git stash drop stash@{N}` to remove it. 4. Verify worktree clean with `git status --short`. 5. Resume work. **Prevention:** Always check `git stash list` before/after `git stash push`; only `git stash pop` if the count increased by exactly 1. |
 | **Merge conflict** | Git reports CONFLICT during merge/rebase | 1. Open each conflicted file. 2. Remove `<<<<<<<`, `=======`, `>>>>>>>` markers — choose which version to keep (current branch = between `<<<<<<<` and `=======`, incoming = between `=======` and `>>>>>>>`). 3. `git add <file>` to mark as resolved. 4. `git commit`. |
 | **Wrong branch for task** | Branch name does not match current work | 1. `git stash`. 2. `git checkout -b feature/<correct-name>`. 3. `git stash pop`. |
@@ -1440,7 +1440,7 @@ All project files within a single flat project directory MUST use semantic versi
 
 #### 10.2 Core Rules
 
-0. **Project management files are EXEMPT.** The following project infrastructure files use fixed descriptive names and are never versioned: `README.md`, `PROJECT STATE.md`, `SPRINT.md`, `CHANGELOG.md`, `BACKLOG.md`, `LEARNINGS.md`, `DECISIONS.md`, `.gitignore`, `.gitattributes`. See Section 0.7 for the full documentation standards.
+0. **Project management files are EXEMPT.** The following project infrastructure files use fixed descriptive names and are never versioned: `README.md` only; all PM files (SPRINT.md, BACKLOG.md, etc.) are DEPRECATED per §0.6.8, `.gitignore`, `.gitattributes`. See Section 0.7 for the full documentation standards.
 
 1. **Every new content/output file** created during a chat session MUST receive the next available version number. Use Python to scan the project directory (`os.listdir()`, `glob.glob("*.md")`) and determine the next available version BEFORE creating any file.
 
@@ -1707,7 +1707,7 @@ Date: [YYYY-MM-DD]
        [ ] 2e. Copied to G:\My Drive\Obsidian\releases\YYYY\MM\
        [ ] 2f. Copy verified with os.path.exists()
 
-[ ] 3. ALL CORE + PHASE DOCS UPDATED — PROJECT STATE.md (final state), SPRINT.md 
+[ ] 3. ALL CORE + PHASE DOCS UPDATED — GitHub Issue (project-state, final state), GitHub Issues
        (all tasks marked), CHANGELOG.md (close-out entry), LEARNINGS.md (final 
        lessons), DECISIONS.md (final decisions), BACKLOG.md (remaining items 
        triaged), README.md (project summary updated)
@@ -1724,7 +1724,7 @@ Date: [YYYY-MM-DD]
              release file, deliver social media content to user)
 
 [ ] 6. ARCHIVING — Project directory is self-contained. A new agent starting 
-       from cold can read PROJECT STATE.md and understand everything. No 
+       from cold can read the project-state GitHub Issue and understand everything. No 
        broken references. No temp files. .gitignore covers build artifacts.
 
 [ ] 7. FINAL AUDIT — Python script verifies: all core docs exist and are non-empty, 
@@ -1816,7 +1816,7 @@ This mode enables sprint-driven autonomous progression through project tasks wit
 | Command | Behavior |
 |:--------|:---------|
 | **WHAT'S NEXT? PROCEED** | Identify and autonomously execute the next incomplete SPRINT.md task |
-| **RESUME** | Continue from where the previous execution left off (reads PROJECT STATE.md) |
+| **RESUME** | Continue from where the previous execution left off (reads project-state GitHub Issue) |
 
 **Design principle:** The user steers at the sprint level (what tasks exist, their priority). The agent handles the *execution* level autonomously. This eliminates micro-management while preserving human oversight of direction.
 
@@ -1826,7 +1826,7 @@ When the user sends exactly **WHAT'S NEXT? PROCEED** (or case-insensitive varian
 
 #### Step 1: Read State (Mandatory)
 1. Read `SPRINT.md` to identify all tasks and their status markers
-2. Read `PROJECT STATE.md` to understand current project context, constraints, active phase
+2. Check GitHub Issue (label: `project-state`) to understand current project context, constraints, active phase
 3. Read `LEARNINGS.md` to scan last 5 lessons for relevant prevention rules
 4. Read `CHANGELOG.md` for last 2 entries of recent activity context
 
@@ -1840,7 +1840,7 @@ Scan SPRINT.md for task status markers:
 
 **Selection rule:** Pick the FIRST `[ ]` task from the top of SPRINT.md (highest priority first). If none, fall back to first `[~]`. If none of either, report all tasks complete.
 
-**If no tasks exist:** Create SPRINT.md with a single task derived from PROJECT STATE.md's stated goal. If no goal exists, report: "No sprint tasks defined. What should the first task be?"
+**If no tasks exist:** Create a GitHub Issue derived from the project-state GitHub Issue's stated goal. If no goal exists, report: "No sprint tasks defined. What should the first task be?"
 
 #### Step 2.5: Audit Completed Tasks for Test Evidence (QA/QC Gate)
 
@@ -1906,7 +1906,7 @@ Execute the complete workflow from Section 5:
 
 **First, update documentation:**
 1. In SPRINT.md: mark completed task as `[x]` with timestamp
-2. In PROJECT STATE.md: update "Last Action", "Current Status", "Next Steps" fields
+2. In GitHub Issue (project-state): update "Last Action", "Current Status", "Next Steps" fields
 3. In CHANGELOG.md: add entry with What Changed, Files Changed, Git info
 4. If lessons emerged: add to LEARNINGS.md (use the L<N> format from Section 0.7)
 5. If decisions made: add to DECISIONS.md
@@ -1936,11 +1936,11 @@ SAY "RESUME" TO CONTINUE with the next task.
 When the user sends exactly **RESUME** (case-insensitive):
 
 #### Step 1: Determine Resumption Point
-1. Read `PROJECT STATE.md` and check "Last Action" and "Next Steps" fields
+1. Check GitHub Issue (project-state) and review "Last Action" and "Next Steps" fields
 2. Read `SPRINT.md` and identify any `[~]` (in-progress) or first incomplete `[ ]` task
-3. If PROJECT STATE.md indicates an interrupted task: resume from the interruption point
-4. If PROJECT STATE.md indicates a completed task: treat as "WHAT'S NEXT? PROCEED" (move to next task)
-5. If PROJECT STATE.md is ambiguous: default to the first `[~]` or `[ ]` task
+3. If project-state GitHub Issue indicates an interrupted task: resume from the interruption point
+4. If project-state GitHub Issue indicates a completed task: treat as "WHAT'S NEXT? PROCEED" (move to next task)
+5. If project-state GitHub Issue is ambiguous: default to the first `[~]` or `[ ]` task
 
 #### Step 2: Resume Execution
 - If resuming mid-task (interrupted during Phase 3): re-read any in-progress files, continue from the last documented checkpoint
@@ -1965,8 +1965,8 @@ The WHAT'S NEXT? PROCEED / RESUME mode is an **acceleration layer** on top of th
 | **No SPRINT.md** | File missing on read | Create SPRINT.md from template. Ask user: "SPRINT.md created. What should the first task be?" |
 | **All tasks `[x]`** | No `[ ]` or `[~]` markers found | Report: "All sprint tasks complete." Offer: (a) Plan next sprint, (b) Review completed work, (c) Close project. |
 | **Only `[!]` blocked tasks remain** | All non-complete tasks are `[!]` | Report each blocked task with its blocker from SPRINT.md. Offer to help unblock or plan around them. |
-| **Task execution fails** | Python error, missing source, dead end | 1. Mark task `[!]` in SPRINT.md with failure reason. 2. Document in PROJECT STATE.md. 3. Report failure with diagnosis. 4. Offer: retry, skip to next, or await user direction. 5. Do NOT simulate results. |
-| **User interrupts mid-execution** | User sends any message during Phase 3 | 1. Save current state to PROJECT STATE.md with `INTERRUPTED` flag and exact phase/step. 2. Stash dirty worktree if needed. 3. Yield control. User can RESUME later. |
+| **Task execution fails** | Python error, missing source, dead end | 1. Mark task `[!]` in SPRINT.md with failure reason. 2. Document in project-state GitHub Issue. 3. Report failure with diagnosis. 4. Offer: retry, skip to next, or await user direction. 5. Do NOT simulate results. |
+| **User interrupts mid-execution** | User sends any message during Phase 3 | 1. Save current state to project-state GitHub Issue with `INTERRUPTED` flag and exact phase/step. 2. Stash dirty worktree if needed. 3. Yield control. User can RESUME later. |
 | **Multiple `[ ]` tasks** | SPRINT.md has multiple un-prioritized tasks | Execute the FIRST (top of file = highest priority). In completion report, note: "Next: [second task name]". If priorities are unclear, ask once before proceeding. |
 | **Task requires external search** | Task references sources not in project | Generate a Search Request Manifest (Section 4, Research Protocol). Pause. Do NOT pretend to have search results. Ask user to execute search and save results before continuing. |
 | **Python unavailable** | exec fails or returns error | 1. Report the tool failure. 2. If task requires quantitative work: mark task `[!]` with reason "Python unavailable". 3. If text-only: proceed with `[LLM-INFERRED]` labeling but flag reduced confidence. |
@@ -1979,7 +1979,7 @@ For every WHAT'S NEXT? PROCEED or RESUME execution, the agent must record:
 
 1. **In SPRINT.md:** Task status updated (`[x]`, `[!]`, or `[~]`) with timestamp
 2. **In CHANGELOG.md:** Entry with timestamp, task name, files changed, git commit hash
-3. **In PROJECT STATE.md:** "Last Action" field updated with what was done and new state
+3. **In project-state GitHub Issue:** "Last Action" field updated with what was done and new state
 4. **In git:** Commit message must include the task name: `ACTION:EDIT FILE: SPRINT.md RATIONALE:Completed task: [task name]`
 
 This ensures full traceability of autonomous actions — every autonomous step is auditable from git log alone.
