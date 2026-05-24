@@ -228,13 +228,14 @@ At session end:
 
 | Deprecated File | Replacement | Command |
 |:----------------|:------------|:--------|
+| `PROJECT STATE.md` | GitHub Issues (project-state label) | `gh issue` |
 | `SPRINT.md` | GitHub Projects | `gh project` |
 | `BACKLOG.md` | GitHub Issues | `gh issue` |
 | `CHANGELOG.md` | GitHub Releases | `gh release` |
 | `LEARNINGS.md` | GitHub Wiki | wiki git repo |
 | `DECISIONS.md` | GitHub Discussions | `gh api graphql` |
 
-**RETAINED:** `README.md` (repo landing page), `PROJECT STATE.md` (agent handoff) remain file-based.
+**RETAINED:** `README.md` (repo landing page) remains file-based. All other PM files including `PROJECT STATE.md` are DEPRECATED and replaced by GitHub-native features per §0.6.8 File Deprecation Map. `PROJECT STATE.md` → GitHub Issue with `project-state` label.
 
 **Do NOT create or update deprecated files.** If you encounter them, note that they are stale and use the GitHub-native equivalent instead.
 
@@ -250,7 +251,7 @@ These 7 files are the minimum set for every project, created at P0:
 | # | File | Purpose | Update | Template | Status |
 |:--|:-----|:--------|:-------|:---------|:-------|
 | 1 | `README.md` | Project identity, thesis, constraints | Milestones only | README | **ACTIVE** |
-| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE | **ACTIVE** |
+| 2 | `PROJECT STATE.md` | Comprehensive handoff for next agent | Every session end | PROJECT-STATE | **DEPRECATED → GitHub Issue (project-state label) (§0.6.8)** |
 | 3 | `SPRINT.md` | Current sprint tasks, status, blockers | Every session | SPRINT-BACKLOG | **DEPRECATED → GitHub Projects** |
 | 4 | `CHANGELOG.md` | Chronological versioned change log | Every session | CHANGELOG | **DEPRECATED → GitHub Releases** |
 | 5 | `BACKLOG.md` | Prioritized future work queue | When new ideas emerge | PRODUCT-BACKLOG | **DEPRECATED → GitHub Issues** |

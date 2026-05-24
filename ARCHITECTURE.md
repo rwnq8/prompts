@@ -66,7 +66,7 @@ Filled via `fill_prompt_template(templateName, templateArgs, additionalContent)`
 | `RETROSPECTIVE-TEMPLATE` | — | Program agent, Projects agent (Â§12 close-out) | Sprint retrospective — start/stop/continue + CPL candidates |
 | \TEST-EVIDENCE-TEMPLATE\ | — | Projects agent (§5 Phase workflow, DoD) | Standardized test execution evidence document |
 | \QA-QC-TESTING-PROTOCOL\ | — | All agents (reference) | Universal QA/QC framework — deliverable type testing matrix, phase gate integration |
-| `PROJECT-STATE-TEMPLATE` | — | Program agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — status, branch, phase, constraints |
+| `PROJECT-STATE-TEMPLATE` | — | Program agent (§0.9), Projects agent (§0.7) | `PROJECT STATE.md` — **DEPRECATED → GitHub Issue (project-state label) (§0.6.8)** |
 | `LEARNINGS-TEMPLATE` | — | Program agent (§0.9), Projects agent (§0.7) | `LEARNINGS.md` — **DEPRECATED → GitHub Wiki (§0.6.8)** |
 | `CLOSEOUT-CHECKLIST-TEMPLATE` | — | Projects agent (§12 close-out) | `CLOSEOUT-CHECKLIST.md` — 7-item close-out checklist with human sign-off |
 | `WEB-APP-RELEASE-CHECKLIST` | — | Projects agent (§12 close-out, web app releases) | Pre-deployment gate — 9-section checklist for web app releases to GitHub Pages |
@@ -235,7 +235,8 @@ PROGRAM AGENT (QWAV-DEFAULT.md + DEFAULT.md):
   Create handoff via fill_prompt_template("HANDOFF", {type: "Program->Project", ...})
   Create GitHub Issue(s) for project tasks via gh issue create
   
-  Update PROJECT STATE.md: STATUS: DELEGATED TO PROJECTS | HANDOFF: path
+  Create/update GitHub Issue with label "project-state": STATUS: DELEGATED | HANDOFF: path
+  (gh issue create -R OWNER/REPO --label "project-state" --title "Project State: [name]" --body "...")
   
   PAUSE - wait for Projects agent
   
@@ -244,11 +245,11 @@ PROGRAM AGENT (QWAV-DEFAULT.md + DEFAULT.md):
   Follow research trail (Archive, releases, active projects)
   Execute Phases 0-5 (DEFAULT.md S5)
   Place deliverables in Obsidian\releases\YYYY\MM\
-  Update PROJECT STATE.md: STATUS: COMPLETE | DELIVERABLE: path
-  Close GitHub Issue: gh issue close <num> --reason completed
+  Update GitHub Issue (project-state): STATUS: COMPLETE | DELIVERABLE: path
+  Close task Issues: gh issue close <num> --reason completed
   
   BACK TO PROGRAM AGENT:
-  Read PROJECT STATE.md - confirm STATUS: COMPLETE
+  Check GitHub Issue (project-state): confirm STATUS: COMPLETE
   Review deliverable in Obsidian\releases\
   Quality check against DEFINITION-OF-DONE.md gates
   If PASS: update program docs, plan next steps
