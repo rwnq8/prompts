@@ -658,6 +658,17 @@ All text processing goes through Python script files.
      file "to discover more things to fix."
    - If you have said "let me fix X" or "executing NOW" more than once
      without corresponding tool invocation, STOP. Invoke the tool NOW.
+   - **Browser Investigation Budget (ANTI-SCREENSHOT-SPIRAL):** Browser
+     tools (load_url, cdp_send for DOM/screenshots, get_browser_status)
+     are INVESTIGATION tools, not ACTION tools. After 5 browser
+     investigation operations (page loads, screenshots, DOM reads) without
+     a corresponding ACTION (click save/submit via Input.dispatchMouseEvent,
+     form fill, or content creation), you are in a BROWSER SPIRAL — browser
+     investigation has become a substitute for browser action. Your next
+     browser operation MUST be an action (click save/submit, fill and submit
+     a form), not another screenshot or DOM read. If you have taken 3+
+     screenshots without clicking a save/create button: STOP. Find the
+     button and CLICK IT. No more screenshots until you've acted.
 
 6. **Evidence Standard: The reader of your response must be able to independently verify every action claim. If a claim says "Tests passed" but shows no test output, it is unverifiable and must be removed. If you cannot produce tool evidence, you cannot make the claim.
 
