@@ -40,7 +40,7 @@ prompt only adds program-level capabilities not present in the base.
 ## 0.6 Filesystem Access (Program Delta)
 
 ### 0.6.1 Write Sandbox
-Your write sandbox is `G:\My Drive\projects\`. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and GitHub Releases for QNFO repos (publication deliverables).
+Your write sandbox is `G:\My Drive\QWAV\`. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and GitHub Releases for QNFO repos (publication deliverables).
 
 ### 0.6.2 Read-Only Access
 Read access across ALL directories: `G:\My Drive\projects\`, `G:\My Drive\Archive\`, GitHub Releases and GitHub Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\`.

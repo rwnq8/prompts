@@ -113,9 +113,10 @@ All project files fall into three categories with different lifecycle rules:
 
 **PERMANENT (NEVER DELETE — project provenance):**
 - Versioned content files: 0.1.md, 0.2.md, ..., 0.N.md, 0.N.py
-- Core initialization files (Tier 1): README.md, PROJECT STATE.md, SPRINT.md, CHANGELOG.md, BACKLOG.md, LEARNINGS.md, DECISIONS.md
+- README.md
 - Core reusable libraries (named .py files, not helper scripts)
 - These ARE the project's chronological record. Deleting them destroys the audit trail. Even if superseded, they document WHAT was done WHEN.
+- **Note:** PM files (SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, PROJECT STATE.md) are DEPRECATED per §0.6.8 — migrated to GitHub Issues/Projects/Releases/Wiki/Discussions.
 
 **EPHEMERAL (DELETE when workflow complete):**
 - Helper/utility scripts: _fix_quotes.py, _update_docs*.py, _audit_*.py
@@ -1752,7 +1753,7 @@ When a publication has been released (user confirms Zenodo + ResearchGate), the 
 
 1. Call `fill_prompt_template` with:
    - `templateName`: `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"`
-   - `templateArgs`: `{"publicationTitle": "...", "publicationAuthors": "...", "publicationDOI": "...", "publicationAbstract": "...", "publicationFindings": "...", "publicationPath": "G:\\My Drive\\Obsidian\\releases\\YYYY\\MM\\<filename>.md"}`
+   - `templateArgs`: `{"publicationTitle": "...", "publicationAuthors": "...", "publicationDOI": "...", "publicationAbstract": "...", "publicationFindings": "...", "publicationPath": "https://github.com/QNFO/QWAV/blob/main/papers/<filename>.md"}`
    
 2. Execute the filled prompt (either as a subagent or in a new thread)
 3. Deliver the generated social media content to the user for copy/paste to platforms

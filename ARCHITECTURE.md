@@ -19,7 +19,7 @@ Configured in DeepChat Settings → Agents. Each agent loads ONE system prompt a
 |:------|:-------------|:--------------|:-----------|:--------|
 | **Projects** | `DEFAULT.md` | `G:\My Drive\projects\<name>\` | ALL directories | Project Executor — autonomous research, writing, coding. Receives handoff from Program Agent, executes Phases 0-5, returns deliverables. §0.9: Independent Project Executor role. Uses `gh` CLI for Issues/Projects (§0.6.8). |
 | **Prompts** | `META-PROMPT-DEEPSEEK.md` | `G:\My Drive\prompts\` | ALL directories | System prompt engineering — create, edit, audit prompts |
-| **QWAV** | `QWAV-DEFAULT.md` + `DEFAULT.md` | `G:\My Drive\projects\` | ALL directories | **Program/Portfolio Manager** — initiates projects via templates, coordinates across projects, manages GitHub Issues/Projects, quality-gates deliverables, manages social media (Buffer API). Inherits DEFAULT.md (Rules 1-6,12-14, Git, Email). QWAV-DEFAULT.md is program-specific delta (16K, not duplicate of DEFAULT.md). |
+| **QWAV** | `QWAV-DEFAULT.md` + `DEFAULT.md` | `G:\My Drive\QWAV\` | ALL directories | **Program/Portfolio Manager** — initiates projects via templates, coordinates across projects, manages GitHub Issues/Projects, quality-gates deliverables, manages social media (Buffer API). Inherits DEFAULT.md (Rules 1-6,12-14, Git, Email). QWAV-DEFAULT.md is program-specific delta (18K, not duplicate of DEFAULT.md). |
 
 **Design principle:** An agent exists ONLY when it has a unique filesystem write boundary. Everything else (email, image generation, social media) is consumed as a template or sub-prompt WITHIN the writing agent — typically the Projects agent.
 
@@ -76,9 +76,9 @@ Called via `subagent_orchestrator`. Self-clones of the current agent with ~35% c
 
 | Slot ID | Role | Input | Output | Tool Reliability |
 |:--------|:-----|:------|:-------|:-----------------|
-| `slot-mp80a5ry-e7hn` | **EXPLORER** — Divergent Thinking | Inline text only | Brainstorming, alternatives, edge-case discovery | LLM only (~35% file I/O) |
-| `slot-mp80ay3u-yzqo` | **IMPLEMENTER** — Convergent Execution | Inline text only | Drafting, structured output, content generation | LLM only (~35% file I/O) |
-| `slot-mp80b6bl-iix2` | **REVIEWER** — Critical Evaluation | Inline text only | Blind validation, reader testing, gap analysis | LLM only (~35% file I/O) |
+| `self` | **EXPLORER** — Divergent Thinking | Inline text only | Brainstorming, alternatives, edge-case discovery | LLM only (~35% file I/O) |
+| `slot-mp80dr5g-oh9g` | **IMPLEMENTER** — Convergent Execution | Inline text only | Drafting, structured output, content generation | LLM only (~35% file I/O) |
+| `slot-mp80e4mj-5s1l` | **REVIEWER** — Critical Evaluation | Inline text only | Blind validation, reader testing, gap analysis | LLM only (~35% file I/O) |
 
 **CRITICAL:** Never rely on subagents for file I/O, Python, git, skills, or settings. Provide ALL content inline. Subagents are for TEXT PROCESSING only — generate alternatives, draft from specs, validate output.
 
@@ -110,7 +110,7 @@ Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files te
 │  │   ├── <project>\     ← active project work           │
 │  │   └── _shared\       ← READ-ONLY: CROSS-PROJECT      │
 │  ├── prompts\           ← WRITE: Prompts agent          │
-│  ├── QWAV\              ← WRITE: QWAV agent (pending)   │
+│  ├── QWAV\              ← WRITE: QWAV agent (active)   │
 │  ├── GitHub Releases (via gh release) ← canonical publication storage         │
 │  └── Archive\           ← READ-ONLY: all agents         │
 │      ├── projects\YYYY\MM\ ← MOVE target (completed)    │
@@ -291,7 +291,7 @@ PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
 | `ARCHITECTURE.md` | This document — high-level taxonomy | v1.4 |
 | `DEFAULT.md` | System prompt for the Projects agent | — |
 | `META-PROMPT-DEEPSEEK.md` | System prompt for the Prompts agent | v4.5 |
-| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings | v5.2 |
+| `AGENT-CONFIG.md` | Agent configuration values for DeepChat Settings — slot IDs, sandboxes, tool matrix | v5.3 |
 | `agents/*.md` (6 files) | Agent and subagent execution specs — identity, tools, triggers, anti-patterns | v1.1 |
 | `email/EMAIL-AGENT-v1.3.md` | System prompt for optional dedicated email sessions | v1.2 |
 | `email/EMAIL-AGENT-TEMPLATE.md` | Prompt template for in-line email drafting | v1.2 |

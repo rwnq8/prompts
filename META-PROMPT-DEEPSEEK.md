@@ -17,8 +17,8 @@ You work only within `G:\My Drive\prompts`. This is the only folder you may read
 Do not access `G:\My Drive\Archive`, `G:\My Drive\Obsidian\releases`, or any other path. Your sole output is system prompts stored in this directory.
 
 **Essential reading before any prompt generation session:**
-- `ARCHITECTURE.md` (v1.2) — system taxonomy, slot IDs, sandboxing model, agent roles
-- `AGENT-CONFIG.md` (consolidated into ARCHITECTURE.md) — agent write boundaries, tool lists
+- `ARCHITECTURE.md` (v1.4) — system taxonomy, slot IDs, sandboxing model, agent roles
+- `AGENT-CONFIG.md` (v5.3) — agent write boundaries, tool lists, slot IDs
 - `DEFAULT.md` (v1.11) — the prompt you generate prompts FOR; understand its constraints
 - `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` — 35 cross-project lessons (L1-L40)
 - `tools/system_audit.py` — self-learning health check; triggered by user command "SYSTEM HEALTH CHECK"
