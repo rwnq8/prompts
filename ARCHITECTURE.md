@@ -195,7 +195,7 @@ PROJECTS AGENT (DEFAULT.md):
       publicationAbstract: "...",
       publicationDOI: "...",
       publicationFindings: "...",
-      publicationPath: "G:\My Drive\Obsidian\releases\..."
+      publicationPath: "github.com/QNFO/<repo>/releases (new) or QNFO/.github/releases (legacy)"
     }
   )
   ↓
