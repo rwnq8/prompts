@@ -1,0 +1,54 @@
+name: Rebuild prompts.json
+on:
+  push:
+    paths:
+      - 'templates/**'
+      - 'scholar/**'
+      - 'email/EMAIL-*.md'
+      - 'agents/*.md'
+  workflow_dispatch:
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild prompts.json
+        run: |
+          python -c "
+          import os, json, glob, hashlib
+          entries = []
+          dirs = ['templates', 'scholar', 'email', 'agents']
+          for d in dirs:
+              if os.path.exists(d):
+                  for f in glob.glob(f'{d}/**/*.md', recursive=True):
+                      with open(f, 'r', encoding='utf-8') as fh:
+                          content = fh.read()
+                      name = os.path.splitext(os.path.basename(f))[0]
+                      entries.append({
+                          'id': str(len(entries) + 1),
+                          'name': name,
+                          'description': f'Auto-regenerated from {f}',
+                          'content': content,
+                          'parameters': [],
+                          'source': 'local'
+                      })
+          with open('prompts.json', 'w', encoding='utf-8') as fh:
+              json.dump(entries, fh, indent=2, ensure_ascii=False)
+          print(f'Rebuilt prompts.json with {len(entries)} entries')
+          "
+      - name: Commit if changed
+        run: |
+          git config user.name "QNFO Bot"
+          git config user.email "bot@qnfo.org"
+          git add prompts.json
+          if git diff --cached --quiet; then
+            echo "No changes to prompts.json"
+          else
+            git commit -m "auto: Rebuild prompts.json [skip ci]"
+            git push
+          fi

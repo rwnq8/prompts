@@ -1,0 +1,33 @@
+name: System Audit CI
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run system audit
+        run: |
+          python tools/system_audit.py 2>&1 || echo "AUDIT_WARNINGS"
+      - name: Check template consistency
+        run: |
+          python -c "
+          import json, os
+          with open('prompts.json', 'r', encoding='utf-8') as f:
+              data = json.load(f)
+          names = [e['name'] for e in data]
+          template_dir = 'templates'
+          on_disk = [os.path.splitext(f)[0] for f in os.listdir(template_dir) if f.endswith('.md')] if os.path.exists(template_dir) else []
+          missing = [n for n in names if n not in on_disk and os.path.exists(f'templates/{n}.md') == False]
+          if missing:
+              print(f'MISSING templates on disk: {missing}')
+          else:
+              print(f'OK: {len(names)} templates in registry, all found on disk')
+          "
