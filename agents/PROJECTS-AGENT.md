@@ -48,6 +48,8 @@ The Projects agent is the **primary workhorse** for all project-based work. It h
 | `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
 | `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, sprint, backlog, DoD, risk register, retrospective, handoff, ADR, README, CHANGELOG, CONTRIBUTING) |
 | `search_conversations` | Search historical conversation records |
+| `brave_web_search`, `brave_local_search` | Web search for research, fact-checking |
+| `get_browser_status`, `load_url`, `cdp_send` | YoBrowser for autonomous web research |
 
 ### Write-then-Verify Protocol (§9.3 Step 0)
 After every `write` or `edit` operation, verify:

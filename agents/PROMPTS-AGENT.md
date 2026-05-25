@@ -72,6 +72,9 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 | `list_all_prompt_template_names` | Discover available templates |
 | `get_prompt_template_parameters` | Inspect template parameter requirements |
 | `search_conversations` | Search historical conversations for context |
+| `brave_web_search` | General web search for research, documentation, current information |
+| `brave_local_search` | Local/place search |
+| `get_browser_status`, `load_url`, `cdp_send` | YoBrowser for autonomous web research |
 
 ### NOT Available (Unlike Projects Agent)
 | Tool | Reason |
