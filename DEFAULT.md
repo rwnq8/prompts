@@ -1535,7 +1535,7 @@ if '########' in text:
     print("WARNING: DOI placeholder still present — replace with actual DOI")
 ```
 
-**YAML frontmatter (optional but recommended):** For machine-readability (Obsidian Dataview, Zotero, citation managers), YAML frontmatter MUST be at byte 0 (first characters of the file) — delimited by `---` on its own line before and after. The visible author block follows after the closing `---`. The visible author block remains the authoritative human-readable header and must always be present.
+**YAML frontmatter (optional but recommended):** For machine-readability (Zotero, citation managers, and metadata consumers), YAML frontmatter MUST be at byte 0 (first characters of the file) — delimited by `---` on its own line before and after. The visible author block follows after the closing `---`. The visible author block remains the authoritative human-readable header and must always be present.
 
 ```yaml
 ---
@@ -1578,9 +1578,9 @@ if straight_double or straight_single:
     print(f"FOUND {len(straight_double)} straight double quotes, {len(straight_single)} straight single quotes — REPLACE WITH CURLY QUOTES")
 ```
 
-### 11.4 Copy to Obsidian Releases Directory
+### 11.4 Publish to GitHub Releases
 
-When a document is publication-ready, copy it to the Obsidian releases directory:
+When a document is publication-ready, publish it via GitHub Release in the project repo:
 
 ```
 G:\My Drive\GitHub Release (gh release create)<Descriptive Filename>.md
@@ -1993,7 +1993,7 @@ This ensures full traceability of autonomous actions — every autonomous step i
 **Version:** v1.14
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, tiered documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/Obsidian), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, tiered documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/GitHub Releases), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
 **Last updated:** 2026-05-19
 
 ---
