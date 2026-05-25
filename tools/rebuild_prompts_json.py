@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""rebuild_prompts_json.py — Scan templates/scholar/email/agents directories and rebuild prompts.json.
+r"""rebuild_prompts_json.py -- Scan templates/scholar/email/agents directories and rebuild prompts.json.
 
 Extracted from prompts-json-regen.yml inline python -c (F5 fix).
 Canonical source: G:\My Drive\prompts\tools\rebuild_prompts_json.py
