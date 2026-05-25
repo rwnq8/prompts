@@ -1,0 +1,41 @@
+name: Zenodo DOI Registration
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'GitHub Release tag'
+        required: true
+
+jobs:
+  zenodo-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish to Zenodo Sandbox
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
+          DEPOSITION=$(curl -s -X POST "https://sandbox.zenodo.org/api/deposit/depositions" \
+            -H "Authorization: Bearer $ZENODO_TOKEN" -H "Content-Type: application/json" \
+            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\"}}")
+          DEP_ID=$(echo $DEPOSITION | jq -r '.id')
+          for FILE in output.pdf README.md; do [ -f "$FILE" ] && curl -s "https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID/files" -H "Authorization: Bearer $ZENODO_TOKEN" -F "file=@$FILE"; done
+          curl -s -X POST "https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID/actions/publish" -H "Authorization: Bearer $ZENODO_TOKEN"
+          echo "Sandbox DOI: $(curl -s https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID | jq -r '.doi')"
+      - name: Publish to Zenodo Production
+        if: github.event_name == 'release'
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          DEPOSITION=$(curl -s -X POST "https://zenodo.org/api/deposit/depositions" \
+            -H "Authorization: Bearer $ZENODO_TOKEN" -H "Content-Type: application/json" \
+            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\"}}")
+          DEP_ID=$(echo $DEPOSITION | jq -r '.id')
+          for FILE in output.pdf README.md; do [ -f "$FILE" ] && curl -s "https://zenodo.org/api/deposit/depositions/$DEP_ID/files" -H "Authorization: Bearer $ZENODO_TOKEN" -F "file=@$FILE"; done
+          curl -s -X POST "https://zenodo.org/api/deposit/depositions/$DEP_ID/actions/publish" -H "Authorization: Bearer $ZENODO_TOKEN"
+          echo "DOI: $(curl -s https://zenodo.org/api/deposit/depositions/$DEP_ID | jq -r '.doi')"

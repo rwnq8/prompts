@@ -1,0 +1,38 @@
+name: Build and Publish PDF Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      markdown_path:
+        description: 'Path to markdown file for PDF generation'
+        required: true
+        default: 'README.md'
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm install puppeteer marked highlight.js
+      - name: Generate PDF from Markdown
+        run: |
+          node -e "
+          const puppeteer = require('puppeteer'); const { marked } = require('marked');
+          const fs = require('fs');
+          const mdPath = process.env.MARKDOWN_PATH || '${{ github.event.inputs.markdown_path || 'README.md' }}';
+          const html = marked(fs.readFileSync(mdPath, 'utf-8'));
+          const fullHtml = '<!DOCTYPE html><html><head><meta charset=utf-8>' +
+            '<style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.6}' +
+            'pre{background:#f6f8fa;padding:16px;border-radius:6px}img{max-width:100%}</style>' +
+            '</head><body>' + html + '</body></html>';
+          (async()=>{const b=await puppeteer.launch({args:['--no-sandbox']});
+          const p=await b.newPage();await p.setContent(fullHtml,{waitUntil:'networkidle0'});
+          await p.pdf({format:'A4',printBackground:true,margin:{top:'20mm',bottom:'20mm',left:'15mm',right:'15mm'}});
+          await b.close()})();"
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with: { files: output.pdf }
