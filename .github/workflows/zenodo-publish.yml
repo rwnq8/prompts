@@ -21,7 +21,7 @@ jobs:
           TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
           DEPOSITION=$(curl -s -X POST "https://sandbox.zenodo.org/api/deposit/depositions" \
             -H "Authorization: Bearer $ZENODO_TOKEN" -H "Content-Type: application/json" \
-            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\"}}")
+            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\",\"license\":\"cc-by-4.0\",\"rights\":[{\"rights\":\"QNFO Content License Agreement v1.1\",\"rightsUri\":\"https://github.com/QNFO/license/\",\"rightsIdentifier\":\"QNFO-1.1\",\"rightsIdentifierScheme\":\"other\"}]}}")
           DEP_ID=$(echo $DEPOSITION | jq -r '.id')
           for FILE in output.pdf README.md; do [ -f "$FILE" ] && curl -s "https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID/files" -H "Authorization: Bearer $ZENODO_TOKEN" -F "file=@$FILE"; done
           curl -s -X POST "https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID/actions/publish" -H "Authorization: Bearer $ZENODO_TOKEN"
@@ -34,7 +34,7 @@ jobs:
           TAG="${{ github.ref_name }}"
           DEPOSITION=$(curl -s -X POST "https://zenodo.org/api/deposit/depositions" \
             -H "Authorization: Bearer $ZENODO_TOKEN" -H "Content-Type: application/json" \
-            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\"}}")
+            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\",\"license\":\"cc-by-4.0\",\"rights\":[{\"rights\":\"QNFO Content License Agreement v1.1\",\"rightsUri\":\"https://github.com/QNFO/license/\",\"rightsIdentifier\":\"QNFO-1.1\",\"rightsIdentifierScheme\":\"other\"}]}}")
           DEP_ID=$(echo $DEPOSITION | jq -r '.id')
           for FILE in output.pdf README.md; do [ -f "$FILE" ] && curl -s "https://zenodo.org/api/deposit/depositions/$DEP_ID/files" -H "Authorization: Bearer $ZENODO_TOKEN" -F "file=@$FILE"; done
           curl -s -X POST "https://zenodo.org/api/deposit/depositions/$DEP_ID/actions/publish" -H "Authorization: Bearer $ZENODO_TOKEN"
