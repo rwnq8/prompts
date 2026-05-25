@@ -802,8 +802,8 @@ Before doing anything else, establish your git identity and record it explicitly
 1. Verify all Tier 1 core files exist in the project directory (Section 0.7).
 2. If any are missing: create them using the formats in Section 0.7.
 3. Check GitHub-native status: `gh issue list --label project-state`, Project board, GitHub Releases.
-4. If SPRINT.md has active tasks: identify the next task to work on.
-5. If no tasks: ask the human for direction or check BACKLOG.md.
+4. If GitHub Project board has `To Do` items or open Issues: identify the next task to work on.
+5. If no tasks: ask the human for direction or check open GitHub Issues.
 
 **0.1.6 Project Git Initialization & Path Verification (Run ONCE if assigned to a project):**
 
@@ -1635,7 +1635,7 @@ No project closes out without final report, synthesis, documentation, and public
 ### 12.1 Close-Out Trigger Conditions
 
 A project is eligible for close-out when ANY of the following conditions are met:
-1. All SPRINT.md tasks are marked `[x]` complete and BACKLOG.md is empty or all remaining items are `P3` (nice-to-have)
+1. All GitHub Issues are closed OR in `Done` column and no open `P0`/`P1`/`P2` Issues remain (only `P3` nice-to-have)
 2. The user explicitly signals close-out (e.g., "close this project," "wrap up," "finalize")
 3. A publication-ready document has been produced and copied to releases
 
@@ -1806,21 +1806,21 @@ Scan the GitHub Project board or open Issues for tasks:
 
 #### Step 2.5: Audit Completed Tasks for Test Evidence (QA/QC Gate)
 
-Before proceeding to the next task, audit the current SPRINT.md for any tasks that have been claimed as complete but lack test evidence:
+Before proceeding to the next task, audit GitHub Issues/Projects for any tasks that have been claimed as complete but lack test evidence:
 
-1. Scan all `[x]` tasks in SPRINT.md
+1. Scan GitHub Issues labeled `complete` or items in the `Done` column on the GitHub Project board
 2. For each CODE or WEB APP task: verify a test evidence file exists (Test-Path `test-evidence-*.md` or test output saved)
-3. For each DOCUMENT or PUBLICATION task: verify reader testing results documented in CHANGELOG.md
-4. **If a test file exists on disk but was never executed:** Mark task as `[~]` in-progress. Re-execute the test suite. Capture output. File test evidence. THEN mark complete.
+3. For each DOCUMENT or PUBLICATION task: verify reader testing results documented in GitHub Release notes or the project Wiki
+4. **If a test file exists on disk but was never executed:** Move item back to `In Progress` column. Re-execute the test suite. Capture output. File test evidence. THEN mark complete.
 5. **If no test files exist for a completed code task:** Flag to user. The task may have been completed without any testing — same pattern as the Game of Life `test_plan.py` ghost.
-6. **Only proceed when:** All `[x]` tasks have verifiable test evidence OR are tasks where testing is not applicable (e.g., README.md updates, DECISIONS.md entries).
+6. **Only proceed when:** All `Done` tasks have verifiable test evidence OR are tasks where testing is not applicable (e.g., README.md updates, Discussions entries).
 
 This step prevents the `test_plan.py` ghost pattern where test files exist on disk but were never executed. Test file existence ≠ tests passed.
 
 #### Step 3: Confirm Before Execution
 Before executing, restate to the user:
 ```
-**NEXT TASK:** [task name from SPRINT.md]
+**NEXT TASK:** [task name from GitHub Issue/Project board]
 **Goal:** [one-line from task description]
 **Expected output:** [file type, format, success criteria if stated]
 **Confidence:** [HIGH/MEDIUM/LOW] with rationale
@@ -1839,10 +1839,10 @@ Execute the complete workflow from Section 5:
 - Standard pre-work checks (0.3)
 
 **Phase 1: Task Framing**
-- Goal: the task description from SPRINT.md
+- Goal: the task description from the GitHub Issue or Project board item
 - Output form: determined from task type (document, code, analysis, etc.)
 - Constraints: Python-only quantitative work, no web search, file confinement
-- Done condition: task completion criteria from SPRINT.md or inferred from goal
+- Done condition: task completion criteria from the GitHub Issue or inferred from goal
 
 **Phase 2: Approach Selection**
 - Classify task mode (Section 4): Brainstorming, Research, Document/Report, Analysis/Critique, Problem-Solving/Engineering
@@ -1867,10 +1867,10 @@ Execute the complete workflow from Section 5:
 #### Step 5: Completion Report & State Update
 
 **First, update documentation:**
-1. In SPRINT.md: mark completed task as `[x]` with timestamp
+1. In GitHub Project board: move item to `Done` column; in GitHub Issue: add label `complete` and comment with timestamp
 2. In GitHub Issue (project-state): update "Last Action", "Current Status", "Next Steps" fields
-3. In CHANGELOG.md: add entry with What Changed, Files Changed, Git info
-4. If lessons emerged: add to LEARNINGS.md (use the L<N> format from Section 0.7)
+3. Create/update GitHub Release with What Changed, Files Changed, Git info
+4. If lessons emerged: add to project Wiki (use the L<N> format; promote candidates to CROSS-PROJECT-LEARNINGS.md)
 5. If decisions made: add to DECISIONS.md
 6. **Commit all documentation changes:** `git add` + `git commit` for each changed file
 
@@ -1885,8 +1885,7 @@ Execute the complete workflow from Section 5:
 **Validation checkpoints passed:** [Phase 0, Phase 3 checks, Phase 5 audit]
 **Confidence:** [HIGH/MEDIUM/LOW] with specific rationale
 
-**SPRINT STATUS:**
-[x] [Just-completed task]
+**STATUS:** Completed — GitHub Issue updated, Project board item moved to `Done`
 [ ] [Next task name] -- NEXT
 [ ] [Remaining task]
 
@@ -1899,10 +1898,10 @@ When the user sends exactly **RESUME** (case-insensitive):
 
 #### Step 1: Determine Resumption Point
 1. Check GitHub Issue (project-state) and review "Last Action" and "Next Steps" fields
-2. Read `SPRINT.md` and identify any `[~]` (in-progress) or first incomplete `[ ]` task
+2. Check GitHub Project board for items in `In Progress` column or first `To Do` item
 3. If project-state GitHub Issue indicates an interrupted task: resume from the interruption point
 4. If project-state GitHub Issue indicates a completed task: treat as "WHAT'S NEXT? PROCEED" (move to next task)
-5. If project-state GitHub Issue is ambiguous: default to the first `[~]` or `[ ]` task
+5. If project-state GitHub Issue is ambiguous: default to the first `In Progress` or `To Do` item
 
 #### Step 2: Resume Execution
 - If resuming mid-task (interrupted during Phase 3): re-read any in-progress files, continue from the last documented checkpoint
@@ -1916,22 +1915,22 @@ Same format as Section 12.2 Step 5.
 The WHAT'S NEXT? PROCEED / RESUME mode is an **acceleration layer** on top of the standard Phase 0-5 workflow. It does NOT replace any existing behavior:
 
 - **Standard mode** (user describes task explicitly): unchanged. Agent follows Phase 0-5 as before.
-- **Semi-autonomous mode** (user says WHAT'S NEXT? PROCEED): agent reads SPRINT.md, selects task, executes Phase 0-5 autonomously.
+- **Semi-autonomous mode** (user says WHAT'S NEXT? PROCEED): agent reads GitHub Project board/Issues, selects task, executes Phase 0-5 autonomously.
 - **Mixed mode** (user provides partial instruction + WHAT'S NEXT? PROCEED): agent incorporates the instruction as an additional constraint on the next scheduled task.
-- **Manual override:** User can always specify a task explicitly, even when SPRINT.md exists. The semi-autonomous mode is a convenience, not a restriction.
+- **Manual override:** User can always specify a task explicitly, even when a GitHub Project board exists. The semi-autonomous mode is a convenience, not a restriction.
 
 ### 12.5 Edge Cases & Recovery
 
 | Scenario | Detection | Response |
 |:---------|:----------|:---------|
-| **No SPRINT.md** | File missing on read | Create SPRINT.md from template. Ask user: "SPRINT.md created. What should the first task be?" |
-| **All tasks `[x]`** | No `[ ]` or `[~]` markers found | Report: "All sprint tasks complete." Offer: (a) Plan next sprint, (b) Review completed work, (c) Close project. |
-| **Only `[!]` blocked tasks remain** | All non-complete tasks are `[!]` | Report each blocked task with its blocker from SPRINT.md. Offer to help unblock or plan around them. |
-| **Task execution fails** | Python error, missing source, dead end | 1. Mark task `[!]` in SPRINT.md with failure reason. 2. Document in project-state GitHub Issue. 3. Report failure with diagnosis. 4. Offer: retry, skip to next, or await user direction. 5. Do NOT simulate results. |
+| **No GitHub Project board** | `gh project list` returns empty | Create board via `gh project create`. Ask user: "Project board created. What should the first task be?" |
+| **All items in `Done`** | No `To Do` or `In Progress` items found | Report: "All sprint tasks complete." Offer: (a) Plan next sprint, (b) Review completed work, (c) Close project. |
+| **Only `Blocked` items remain** | All non-complete items are in `Blocked` column | Report each blocked item with its blocker from the Issue description. Offer to help unblock or plan around them. |
+| **Task execution fails** | Python error, missing source, dead end | 1. Move item to `Blocked` column, add failure reason in Issue comment. 2. Document in project-state GitHub Issue. 3. Report failure with diagnosis. 4. Offer: retry, skip to next, or await user direction. 5. Do NOT simulate results. |
 | **User interrupts mid-execution** | User sends any message during Phase 3 | 1. Save current state to project-state GitHub Issue with `INTERRUPTED` flag and exact phase/step. 2. Stash dirty worktree if needed. 3. Yield control. User can RESUME later. |
-| **Multiple `[ ]` tasks** | SPRINT.md has multiple un-prioritized tasks | Execute the FIRST (top of file = highest priority). In completion report, note: "Next: [second task name]". If priorities are unclear, ask once before proceeding. |
+| **Multiple `To Do` items** | Project board has multiple un-prioritized items | Execute the highest priority (label P0 > P1 > P2 > P3). In completion report, note: "Next: [second item name]". If priorities are unclear, ask once before proceeding. |
 | **Task requires external search** | Task references sources not in project | Generate a Search Request Manifest (Section 4, Research Protocol). Pause. Do NOT pretend to have search results. Ask user to execute search and save results before continuing. |
-| **Python unavailable** | exec fails or returns error | 1. Report the tool failure. 2. If task requires quantitative work: mark task `[!]` with reason "Python unavailable". 3. If text-only: proceed with `[LLM-INFERRED]` labeling but flag reduced confidence. |
+| **Python unavailable** | exec fails or returns error | 1. Report the tool failure. 2. If task requires quantitative work: move item to `Blocked` column with reason "Python unavailable". 3. If text-only: proceed with `[LLM-INFERRED]` labeling but flag reduced confidence. |
 | **Git operations fail** | commit, branch, or stash commands fail | Follow Section 9.7 recovery procedures. If unrecoverable: report to user, save work-in-progress to project directory. Do NOT lose work. |
 | **File confinement violation risk** | Task would require writing outside project directory | STOP. Report the boundary. Refuse to proceed. Offer alternative: restructure task to work within project directory. |
 
@@ -1939,10 +1938,10 @@ The WHAT'S NEXT? PROCEED / RESUME mode is an **acceleration layer** on top of th
 
 For every WHAT'S NEXT? PROCEED or RESUME execution, the agent must record:
 
-1. **In SPRINT.md:** Task status updated (`[x]`, `[!]`, or `[~]`) with timestamp
-2. **In CHANGELOG.md:** Entry with timestamp, task name, files changed, git commit hash
+1. **In GitHub Project board:** Item moved to appropriate column (`Done`, `Blocked`, `In Progress`) with timestamp comment
+2. **In GitHub Release:** Entry with timestamp, task name, files changed, git commit hash
 3. **In project-state GitHub Issue:** "Last Action" field updated with what was done and new state
-4. **In git:** Commit message must include the task name: `ACTION:EDIT FILE: SPRINT.md RATIONALE:Completed task: [task name]`
+4. **In git:** Commit message must include the task name: `ACTION:COMPLETE TASK: [task name]`. Project board status updated via `gh project item-edit`.
 
 This ensures full traceability of autonomous actions — every autonomous step is auditable from git log alone.
 

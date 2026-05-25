@@ -281,17 +281,18 @@ This is the critical coordination mechanism between program and project agents.
    - `constraints`: Budget, time, technology, domain rules
    - `research_trail`: Files/directories to explore for context
    - `return_protocol`: Where to publish deliverables (GitHub Releases + GitHub Pages)
-3. Create GitHub Issue(s) for the project tasks with `project` label
-4. Update `PROJECT STATE.md` with: `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md`
+3. Create GitHub Issue (label: `handoff`, repo: OWNER/REPO) with full handoff specification in body
+4. Create/update GitHub Issue (label: `project-state`): `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `gh issue comment`
 5. **PAUSE** — do not continue until Projects agent returns results
 
-**Project Agent executes:**
-1. Read handoff document
-2. Follow research trail (Archive, releases, active projects)
-3. Execute via Phases 0-5 (DEFAULT.md §5)
-4. Publish via GitHub Release + GitHub Pages
-5. Update PROJECT STATE.md: `STATUS: COMPLETE | DELIVERABLE: path`
-6. Close GitHub Issue: `gh issue close <num> --reason completed`
+**Project Agent discovers and executes** (autonomous discovery, see DEFAULT.md §0.6.5 Startup Sequence):
+1. On startup, automatically scans for GitHub Issues with label `handoff` or `project-state`
+2. Reads handoff document from referenced path
+3. Follows research trail (Archive, releases, active projects)
+4. Executes via Phases 0-5 (DEFAULT.md §5)
+5. Publishes via GitHub Release + GitHub Pages
+6. Updates GitHub Issue (label: `project-state`): `STATUS: COMPLETE | DELIVERABLE: path` via `gh issue comment`
+7. Closes handoff Issue: `gh issue close <num> --reason completed`
 
 #### Handoff FROM Project TO Program (Completion)
 
