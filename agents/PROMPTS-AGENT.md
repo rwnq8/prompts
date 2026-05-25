@@ -92,7 +92,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 **Implication:** The Prompts agent works alone. When the user says "SYSTEM HEALTH CHECK," run `system_audit.py` and report findings.
 
-**Essential reading:** ARCHITECTURE.md (v1.4), AGENT-CONFIG.md (v5.3), DEFAULT.md, CROSS-PROJECT-LEARNINGS.md (L1-L66, partially reconstructed — canonical has L57-L66, reconstructed at CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
+**Essential reading:** ARCHITECTURE.md (v1.5, on GitHub Wiki) and AGENT-CONFIG.md (v5.3, on GitHub Wiki). CROSS-PROJECT-LEARNINGS.md (L1-L66 on GitHub Wiki). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
 
 ---
 
