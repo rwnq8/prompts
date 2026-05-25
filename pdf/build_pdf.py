@@ -139,7 +139,12 @@ def resolve_css(style=None, css_path=None):
 
 
 def parse_frontmatter(text):
-    """Extract YAML frontmatter dict and body from markdown text."""
+    """Extract YAML frontmatter dict and body from markdown text.
+
+    Handles multiline YAML scalars (``>`` folded, ``|`` literal) so that
+    fields like ``abstract: >`` collect continuation lines instead of
+    being parsed as just ``">"``.
+    """
     meta, body = {}, text
     if not text.startswith("---"):
         return meta, body
@@ -147,15 +152,45 @@ def parse_frontmatter(text):
     if len(parts) < 3:
         return meta, body
     body = parts[2]
-    for line in parts[1].strip().split("\n"):
-        if ":" not in line:
+
+    lines = parts[1].strip().split("\n")
+    current_key = None
+    current_lines = []
+    in_multiline = False
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
             continue
-        k, _, v = line.partition(":")
-        k = k.strip().strip('"')
-        v = v.strip().strip('"').strip("'").strip()
-        if v.startswith("[") and v.endswith("]"):
-            v = [x.strip().strip('"') for x in v[1:-1].split(",")]
-        meta[k] = v
+
+        # New key:value line (not indented)
+        if ":" in stripped and not stripped.startswith(" "):
+            # Commit previous multiline field if any
+            if current_key and in_multiline:
+                meta[current_key] = " ".join(current_lines).strip()
+                current_key = None
+                current_lines = []
+                in_multiline = False
+
+            k, _, v = line.partition(":")
+            k = k.strip().strip('"')
+            v = v.strip().strip('"').strip("'").strip()
+
+            if v.startswith("[") and v.endswith("]"):
+                meta[k] = [x.strip().strip('"') for x in v[1:-1].split(",")]
+            elif v in (">", "|"):
+                current_key = k
+                current_lines = []
+                in_multiline = True
+            else:
+                meta[k] = v
+        elif in_multiline and current_key:
+            current_lines.append(stripped)
+
+    # Commit final multiline field
+    if current_key and in_multiline:
+        meta[current_key] = " ".join(current_lines).strip()
+
     return meta, body
 
 
@@ -208,6 +243,12 @@ def build_html(input_path, output_html, css_content, use_math=True, title_overri
 
     meta, body = parse_frontmatter(raw)
     author_html = build_author_block(meta)
+
+    # Strip the visible author block from the markdown body so that only
+    # the styled author block (built from YAML frontmatter) appears in the
+    # PDF.  The visible block runs from the opening H1 down to the first
+    # horizontal-rule ``---`` that separates it from the main text.
+    body = re.sub(r"^# .*?\n.*?---\s*\n", "", body, count=1, flags=re.DOTALL)
 
     md = markdown.Markdown(extensions=["extra", "codehilite", "tables", "fenced_code"])
     html_body = md.convert(body)
