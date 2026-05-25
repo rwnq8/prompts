@@ -254,21 +254,6 @@ PROGRAM AGENT (QWAV-DEFAULT.md + DEFAULT.md):
   Quality check against DEFINITION-OF-DONE.md gates
   If PASS: update program docs, plan next steps
   If FAIL: re-open GitHub Issue, create new handoff
-```
-
-```
-PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
-  User: "Create a new prompt template for X"
-  ↓
-  Prompts agent designs prompt following 9-section template
-  ↓
-  Writes to: G:\My Drive\prompts\<new-prompt>.md
-  ↓
-  If replacing old prompt: MOVE old to Archive\prompts\
-  ↓
-  Commit with: ACTION:CREATE FILE: ...
-```
-
 ---
 
 ## 4. DESIGN PRINCIPLES

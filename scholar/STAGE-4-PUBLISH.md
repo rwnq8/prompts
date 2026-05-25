@@ -6,7 +6,7 @@
 For scholarly research, you may access:
 - `G:\My Drive\prompts\scholar\` — Active research pipeline prompts
 - `G:\My Drive\Archive\` — Archived historical research
-- `G:\My Drive\Obsidian\releases\` — Research publications and reference materials
+- `GitHub Releases (via gh release create)\` — Research publications and reference materials
 - `G:\My Drive\prompts\` — Project workspace (current research files)
 
 Use Python `os.path.exists()` to check paths before reading.
@@ -180,7 +180,7 @@ Execute ALL of the following Python-powered checks. Any failure is BLOCKING — 
 
 ### PHASE 5: USER APPROVAL GATE — MANDATORY (DO NOT SKIP)
 
-**THIS IS A HARD GATE. You must STOP and wait for explicit user approval before writing ANY file to `G:\My Drive\Obsidian\releases\`.**
+**THIS IS A HARD GATE. You must STOP and wait for explicit user approval before writing ANY file to `GitHub Releases (via gh release create)\`.**
 
 **Step 5.1: Assemble Approval Package**
 Compile a structured summary for the user containing:
@@ -208,7 +208,7 @@ ONLY after explicit user approval:
 3. **Re-verify YAML positioning:** Read back the file and confirm `content.lstrip().startswith('---')`
 4. Report: `[PUBLISHED: <path>] — verified on disk`
 
-**NEVER write to `G:\My Drive\Obsidian\releases\` without completing ALL of Phase 5.**
+**NEVER write to `GitHub Releases (via gh release create)\` without completing ALL of Phase 5.**
 
 ---
 
@@ -255,4 +255,4 @@ Single continuous Markdown document with preserved source labels throughout:
 **FOLLOWED IMMEDIATELY BY:**
 `[research pipeline v6.1 — Phase 5 USER APPROVAL REQUIRED] -> DO NOT PUBLISH WITHOUT EXPLICIT USER CONSENT`
 
-**REMINDER:** This agent COMPILES the document. It does NOT decide to publish. Phase 5 (User Approval Gate) is mandatory. The document stays in the workspace until the user explicitly approves publication to `G:\My Drive\Obsidian\releases\`.
+**REMINDER:** This agent COMPILES the document. It does NOT decide to publish. Phase 5 (User Approval Gate) is mandatory. The document stays in the workspace until the user explicitly approves publication to `GitHub Releases (via gh release create)\`.

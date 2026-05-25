@@ -11,7 +11,7 @@
 | **Agent Name** | Prompts |
 | **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.5+) — paste ENTIRE contents into DeepChat Settings → Agents → Prompts → System Prompt |
 | **Write Sandbox** | `G:\My Drive\prompts\` — the git-tracked prompt engineering workspace |
-| **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
+| **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `GitHub Releases`) |
 | **MOVE Destination** | `G:\My Drive\Archive\prompts\` |
 
 ---

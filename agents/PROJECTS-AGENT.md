@@ -11,8 +11,8 @@
 | **Agent Name** | Projects |
 | **System Prompt** | `DEFAULT.md` — paste ENTIRE contents into DeepChat Settings → Agents → Projects → System Prompt |
 | **Write Sandbox** | `G:\My Drive\projects\<name>\` — one project subdirectory per session |
-| **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
-| **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\project-name\`, `G:\My Drive\Obsidian\releases\` |
+| **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `GitHub Releases`) |
+| **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\project-name\`, `GitHub Releases\` |
 
 ---
 
@@ -147,7 +147,7 @@ Before ending a session where project work is complete:
 
 1. Execute the 7-item close-out checklist (§12)
 2. Verify all commits with `git log -1 --oneline`
-3. Copy publication-ready docs to `Obsidian/releases/` (§11.4)
+3. Copy publication-ready docs to `GitHub Releases` (§11.4)
 4. Trigger SOCIAL-ORCHESTRATOR template if publication occurred (§12)
 5. Update PROJECT-STATE.md with final status
 

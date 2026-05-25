@@ -60,7 +60,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] Reader testing: 2 rounds minimum, no truncation gaps (§3.1)
 - [ ] Curly quotes, YAML, author block per §11
 - [ ] `[DOI-PENDING]` replaced with actual DOI
-- [ ] Copy to `G:\My Drive\Obsidian\releases\YYYY\MM\` verified with Test-Path
+- [ ] Copy to `GitHub Releases (via gh release create)\YYYY\MM\` verified with Test-Path
 - [ ] Human review (G4) completed
 - [ ] File committed
 - [ ] UNIVERSAL GATES above satisfied

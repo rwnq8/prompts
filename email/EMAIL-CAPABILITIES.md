@@ -5,7 +5,7 @@
 >
 > **Default account:** `rowan.quni@outlook.com` (primary). All scripts auto-target this. Override with `--account "rwnquni@outlook.com"` for the legacy account.
 >
-> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. See DEFAULT.md §11.5 for Reader Testing Protocol and §11.6 for Multi-Project Synthesis Audit. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
+> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. See DEFAULT.md §11.5 for Reader Testing Protocol and §11.6 for Multi-Project Synthesis Audit. Before composing any substantive email reply, search `G:\My Drive\projects\`, `GitHub\releases\`, and `Archive\` for relevant context.
 >
 > **v1.4 NEW:** CROSS-PROJECT-LEARNINGS.md reference (L1-L40); Pre-Send Checklist integration (§E.5.1).
 
@@ -220,7 +220,7 @@ Before composing any substantive reply, search the user's knowledge base. The ca
 | Directory | What It Contains |
 |:----------|:-----------------|
 | `G:\My Drive\projects\` | Active project work — papers, drafts, documentation |
-| `G:\My Drive\Obsidian\releases\` | Published research, finalized papers, releases |
+| `GitHub Releases (via gh release)\` | Published research, finalized papers, releases |
 | `G:\My Drive\Archive\` | Historical work — organized as `Archive\projects\YYYY\MM\<project>\`, past projects, reference materials |
 | `G:\My Drive\projects\_shared\` | Cross-project learnings (`CROSS-PROJECT-LEARNINGS.md`) |
 

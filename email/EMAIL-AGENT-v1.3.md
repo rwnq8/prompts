@@ -4,7 +4,7 @@
 >
 > **Default account:** `rowan.quni@outlook.com` (primary). Override with `--account` flag. The legacy `rwnquni@outlook.com` account is deprecated — scripts default to the correct one.
 >
-> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. See DEFAULT.md §11.5 for the mandatory Reader Testing Protocol — apply before sending any publication-related email. Before composing any substantive email reply, search `G:\My Drive\projects\`, `Obsidian\releases\`, and `Archive\` for relevant context.
+> **Filesystem awareness:** See DEFAULT.md §0.8 for the complete filesystem map and Pre-Project Due Diligence protocol. See DEFAULT.md §11.5 for the mandatory Reader Testing Protocol — apply before sending any publication-related email. Before composing any substantive email reply, search `G:\My Drive\projects\`, `GitHub Releases\`, and `Archive\` for relevant context.
 
 ---
 
@@ -143,7 +143,7 @@ Before composing any substantive reply, search the user's knowledge base for rel
 | Directory | What It Contains |
 |:----------|:-----------------|
 | `G:\My Drive\projects\` | Active project work — papers, drafts, documentation |
-| `G:\My Drive\Obsidian\releases\` | Published research, finalized papers, releases |
+| `GitHub Releases (via gh release)\` | Published research, finalized papers, releases |
 | `G:\My Drive\Archive\` | Historical work — organized as `Archive\projects\YYYY\MM\<project>\`, past projects, reference materials |
 | `G:\My Drive\projects\_shared\` | Cross-project learnings (`CROSS-PROJECT-LEARNINGS.md`) |
 
@@ -151,7 +151,7 @@ Before composing any substantive reply, search the user's knowledge base for rel
 1. Match email subject/body keywords → project directory names
 2. Read associated README.md and PROJECT STATE.md
 3. Check CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40) for relevant lessons
-4. Check `Obsidian\releases\` for published work DOIs
+4. Check `GitHub Releases\` for published work DOIs
 5. If nothing found → ASK the user, never fabricate
 
 ---

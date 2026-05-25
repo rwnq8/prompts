@@ -11,8 +11,8 @@
 | **Agent Name** | QWAV |
 | **System Prompt** | `QWAV-DEFAULT.md` — Forked from `DEFAULT.md` with QWAV-specific §0.9 Strategy Program Manager role boundary. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
 | **Write Sandbox** | `G:\My Drive\QWAV\` — active since 2026-05-11 |
-| **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `Obsidian/releases/`) |
-| **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `G:\My Drive\Obsidian\releases\` |
+| **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `GitHub Releases`) |
+| **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `GitHub Releases\` |
 
 **Design note:** QWAV uses `QWAV-DEFAULT.md` — a fork of `DEFAULT.md` with a QWAV-specific §0.9 Strategy Program Manager role boundary definition. The email/social media/due diligence/sandboxing capabilities are identical to Projects' `DEFAULT.md`. The only difference is §0.9: QWAV is the Strategy Program Manager (coordinates, delegates), Projects is the Project Executor (receives handoffs, executes). Separation is by chat thread, write boundary, AND prompt role definition.
 
@@ -37,23 +37,45 @@ Full capabilities inherited from DEFAULT.md:
 
 ## 3. TOOLS
 
-**Identical to Projects agent.** See `PROJECTS-AGENT.md` Section 3 for full tool list.
+### Confirmed (Always Available)
+| Tool | Purpose |
+|:-----|:--------|
+| `read`, `write`, `edit` | File operations within `G:\My Drive\QWAV\` sandbox |
+| `exec`, `process` | PowerShell commands, Python scripts, git operations |
+| `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
+| `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, sprint, backlog, DoD, risk register, retrospective, handoff, ADR, README, CHANGELOG, CONTRIBUTING) |
+| `deepchat_question` | Ask user for clarification / confirmation |
+| `skill_list`, `skill_view`, `skill_manage` | Skill management |
+| `search_conversations` | Search historical conversation records |
+| `get_browser_status`, `load_url`, `cdp_send` | YoBrowser for web research |
+| `brave_web_search`, `brave_local_search` | Web search (when available) |
+| Buffer API | Social media operations |
 
-Key tools: `read`, `write`, `edit`, `exec`, `process`, `subagent_orchestrator`, `fill_prompt_template`, `search_conversations`, `deepchat_question`, `skill_list/view/manage`.
+### Write-then-Verify Protocol
+After every `write` or `edit` operation, verify:
+- `Test-Path <file>` — file exists on disk
+- `Get-Content <file> -First 5` — expected content present
+- **Tool success messages are NOT verification** (CPL L15, L18, L40)
 
 ---
 
 ## 4. WHEN TO SELF-DELEGATE TO SUBAGENTS
 
-**Identical pattern to Projects agent.** See `PROJECTS-AGENT.md` Section 4.
-
-Workflow: **EXPLORER → IMPLEMENTER → REVIEWER**
-
+**Pattern:** EXPLORER → IMPLEMENTER → REVIEWER
 - **EXPLORER** (`self`): Brainstorm quantum computing approaches, edge cases in ultrametric methods
-- **IMPLEMENTER** (slot: see AGENT-CONFIG.md): Draft papers, code, structured output from specs
-- **REVIEWER** (slot: see AGENT-CONFIG.md): Blind validation of quantum/physics content, reader testing
+- **IMPLEMENTER** (`slot-mp80dr5g-oh9g`): Draft papers, code, structured output from specs
+- **REVIEWER** (`slot-mp80e4mj-5s1l`): Blind validation of quantum/physics content, reader testing
 
-**CRITICAL:** ALL subagent inputs inline. Subagents have ~35% chance of file I/O tools. GIT: Skip directive required (CROSS-PROJECT-LEARNINGS.md — 35 lessons, L1-L40).
+Subagent task prompt template (identical pattern — see `agents/subagents/EXPLORER-SUBAGENT.md` for full format):
+```
+GIT: Skip all git/branch checks. Read-only task.
+TASK: [what the subagent should do]
+CONTEXT: [relevant background, constraints, format requirements]
+INPUT: [inline content to process]
+EXPECTED OUTPUT: [format, structure, scope]
+```
+
+**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec.
 
 ---
 
@@ -63,21 +85,26 @@ Workflow: **EXPLORER → IMPLEMENTER → REVIEWER**
 - All quantitative claims MUST go through Python code execution (DEFAULT.md Rule 2)
 - All mathematical content MUST use LaTeX formatting (DEFAULT.md Rule 6)
 - Physics/math accuracy is the top Review & Critique priority (DEFAULT.md §0 item 5)
-- Due diligence (§0.8) must search `QWAV/`, `Archive/QWAV/`, and `Obsidian/releases/` for prior work
+- Due diligence (§0.8) must search `QWAV/`, `Archive/QWAV/`, and `GitHub Releases` for prior work
 
 ### Publication Pipeline
 - Papers follow §11 formatting (Visible Author Block, curly quotes, descriptive filenames)
-- Completed work copied to `Obsidian/releases/` (§11.4)
+- Completed work copied to `GitHub Releases` (§11.4)
 - Publication triggers SOCIAL-ORCHESTRATOR template (§12)
 
 ---
 
 ## 6. ANTI-PATTERNS
 
-See `PROJECTS-AGENT.md` Section 5 for full anti-patterns list. Key QWAV-specific:
-- **Don't invent quantum results** — all numbers from Python, all citations from source files
-- **Don't cross-contaminate with Projects** — QWAV has its own write sandbox; don't write to `projects/`
-- **Don't assume QWAV is "pending"** — the directory is active. Verify with `Test-Path`, not memory (L17)
+| Anti-Pattern | Why It Fails | Correct Approach |
+|:-------------|:-------------|:-----------------|
+| **Don't invent quantum results** | Violates Rule 2, Rule 5 | All numbers from Python, all citations from source files |
+| **Don't cross-contaminate with Projects** | QWAV has own sandbox; writing to `projects/` is a sandbox violation | Verify path starts with `G:\My Drive\QWAV\` before every write |
+| **Don't assume QWAV is "pending"** | The directory is active since 2026-05-11 | Verify with `Test-Path`, not memory (CPL L17) |
+| **Don't delegate file I/O to subagents** | Subagents have ~35% file I/O reliability | Parent reads/writes; subagents process inline text only |
+| **Don't micromanage Projects agent** | QWAV is Program Manager, not Project Executor (CPL L54) | Define handoff scope, trust Projects to execute |
+| **Don't make legal/financial claims without user input** | Agent can't access exogenous information (CPL L53) | Trigger Exogenous Information Protocol |
+| **Don't approach external collaborators without spec** | Enthusiasm before scoping causes failed collaborations (CPL L51) | Produce one-page spec before any collaboration outreach |
 
 ---
 
@@ -92,12 +119,15 @@ Full protocol: DEFAULT.md §9. Key points:
 
 ---
 
-## 8. KEY CROSS-PROJECT LEARNINGS (L1-L40)
+## 8. KEY CROSS-PROJECT LEARNINGS
 
-Same as Projects agent (see `PROJECTS-AGENT.md` Section 7). All 35 lessons (L1-L40) apply, with emphasis on:
+All lessons in `CROSS-PROJECT-LEARNINGS.md` (L1-L66, see `CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md` for full text) apply, with emphasis on:
 - **L2** (isolation): QWAV must not access sibling project directories
 - **L20** (branch hygiene): Never reuse branches across projects
-- **L22-L24** (synthesis audit): Convergence claims require vocabulary audit
+- **L22-L24** (synthesis audit): Critical for ultrametric synthesis work
+- **L29** (architecture honesty): Acknowledge structural limitations
+- **L51-L54** (QWAV-specific): Formal verification spec requirements, assumptions gap, exogenous information, role boundaries
+- **L63** (talk != action): Rule 14 ANTI-PHANTOM enforcement
 - **L7** (no inline Python): PowerShell corrupts Python strings — always use script files
 - **L14** (no SilentlyContinue): Directory existence checks use `Test-Path`, not suppressed errors
 - **L17** (filesystem audit): QWAV directory exists. Verify, don't assume from memory.

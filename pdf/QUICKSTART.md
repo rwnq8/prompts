@@ -6,14 +6,14 @@
 
 ## What This Is
 
-A fully automated Markdown → HTML → PDF pipeline that runs entirely within DeepChat. Replaces Obsidian "Export to PDF" with a script that:
+A fully automated Markdown → HTML → PDF pipeline that runs entirely within DeepChat. Replaces manual PDF export with a script that:
 
 1. Parses YAML frontmatter (title, authors, ORCID, DOI, abstract, date)
 2. Renders Markdown → HTML (code highlighting, tables, lists, math)
 3. Renders LaTeX via MathJax 3 CDN (unless `--no-math`)
 4. Prints to A4 PDF via Edge/Chrome headless (preserves rendered JavaScript)
 
-**No Obsidian dependency. No manual export step. Works from any project directory.**
+**No external dependency. No manual export step. Works from any project directory.**
 
 ---
 

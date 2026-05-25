@@ -18,7 +18,7 @@ Every item must be verified and marked `[x]` before the session ends. Items mark
 - [ ] Curly/smart quotes verified (Python scan — zero straight quotes)
 - [ ] Math formatting verified (Python scan — zero bare Unicode math)
 - [ ] Descriptive filename (not versioned)
-- [ ] Copied to `G:\My Drive\Obsidian\releases\YYYY\MM\`
+- [ ] Copied to `GitHub Releases (via gh release create)\YYYY\MM\`
 - [ ] Copy verified with `Test-Path`
 
 ## 3. ALL CORE + PHASE DOCS UPDATED
