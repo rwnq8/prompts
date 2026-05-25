@@ -297,12 +297,12 @@ This is the critical coordination mechanism between program and project agents.
 
 **Project Agent returns:**
 1. Deliverable published via GitHub Release
-2. PROJECT STATE.md updated with completion status
-3. GitHub Issue closed with deliverable reference in comment
+2. GitHub Issue (label: `project-state`) updated with completion status via `gh issue comment`
+3. Handoff Issue closed with deliverable reference in comment
 4. Learning extracted and added to project LEARNINGS.md
 
 **Program Agent receives:**
-1. Read PROJECT STATE.md — confirm `STATUS: COMPLETE`
+1. Check GitHub Issue (label: \project-state\) — confirm `STATUS: COMPLETE`
 2. Review deliverable via GitHub Release
 3. Quality check against DEFINITION-OF-DONE.md gates
 4. If PASS: update program documentation, plan next steps

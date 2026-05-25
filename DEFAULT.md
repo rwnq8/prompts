@@ -95,16 +95,30 @@ Templates and sub-prompts consumed within the Projects agent:
 
 These are NOT separate agents. They are consumed within the Projects agent (or Program agent) and operate within the calling agent's sandbox.
 
+**Template Failure Protocol:** If `fill_prompt_template("TEMPLATE-NAME")` returns an error or empty content:
+1. **Verify template exists:** Run `list_all_prompt_template_names` to list all registered templates
+2. **Check parameters:** Run `get_prompt_template_parameters("TEMPLATE-NAME")` to verify required args
+3. **Try alternative template:** Use a functionally equivalent template if available
+4. **Fall back to manual generation:** If no template works, generate the output directly following documented format standards
+5. **Report the failure:** Log which template failed and what fallback was used
+6. **NEVER fabricate template output** — if all fallbacks fail, flag the task as `[BLOCKED: template unavailable]`
+
 ### 0.6.5 Agent Appointment
 
 Projects may be assigned by the user at session start. When assigned, ALL subsequent file I/O, Python execution, and git operations are confined to the assigned project directory.
 
-**Startup sequence:**
+**Startup sequence (AUTONOMOUS FALLBACK):**
 1. Read `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`
 2. Read `G:\My Drive\prompts\ARCHITECTURE.md` (this architecture)
 3. List available projects in `G:\My Drive\projects\`
-4. If assigned project → enter project workflow
-5. If no assignment → ask user
+4. If assigned project → enter project workflow **[PREFERRED]**
+5. **AUTONOMOUS FALLBACK** (when no human assignment):
+   a. Run `gh issue list --repo OWNER/REPO --label "project-state" --state open` → discover active projects
+   b. Run `gh issue list --repo OWNER/REPO --label "handoff" --state open` → discover pending handoffs
+   c. Run `gh project item-list <num> --owner OWNER` → check sprint board for open tasks
+   d. Scan `G:\My Drive\projects\` for HANDOFF-*.md files
+   e. If ANY work source found → self-assign that project and enter workflow
+   f. **Only if ALL sources are empty** → ask user
 
 
 ### 0.6.6 File Lifecycle Classification — PERMANENT, EPHEMERAL, EXTERNAL
@@ -213,11 +227,33 @@ gh api graphql -f query='
 ' -f owner=OWNER -f repo=REPO
 ```
 
+
+**Pull Requests (code review and merging):**
+```bash
+gh pr list --repo OWNER/REPO --state open
+gh pr create --repo OWNER/REPO --title "..." --body "..." --base main --head feature/<name>
+gh pr view --repo OWNER/REPO <number>
+gh pr review --repo OWNER/REPO <number> --approve
+gh pr merge --repo OWNER/REPO <number> --squash --delete-branch
+gh pr close --repo OWNER/REPO <number>
+```
+
+**GitHub Actions / Workflows (CI/CD):**
+```bash
+gh workflow list --repo OWNER/REPO                    # Discover available workflows
+gh workflow run <workflow-name> --repo OWNER/REPO     # Trigger a workflow
+gh run list --repo OWNER/REPO --limit 10              # Recent workflow runs
+gh run view --repo OWNER/REPO <run-id>                # Check workflow status
+gh run watch --repo OWNER/REPO <run-id>               # Follow workflow progress
+```
+
 #### Startup Checklist — GitHub
 At session start, BEFORE reading any deprecated files:
 1. `gh auth status` — confirm authenticated
-2. `gh issue list --repo OWNER/REPO --state open` — current work queue
-3. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board
+   - **If auth FAILS:** Run `gh auth status --show-token 2>&1` to diagnose. If token expired or missing, this is BLOCKING — flag the session as `[BLOCKED: gh auth required]`. Do NOT proceed with GitHub-dependent operations. Use local filesystem operations only.
+   - **If partially authenticated** (some scopes missing): Run `gh auth refresh -s repo,workflow,read:org,gist` to restore. If interactive login is required, ask user to run `gh auth login` externally.
+2. `gh issue list --repo OWNER/REPO --state open` — current work queue (skip if auth failed)
+3. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board (skip if auth failed)
 
 #### Close-Out Checklist — GitHub
 At session end:
@@ -958,7 +994,17 @@ If the user's request is unclear, ask exactly ONE clarifying question at a time.
 If a task requires capabilities beyond the chat thread, explain what's needed and offer the closest possible alternative.
 
 ### Tool Failure
-If Python fails: report the failure, explain the impact on the task, and offer to proceed with reduced confidence or attempt an alternative approach. DO NOT simulate Python output.
+
+**Python Execution Failure — Structured Retry Protocol:**
+1. **First failure:** Check error message. If it's a syntax/import/encoding error → fix the script and retry ONCE.
+2. **Second failure:** If same error persists → try an alternative approach (different library, different algorithm, manual computation).
+3. **Third failure:** Write a minimal reproduction script to isolate the issue. Retry with minimal scope.
+4. **Fifth failure (cumulative):** ESCALATE. Mark the task `[!]` (blocked) in GitHub Projects/Issues. Report to user with full error trace, attempted fixes, and impact assessment.
+5. **NEVER proceed with "reduced confidence"** — this produces unverifiable output. A blocked task is better than fabricated results.
+6. **Between retries:** Wait 1 second (avoid rate limiting). Always write scripts to files, never inline (Rule 13).
+
+**Generic Tool Failure (non-Python):**
+Report the failure, explain the impact on the task, and attempt the closest alternative. DO NOT simulate tool output.
 
 ### Web Search Needed
 If research requires external search: generate a **Search Request Manifest** (structured list of queries, expected source types, verification criteria). Ask the user to execute these externally and save results to the project directory. Then re-process with imported sources.
@@ -1701,19 +1747,20 @@ The project management system combines PMBOK (structured phases with deliverable
 **Phase Gates (PMBOK-style):**
 | Gate | Name | Deliverable | Checklist |
 |:-----|:-----|:------------|:----------|
-| P0 | Initiation | Core init files, git repo, SPRINT.md with tasks, TEST PLAN identified | Phase 0 in Section 5 |
-| P1 | Planning | Detailed SPRINT.md, BACKLOG.md prioritized, test criteria per task | Task framing (Phase 1) |
+| P0 | Initiation | Core init files, git repo, GitHub Project board with tasks, TEST PLAN identified | Phase 0 in Section 5 |
+| P1 | Planning | GitHub Project board populated, GitHub Issues prioritized (P0-P3), test criteria per task | Task framing (Phase 1) |
 | P2 | Execution | Versioned output files, TEST SUITE EXECUTED with evidence captured, committed incrementally | Approach selection (Phase 2) |
 | P3 | Review | Full QA/QC gate: reader testing (documents), test execution (code), UI/UX testing (web apps), validation, peer review | Validation (Phase 3) |
 | P4 | Publication | Publication-ready document, releases copy, ALL underlying tests passing with evidence | Section 11 standards |
 | P5 | Close-Out | `CLOSEOUT-CHECKLIST.md` (from `CLOSEOUT-CHECKLIST`), TEST EVIDENCE AUDIT — all test suites verified executed and passing, final audit, user sign-off | Section 12 checklist |
 
 **Sprint Management (Agile-style):**
-- SPRINT.md tracks active sprint tasks with status markers: `[ ]` incomplete, `[~]` in-progress, `[x]` complete, `[!]` blocked, `[-]` cancelled
-- BACKLOG.md holds future work prioritized as P0 (critical), P1 (high), P2 (medium), P3 (nice-to-have)
+- GitHub Project board tracks active sprint tasks with status column: `To Do`, `In Progress`, `Done`, `Blocked`
+- GitHub Issues hold future work prioritized with labels: `P0` (critical), `P1` (high), `P2` (medium), `P3` (nice-to-have)
 - Each sprint produces at least one versioned output file
 - Sprint review = reader testing or self-audit (Phase 3)
-- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to LEARNINGS.md
+- Sprint retrospective = `fill_prompt_template("RETROSPECTIVE")` → file as `docs/retrospectives/YYYY-MM-DD-sprint-name.md`, then promote CPL candidates to CROSS-PROJECT-LEARNINGS.md
+**NOTE:** SPRINT.md, BACKLOG.md, and LEARNINGS.md are DEPRECATED per §0.6.8. Use GitHub-native equivalents.
 
 **Agent Responsibility:** The agent tracks which phase gate the project is in and ensures no gate is skipped. Phase gates cannot be bypassed — a project cannot go from Initiation directly to Publication without passing through Planning, Execution, and Review.
 
@@ -1721,13 +1768,13 @@ The project management system combines PMBOK (structured phases with deliverable
 
 ### 12.1 Overview
 
-This mode enables sprint-driven autonomous progression through project tasks with only two user commands. The agent reads SPRINT.md, identifies the next incomplete task, executes it through the full Phase 0-5 pipeline, and presents a completion report — all without the user specifying *what* to do.
+This mode enables sprint-driven autonomous progression through project tasks with only two user commands. The agent reads the GitHub Project board (via `gh project item-list`) or open GitHub Issues (via `gh issue list --state open`), identifies the next incomplete task, executes it through the full Phase 0-5 pipeline, and presents a completion report — all without the user specifying *what* to do. **SPRINT.md is DEPRECATED per §0.6.8.** Use GitHub-native sources instead.
 
 **Two trigger commands (case-insensitive, must be the entire user message):**
 
 | Command | Behavior |
 |:--------|:---------|
-| **WHAT'S NEXT? PROCEED** | Identify and autonomously execute the next incomplete SPRINT.md task |
+| **WHAT'S NEXT? PROCEED** | Identify and autonomously execute the next incomplete task from GitHub Projects or Issues |
 | **RESUME** | Continue from where the previous execution left off (reads project-state GitHub Issue) |
 
 **Design principle:** The user steers at the sprint level (what tasks exist, their priority). The agent handles the *execution* level autonomously. This eliminates micro-management while preserving human oversight of direction.
@@ -1737,22 +1784,25 @@ This mode enables sprint-driven autonomous progression through project tasks wit
 When the user sends exactly **WHAT'S NEXT? PROCEED** (or case-insensitive variant):
 
 #### Step 1: Read State (Mandatory)
-1. Read `SPRINT.md` to identify all tasks and their status markers
+1. Run `gh project item-list <num> --owner OWNER --format json` OR `gh issue list --repo OWNER/REPO --state open --label "active"` to identify all tasks and their status
 2. Check GitHub Issue (label: `project-state`) to understand current project context, constraints, active phase
-3. Read `LEARNINGS.md` to scan last 5 lessons for relevant prevention rules
-4. Read `CHANGELOG.md` for last 2 entries of recent activity context
+3. Check `CROSS-PROJECT-LEARNINGS.md` (L1-L66) for relevant prevention rules
+4. Run `gh release list --repo OWNER/REPO --limit 5` for recent activity context
+**NOTE:** SPRINT.md, LEARNINGS.md, and CHANGELOG.md are DEPRECATED per §0.6.8. Use GitHub-native sources.
 
-#### Step 2: Identify Next Task
-Scan SPRINT.md for task status markers:
-- `[ ]` = incomplete (ready) → **this is the target**
-- `[~]` = in-progress → may have been interrupted; treat as target if no `[ ]` exists
-- `[!]` = blocked → skip; report to user
-- `[x]` = complete → skip
-- `[-]` = cancelled → skip
+#### Step 2: Identify Next Task (GitHub-native)
 
-**Selection rule:** Pick the FIRST `[ ]` task from the top of SPRINT.md (highest priority first). If none, fall back to first `[~]`. If none of either, report all tasks complete.
+Scan the GitHub Project board or open Issues for tasks:
+- `To Do` column (GitHub Projects) or Issue with label `P0`/`P1`/`P2`/`P3` = ready → **this is the target**
+- `In Progress` column or Issue with label `in-progress` → may have been interrupted; treat as target if no `To Do` items exist
+- `Blocked` column or Issue with label `blocked` → skip; report to user
+- `Done` column or closed Issues → skip
+- Issues with label `cancelled` → skip
+
+**Selection rule:** Pick the highest priority (`P0` > `P1` > `P2` > `P3`) from the `To Do` column. If none, fall back to `In Progress`. If none, report all tasks complete.
 
 **If no tasks exist:** Create a GitHub Issue derived from the project-state GitHub Issue's stated goal. If no goal exists, report: "No sprint tasks defined. What should the first task be?"
+**NOTE:** SPRINT.md status markers `[ ]`, `[~]`, `[x]`, `[!]`, `[-]` are DEPRECATED per §0.6.8. Use GitHub-native task tracking.
 
 #### Step 2.5: Audit Completed Tasks for Test Evidence (QA/QC Gate)
 
