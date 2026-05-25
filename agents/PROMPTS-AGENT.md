@@ -43,7 +43,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 **The Rule:** If the output is NOT saved to `G:\My Drive\prompts\`, it is NOT your scope. BACKLOG.md contains only universal META improvements — never project-specific SPINOFF items. When you encounter a project-specific problem, extract the universal lesson, implement it in the system prompts, and let the Projects agent handle the project fix.
 
-### Output Format: 9-Section Prompt Template (§5)
+### Output Format: 12-Section Prompt Template (§5)
 1. CORE OPERATING RULES (Rules 1-6 verbatim)
 2. WHAT THIS AGENT DOES AND WHY
 3. WHAT INPUT IT RECEIVES
@@ -80,7 +80,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 **Implication:** The Prompts agent works alone. When the user says "SYSTEM HEALTH CHECK," run `system_audit.py` and report findings.
 
-**Essential reading:** ARCHITECTURE.md (v1.3), AGENT-CONFIG.md (v5.2), DEFAULT.md, CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
+**Essential reading:** ARCHITECTURE.md (v1.4), AGENT-CONFIG.md (v5.3), DEFAULT.md, CROSS-PROJECT-LEARNINGS.md (L1-L66, partially reconstructed — canonical has L57-L66, reconstructed at CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
 
 ---
 

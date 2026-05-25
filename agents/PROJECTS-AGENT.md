@@ -67,7 +67,7 @@ The recommended workflow pattern is **EXPLORER → IMPLEMENTER → REVIEWER**:
 | **Implement** | IMPLEMENTER (slot: see AGENT-CONFIG.md) | Task has clear specs, needs structured draft or polished output | Best ideas from EXPLORER, style guide, format spec (inline) |
 | **Review** | REVIEWER (slot: see AGENT-CONFIG.md) | Draft is complete, needs blind validation or reader testing | Full draft content, review criteria (inline) |
 
-**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See ARCHITECTURE.md Layer 6 and CROSS-PROJECT-LEARNINGS.md (35 lessons, L1-L40).
+**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See ARCHITECTURE.md Layer 6 and CROSS-PROJECT-LEARNINGS.md (L1-L66, partially reconstructed — canonical has L57-L66, reconstructed L1-L66 at CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md).
 
 **Subagent task prompt template:**
 ```
@@ -108,11 +108,9 @@ EXPECTED OUTPUT: [format, structure, scope]
 
 ---
 
-## 7. KEY CROSS-PROJECT LEARNINGS (L1-L40)
+## 7. KEY CROSS-PROJECT LEARNINGS
 
-This agent MUST internalize 35 lessons (L1-L40) from `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`.
-
-Key lessons for the Projects agent (see `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`):
+This agent MUST internalize lessons from CROSS-PROJECT-LEARNINGS.md (L1-L66, see CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md for full text). Key lessons for the Projects agent:
 
 | L# | Lesson | Enforcement in DEFAULT.md |
 |:---|:-------|:--------------------------|

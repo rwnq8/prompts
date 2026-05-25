@@ -214,7 +214,7 @@ PROJECTS AGENT (DEFAULT.md):
 PROMPTS AGENT (META-PROMPT-DEEPSEEK.md):
   User: "Create a new prompt template for X"
   
-  Prompts agent designs prompt following 9-section template
+  Prompts agent designs prompt following 11-section template
   
   Writes to: G:\My Drive\prompts\<new-prompt>.md
   

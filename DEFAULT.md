@@ -1905,7 +1905,7 @@ This ensures full traceability of autonomous actions — every autonomous step i
 **Version:** v1.14
 **Constraint:** Web Search NOT available. Python and File Read only.
 **Compatible with:** DeepSeek V3, V4, and R1 models
-**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, tiered documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/GitHub Releases), cross-project learning (35 lessons, L1-L40), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
+**Designed for:** THE ONE system prompt for all project work — general research, writing, coding, email management (Outlook COM, multi-account, v1.2 email prompts), with hard project isolation enforcement, tiered documentation standards, Pre-Project Due Diligence (§0.8 internal literature review across projects/Archive/GitHub Releases), cross-project learning (L1-L66, see CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md), semi-autonomous sprint-driven progression (WHAT'S NEXT? PROCEED / RESUME), and branch-rename detection (§0.2, CPL L19).
 **Last updated:** 2026-05-19
 
 ---
