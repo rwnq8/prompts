@@ -241,9 +241,13 @@ At session end:
 **Do NOT create or update deprecated files.** If you encounter them, note that they are stale and use the GitHub-native equivalent instead.
 
 
-## 0.7 Project Documentation Standards — THREE-TIER MODEL
+## 0.7 Project Documentation Standards — GITHUB-NATIVE MODEL (replaces THREE-TIER MODEL)
 
-Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\` itself) MUST maintain the following documentation files. These enable agent handoff across sessions, cross-project learning (kaizen), and sprint-based workflow management without requiring the human to re-explain context.
+**PRIMARY: §0.6.8 GitHub CLI.** README.md is the only mandatory local file. All project management tracking (backlog, sprint, changelog, learnings, decisions, project state) uses GitHub Issues/Projects/Releases/Wiki/Discussions per §0.6.8 File Deprecation Map.
+
+The tables below document the legacy file structure for reference only. Do NOT create files marked DEPRECATED.
+
+Every project directory under `G:\My Drive\projects\` (and `G:\My Drive\prompts\` itself) historically maintained the following documentation files. These are now replaced by GitHub-native equivalents (§0.6.8).
 
 ### Tier 1: Core Initialization Files (ALWAYS present)
 
@@ -263,7 +267,7 @@ README.md is the only mandatory file-based artifact. All other project managemen
 
 ### Tier 2: Phase-Gated Files (created at specific phases)
 
-**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 (8 projects, 2 were WON'T HAVE) and CPL L47 (documentation 3:1 heavier than deliverable).
+**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 and CPL L47 — see CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md for full lessons.
 
 These files are mandatory at their respective lifecycle phases:
 
@@ -295,113 +299,20 @@ The system has 29 registered prompt templates. 17 generate project files (above)
 
 ### Tier 1 Startup Procedure (Execute at Session Start)
 
-**Step 1: Verify all Tier 1 core files exist.** Check each with `Test-Path`. For any missing file, generate from its template via `fill_prompt_template`, then fill in all `{{placeholder}}` values with project-specific content before writing to disk:
-
+**Step 1: Create README.md.** If missing, generate from template:
 | # | Required File | Template | `fill_prompt_template` Call |
 |:--|:-------------|:---------|:----------------------------|
 | 1 | `README.md` | README | `fill_prompt_template("README")` |
-| 2 | `PROJECT STATE.md` | PROJECT-STATE | `fill_prompt_template("PROJECT-STATE")` |
-| 3 | `SPRINT.md` | SPRINT-BACKLOG | `fill_prompt_template("SPRINT-BACKLOG")` |
-| 4 | `CHANGELOG.md` | CHANGELOG | `fill_prompt_template("CHANGELOG")` |
-| 5 | `BACKLOG.md` | PRODUCT-BACKLOG | `fill_prompt_template("PRODUCT-BACKLOG")` |
-| 6 | `LEARNINGS.md` | LEARNINGS-TEMPLATE | `fill_prompt_template("LEARNINGS")` |
-| 7 | `DECISIONS.md` | ADR | `fill_prompt_template("ADR")` for individual decisions appended to the decisions log |
 
-**Step 2: After file verification, read documentation in order:**
+**Step 1b: GitHub-native setup (replaces deprecated PM files).** Per §0.6.8:
+- Create GitHub Issue with label `project-state` using `gh issue create` → replaces `PROJECT STATE.md`
+- Set up GitHub Project board using `gh project` → replaces `SPRINT.md`
+- Create GitHub Issues for tasks using `gh issue create` → replaces `BACKLOG.md`
+- Initialize GitHub Wiki → replaces `LEARNINGS.md`, `DECISIONS.md`
+- Use GitHub Releases for changelog → replaces `CHANGELOG.md`
+- Use GitHub Discussions for decisions → replaces `DECISIONS.md`
 
-```
-1. Check GitHub Issue (label: `project-state`) → understand current status, constraints, next steps.
-2. Read SPRINT.md → identify the active task.
-3. Read LEARNINGS.md → avoid repeating past mistakes.
-4. Read CHANGELOG.md (last entry) → know what just changed.
-5. Read G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md → learn from other projects.
-```
-
-### Session Close Procedure — MONITORING & CLOSE-OUT PROTOCOL (Execute Before Ending Every Session)
-
-**CRITICAL DISTINCTION:** An agent outputting text that says "I committed" is NOT the same as actually committing. An agent outputting "tests passed" is NOT the same as tests actually passing. This protocol verifies what was EXECUTED, not what was CLAIMED. Every verification step uses external checks (filesystem, git log, Python re-execution) — never trust the agent's own narrative.
-
-#### Phase A: Task Execution Audit — Verify Actual vs. Claimed Work
-
-Before updating any documentation, verify that EVERY claimed action in the session was actually executed:
-
-```
-TASK EXECUTION AUDIT:
-
-1. FILE WRITES: For every file the session claims to have written/modified:
-   [ ] Test-Path <file> → CONFIRM EXISTS on disk
-   [ ] Get-Content <file> -First 5 → CONFIRM has expected content
-   [ ] Compare file size vs. claimed size (if applicable)
-   → ANY missing file = [TASK-NOT-EXECUTED]. Do NOT claim it was written.
-
-2. GIT COMMITS: For every commit the session claims to have made:
-   [ ] git log --oneline -5 → CONFIRM each commit appears
-   [ ] git diff --stat HEAD~N..HEAD → CONFIRM files changed match claims
-   → Missing commit = [COMMIT-NOT-EXECUTED]. Execute it NOW.
-
-3. PYTHON EXECUTIONS: For every Python script/output the session claims:
-   [ ] Re-execute the script → CONFIRM it produces the claimed output
-   [ ] If script file is missing → [SCRIPT-NOT-FOUND]
-   [ ] If output differs → [OUTPUT-MISMATCH: claimed vs actual]
-   → Do NOT claim Python results that were never produced by actual execution.
-
-4. SYSTEM COMMANDS: For every exec/process command the session claims:
-   [ ] Check exit codes, output files, or state changes
-   → Claimed execution with no evidence = [EXECUTION-UNVERIFIED]
-```
-
-**Gate Decision:** All tasks verified as actually executed → proceed to Phase B. ANY task unverified → either execute it NOW or remove the claim from the session output.
-
-#### Phase B: Documentation Update (Standard Close-Out)
-
-```
-1. Update SPRINT.md → mark tasks complete WITH EVIDENCE references (commit hash, file path, test output)
-2. Update CHANGELOG.md → add entry: What Changed, Files Changed, Git info
-3. If lessons emerged → add to LEARNINGS.md
-4. If decisions made → add to DECISIONS.md
-5. Update GitHub Issue (project-state) → handoff for the next agent with Task Execution Audit summary
-6. Commit ALL documentation changes: git add + git commit
-7. If project is in close-out phase: execute Project Close-Out Procedure (Section 12)
-```
-
-#### Phase C: Final Integrity Sweep
-
-```
-[ ] ALL core documentation files audited for stale references (§0.7)
-[ ] git status --short → CLEAN (no uncommitted changes)
-[ ] git log -1 --oneline → session close commit EXISTS
-[ ] system_audit.py (if in prompts workspace) → no new failures
-[ ] Review entire session output: does any text claim work that Phase A proved was NOT executed?
-    → If YES: remove or correct those claims BEFORE ending session.
-```
-
-**Do NOT end the session until ALL phases (A, B, C) complete with zero failures.**
-
-### LEARNINGS.md Format
-
-Each lesson in LEARNINGS.md follows this format:
-
-```
-### L<N>: <one-line summary>
-- **Category:** [GIT|PYTHON|ISOLATION|METHODOLOGY|OTHER]
-- **Issue:** What went wrong or what was discovered.
-- **Solution:** What fixed it or what approach worked.
-- **Prevention:** How to avoid it in future.
-- **Cross-Project:** [YES|NO] — does this apply to other projects?
-```
-
-**Cross-Reference:** Project-level lessons that generalize across projects are candidates for `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`. Currently 35 lessons catalogued (L1-L40). Read the full CPL file during §0.8 Due Diligence.
-
-### File Naming Exception
-
-Tier 1 core files use fixed names and are never versioned: `README.md` only; all PM files (SPRINT.md, BACKLOG.md, etc.) are DEPRECATED per §0.6.8. All other project files follow the `MAJOR.MINOR.ext` convention (Section 10).
-
-### Cross-Project Learning
-
-- Read `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md` (read-only) to learn from other projects.
-- When you discover a lesson applicable to other projects: mark it `Cross-Project: YES` and tell the user.
-- The user decides what gets shared across projects.
-
+**DO NOT create deprecated files.** `SPRINT.md`, `BACKLOG.md`, `CHANGELOG.md`, `LEARNINGS.md`, `DECISIONS.md`, and `PROJECT STATE.md` are migrated to GitHub. See §0.6.8 File Deprecation Map for full migration instructions.
 
 ## 0.8 Pre-Project Due Diligence & Internal Literature Review — MANDATORY
 
