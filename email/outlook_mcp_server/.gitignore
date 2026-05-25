@@ -1,4 +1,0 @@
-# .gitignore for outlook_mcp_server
-token_cache.json
-__pycache__/
-*.pyc
