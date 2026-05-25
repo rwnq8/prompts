@@ -2,14 +2,17 @@
 r"""translate_docs.py -- Translate Markdown documentation files to multiple languages.
 
 Preserves YAML frontmatter, code blocks, math blocks, and HTML tags.
-Uses googletrans (free, no API key required) with DeepL as optional premium backend.
+Uses Google Translate API directly via urllib (zero external dependencies).
 
 Canonical source: G:\My Drive\prompts\tools\translate_docs.py
 """
 import os
 import sys
 import re
+import json
 import argparse
+import urllib.request
+import urllib.parse
 from pathlib import Path
 
 # Markdown block types that should NOT be translated
@@ -43,14 +46,27 @@ LANG_NAMES = {
 
 
 def translate_text(text, dest_lang, translator=None):
-    """Translate a single text block."""
-    if translator is None:
-        from googletrans import Translator
-        translator = Translator()
+    """Translate a single text block using Google Translate API (zero deps)."""
+    url = "https://translate.googleapis.com/translate_a/single"
+    params = {
+        "client": "gtx",
+        "sl": "auto",
+        "tl": dest_lang,
+        "dt": "t",
+        "q": text
+    }
+    full_url = url + "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(full_url, headers={"User-Agent": "Mozilla/5.0"})
     
     try:
-        result = translator.translate(text, dest=dest_lang)
-        return result.text
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())
+        # Google returns [[["translated text", "original", ...]], null, ...]
+        result = ""
+        for segment in data[0]:
+            if segment[0]:
+                result += segment[0]
+        return result if result else text
     except Exception as e:
         print(f"  [WARN] Translation failed: {e}")
         return text  # Return original on failure
@@ -58,8 +74,6 @@ def translate_text(text, dest_lang, translator=None):
 
 def translate_markdown(content, dest_lang, source_lang='en'):
     """Translate markdown content, preserving code, math, and structure."""
-    from googletrans import Translator
-    translator = Translator()
     
     # Extract and preserve YAML frontmatter
     fm_match = YAML_FRONTMATTER.match(content)
@@ -109,9 +123,9 @@ def translate_markdown(content, dest_lang, source_lang='en'):
                 codes_in_heading = list(INLINE_CODE.finditer(heading_text))
                 if codes_in_heading:
                     # Complex: translate around inline code
-                    translated = translate_text(heading_text, dest_lang, translator)
+                    translated = translate_text(heading_text, dest_lang)
                 else:
-                    translated = translate_text(heading_text, dest_lang, translator)
+                    translated = translate_text(heading_text, dest_lang)
                 translated_paragraphs.append(f'{hashes} {translated}')
             else:
                 translated_paragraphs.append(para)
@@ -119,7 +133,7 @@ def translate_markdown(content, dest_lang, source_lang='en'):
         
         # Translate paragraph
         try:
-            translated = translate_text(stripped, dest_lang, translator)
+            translated = translate_text(stripped, dest_lang)
             translated_paragraphs.append(translated)
         except Exception as e:
             print(f"  [WARN] Paragraph translation failed: {e}")

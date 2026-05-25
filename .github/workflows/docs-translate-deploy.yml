@@ -34,7 +34,7 @@ jobs:
 
       - name: Install translation dependencies
         run: |
-          pip install googletrans==4.0.0rc1
+          echo "Using zero-dependency Google Translate (stdlib urllib)"
 
       - name: Install Hugo
         run: |
