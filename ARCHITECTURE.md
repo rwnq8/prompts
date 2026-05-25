@@ -111,7 +111,7 @@ Detailed execution specs stored in `G:\My Drive\prompts\agents\`. These files te
 │  │   └── _shared\       ← READ-ONLY: CROSS-PROJECT      │
 │  ├── prompts\           ← WRITE: Prompts agent          │
 │  ├── QWAV\              ← WRITE: QWAV agent (pending)   │
-│  ├── Obsidian\releases\ ← READ-ONLY: all agents         │
+│  ├── GitHub Releases (via gh release) ← canonical publication storage         │
 │  └── Archive\           ← READ-ONLY: all agents         │
 │      ├── projects\YYYY\MM\ ← MOVE target (completed)    │
 │      ├── prompts\       ← MOVE target (archived prompts)│
@@ -126,10 +126,10 @@ Agents may MOVE completed/archived work OUT of their write sandbox and INTO read
 | Agent | Can MOVE from | Can MOVE to | Use Case |
 |:------|:-------------|:------------|:---------|
 | Projects | `projects\<name>\` | `Archive\projects\YYYY\MM\project-name\` | Archive completed project |
-| Projects | `projects\<name>\` | `Obsidian\releases\` | Publish finalized research |
+| Projects | `projects\<name>\` | GitHub Releases | Publish finalized research |
 | Prompts | `prompts\` | `Archive\prompts\` | Archive deprecated prompts |
 | QWAV | `projects\` | `Archive\projects\YYYY\MM\` | Archive completed project work |
-| QWAV | `projects\` | `Obsidian\releases\` | Publish program deliverables |
+| QWAV | `projects\` | GitHub Releases | Publish program deliverables |
 
 **Rule:** MOVE is allowed. COPY+DELETE is equivalent. Never WRITE directly to Archive or releases — only MOVE into them.
 
@@ -137,7 +137,7 @@ Agents may MOVE completed/archived work OUT of their write sandbox and INTO read
 
 All agents have read access to all directories for due diligence (§0.8), cross-project learning, and context retrieval. This includes:
 - `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`
-- `G:\My Drive\Obsidian\releases\`
+- GitHub Releases (via `gh release`)
 - `G:\My Drive\Archive\` (all subdirectories)
 - `G:\My Drive\prompts\` (system prompts and templates)
 - Any project directory (read-only; write only to assigned project)
@@ -244,13 +244,13 @@ PROGRAM AGENT (QWAV-DEFAULT.md + DEFAULT.md):
   Read handoff document
   Follow research trail (Archive, releases, active projects)
   Execute Phases 0-5 (DEFAULT.md S5)
-  Place deliverables in Obsidian\releases\YYYY\MM\
+  Place deliverables in GitHub Release (gh release create)
   Update GitHub Issue (project-state): STATUS: COMPLETE | DELIVERABLE: path
   Close task Issues: gh issue close <num> --reason completed
   
   BACK TO PROGRAM AGENT:
   Check GitHub Issue (project-state): confirm STATUS: COMPLETE
-  Review deliverable in Obsidian\releases\
+  Review deliverable via GitHub Release
   Quality check against DEFINITION-OF-DONE.md gates
   If PASS: update program docs, plan next steps
   If FAIL: re-open GitHub Issue, create new handoff

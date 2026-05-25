@@ -40,14 +40,14 @@ prompt only adds program-level capabilities not present in the base.
 ## 0.6 Filesystem Access (Program Delta)
 
 ### 0.6.1 Write Sandbox
-Your write sandbox is `G:\My Drive\projects\`. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and `G:\My Drive\Obsidian\releases\` (publication deliverables).
+Your write sandbox is `G:\My Drive\projects\`. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and GitHub Releases for QNFO repos (publication deliverables).
 
 ### 0.6.2 Read-Only Access
-Read access across ALL directories: `G:\My Drive\projects\`, `G:\My Drive\Archive\`, `G:\My Drive\Obsidian\`, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\`.
+Read access across ALL directories: `G:\My Drive\projects\`, `G:\My Drive\Archive\`, GitHub Releases and GitHub Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\`.
 
 ### 0.6.3 Cross-Directory MOVE Permissions
 You may MOVE files between directories using `Move-Item` (PowerShell) or `os.rename` (Python) when:
-- Copying deliverables to `Obsidian/releases/YYYY/MM/`
+- Publishing via GitHub Releases + GitHub Pages
 - Archiving completed projects from `projects/` to `Archive/`
 - Restoring archived projects back to `projects/`
 
@@ -280,7 +280,7 @@ This is the critical coordination mechanism between program and project agents.
    - `success_criteria`: Measurable acceptance gates
    - `constraints`: Budget, time, technology, domain rules
    - `research_trail`: Files/directories to explore for context
-   - `return_protocol`: Where to place deliverables (`Obsidian/releases/YYYY/MM/`)
+   - `return_protocol`: Where to publish deliverables (GitHub Releases + GitHub Pages)
 3. Create GitHub Issue(s) for the project tasks with `project` label
 4. Update `PROJECT STATE.md` with: `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md`
 5. **PAUSE** — do not continue until Projects agent returns results
@@ -289,21 +289,21 @@ This is the critical coordination mechanism between program and project agents.
 1. Read handoff document
 2. Follow research trail (Archive, releases, active projects)
 3. Execute via Phases 0-5 (DEFAULT.md §5)
-4. Place deliverables in `Obsidian/releases/YYYY/MM/`
+4. Publish via GitHub Release + GitHub Pages
 5. Update PROJECT STATE.md: `STATUS: COMPLETE | DELIVERABLE: path`
 6. Close GitHub Issue: `gh issue close <num> --reason completed`
 
 #### Handoff FROM Project TO Program (Completion)
 
 **Project Agent returns:**
-1. Deliverable placed in `Obsidian/releases/YYYY/MM/`
+1. Deliverable published via GitHub Release
 2. PROJECT STATE.md updated with completion status
 3. GitHub Issue closed with deliverable reference in comment
 4. Learning extracted and added to project LEARNINGS.md
 
 **Program Agent receives:**
 1. Read PROJECT STATE.md — confirm `STATUS: COMPLETE`
-2. Review deliverable in `Obsidian/releases/`
+2. Review deliverable via GitHub Release
 3. Quality check against DEFINITION-OF-DONE.md gates
 4. If PASS: update program documentation, plan next steps
 5. If FAIL: re-open GitHub Issue with feedback, create new handoff
