@@ -1,28 +1,37 @@
-name: GitBook Build and Translate
-
-on:
-  push:
-    branches: [main, master]
-    paths: ['docs/**', '**.md', 'book.json']
-  workflow_dispatch:
-
-jobs:
-  gitbook-sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm install -g gitbook-cli && gitbook install
-      - name: Build GitBook
-        run: |
-          gitbook build . _book/en
-          for LANG_DIR in docs/*/; do
-            LANG=$(basename "$LANG_DIR")
-            [ -f "$LANG_DIR/SUMMARY.md" ] && gitbook build "$LANG_DIR" "_book/$LANG" && echo "Built: $LANG"
-          done
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_book
+# =============================================================================
+# DEPRECATED — 2026-05-25 (F6 fix: skill-workflow-capability-audit)
+# gitbook-cli has been unmaintained since 2021. peaceiris/actions-gh-pages@v3
+# is also outdated. This workflow is preserved for reference only.
+#
+# Replacement options: mdBook (Rust), MkDocs + Material theme, Hugo, or VitePress.
+# To re-enable, uncomment below and fix the underlying tooling.
+# =============================================================================
+#
+# name: GitBook Build and Translate
+#
+# on:
+#   push:
+#     branches: [main, master]
+#     paths: ['docs/**', '**.md', 'book.json']
+#   workflow_dispatch:
+#
+# jobs:
+#   gitbook-sync:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#         with: { fetch-depth: 0 }
+#       - uses: actions/setup-node@v4
+#         with: { node-version: '20' }
+#       - run: npm install -g gitbook-cli && gitbook install
+#       - name: Build GitBook
+#         run: |
+#           gitbook build . _book/en
+#           for LANG_DIR in docs/*/; do
+#             LANG=$(basename "$LANG_DIR")
+#             [ -f "$LANG_DIR/SUMMARY.md" ] && gitbook build "$LANG_DIR" "_book/$LANG" && echo "Built: $LANG"
+#           done
+#       - uses: peaceiris/actions-gh-pages@v3
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           publish_dir: ./_book

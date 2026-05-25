@@ -1,41 +1,81 @@
 name: Zenodo DOI Registration
+# v2.0 — Uses canonical tools/zenodo_publish.py (Python + YAML frontmatter + sandbox-first + license resolution)
+# Replaces v1.0 which used raw curl+jq commands with hardcoded cc-by-4.0
 
 on:
   release:
     types: [published]
   workflow_dispatch:
     inputs:
-      release_tag:
-        description: 'GitHub Release tag'
+      title:
+        description: 'Publication title'
         required: true
+      author:
+        description: 'Author name (Last, First)'
+        required: true
+        default: 'Quni, Rowan'
+      file:
+        description: 'File path to upload'
+        required: true
+        default: 'output.pdf'
+      abstract:
+        description: 'Publication abstract'
+        required: false
+      keywords:
+        description: 'Comma-separated keywords'
+        required: false
+      upload_type:
+        description: 'Zenodo upload type'
+        required: false
+        default: 'publication'
+        type: choice
+        options: ['publication', 'poster', 'presentation', 'dataset', 'image', 'video', 'software', 'lesson', 'other']
 
 jobs:
   zenodo-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Publish to Zenodo Sandbox
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Phase 1: Sandbox test (always)
+      - name: Sandbox Test
         env:
           ZENODO_TOKEN: ${{ secrets.ZENODO_SANDBOX_TOKEN }}
         run: |
-          TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
-          DEPOSITION=$(curl -s -X POST "https://sandbox.zenodo.org/api/deposit/depositions" \
-            -H "Authorization: Bearer $ZENODO_TOKEN" -H "Content-Type: application/json" \
-            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\",\"license\":\"other-open\",\"rights\":[{\"rights\":\"QNFO Content License Agreement v1.1\",\"rightsUri\":\"https://github.com/QNFO/license/\",\"rightsIdentifier\":\"QNFO-1.1\",\"rightsIdentifierScheme\":\"other\"}]}}")
-          DEP_ID=$(echo $DEPOSITION | jq -r '.id')
-          for FILE in output.pdf README.md; do [ -f "$FILE" ] && curl -s "https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID/files" -H "Authorization: Bearer $ZENODO_TOKEN" -F "file=@$FILE"; done
-          curl -s -X POST "https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID/actions/publish" -H "Authorization: Bearer $ZENODO_TOKEN"
-          echo "Sandbox DOI: $(curl -s https://sandbox.zenodo.org/api/deposit/depositions/$DEP_ID | jq -r '.doi')"
-      - name: Publish to Zenodo Production
+          TITLE="${{ inputs.title || github.event.repository.name }}"
+          AUTHOR="${{ inputs.author || 'Quni, Rowan' }}"
+          FILE="${{ inputs.file || 'output.pdf' }}"
+
+          ARGS=(--sandbox --title "${TITLE}" --author "${AUTHOR}" --file "${FILE}")
+          [ -n "${{ inputs.abstract }}" ] && ARGS+=(--abstract "${{ inputs.abstract }}")
+          [ -n "${{ inputs.keywords }}" ] && ARGS+=(--keywords "${{ inputs.keywords }}")
+          [ -n "${{ inputs.upload_type }}" ] && ARGS+=(--upload-type "${{ inputs.upload_type }}")
+
+          python tools/zenodo_publish.py "${ARGS[@]}"
+
+      # Phase 2: Production publish (only on release)
+      - name: Production Publish
         if: github.event_name == 'release'
         env:
           ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
         run: |
-          TAG="${{ github.ref_name }}"
-          DEPOSITION=$(curl -s -X POST "https://zenodo.org/api/deposit/depositions" \
-            -H "Authorization: Bearer $ZENODO_TOKEN" -H "Content-Type: application/json" \
-            -d "{\"metadata\":{\"title\":\"${{ github.event.repository.name }} $TAG\",\"upload_type\":\"publication\",\"creators\":[{\"name\":\"Rowan Quni\"}],\"access_right\":\"open\",\"license\":\"other-open\",\"rights\":[{\"rights\":\"QNFO Content License Agreement v1.1\",\"rightsUri\":\"https://github.com/QNFO/license/\",\"rightsIdentifier\":\"QNFO-1.1\",\"rightsIdentifierScheme\":\"other\"}]}}")
-          DEP_ID=$(echo $DEPOSITION | jq -r '.id')
-          for FILE in output.pdf README.md; do [ -f "$FILE" ] && curl -s "https://zenodo.org/api/deposit/depositions/$DEP_ID/files" -H "Authorization: Bearer $ZENODO_TOKEN" -F "file=@$FILE"; done
-          curl -s -X POST "https://zenodo.org/api/deposit/depositions/$DEP_ID/actions/publish" -H "Authorization: Bearer $ZENODO_TOKEN"
-          echo "DOI: $(curl -s https://zenodo.org/api/deposit/depositions/$DEP_ID | jq -r '.doi')"
+          TITLE="${{ github.event.repository.name }} ${{ github.ref_name }}"
+          AUTHOR="Quni, Rowan"
+
+          # Find files to upload: PDF first, then README, then any .md
+          FILES=()
+          for f in output.pdf README.md; do
+            [ -f "$f" ] && FILES+=("$f")
+          done
+
+          # Upload first file as primary
+          PRIMARY="${FILES[0]:-README.md}"
+          ARGS=(--title "${TITLE}" --author "${AUTHOR}" --file "${PRIMARY}")
+          [ -n "${{ inputs.abstract }}" ] && ARGS+=(--abstract "${{ inputs.abstract }}")
+          [ -n "${{ inputs.keywords }}" ] && ARGS+=(--keywords "${{ inputs.keywords }}")
+
+          python tools/zenodo_publish.py "${ARGS[@]}"

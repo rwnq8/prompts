@@ -24,11 +24,21 @@ deposition creation → metadata → file upload → publication.
 **HARD RULES:**
 1. **Sandbox first, production after.** Test with `--sandbox` before creating a real DOI.
 2. **Never fabricate a DOI.** DOIs come only from the Zenodo API response.
-3. **Token is NEVER hardcoded.** Read from `%USERPROFILE%\.zenodo_token` or `ZENODO_TOKEN` env var.
+3. **Token is NEVER hardcoded.** Primary: `ZENODO_TOKEN` environment variable. Fallback: `%USERPROFILE%\.zenodo_token` file.
 4. **Verify file exists** before publishing: `Test-Path <file>` + `Get-Content <file> -First 5`.
 
 ### Phase 1: Token Verification
 
+**Primary (env var — GitHub Actions compatible):**
+```powershell
+if ($env:ZENODO_TOKEN) {
+    Write-Output "ZENODO_TOKEN env var set: YES"
+} else {
+    Write-Output "ZENODO_TOKEN env var: NOT SET — trying file fallback"
+}
+```
+
+**Fallback (file — local machine only):**
 ```powershell
 Test-Path "$env:USERPROFILE\.zenodo_token"
 $token = Get-Content "$env:USERPROFILE\.zenodo_token"
@@ -40,9 +50,10 @@ Required scopes: `deposit:actions`, `deposit:write`. Save to `%USERPROFILE%\.zen
 ### Phase 2: Sandbox Test (MANDATORY)
 
 ```powershell
+$env:ZENODO_TOKEN = $env:ZENODO_TOKEN ?? (Get-Content "$env:USERPROFILE\.zenodo_token")
+
 python "G:\My Drive\prompts\tools\zenodo_publish.py" `
   --sandbox `
-  --token $token `
   --title "{{title}}" `
   --author "{{author}}" `
   --file "{{file}}" `
@@ -59,7 +70,6 @@ Only after Phase 2 success. Remove `--sandbox`. Script will prompt `Type 'PUBLIS
 
 ```powershell
 python "G:\My Drive\prompts\tools\zenodo_publish.py" `
-  --token $token `
   --title "{{title}}" `
   --author "{{author}}" `
   --file "{{file}}" `

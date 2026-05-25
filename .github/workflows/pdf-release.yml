@@ -1,4 +1,6 @@
 name: Build and Publish PDF Release
+# v2.0 — Uses canonical build_pdf.py pipeline (Python + MathJax + YAML frontmatter + CSS presets)
+# Replaces v1.0 which used raw Node.js/Puppeteer with inline CSS
 
 on:
   push:
@@ -9,30 +11,49 @@ on:
         description: 'Path to markdown file for PDF generation'
         required: true
         default: 'README.md'
+      style:
+        description: 'CSS style preset'
+        required: false
+        default: 'academic'
+        type: choice
+        options: ['academic', 'modern', 'minimal']
+      output_name:
+        description: 'Output PDF filename'
+        required: false
+        default: 'output.pdf'
 
 jobs:
   build-pdf:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm install puppeteer marked highlight.js
-      - name: Generate PDF from Markdown
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install markdown
+
+      - name: Build PDF
         run: |
-          node -e "
-          const puppeteer = require('puppeteer'); const { marked } = require('marked');
-          const fs = require('fs');
-          const mdPath = process.env.MARKDOWN_PATH || '${{ github.event.inputs.markdown_path || 'README.md' }}';
-          const html = marked(fs.readFileSync(mdPath, 'utf-8'));
-          const fullHtml = '<!DOCTYPE html><html><head><meta charset=utf-8>' +
-            '<style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.6}' +
-            'pre{background:#f6f8fa;padding:16px;border-radius:6px}img{max-width:100%}</style>' +
-            '</head><body>' + html + '</body></html>';
-          (async()=>{const b=await puppeteer.launch({args:['--no-sandbox']});
-          const p=await b.newPage();await p.setContent(fullHtml,{waitUntil:'networkidle0'});
-          await p.pdf({format:'A4',printBackground:true,margin:{top:'20mm',bottom:'20mm',left:'15mm',right:'15mm'}});
-          await b.close()})();"
-      - uses: softprops/action-gh-release@v2
+          python pdf/build_pdf.py \
+            --input "${{ inputs.markdown_path || 'README.md' }}" \
+            --style "${{ inputs.style || 'academic' }}" \
+            --output "${{ inputs.output_name || 'output.pdf' }}"
+
+      - name: Verify PDF
+        run: |
+          PDF="${{ inputs.output_name || 'output.pdf' }}"
+          if [ -f "$PDF" ]; then
+            echo "PDF generated: $(du -h "$PDF" | cut -f1)"
+          else
+            echo "ERROR: PDF not found at $PDF"
+            exit 1
+          fi
+
+      - name: Upload to Release
         if: startsWith(github.ref, 'refs/tags/')
-        with: { files: output.pdf }
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ inputs.output_name || 'output.pdf' }}

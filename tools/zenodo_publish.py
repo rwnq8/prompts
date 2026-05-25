@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Zenodo API Client — Autonomous DOI Registration
+Zenodo API Client --- Autonomous DOI Registration
 
 Creates Zenodo depositions, uploads files, adds metadata, and publishes.
 Supports both sandbox (testing) and production.
@@ -29,11 +29,11 @@ import urllib.error
 import urllib.parse
 from datetime import datetime
 
-# ── API Endpoints ─────────────────────────────────────────
+# -- API Endpoints -----------------------------------------
 PRODUCTION = "https://zenodo.org/api"
 SANDBOX = "https://sandbox.zenodo.org/api"
 
-# ── Custom License Registry ───────────────────────────────
+# -- Custom License Registry -------------------------------
 # Maps license identifiers to metadata for Zenodo's 'rights' field.
 # Standard SPDX licenses use the 'license' metadata field directly.
 # Custom licenses (not in SPDX) use the 'rights' metadata field.
@@ -81,7 +81,7 @@ def extract_yaml_license(file_path):
             return val if val else None
     return None
 
-# ── Core API Functions ────────────────────────────────────
+# -- Core API Functions ------------------------------------
 
 def api_request(method, url, token, data=None, file_path=None):
     """Make an authenticated request to Zenodo API."""
@@ -167,7 +167,7 @@ def update_metadata(deposition_id, metadata, token, base_url):
 
 
 def publish_deposition(deposition_id, token, base_url):
-    """Publish a deposition — this makes it public and assigns a DOI."""
+    """Publish a deposition --- this makes it public and assigns a DOI."""
     url = f"{base_url}/deposit/depositions/{deposition_id}/actions/publish"
     result = api_request("POST", url, token)
     if result:
@@ -177,7 +177,7 @@ def publish_deposition(deposition_id, token, base_url):
     return None
 
 
-# ── Main ──────────────────────────────────────────────────
+# -- Main --------------------------------------------------
 
 def build_metadata(args):
     """Build metadata dict from CLI args.
@@ -189,7 +189,7 @@ def build_metadata(args):
     """
     today = datetime.now().strftime("%Y-%m-%d")
 
-    # ── License resolution ──
+    # -- License resolution --
     license_id = None
     source = "default"
 
@@ -211,7 +211,7 @@ def build_metadata(args):
 
     print(f"  License: {license_id} (source: {source})")
 
-    # ── Build metadata ──
+    # -- Build metadata --
     metadata = {
         "title": args.title,
         "upload_type": args.upload_type or "publication",
@@ -256,7 +256,7 @@ def build_metadata(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Zenodo API Client — Autonomous DOI Registration",
+        description="Zenodo API Client --- Autonomous DOI Registration",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -341,7 +341,7 @@ Token: Visit https://zenodo.org/account/settings/applications/
         print(f"  Deposition ID: {deposition_id}")
         print(f"  View at: {base_url.replace('/api', '')}/deposit/{deposition_id}")
     else:
-        print(f"\n⚠️  WARNING: You are about to PUBLISH to Zenodo PRODUCTION.")
+        print(f"\n[WARN]  WARNING: You are about to PUBLISH to Zenodo PRODUCTION.")
         print(f"  This will create a real DOI that cannot be deleted.")
         confirm = input("  Type 'PUBLISH' to confirm: ")
         if confirm.strip() != "PUBLISH":
