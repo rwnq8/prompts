@@ -1577,14 +1577,14 @@ Before ANY document is declared publication-ready, it MUST pass blind reader tes
 
 4. **Two-round minimum (CPL L27):** First round catches surface problems (jargon, confusing sentences). Second round (after fixes applied) catches structural problems (logical gaps, missing context). Plan for at least 2 rounds.
 
-5. **Document results:** Reader test feedback and fixes applied must be documented in CHANGELOG.md and, for publication documents, in a "Reader Testing" appendix.
+5. **Document results:** Reader test feedback and fixes applied must be documented in GitHub Release notes and, for publication documents, in a "Reader Testing" appendix.
 
 #### Pre-Publication Gate
 
 No document proceeds to release (\u00a711.4) until:
 - [x] At least one round of blind reader testing completed
 - [x] All `[BLOCKING]` and `[MAJOR]` issues resolved
-- [x] Reader testing results documented in CHANGELOG.md
+- [x] Reader testing results documented in GitHub Release notes
 
 ### 11.6 Multi-Project Synthesis Audit (For Convergence/Consilience Claims)
 
