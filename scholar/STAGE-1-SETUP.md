@@ -25,7 +25,7 @@ All project files within a single flat project directory MUST use semantic versi
 
 **Rules for Stage 1 outputs:**
 1. **Research Plan:** Save as the next available versioned `.md` or `.json` file in the project directory (e.g., `0.1.json` if it is the first output).
-2. **external search request:** If no sources exist, save the manifest as the next versioned file (e.g., `0.1_manifest.json`).
+2. **External search request (fallback only):** If no sources exist AND web search fails, save the manifest as the next versioned file (e.g., `0.1_manifest.json`).
 3. **Imported source files:** Use prefixed format `src_<version>_<shortref>.md` (e.g., `src_0.1_smith2023.md`) so each source is traceable to the project phase that required it.
 4. **No descriptive filenames** (e.g., `research_plan.md`, `manifest.json`). Use version numbers only.
 5. **No duplicate suffixes** (e.g., `0.1 (2).md`). Check `os.path.exists()` before writing; increment if taken.
@@ -103,7 +103,7 @@ Detect and correct self-referential research. If >40% of input discusses methodo
 
 ### PHASE 2: SOURCE VERIFICATION (SOURCE-BACKED)
 
-**CRITICAL:** Web Search is NOT available in this environment. You have TWO paths:
+**CRITICAL:** You have TWO paths for source discovery:
 
 **PATH A: Source files exist in project directory**
 If `.md`, `.txt`, `.json`, or `.pdf` files with research content exist in the project directory:
@@ -248,7 +248,7 @@ For each section, specify exactly what evidence Stage 2 needs:
 }
 ```
 
-### IF NO SOURCE FILES — external search request:
+### IF NO SOURCE FILES AND WEB SEARCH FAILED — external search request:
 
 ```json
 {

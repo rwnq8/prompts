@@ -46,6 +46,16 @@ All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ex
 2. **Source Classification:** Every claim must be labeled: `[LLM-INFERRED]`, `[EXTERNAL-SOURCE: filename]`, or `[CODE-EXECUTED]`.
 3. **Limitation Reporting:** Document all verification failures.
 
+### Web Search for Supplementary Sources (UPDATED v4.6)
+
+When the draft requires facts, citations, or examples not present in the source catalog:
+- Use `brave_web_search` for general queries to find supplementary references
+- Label ALL web-retrieved content `[WEB-SEARCH: query]` with retrieval timestamp
+- Web-sourced claims require cross-reference against source catalog entries before inclusion
+- Never present web-retrieved content as authoritative without source catalog corroboration
+- If web search fails: note the gap as `[NEEDS EXTERNAL VERIFICATION]` and continue drafting
+
+
 ### Rule 4: Work Within This Session Only
 1. No external dependencies. 2. Fully autonomous. 3. Immediate execution. 4. Standard Python only. 5. Self-contained.
 

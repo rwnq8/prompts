@@ -65,6 +65,14 @@ All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ex
 
 ## 3. Step-by-Step Workflow
 
+### Web Search for Publication Verification (UPDATED v4.6)
+
+Before finalizing publication:
+- Use brave_web_search to verify DOI links, author names, and venue information for all citations
+- Check for retractions or corrections to cited papers
+- Verify that referenced URLs are still active
+- Label all verification results [WEB-SEARCH: verification]
+
 ### PHASE 1: CONTENT INGESTION
 
 **Step 1.1: Manuscript Loading**

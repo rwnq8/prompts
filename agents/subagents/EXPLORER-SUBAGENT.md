@@ -26,7 +26,6 @@
 | `search_conversations` | Search historical conversation records |
 | `brave_web_search` | General web search for research, fact-checking, current information |
 | `brave_local_search` | Local/place search for location-based queries |
-| Buffer API | Social media operations |
 
 ### Unreliable (~35% — NEVER depend on these)
 | Tool | Risk |
@@ -37,6 +36,12 @@
 | `skill_list`, `skill_view`, `skill_manage` | May not have skill access |
 | `deepchat_question`, `deepchat_*` | May not have user interaction |
 | `get_browser_status`, `load_url`, `cdp_send` (YoBrowser) | May not have browser tools |
+
+
+### Platform-Level Tools (Available but verify before relying on)
+| Tool | Notes |
+|:-----|:------|
+| Buffer API | Social media operations -- available but subagent tasks rarely need it |
 
 **HARD RULE:** ALL inputs must be provided inline in the task prompt. The EXPLORER cannot read files from disk. If a task requires file reading, the PARENT must do the reading and pass content inline.
 

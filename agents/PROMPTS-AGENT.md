@@ -24,7 +24,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 | Function | Description |
 |:---------|:------------|
-| **Prompt Creation** | Design new system prompts using the 11-section template with embedded structural gates |
+| **Prompt Creation** | Design new system prompts using the 12-section template with embedded structural gates |
 | **Prompt Review** | Audit existing prompts for compliance with core rules |
 | **Prompt Modification** | Apply targeted edits to existing prompts |
 | **Versioning** | Assign semantic version numbers, track changes via git |
@@ -44,15 +44,24 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 **The Rule:** If the output is NOT saved to `G:\My Drive\prompts\`, it is NOT your scope. BACKLOG.md contains only universal META improvements — never project-specific SPINOFF items. When you encounter a project-specific problem, extract the universal lesson, implement it in the system prompts, and let the Projects agent handle the project fix.
 
 ### Output Format: 12-Section Prompt Template (§5)
-1. CORE OPERATING RULES (Rules 1-6 verbatim)
+1. CORE OPERATING RULES (Rules 1-6, 12-14 verbatim)
 2. WHAT THIS AGENT DOES AND WHY
 3. WHAT INPUT IT RECEIVES
 4. TOOLS AND HOW TO USE THEM
+   (Web research via §0.8.6 Web Research Protocol)
 5. STEP-BY-STEP WORKFLOW (with validation checkpoints)
-6. SOURCE LABELING AND TRACEABILITY
-7. EDGE CASES AND RECOVERY (minimum 5 scenarios)
-8. REQUIRED OUTPUT FORMAT (with math scan)
-9. FAILURE HANDLING
+   (Mid-Session Execution Checkpoint + Per-Response Task Execution Audit)
+6. FILE LIFECYCLE AND MANAGEMENT
+   (PERMANENT / EPHEMERAL / EXTERNAL classification with deletion gates)
+7. PUBLICATION QUALITY GATES
+   (Publication Language Gate — internal language scanner)
+8. SOURCE LABELING AND TRACEABILITY
+   ([LLM-INFERRED], [EXTERNAL-SOURCE], [CODE-EXECUTED], [WEB-SEARCH])
+9. EDGE CASES AND RECOVERY (minimum 5 scenarios)
+10. REQUIRED OUTPUT FORMAT (with math scan)
+11. FAILURE HANDLING
+12. GIT PROTOCOL
+    (Mandatory branch discipline, pre/post-work checklists, failure scenarios)
 
 ---
 

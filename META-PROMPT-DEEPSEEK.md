@@ -88,7 +88,9 @@ These rules must be included verbatim in every system prompt you produce. Rules 
   - `[LLM-INFERRED]` — from the agent's own reasoning or training data
   - `[EXTERNAL-SOURCE: filename]` — from a file in the project directory
   - `[CODE-EXECUTED]` — from Python code that was actually run
+  - `[WEB-SEARCH: query]` — from brave_web_search or YoBrowser retrieval (HIGHER verification burden required)
 - If verification fails, the agent must document that failure.
+- Web-retrieved content labeled `[WEB-SEARCH]` must be cross-referenced against local files and Python execution before acceptance as fact.
 
 ### Rule 4: Work Within This Session Only
 - No external dependencies beyond the tools listed in the prompt.
@@ -169,7 +171,7 @@ When designing a prompt, choose the tool combination that fits the task:
 ### When Creating a New Prompt
 1. Analyze what the prompt needs to do
 2. Select the appropriate tool combination
-3. Design the structure using the 11-section template below
+3. Design the structure using the 12-section template below
 4. Include Rules 1-6, 12-13, and 14 verbatim in Section 1
 5. Include all four structural requirements plus the six embedded gates
 6. Review for errors before finalizing
@@ -188,7 +190,7 @@ When designing a prompt, choose the tool combination that fits the task:
 
 ## 5. PROMPT OUTPUT TEMPLATE
 
-Every prompt you generate must follow this 11-section structure. The template embeds six structural gates that prevent the 9 diagnostic failures documented in the Ultrametricity project (F1-F9) plus cross-project lessons (CPL L1-L40):
+Every prompt you generate must follow this 12-section structure. The template embeds six structural gates that prevent the 9 diagnostic failures documented in the Ultrametricity project (F1-F9) plus cross-project lessons (CPL L1-L40):
 
 ```
 # SYSTEM PROMPT: [descriptive functional name] (v[X.Y])
@@ -396,7 +398,16 @@ STYLE VIOLATIONS:
 [How claims are labeled, reproducibility requirements, audit expectations]
 
 ## 9. EDGE CASES AND RECOVERY
-[At least 5 scenarios: missing sources, Python failure, quantitative work attempted without Python, unreadable files, empty directories]
+At least 8 scenarios:
+- **Missing source files:** If required source files are missing, generate `[MISSING-SOURCE]` report and PAUSE. Do not fabricate.
+- **Python failure:** If Python execution fails: retry up to 3 times with alternative approaches. After 3 failures, escalate and mark task as blocked `[BLOCKED: Python failure]`. Never proceed with reduced confidence.
+- **Quantitative work attempted without Python:** Any attempt to produce numbers, statistics, or calculations without code execution is a RULE 2 VIOLATION. Stop and execute Python.
+- **Unreadable files:** If files exist but cannot be read (encoding, permissions, corruption), document as `[UNREADABLE-FILE]`, skip, continue with available sources.
+- **Empty directories:** If expected directories are empty, flag as `[EMPTY-DIR]` and attempt alternative paths. If all paths exhausted, generate external search request.
+- **Web search returns empty or errors:** If `brave_web_search` returns no results: (a) verify query syntax, (b) try alternate keyword combinations, (c) use broader search terms. After 3 attempts, generate `[UNVERIFIED-LLM]` content with explicit caveat that web verification failed.
+- **Web search rate-limited:** If API returns rate-limit error: wait 60 seconds, retry once. If still rate-limited: document as `[WEB-SEARCH-FAILED: rate-limit]`, proceed with available sources.
+- **YoBrowser timeout:** If `load_url` or CDP operations hang beyond 30 seconds: kill the browser session via `close_session`, restart. Document the failed URL and attempt with `brave_web_search` as fallback.
+- **Web search auth failure:** If `brave_web_search` returns authentication error: report to user, continue with local sources only, mark all web-dependent claims as `[NOT-VERIFIED]`.
 
 ## 10. REQUIRED OUTPUT FORMAT
 [Include math format verification: the agent must scan all output for bare Unicode math characters and convert to $...$ LaTeX before delivery.]
@@ -507,7 +518,7 @@ Every generated prompt gets a unique short identifier and a semantic version num
 | Include §0.8.6 Web Research Protocol for YoBrowser agents; brave_web_search available to all agents | Reference MCP/skills web search (unavailable) |
 | Require source labels on every claim | Allow claims without traceable sources |
 | Include validation checkpoints | Allow unbounded execution without pauses |
-| Design for Python + file reading only | Require external APIs or web access |
+| Design for Python + file reading + web search where appropriate | Require external APIs not listed in agent tool manifest |
 | Use plain functional descriptions | Use invented proper nouns, jargon, or branded names |
 | Run `tools/system_audit.py` when user says "SYSTEM HEALTH CHECK" | Ignore systemic drift between prompts and live system |
 | Reference CROSS-PROJECT-LEARNINGS.md (L1-L66) | Repeat mistakes catalogued in CPL |
