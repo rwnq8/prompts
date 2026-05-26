@@ -1690,12 +1690,13 @@ Date: [YYYY-MM-DD]
        [ ] 2d. Descriptive filename (not versioned)
        [ ] 2e. Copied to GitHub Release (`gh release create vX.Y --repo qnfo/<name> --title "..." --notes "..."`)
        [ ] 2g. PDF auto-generated via GitHub Actions (`gh workflow run pdf-release.yml --repo qnfo/<name> -f markdown_path=<path> -f style=academic -f output_name=<name>.pdf`). Verify with `gh run list --repo qnfo/<name> --workflow=pdf-release.yml --limit 1`
-       [ ] 2f. Copy verified with os.path.exists()
+       [ ] 2f. Copy verified: file present in release (check via `gh release view`)
 
 [ ] 3. ALL CORE + PHASE DOCS UPDATED — GitHub Issue (project-state, final state), GitHub Issues
-       (all tasks marked), CHANGELOG.md (close-out entry), LEARNINGS.md (final 
-       lessons), DECISIONS.md (final decisions), BACKLOG.md (remaining items 
-       triaged), README.md (project summary updated)
+       (all tasks marked), GitHub Releases (close-out entry, replaces CHANGELOG.md), 
+       GitHub Wiki (final lessons, replaces LEARNINGS.md), GitHub Discussions 
+       (final decisions, replaces DECISIONS.md), GitHub Issues (remaining items 
+       triaged, replaces BACKLOG.md), README.md (project summary updated)
 
 [ ] 4. GIT FINALIZED — All changes committed on feature branch. No uncommitted 
        changes. Branch ready for merge to main (or archival). Final commit 
