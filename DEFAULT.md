@@ -31,6 +31,18 @@ CONFIGURATION:
 10. **Archive Organization — YYYY/MM (MANDATORY):** All archived projects go under `G:\My Drive\Archive\projects\YYYY\MM\project-name\`. Never place project directories directly in the root of `Archive\projects\`. The archive is organized by year and month. When MOVE-ing completed work into the archive, determine the current year and month, and place the project accordingly. This applies to ALL agents.
 11. **Publication Language Gate — Scan Before Declaring Ready:** Before declaring any document "publication-ready" or "ready for release," execute the Publication Language Gate scan (§11.7). The scan checks for internal project language (sprint references, file management paths, developer notes, tooling names, process language), internal metadata (version headers, project identifiers, commit references), and style violations (straight quotes in body, bare Unicode math, generation artifacts). ANY hit is BLOCKING — the document is NOT publication-ready. This prevents F2 (Quality Blindness) failures.
 
+11. **GitHub Organization Default -- qnfo (MANDATORY):**
+   - ALL new repos must be created under the qnfo organization: gh repo create qnfo/<repo-name>
+   - NEVER create repos under personal account (
+wnq8) -- qnfo is the default for all project repos
+   - For gh commands: always use --repo qnfo/<repo-name> or equivalent org prefix
+   - The qnfo org has all necessary permissions for CI/CD, releases, and GitHub Pages
+
+12. **GitHub Release PDF Auto-Generation:**
+   - When creating a GitHub Release for a document project, automatically trigger the PDF build workflow:
+     gh workflow run pdf-release.yml --repo qnfo/<repo-name> -f markdown_path=<path> -f style=academic -f output_name=<name>.pdf
+   - Verify PDF generation with gh run list --repo qnfo/<repo-name> --workflow=pdf-release.yml --limit 1
+
 ---
 
 
@@ -177,6 +189,12 @@ All project files fall into three categories with different lifecycle rules:
 
 #### Available `gh` Commands
 
+#### PowerShell `gh` stderr Handling
+The `gh` CLI outputs some messages to stderr even on success (PowerShell wraps these as errors).
+ALWAYS check the actual output content -- not just exit codes -- when using `gh` commands.
+Redirect stderr to stdout for reliable checking: `gh <command> 2>&1`
+Successful operations often show URLs or confirmation messages in the output.
+
 The `gh` CLI is authenticated with scopes: `repo`, `workflow`, `read:org`, `gist`. Confirm with `gh auth status`.
 
 **Issues (replaces BACKLOG.md):**
@@ -237,6 +255,18 @@ gh pr review --repo OWNER/REPO <number> --approve
 gh pr merge --repo OWNER/REPO <number> --squash --delete-branch
 gh pr close --repo OWNER/REPO <number>
 ```
+
+**Repository Management:**
+```bash
+gh repo create qnfo/<repo-name> --public --source=. --remote=origin --push   # Create + push new repo under qnfo org
+gh repo create qnfo/<repo-name> --public                                       # Create empty repo under qnfo org
+gh repo clone qnfo/<repo-name>                                                 # Clone existing qnfo repo
+gh repo list qnfo --limit 30                                                   # List repos in qnfo org
+gh repo view qnfo/<repo-name> --web                                            # Open repo in browser
+gh repo delete qnfo/<repo-name> --yes                                          # Delete repo (use with caution)
+```
+**CRITICAL:** Always create repos under `qnfo/` organization. NEVER create under personal account (`rwnq8`).
+
 
 **GitHub Actions / Workflows (CI/CD):**
 ```bash
@@ -1662,7 +1692,8 @@ Date: [YYYY-MM-DD]
        [ ] 2b. Curly/smart quotes verified (Python scan, 0 straight quotes)
        [ ] 2c. Math formatting verified (Python scan, 0 bare Unicode math)
        [ ] 2d. Descriptive filename (not versioned)
-       [ ] 2e. Copied to G:\My Drive\GitHub Release (gh release create)
+       [ ] 2e. Copied to GitHub Release (`gh release create vX.Y --repo qnfo/<name> --title "..." --notes "..."`)
+       [ ] 2g. PDF auto-generated via GitHub Actions (`gh workflow run pdf-release.yml --repo qnfo/<name> -f markdown_path=<path> -f style=academic -f output_name=<name>.pdf`). Verify with `gh run list --repo qnfo/<name> --workflow=pdf-release.yml --limit 1`
        [ ] 2f. Copy verified with os.path.exists()
 
 [ ] 3. ALL CORE + PHASE DOCS UPDATED — GitHub Issue (project-state, final state), GitHub Issues
@@ -1681,11 +1712,16 @@ Date: [YYYY-MM-DD]
              (fill_prompt_template with publication details, execute against 
              release file, deliver social media content to user)
 
-[ ] 6. ARCHIVING — Project directory is self-contained. A new agent starting 
+[ ] 6. AUTO-ARCHIVE (executed automatically during close-out):
+       [ ] 6a. Project directory MOVED to `G:\My Drive\Archive\projects\YYYY\MM\<project-name>\`
+       [ ] 6b. GitHub Release created with final PDF attached
+       [ ] 6c. Project directory is self-contained. A new agent starting from cold can read the project-state GitHub Issue and understand everything. No broken references. No temp files. .gitignore covers build artifacts. — Project directory is self-contained. A new agent starting 
        from cold can read the project-state GitHub Issue and understand everything. No 
        broken references. No temp files. .gitignore covers build artifacts.
 
-[ ] 7. FINAL AUDIT — Python script verifies: all core docs exist and are non-empty, 
+[ ] 7. PDF WORKFLOW VERIFICATION -- Confirm PDF release workflow completed successfully. Check GitHub Actions run status. PDF attached to release assets.
+
+[ ] 8. FINAL AUDIT — Python script verifies: all core docs exist and are non-empty, 
        publication file exists in releases, git worktree clean, no temp files, 
        no __pycache__, no .pyc files.
 ```
@@ -1817,8 +1853,11 @@ Before proceeding to the next task, audit GitHub Issues/Projects for any tasks t
 
 This step prevents the `test_plan.py` ghost pattern where test files exist on disk but were never executed. Test file existence ≠ tests passed.
 
-#### Step 3: Confirm Before Execution
-Before executing, restate to the user:
+#### Step 3: Confirm Before Execution (SKIPPED in autonomous mode)
+
+In autonomous mode (WHAT'S NEXT? PROCEED), this step is SKIPPED -- the agent proceeds directly to execution. The confirmation step only applies when the user explicitly requests a specific task.
+
+When confirmation IS needed (user-directed task, not autonomous):
 ```
 **NEXT TASK:** [task name from GitHub Issue/Project board]
 **Goal:** [one-line from task description]
@@ -1889,10 +1928,15 @@ Execute the complete workflow from Section 5:
 [ ] [Next task name] -- NEXT
 [ ] [Remaining task]
 
-SAY "RESUME" TO CONTINUE with the next task.
+**AUTO-CONTINUING to next task.** The agent proceeds immediately -- no RESUME needed. Type STOP or describe a different task to redirect.
 ```
 
-### 12.3 Trigger: "RESUME"
+### 12.3 Trigger: "RESUME" (Fallback Only)
+
+RESUME is now a FALLBACK command, not the primary progression mechanism. The agent auto-continues through sequential tasks by default. Use RESUME only when:
+- The agent was interrupted mid-task by the user
+- A parallel process or session modified project state
+- The user wants to verify state before continuing
 
 When the user sends exactly **RESUME** (case-insensitive):
 

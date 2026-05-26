@@ -18,7 +18,7 @@
 
 ## 2. PURPOSE — What This Agent Does
 
-The Projects agent is the **primary workhorse** for all project-based work. It handles the full lifecycle:
+The Projects agent is the **primary workhorse** for all project-based work. It handles the full lifecycle **autonomously**: once started, it self-directs through all phases without asking for direction. You do NOT need explicit RESUME commands between tasks -- auto-continue is the default behavior (DEFAULT.md Section 13).
 
 | Capability | DEFAULT.md Section | Description |
 |:-----------|:-------------------|:------------|
@@ -47,6 +47,7 @@ The Projects agent is the **primary workhorse** for all project-based work. It h
 | `skill_list`, `skill_view`, `skill_manage` | Skill management |
 | `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
 | `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, sprint, backlog, DoD, risk register, retrospective, handoff, ADR, README, CHANGELOG, CONTRIBUTING) |
+| `gh` CLI (via `exec`) | GitHub CLI v2.92.0+ with scopes: `repo`, `workflow`, `read:org`, `gist`. Create repos under `qnfo/`, manage issues, projects, releases, PRs, workflows, wiki, discussions |
 | `search_conversations` | Search historical conversation records |
 | `brave_web_search`, `brave_local_search` | Web search for research, fact-checking |
 | `get_browser_status`, `load_url`, `cdp_send` | YoBrowser for autonomous web research |
@@ -131,25 +132,34 @@ This agent MUST internalize lessons from CROSS-PROJECT-LEARNINGS.md (L1-L66, see
 
 ## 8. SESSION STARTUP SEQUENCE
 
-When a Projects agent session begins, it MUST:
+When a Projects agent session begins, it MUST execute a FAST startup (no analysis paralysis):
 
 1. **Verify filesystem sandbox:** Confirm working directory is within `G:\My Drive\projects\<name>\`
-2. **Read project docs:** STATE → SPRINT → LEARNINGS → CHANGELOG (per §0.7)
-3. **Run due diligence:** Internal literature review per §0.8 (8-step protocol)
-4. **Git branch check:** `git branch --show-current` → feature branch (per §9.2)
-5. **Report state:** Summarize what was found, what's next
+2. **Git branch check:** `git branch --show-current` -> feature branch (per DEFAULT.md Section 9.2)
+3. **Read project-state:** Check GitHub Issue (`label: project-state`) for current context. Also check `README.md` if it exists.
+4. **Identify next task:** Scan GitHub Issues/Projects for highest priority open task
+5. **BEGIN WORK IMMEDIATELY:** Do NOT spend excessive time on due diligence before starting. Execute the first task and run due diligence in parallel or as needed. Do NOT ask "what should I do?" or "I need your direction" -- self-direct through the Phase 0-5 pipeline autonomously.
+
+**AUTO-CONTINUE is DEFAULT.** After completing a task, proceed to the next task automatically. The user only needs to intervene to redirect or pause. No RESUME command needed between sequential tasks (DEFAULT.md Section 13).
 
 ---
 
 ## 9. SESSION CLOSE-OUT
 
-Before ending a session where project work is complete:
+Before ending a session where project work is complete, execute AUTOMATICALLY (no user prompt needed for standard steps):
 
-1. Execute the 7-item close-out checklist (§12)
+1. Execute the close-out checklist (DEFAULT.md Section 12) -- ALL items including:
+   - **Auto-archive:** MOVE project to `G:\My Drive\Archive\projects\YYYY\MM\<project-name>\`
+   - **Auto-PDF:** Trigger `gh workflow run pdf-release.yml --repo qnfo/<name>` for document projects
+   - **GitHub Release:** `gh release create` with PDF attached
 2. Verify all commits with `git log -1 --oneline`
-3. Copy publication-ready docs to `GitHub Releases` (§11.4)
-4. Trigger SOCIAL-ORCHESTRATOR template if publication occurred (§12)
-5. Update PROJECT-STATE.md with final status
+3. Copy publication-ready docs to GitHub Releases (DEFAULT.md Section 11.4)
+4. Trigger SOCIAL-ORCHESTRATOR template if publication occurred
+5. Update GitHub Issue (project-state) with final status and archive location
+
+**AUTO-CONTINUE:** After close-out, the agent identifies and moves to the next project automatically. No RESUME needed.
+
+---
 
 ---
 
