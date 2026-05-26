@@ -1669,11 +1669,7 @@ A project is eligible for close-out when ANY of the following conditions are met
 2. The user explicitly signals close-out (e.g., "close this project," "wrap up," "finalize")
 3. A publication-ready document has been produced and copied to releases
 
-**The agent MUST NOT close out silently.** Before executing close-out, confirm with the user:
-```
-Project [name] is eligible for close-out. Proceed with close-out checklist?
-[If yes, the mandatory checklist follows.]
-```
+**Close-out proceeds automatically.** The agent executes the checklist WITHOUT waiting for user confirmation. The user can interrupt with STOP at any point.
 
 ### 12.2 Mandatory Close-Out Checklist
 
@@ -1802,7 +1798,7 @@ The project management system combines PMBOK (structured phases with deliverable
 
 ## 13. Semi-Autonomous Progression Mode (WHAT'S NEXT? PROCEED / RESUME)
 
-### 12.1 Overview
+### 13.1 Overview
 
 This mode enables sprint-driven autonomous progression through project tasks with only two user commands. The agent reads the GitHub Project board (via `gh project item-list`) or open GitHub Issues (via `gh issue list --state open`), identifies the next incomplete task, executes it through the full Phase 0-5 pipeline, and presents a completion report — all without the user specifying *what* to do. **SPRINT.md is DEPRECATED per §0.6.8.** Use GitHub-native sources instead.
 
@@ -1815,7 +1811,7 @@ This mode enables sprint-driven autonomous progression through project tasks wit
 
 **Design principle:** The user steers at the sprint level (what tasks exist, their priority). The agent handles the *execution* level autonomously. This eliminates micro-management while preserving human oversight of direction.
 
-### 12.2 Trigger: "WHAT'S NEXT? PROCEED"
+### 13.2 Trigger: "WHAT'S NEXT? PROCEED"
 
 When the user sends exactly **WHAT'S NEXT? PROCEED** (or case-insensitive variant):
 
@@ -1928,10 +1924,18 @@ Execute the complete workflow from Section 5:
 [ ] [Next task name] -- NEXT
 [ ] [Remaining task]
 
-**AUTO-CONTINUING to next task.** The agent proceeds immediately -- no RESUME needed. Type STOP or describe a different task to redirect.
+**AUTO-CONTINUING to next task.** The agent proceeds immediately -- no RESUME needed.
+Type STOP or describe a different task to redirect.
+
+**Stop conditions (agent MUST stop and report, not loop):**
+- ALL GitHub Issues closed or in Done column with no remaining To Do items
+- No GitHub Project board exists and no Issues found
+- 3 consecutive task failures (same task fails 3 times) -- escalate to user
+- Circular task dependency detected (A depends on B depends on A)
+When any stop condition triggers, report: **ALL TASKS COMPLETE** or **BLOCKED: [reason]**
 ```
 
-### 12.3 Trigger: "RESUME" (Fallback Only)
+### 13.3 Trigger: "RESUME" (Fallback Only)
 
 RESUME is now a FALLBACK command, not the primary progression mechanism. The agent auto-continues through sequential tasks by default. Use RESUME only when:
 - The agent was interrupted mid-task by the user
@@ -1954,7 +1958,7 @@ When the user sends exactly **RESUME** (case-insensitive):
 #### Step 3: Deliver Completion Report
 Same format as Section 12.2 Step 5.
 
-### 12.4 Integration with Standard Workflow
+### 13.4 Integration with Standard Workflow
 
 The WHAT'S NEXT? PROCEED / RESUME mode is an **acceleration layer** on top of the standard Phase 0-5 workflow. It does NOT replace any existing behavior:
 
@@ -1963,7 +1967,7 @@ The WHAT'S NEXT? PROCEED / RESUME mode is an **acceleration layer** on top of th
 - **Mixed mode** (user provides partial instruction + WHAT'S NEXT? PROCEED): agent incorporates the instruction as an additional constraint on the next scheduled task.
 - **Manual override:** User can always specify a task explicitly, even when a GitHub Project board exists. The semi-autonomous mode is a convenience, not a restriction.
 
-### 12.5 Edge Cases & Recovery
+### 13.5 Edge Cases & Recovery
 
 | Scenario | Detection | Response |
 |:---------|:----------|:---------|
@@ -1977,8 +1981,16 @@ The WHAT'S NEXT? PROCEED / RESUME mode is an **acceleration layer** on top of th
 | **Python unavailable** | exec fails or returns error | 1. Report the tool failure. 2. If task requires quantitative work: move item to `Blocked` column with reason "Python unavailable". 3. If text-only: proceed with `[LLM-INFERRED]` labeling but flag reduced confidence. |
 | **Git operations fail** | commit, branch, or stash commands fail | Follow Section 9.7 recovery procedures. If unrecoverable: report to user, save work-in-progress to project directory. Do NOT lose work. |
 | **File confinement violation risk** | Task would require writing outside project directory | STOP. Report the boundary. Refuse to proceed. Offer alternative: restructure task to work within project directory. |
+| **Archive directory missing** | Test-Path Archive path fails | Create directory with New-Item -Force. Retry MOVE. |
+| **MOVE operation fails** | File locked, permission denied, or path too long | Log failed files. Use robocopy as fallback. If still failing, leave files in place: NOT-ARCHIVED. |
+| **gh repo create fails (qnfo)** | gh repo create qnfo/name returns error | Check gh auth status. Verify org: gh api orgs/qnfo. If org unreachable, ask user. NEVER default to rwnq8 silently. |
+| **PDF workflow missing** | gh workflow list does not include pdf-release.yml | Skip PDF. Note: PDF-NOT-GENERATED. |
+| **PDF workflow fails** | gh run view shows failure | Retry once. If still failing, note in close-out. Do NOT block close-out on PDF failure. |
+| **Release already exists** | gh release create says already exists | Use gh release view. Skip if same version; increment version otherwise. |
+| **git push to qnfo fails** | Remote not found, permission denied | Verify: git remote -v. If origin points to rwnq8, update to qnfo. |
+| **3 consecutive task failures** | Same task fails 3 times | Move to Blocked. Escalate to user. Do NOT retry automatically. Report: BLOCKED after 3 failures. |
 
-### 12.6 Semi-Autonomous Mode Audit Trail
+### 13.6 Semi-Autonomous Mode Audit Trail
 
 For every WHAT'S NEXT? PROCEED or RESUME execution, the agent must record:
 
