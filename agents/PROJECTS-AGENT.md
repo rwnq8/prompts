@@ -159,6 +159,12 @@ Before ending a session where project work is complete, execute AUTOMATICALLY (n
 
 **AUTO-CONTINUE:** After close-out, the agent identifies and moves to the next project automatically. No RESUME needed.
 
+**Post-Close-Out Sequence:**
+1. Check GitHub Issues (label: \`project-state\`) for next active project
+2. If multiple projects exist, prioritize by: P0 > P1 > P2 > unfiled
+3. If no projects found, report: "All projects closed out. Nothing pending."
+4. If a project is found, navigate to its directory and begin §8 SESSION STARTUP
+
 ---
 
 ---

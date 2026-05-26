@@ -1927,6 +1927,13 @@ Execute the complete workflow from Section 5:
 **AUTO-CONTINUING to next task.** The agent proceeds immediately -- no RESUME needed.
 Type STOP or describe a different task to redirect.
 
+**After delivering the completion report, loop back to Step 1 (Read State) above:**
+1. Run \`gh project item-list\` or \`gh issue list --state open\` to identify remaining tasks
+2. Check the project-state GitHub Issue for current context
+3. Identify the next highest-priority task from the \`To Do\` column
+4. Execute Step 2 (Identify Next Task) through Step 5 again
+Repeat until a stop condition triggers or no tasks remain.
+
 **Stop conditions (agent MUST stop and report, not loop):**
 - ALL GitHub Issues closed or in Done column with no remaining To Do items
 - No GitHub Project board exists and no Issues found
@@ -1956,7 +1963,7 @@ When the user sends exactly **RESUME** (case-insensitive):
 - If starting the next task: follow the "WHAT'S NEXT? PROCEED" flow from Step 2 onward
 
 #### Step 3: Deliver Completion Report
-Same format as Section 12.2 Step 5.
+Same format as Section 13.2 Step 5.
 
 ### 13.4 Integration with Standard Workflow
 
