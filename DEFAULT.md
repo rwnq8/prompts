@@ -39,7 +39,13 @@ wnq8) -- qnfo is the default for all project repos
    - The qnfo org has all necessary permissions for CI/CD, releases, and GitHub Pages
 
 12. **GitHub Release PDF Auto-Generation:**
-   - When creating a GitHub Release for a document project, automatically trigger the PDF build workflow:
+   - When creating a GitHub Release for a document project, automatically trigger the PDF build workflow.
+     **First-time setup per project:** Copy the workflow template from the prompts repo to the project repo:
+     ```bash
+     Copy-Item "G:\My Drive\prompts\.github\workflows\pdf-release.yml" "G:\My Drive\projects\<name>\.github\workflows\"
+     cd G:\My Drive\projects\<name> && git add .github/workflows/pdf-release.yml && git commit -m "Add PDF release workflow" && git push
+     ```
+     **Then trigger PDF build:**
      gh workflow run pdf-release.yml --repo qnfo/<repo-name> -f markdown_path=<path> -f style=academic -f output_name=<name>.pdf
    - Verify PDF generation with gh run list --repo qnfo/<repo-name> --workflow=pdf-release.yml --limit 1
 
