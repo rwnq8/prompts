@@ -54,8 +54,15 @@ jobs:
             exit 1
           fi
 
-      - name: Upload to Release
+      - name: Upload to Release (tag push)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          files: ${{ inputs.output_name || 'output.pdf' }}
+
+      - name: Upload to Release (release published)
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
           files: ${{ inputs.output_name || 'output.pdf' }}
