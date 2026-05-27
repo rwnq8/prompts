@@ -308,6 +308,7 @@ At session start, BEFORE reading any deprecated files:
    - Check for `.git/config` with remote `https://github.com/qnfo/<repo-name>.git`
    - If no qnfo remote exists: `[BLOCKED: No GitHub repo]` — this is NOT a valid project. Do NOT proceed. Escalate to user or Program Agent (QWAV) to run the Project Initiation Protocol (QWAV §0.9.1).
    - If remote points to personal account (rwnq8) instead of qnfo org: `[BLOCKED: Wrong org]` — projects MUST live under qnfo/. Escalate.
+   - **Org verification:** `gh api orgs/qnfo --jq '.login' 2>&1` — must return "qnfo". If org is inaccessible or not found: `[BLOCKED: qnfo org not accessible]`.
    - **RULE: "Local project" is not a valid state. Every project MUST have a qnfo/ GitHub repo from initialization.**
 3. `gh issue list --repo OWNER/REPO --state open` — current work queue (skip if auth failed)
 4. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board (skip if auth failed)
