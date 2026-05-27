@@ -24,6 +24,7 @@ When triggered:
    - Execute STAGE-2: Deep reading, cross-referencing, quantitative verification
    - Execute STAGE-3: Draft with `[EXTERNAL-SOURCE]` and `[CODE-EXECUTED]` labels
    - Execute STAGE-4: Blind validation, fabrication audit, Zenodo publication
+   - Execute STAGE-5: Deploy to Cloudflare Pages (deep.qwav.tech/papers/) + R2 backup + Vectorize semantic search
 3. **Track in QWAV:** Register with domain tags, link to program strategy.
 4. **Report progress** at each stage completion — but never ask permission to proceed.
 

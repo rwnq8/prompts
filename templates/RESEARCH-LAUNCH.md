@@ -69,6 +69,14 @@ PHASE 4 — OUTPUT
 - Run STAGE-3 REVIEW (blind validation, fabrication audit)
 - Run STAGE-4 PUBLISH (Zenodo DOI, GitHub release)
 
+PHASE 5 — CLOUDFLARE HOSTING
+- Deploy paper as HTML page to Cloudflare Pages (qwav project → deep.qwav.tech/papers/)
+- Backup all files (md, html, pdf) to R2 bucket (qnfo) for audit trail
+- Index paper in Vectorize (qwav-research, 768d) for semantic search
+- Update sitemap.xml, robots.txt, and llms.txt for search engine + AI crawler discovery
+- Add Schema.org/JSON-LD markup (ScholarlyArticle) for Google Scholar indexing
+- Deploy via: python tools/publish-to-cloudflare.py <project-dir>
+
 PROJECT SETUP (automatic):
 - Create project directory: G:\My Drive\projects\<kebab-case-name>\
 - Initialize git with feature branch
@@ -78,6 +86,7 @@ QWAV PORTFOLIO TRACKING:
 - Register project in QWAV portfolio
 - Tag with {{ DOMAIN_TAGS }}
 - Link to program strategy
+- Add to QWAV/papers/index.html catalog
 
 PROCEED. Execute Phase 1 immediately.
 ```
