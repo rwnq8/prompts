@@ -230,12 +230,34 @@ gh release create v1.0.0 --repo OWNER/REPO --title "..." --notes "..."
 ```
 
 **Wiki (replaces LEARNINGS.md, DECISIONS.md):**
-The wiki is a separate git repository at `OWNER/REPO.wiki.git`. Clone it, edit markdown pages, commit, and push.
+
+**⚠️ INITIALIZATION:** GitHub wikis are lazily created — the `.wiki.git` repo does NOT exist until the first page is created. There is no CLI/API method to create the wiki repo. Use the YoBrowser workaround to initialize:
+
 ```bash
-gh repo clone OWNER/REPO.wiki wiki-dir
-# Edit pages in wiki-dir/
+# Step 1: Create first wiki page via YoBrowser (programmatic browser interaction)
+load_url("https://github.com/qnfo/<repo-name>/wiki")
+# Use cdp_send with DOM.querySelector to find and click the "Create the first page" button
+# Use cdp_send with Input.dispatchKeyEvent to type a minimal Home.md page
+# Use cdp_send to find and click "Save Page"
+# Verify: gh api repos/qnfo/<repo-name> --jq '.has_wiki' → true
+```
+
+Once initialized, the wiki is a separate git repository at `OWNER/REPO.wiki.git`. Clone it, edit markdown pages, commit, and push:
+```bash
+# Clone the wiki repo (works after first page created)
+git clone https://github.com/OWNER/REPO.wiki.git wiki-dir
+# Or use gh token auth for push access
+git clone https://x-access-token:$(gh auth token)@github.com/OWNER/REPO.wiki.git wiki-dir
+
+# Edit pages in wiki-dir/ (markdown files)
 cd wiki-dir && git add . && git commit -m "..." && git push
 ```
+
+**If wiki is NOT yet initialized** (first push fails with 'Repository not found'):
+1. Do NOT ask the user to create the page manually
+2. Use YoBrowser (`load_url` + `cdp_send`) to create the first page programmatically
+3. Then clone and push via git as normal
+4. If YoBrowser also fails: document as `[BLOCKED: GitHub wiki not initialized — YoBrowser creation failed]` and continue without wiki. Do NOT block project initialization on wiki availability.
 
 **Discussions (for Q&A, decisions):**
 ```bash

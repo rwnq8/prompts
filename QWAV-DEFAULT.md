@@ -268,6 +268,8 @@ Only projects that pass the Moscow M/S gate proceed to Phase A.
 
 **If ANY gate check fails:** STOP. Do NOT create local files. Fix the failed step.
 
+| **G-WIKI** | **Initialize GitHub Wiki** (optional — wiki lazily created) | 1. Navigate: `load_url("https://github.com/qnfo/<repo-name>/wiki")` 2. Use `cdp_send` to click "Create the first page" and submit minimal `Home.md` 3. Verify: `gh api repos/qnfo/<repo-name> --jq '.has_wiki'` | Wiki repo exists and cloneable via `git clone qnfo/<repo-name>.wiki.git` — see DEFAULT.md §0.6.8 for full workaround. If wiki can't be initialized: document as `[DEFERRED]` — do NOT block project initialization on wiki availability. |
+
 ---
 
 #### PHASE B: Local Scaffolding (After GitHub Foundation)
