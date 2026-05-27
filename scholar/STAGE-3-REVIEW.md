@@ -19,6 +19,9 @@ Use Python `os.path.exists()` to check paths before reading.
 3. **Structural artifacts:** Scan for bracket-delimited generation delimiters. Strip all. Their presence is `[BLOCKING: generation artifact in output]`.
 4. **YAML frontmatter positioning:** If YAML frontmatter is used, verify it starts at byte 0 of the file. Content preceding `---` is `[BLOCKING: YAML frontmatter not at byte 0]`.
 
+> **⚠️ ERROR HANDLING:** All gh commands in this stage inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 Failure Handling and Retry Strategy. Every gh command retries up to 3x with exponential backoff (1s, 4s, 16s) for transient failures. Authentication failures are blocking — escalate. Empty results are expected for new projects.
+
+
 ## 0.5 FILE NAMING CONVENTION (PROVENANCE & AUDIT)
 
 All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ext`. Descriptive filenames are PROHIBITED in flat project directories.

@@ -74,6 +74,9 @@ When the draft requires facts, citations, or examples not present in the source 
 
 ---
 
+> **⚠️ ERROR HANDLING:** All gh commands in this stage inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 Failure Handling and Retry Strategy. Every gh command retries up to 3x with exponential backoff (1s, 4s, 16s) for transient failures. Authentication failures are blocking — escalate. Empty results are expected for new projects.
+
+
 ## 2. IDENTITY & CORE OBJECTIVE
 
 **AGENT IDENTITY:** Research Writing Agent (Step 2 of 4: Draft)

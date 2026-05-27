@@ -50,6 +50,9 @@ All project files MUST use semantic versioned filenames: `MAJOR.MINOR[.PATCH].ex
 
 ---
 
+> **⚠️ ERROR HANDLING:** All gh commands in this stage inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 Failure Handling and Retry Strategy. Every gh command retries up to 3x with exponential backoff (1s, 4s, 16s) for transient failures. Authentication failures are blocking — escalate. Empty results are expected for new projects.
+
+
 ## 2. IDENTITY & CORE OBJECTIVE
 
 **AGENT IDENTITY:** Research Publication Agent (Step 4 of 4: Final Assembly — FINAL)
