@@ -22,7 +22,6 @@
 | File | Purpose |
 |:-----|:--------|
 | `ARCHITECTURE.md` (v1.4) | System design, agent taxonomy, slot IDs, sandboxing model |
-| `AGENT-CONFIG.md` (v5.3) | Agent write boundaries, tool lists, slot IDs |
 | `agents/PROJECTS-AGENT.md` | Detailed Projects agent execution spec (LLM reads this, you don't need to) |
 | `agents/PROMPTS-AGENT.md` | Detailed Prompts agent execution spec |
 | `agents/QWAV-AGENT.md` | Detailed QWAV agent execution spec |
@@ -86,7 +85,6 @@
 prompts\
 ├── README.md                     ← YOU ARE HERE (human reference)
 ├── ARCHITECTURE.md               ← System taxonomy + agent config (LLM + human reference)
-├── AGENT-CONFIG.md               ← Agent write boundaries, tool lists, slot IDs
 ├── CHANGELOG.md                  ← DEPRECATED — use GitHub Releases + Discussions
 │
 ├── META-PROMPT-DEEPSEEK.md       ← THE FACTORY: generates all system prompts
@@ -120,7 +118,7 @@ prompts\
 
 | Audience | Files |
 |:---------|:------|
-| **HUMAN** (you) | `README.md`, `ARCHITECTURE.md`, `AGENT-CONFIG.md` |
+| **HUMAN** (you) | `README.md`, `ARCHITECTURE.md` |
 | **HUMAN — paste into DeepChat** | `DEFAULT.md`, `QWAV-DEFAULT.md`, `META-PROMPT-DEEPSEEK.md`, subagent descriptions from `agents/subagents/` |
 | **HUMAN — reference only** | `ARCHITECTURE.md` (system design, agent taxonomy, slot IDs) |
 | **LLM** (agents) | Everything else |

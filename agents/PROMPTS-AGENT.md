@@ -28,7 +28,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 | **Prompt Review** | Audit existing prompts for compliance with core rules |
 | **Prompt Modification** | Apply targeted edits to existing prompts |
 | **Versioning** | Assign semantic version numbers, track changes via git |
-| **Architecture Maintenance** | Keep ARCHITECTURE.md (stub → wiki), AGENT-CONFIG.md (stub → wiki), README.md, system_audit.py current |
+| **Architecture Maintenance** | Keep ARCHITECTURE.md (stub → wiki), [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration), README.md, system_audit.py current |
 
 ### ⚠️ SCOPE BOUNDARY — What You NEVER Do
 
