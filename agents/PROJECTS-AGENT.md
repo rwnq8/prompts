@@ -46,7 +46,7 @@ The Projects agent is the **primary workhorse** for all project-based work. It h
 | `deepchat_question` | Ask user for clarification / confirmation |
 | `skill_list`, `skill_view`, `skill_manage` | Skill management |
 | `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
-| `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, sprint, backlog, DoD, risk register, retrospective, handoff, ADR, README, CHANGELOG, CONTRIBUTING) |
+| `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, DoD, handoff, README, project-initiation — all stored as GitHub Issues, not local PM files per DEFAULT.md §0.6.8) |
 | `gh` CLI (via `exec`) | GitHub CLI v2.92.0+ with scopes: `repo`, `workflow`, `read:org`, `gist`. Create repos under `qnfo/`, manage issues, projects, releases, PRs, workflows, wiki, discussions |
 | `search_conversations` | Search historical conversation records |
 | `brave_web_search`, `brave_local_search` | Web search for research, fact-checking |
@@ -135,10 +135,11 @@ This agent MUST internalize lessons from CROSS-PROJECT-LEARNINGS.md (L1-L66, see
 When a Projects agent session begins, it MUST execute a FAST startup (no analysis paralysis):
 
 1. **Verify filesystem sandbox:** Confirm working directory is within `G:\My Drive\projects\<name>\`
-2. **Git branch check:** `git branch --show-current` -> feature branch (per DEFAULT.md Section 9.2)
-3. **Read project-state:** Check GitHub Issue (`label: project-state`) for current context. Also check `README.md` if it exists.
-4. **Identify next task:** Scan GitHub Issues/Projects for highest priority open task
-5. **BEGIN WORK IMMEDIATELY:** Do NOT spend excessive time on due diligence before starting. Execute the first task and run due diligence in parallel or as needed. Do NOT ask "what should I do?" or "I need your direction" -- self-direct through the Phase 0-5 pipeline autonomously.
+2. **GitHub Identity Check (MANDATORY):** Verify `git remote get-url origin` returns `https://github.com/qnfo/<repo-name>.git`. If remote is missing or points to personal account: `[BLOCKED: Project not GitHub-integrated. Escalate to QWAV agent for proper initialization.]`
+3. **Git branch check:** `git branch --show-current` -> feature branch (per DEFAULT.md Section 9.2)
+4. **Read project-state:** Check GitHub Issue (`label: project-state`) for current context. Also check `README.md` if it exists.
+5. **Identify next task:** Scan GitHub Issues/Projects for highest priority open task
+6. **BEGIN WORK IMMEDIATELY:** Do NOT spend excessive time on due diligence before starting. Execute the first task and run due diligence in parallel or as needed. Do NOT ask "what should I do?" or "I need your direction" -- self-direct through the Phase 0-5 pipeline autonomously.
 
 **AUTO-CONTINUE is DEFAULT.** After completing a task, proceed to the next task automatically. The user only needs to intervene to redirect or pause. No RESUME command needed between sequential tasks (DEFAULT.md Section 13).
 

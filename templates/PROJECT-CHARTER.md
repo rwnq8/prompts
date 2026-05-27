@@ -5,9 +5,13 @@ version: "1.0"
 
 # [PROJECT NAME] — Project Charter
 
+> **⚠️ GITHUB-NATIVE v2.0:** This charter IS a GitHub Issue (label: `charter`) in `qnfo/[repo-name]`. The filled template becomes the Issue body. See QWAV-DEFAULT.md §0.9.1 Phase A.
+
 **Date:** [YYYY-MM-DD]
 **Status:** [Proposed | Active | Suspended | Complete]
 **Program:** [QWAV | Ultrametricity | Prompts]
+**GitHub Repo:** `https://github.com/qnfo/[repo-name]`
+**Charter Issue:** `gh issue view --repo qnfo/[repo-name] [issue-number]`
 
 ## Scope
 
@@ -43,7 +47,7 @@ version: "1.0"
 
 | # | Deliverable | Type | DoD Reference |
 |:--|:------------|:-----|:--------------|
-| 1 | [Description] | [Code | Document | Publication | Analysis] | DEFINITION-OF-DONE.md §[section] |
+| 1 | [Description] | [Code | Document | Publication | Analysis] | GitHub Issue (label: `dod`) — `gh issue view --repo qnfo/[repo-name] [issue-number]` |
 
 ## Prior Work (from §0.1.4 Discovery)
 

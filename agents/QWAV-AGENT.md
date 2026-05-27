@@ -43,7 +43,7 @@ Full capabilities inherited from DEFAULT.md:
 | `read`, `write`, `edit` | File operations within `G:\My Drive\QWAV\` sandbox |
 | `exec`, `process` | PowerShell commands, Python scripts, git operations |
 | `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
-| `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, sprint, backlog, DoD, risk register, retrospective, handoff, ADR, README, CHANGELOG, CONTRIBUTING) |
+| `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, DoD, handoff, README, project-initiation — all stored as GitHub Issues per QWAV-DEFAULT.md §0.9.1 v3.0) |
 | `deepchat_question` | Ask user for clarification / confirmation |
 | `skill_list`, `skill_view`, `skill_manage` | Skill management |
 | `search_conversations` | Search historical conversation records |
@@ -139,8 +139,8 @@ All lessons in `CROSS-PROJECT-LEARNINGS.md` (L1-L66, see `CROSS-PROJECT-LEARNING
 ## 9. SESSION STARTUP SEQUENCE
 
 1. **Verify filesystem sandbox:** `G:\My Drive\QWAV\` — confirm with `Test-Path`
-2. **Read project docs:** STATE → SPRINT → LEARNINGS → CHANGELOG (per §0.7)
-3. **Run due diligence:** Search QWAV domain directories (§0.8)
+2. **Read portfolio state:** Check GitHub Issues (label: `project-state`) across qnfo repos: `gh issue list --label "project-state" --state open` (per QWAV-DEFAULT.md §0.6.5)
+3. **Check GitHub Projects:** `gh project list --owner qnfo` for program board status
 4. **Git branch check:** `git branch --show-current` → feature branch (§9.2)
 5. **Report state:** Summarize findings, next steps
 

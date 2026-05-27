@@ -95,8 +95,8 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] `<title>`, `<meta description>`, and Open Graph tags present in `<head>`
 - [ ] `.nojekyll` file present at root (GitHub Pages requirement)
 - [ ] Test suite executed with zero failures — verified by re-execution, NOT by checking file existence
-- [ ] LEARNINGS.md updated with any issues found during testing
-- [ ] BACKLOG.md: all P1 items triaged (complete, migrate to next sprint, or explicitly defer with rationale)
+- [ ] GitHub Wiki updated with any issues found during testing (`OWNER/REPO.wiki.git`)
+- [ ] All P1 GitHub Issues triaged (close completed, migrate to next sprint, or explicitly defer with rationale in Issue comment)
 - [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`
 - [ ] `git log -1 --oneline` confirms commit exists
 - [ ] UNIVERSAL GATES above satisfied

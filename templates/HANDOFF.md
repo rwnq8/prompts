@@ -5,7 +5,10 @@ version: "1.1"
 
 # Handoff: {{type}}
 
+> **⚠️ GITHUB-NATIVE v2.0:** Handoffs are tracked as GitHub Issues (label: `handoff`) in the project repo. After filling this template, create the Issue with `gh issue create --repo qnfo/<repo-name> --label "handoff" --title "Handoff: {{type}}" --body "<filled-template>"`. The Issue number becomes the handoff reference.
+
 **Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]
+**GitHub Issue:** `qnfo/[repo-name]#[issue-number]` (create with `gh issue create --label "handoff"`)
 **Date:** [YYYY-MM-DD]
 **Issuing Authority:** [Who is delegating]
 **Accepting Authority:** [Who is receiving]
