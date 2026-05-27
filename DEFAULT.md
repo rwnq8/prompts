@@ -132,7 +132,7 @@ These skills are loaded on-demand via skill_view(). Load only when needed — th
 | When You Need To... | Load This Skill |
 |:--------------------|:----------------|
 | Send email | skill_view('email-composer') |
-| Deploy to Cloudflare | skill_view('cloudflare-deployer') |
+| Deploy to Cloudflare (all ops: Workers, R2, Vectorize, DNS, redirects) | skill_view('cloudflare-deployer') |
 | Publish a document | skill_view('publication-publisher') |
 | Manage GitHub repos/issues | skill_view('github-manager') |
 | Close out a project | skill_view('closeout-manager') |
@@ -206,6 +206,7 @@ All publication documents use curly/smart quotes. Code blocks exempt.
       - Files changed, commits, issues referenced
       - Infrastructure state changes
       - Handoff notes for next session
+      *(Format via fill_prompt_template("CLOUDFLARE-AUDIT-EXPORT", {...}) for consistency)*
    b. Upload to R2: `wrangler r2 object put qnfo/audit/conversations/<file>.md --remote --file=<path>`
    c. Verify: `wrangler r2 object get qnfo/audit/conversations/<file>.md --remote`
    d. Update decision log if new decisions made:
@@ -213,6 +214,9 @@ All publication documents use curly/smart quotes. Code blocks exempt.
       → Append new decisions → `wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
    e. R2 path: `qnfo/audit/` (conversations/, github/, decisions/, infrastructure/)
    f. Automated exports handled by github-sync Worker (cron: 06:00 UTC daily)
+   g. For Cloudflare operation details, load skill_view('cloudflare-deployer') v2.0
+   h. For session closeout workflow, load skill_view('closeout-manager') v2.0
+   i. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
 4. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
 5. GitHub Release creation
 6. Auto-continue to next project

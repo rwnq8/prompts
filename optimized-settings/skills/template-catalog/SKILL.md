@@ -17,6 +17,11 @@ Compose and send emails via Outlook COM automation.
 - Parameters: `to`, `subject`, `body`, `cc` (optional), `bcc` (optional), `attachments` (optional), `send_mode` (draft|send)
 - Use when: Sending any email
 
+### CLOUDFLARE-AUDIT-EXPORT (NEW — v1.0)
+Session closeout export for Cloudflare R2 audit trail. MANDATORY for every session.
+- Parameters: `session_date`, `topic`, `agent`, `summary`, `decisions`, `files_changed`, `commits`, `infrastructure_changes`, `handoff_notes`, `related_issues`
+- Use when: Ending any agent session (part of DEFAULT.md §10 closeout)
+
 ### CLOUDFLARE-DEPLOYMENT (15.2 KB)
 Deploy to Cloudflare Pages, R2, Workers, or Sandboxes.
 - Parameters: `project_name`, `resource_type` (pages|r2|workers|sandbox), `branch`, `command`
@@ -73,6 +78,7 @@ Convert markdown to PDF with formatting.
 | DEFINITION-OF-DONE | 6.6 KB | Medium |
 | PROJECT-INITIATION | 6.3 KB | Medium |
 | ZENODO-PUBLISH | 4.3 KB | Light |
+| CLOUDFLARE-AUDIT-EXPORT | 2.6 KB | Light — MANDATORY for every session |
 | HANDOFF | 2.8 KB | Light |
 | PROJECT-CHARTER | 2.1 KB | Light |
 
