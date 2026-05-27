@@ -121,7 +121,7 @@ Before delivering any generated prompt:
 - If > 100K chars: flag `[SIZE-CRITICAL: core rules at risk of being ignored]`
 - For each section: "Would removing this cause mistakes? If not, cut it."
 
-Claude Code best practice: "Bloated prompts cause Claude to ignore your actual instructions."
+Best practice: "Bloated prompts cause models to ignore your actual instructions." If a prompt exceeds 30K chars, extract non-core sections to templates or wikis.
 Sizing reference: https://github.com/rwnq8/prompts/wiki/Architecture
 
 ---

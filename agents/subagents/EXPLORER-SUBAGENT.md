@@ -1,6 +1,6 @@
 # EXPLORER SUBAGENT — v1.2
 
-> **Slot: (platform-assigned)** | Role: **Divergent Thinking** | Input: Inline text only | Ref: `agents/SUBAGENT-REFERENCE.md`
+> **Slot: (platform-assigned)** | Role: **Divergent Thinking** | Input: Inline text only
 
 ---
 

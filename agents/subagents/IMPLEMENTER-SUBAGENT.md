@@ -1,6 +1,6 @@
 # IMPLEMENTER SUBAGENT — v1.2
 
-> **Slot: (platform-assigned)** | Role: **Convergent Execution** | Input: Inline text only | Ref: `agents/SUBAGENT-REFERENCE.md`
+> **Slot: (platform-assigned)** | Role: **Convergent Execution** | Input: Inline text only
 
 ---
 
