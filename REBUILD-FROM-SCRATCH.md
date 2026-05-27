@@ -3,6 +3,8 @@
 > **Purpose:** If your computer crashes, your files get lost, or you're starting on a new machine, this document tells an AI agent (or you) how to rebuild EVERYTHING from zero.
 >
 > **Design principle:** You should not need to remember ANYTHING about how this system was built. This document IS the memory. Give it to any AI agent and say "rebuild everything."
+>
+> **⚠️ KNOWN QUIRK (F11):** After rebuilding `prompts.json`, the runtime system caches the OLD template list. Templates added during rebuild (like CLOUDFLARE-AUDIT-EXPORT) won't appear in `list_all_prompt_template_names()` until DeepChat restarts. Agents must fall back to manual `wrangler` commands from DEFAULT.md §10 until reloaded.
 
 ---
 
@@ -259,6 +261,7 @@ When an agent starts its first session after a rebuild:
 5. **Read latest state from R2** — Check `audit/conversations/` for most recent session
 6. **Check GitHub Issues** — `gh issue list --repo rwnq8/prompts --label project-state`
 7. **Resume work** — Pick up from the most recent session's handoff notes
+8. **⚠️ Template availability:** New templates (CLOUDFLARE-AUDIT-EXPORT) may require a DeepChat restart after prompts.json rebuild. Use manual wrangler commands from DEFAULT.md §10 until templates appear.
 
 ---
 
@@ -334,7 +337,8 @@ Rule ID: `6e5c1632b27741cbb87135f52f99cd66` — 6 domains → primary domains (7
 4. The CLOUDFLARE-DEPLOYMENT template and cloudflare-deployer skill contain the exact commands for every Cloudflare operation.
 5. If you encounter a new failure mode, document it in the failure catalog (cloudflare-deployer skill §9) and in the Cross-Project Learnings wiki.
 6. The system audit tool (`tools/system_audit.py`) validates the complete system. Run it after any infrastructure change.
+7. **⚠️ After rebuilding prompts.json, RESTART DeepChat for new templates to activate (F11).**
 
 ---
 
-*REBUILD-FROM-SCRATCH.md v1.0 — Created 2026-05-27. This document is the bootstrap. Without it, the system has amnesia. Keep it in git, in R2, and in your head.*
+*REBUILD-FROM-SCRATCH.md v1.1 — Updated 2026-05-27 with F11 system reload note. This document is the bootstrap. Without it, the system has amnesia. Keep it in git, in R2, and in your head.*
