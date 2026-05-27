@@ -1828,6 +1828,7 @@ gh run list --repo qnfo/<name> --workflow=zenodo-publish.yml --limit 1
 |:---------|:-------|
 | No ZENODO_TOKEN | Report `[BLOCKED: ZENODO_TOKEN not found]`. Do NOT treat as "manual step." Provide link to create token. |
 | Sandbox test fails | Fix errors (API, file, metadata). Retry sandbox. Do NOT skip to production. |
+| **Sandbox token unavailable (403)** | Sandbox (`sandbox.zenodo.org`) requires a **separate token** from production (`zenodo.org`). If production `ZENODO_TOKEN` is available but sandbox token is not: (1) document as `[SANDBOX-SKIPPED: separate sandbox token required at https://sandbox.zenodo.org/account/settings/applications/]`, (2) proceed to Phase 3 (production) with the available production token. **Do NOT treat sandbox unavailability as a blocker when a production token exists.** |
 | Production API error | Check status.zenodo.org. Retry with backoff (30s, 60s, 120s). After 3 failures, report `[BLOCKED: Zenodo API unavailable]`. |
 | File not found | Verify with `Test-Path`. Use absolute path. |
 | DOI already exists (new version) | Pass existing DOI via `--doi <existing_doi>` to create a new version. |
