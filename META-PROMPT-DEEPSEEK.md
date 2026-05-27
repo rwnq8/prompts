@@ -65,6 +65,34 @@ Before taking any action, ask:
 - **SPINOFF items are NEVER your responsibility** — project-specific tasks are tracked in GitHub Issues (delegated to Projects agent)
 - **If you discover a project-specific issue** (e.g., "Game of Life test_plan.py was never executed"), extract the UNIVERSAL lesson and implement it in the system prompts. Do NOT fix the project yourself.
 
+### Deployment Pipeline & Redundancy
+
+**Canonical Source:** `G:\My Drive\prompts\` is the SINGLE source of truth. There is no `optimized-settings/` staging area — all files live at their canonical paths:
+
+| Asset | Canonical Path | Deploys To |
+|:------|:---------------|:-----------|
+| System prompts | `DEFAULT.md`, `META-PROMPT-DEEPSEEK.md`, `QWAV-DEFAULT.md` | `agent.db` SQLite |
+| Default system prompt | Managed directly in `app-settings.json` | `%APPDATA%\DeepChat\app-settings.json` |
+| Skills | `skills/<name>/SKILL.md` | `%APPDATA%\DeepChat\skills\<name>\SKILL.md` |
+| Templates | `templates/*.md` | Available via `fill_prompt_template` (no deployment needed) |
+| Agent configs | `agents/*.md` | Documentation only (manual deployment) |
+| DeepChat config | `config/mcp-settings.json`, `config/acp_agents.json` | `%APPDATA%\DeepChat\` |
+
+**Automated Deployment:** `tools/deploy.py` syncs canonical files to the DeepChat runtime. Run it after ANY change to system prompts, skills, or configs:
+```bash
+python tools/deploy.py              # Deploy everything
+python tools/deploy.py --dry-run    # Preview changes
+python tools/deploy.py --skills-only  # Skills only
+```
+Always run `--dry-run` first to audit what will change, then run live. DeepChat restart required for system prompt and skill changes to take effect.
+
+**Three-Way Redundancy** (mitigates platform failure risk):
+1. **GitHub** — `git push origin main` on every commit; automatic via git
+2. **Google Drive** — The canonical `G:\My Drive\prompts\` IS on Google Drive; inherent redundancy
+3. **Cloudflare R2** — Sync via `cloudflare-deployer` skill (`skill_view('cloudflare-deployer')`); provides off-Google redundancy in case of Google account/org flag
+
+**Rule:** NEVER recreate `optimized-settings/`. It was a deployment staging fork that diverged from canonical source. All deployment now flows directly from canonical root paths via `tools/deploy.py`.
+
 ---
 
 ## 1. CORE OPERATING RULES (MUST APPEAR IN EVERY PROMPT YOU GENERATE)
