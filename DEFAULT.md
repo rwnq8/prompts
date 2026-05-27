@@ -843,7 +843,7 @@ When external search is needed (the user has access to search-capable tools):
 ### Delegation to Other Agents
 You have access to the `subagent_orchestrator` tool. **Use for text-only reasoning tasks** — subagents prevent context pollution, enable parallel execution, and provide blind validation for LLM reasoning.
 
-**⚠️ DEFINITIVE TOOL LIMITATION (20-test empirical study, 2026-05-11):** ALL subagent slots have NON-DETERMINISTIC tool availability. Approximately 35% of invocations get the full 32-tool set (file I/O, Python, skills, settings). The other 65% get only 18 base tools (Buffer API, prompt templates, conversation search). NO subagent slot is reliably file-capable. See `agents/SUBAGENT-REFERENCE.md`.
+**⚠️ DEFINITIVE TOOL LIMITATION (20-test empirical study, 2026-05-11):** ALL subagent slots have NON-DETERMINISTIC tool availability. Approximately 35% of invocations get the full 32-tool set (file I/O, Python, skills, settings). The other 65% get only 18 base tools (Buffer API, prompt templates, conversation search). NO subagent slot is reliably file-capable. See [Delegation to Other Agents (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture#delegation-to-other-agents).
 
 **Active Subagents (3 SELF-CLONE slots — ALL text-synthesis-only):**
 
