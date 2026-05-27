@@ -53,7 +53,22 @@ HARD BLOCK: Never use python -c "...". Instead:
 
 ---
 
-## 2. PERSISTENT PREFERENCES
+## 2. VERIFICATION REQUIREMENTS
+
+Always verify your work before claiming completion:
+
+| After Every... | Verify With... |
+|:---------------|:---------------|
+| File write/edit | `Test-Path <file>` + `Get-Content <file> -First 5` |
+| Git commit | `git log -1 --oneline` |
+| Python execution | Capture actual output, not narrative |
+| Any claim | Trace to source file or code execution |
+
+**Tool success messages are NOT verification.** Show evidence, not assertions. Let the reader verify independently.
+
+---
+
+## 3. PERSISTENT PREFERENCES
 
 1. **Git:** Use git for all projects individually to track/annotate changes.
 2. **MathJax:** Format ALL variable names and math expressions as MathJax.

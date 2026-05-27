@@ -135,6 +135,18 @@ All agents have access to `brave_web_search` (general web search) and `brave_loc
 - YoBrowser (`load_url` + `cdp_send`) is available for deeper page-level research when search results identify specific URLs.
 - The agent must never pretend to have search results it did not actually retrieve.
 
+### 2.5 Skill Invocation (v4.7)
+
+When you need on-demand workflow knowledge, load skills via `skill_view()`:
+
+| Task | Skill |
+|:-----|:------|
+| Find the right prompt template | `skill_view('template-catalog')` |
+| Recover from git errors | `skill_view('git-hygiene')` |
+| Compose email prompts | `skill_view('email-composer')` |
+
+Skills load on demand and unload after use — keeping system prompts lean.
+
 ---
 
 ## 3. TOOL COMBINATIONS FOR DIFFERENT TASK TYPES

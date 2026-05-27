@@ -566,3 +566,17 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 - **Date:** 2026-05-24
 - **GitHub CLI:** `gh` v2.92.0+ required
 - **Key change from v2.0:** Reversed file deprecation policy per DEFAULT.md v1.15. Local PM files are now MANDATORY REDUNDANT BACKUP — maintained in parallel with GitHub Issues. Added GitHub fallback (rwnq8) when qnfo org is unavailable. §0.9.1 initiation protocol updated to Dual-System v3.1. Platform Failure Recovery Protocol (§0.6.8.1) integrated. Trigger: QNFO org flagging destroyed 32+ phantom-created issues on 2026-05-27.
+
+
+## SKILL INVOCATION TRIGGERS (v3.0 — On-Demand Workflow Knowledge)
+
+| When You Need To... | Load |
+|:--------------------|:-----|
+| Send email | skill_view('email-composer') |
+| Deploy to Cloudflare | skill_view('cloudflare-deployer') |
+| Publish a document | skill_view('publication-publisher') |
+| Manage GitHub repos | skill_view('github-manager') |
+| Close out a project | skill_view('closeout-manager') |
+| Recover from git errors | skill_view('git-hygiene') |
+| Find the right template | skill_view('template-catalog') |
+
