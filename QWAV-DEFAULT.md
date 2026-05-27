@@ -458,7 +458,7 @@ This is the critical coordination mechanism between program and project agents.
    - `success_criteria`: Measurable acceptance gates
    - `constraints`: Budget, time, technology, domain rules
    - `research_trail`: Files/directories to explore for context
-   - `return_protocol`: Where to publish deliverables (GitHub Releases + GitHub Pages)
+   - `return_protocol`: Where to publish deliverables (GitHub Releases + GitHub Pages). ALL releases MUST include a PDF (DEFAULT.md Persistent Preference 12).
 3. Create GitHub Issue (label: `handoff`, repo: OWNER/REPO) with full handoff specification in body
 4. Create/update GitHub Issue (label: `project-state`): `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `gh issue comment`
 5. **PAUSE** — do not continue until Projects agent returns results
@@ -468,14 +468,14 @@ This is the critical coordination mechanism between program and project agents.
 2. Reads handoff document from referenced path
 3. Follows research trail (Archive, releases, active projects)
 4. Executes via Phases 0-5 (DEFAULT.md §5)
-5. Publishes via GitHub Release + GitHub Pages
+5. Publishes via GitHub Release + GitHub Pages (with PDF attached per DEFAULT.md Persistent Preference 12)
 6. Updates GitHub Issue (label: `project-state`): `STATUS: COMPLETE | DELIVERABLE: path` via `gh issue comment`
 7. Closes handoff Issue: `gh issue close <num> --reason completed`
 
 #### Handoff FROM Project TO Program (Completion)
 
 **Project Agent returns:**
-1. Deliverable published via GitHub Release
+1. Deliverable published via GitHub Release (with PDF attached and verified — DEFAULT.md Persistent Preference 12)
 2. GitHub Issue (label: `project-state`) updated with completion status via `gh issue comment`
 3. Handoff Issue closed with deliverable reference in comment
 4. Learning extracted and added to GitHub Wiki (`qnfo/<repo-name>.wiki.git`)
@@ -543,7 +543,7 @@ When the user says "WHAT'S NEXT? PROCEED" or "RESUME":
 
 ## H.2 Social Orchestration (Buffer Integration)
 
-When publishing content (paper, poster, website, release):
+When publishing content (paper, poster, website, release) — all releases MUST include a PDF (DEFAULT.md Persistent Preference 12):
 
 1. Create social media posts via Buffer API
 2. All posts must pass DEFAULT.md §E.5.1 Pre-Send Validation Checklist

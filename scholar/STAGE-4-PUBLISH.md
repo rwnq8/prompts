@@ -255,7 +255,18 @@ ONLY after explicit user approval:
 
 ## 4. REQUIRED OUTPUT FORMAT
 
-Single continuous Markdown document with preserved source labels throughout:
+Single continuous Markdown document with preserved source
+**Step 5.5: PDF Generation and Release Upload (MANDATORY — DEFAULT.md Persistent Preference 12)**
+After the document is written and verified:
+1. **Generate PDF:** Trigger `gh workflow run pdf-release.yml --repo qnfo/<repo-name> -f markdown_path=<path> -f style=academic -f output_name=<name>.pdf`
+2. **Verify PDF generation:** `gh run list --repo qnfo/<repo-name> --workflow=pdf-release.yml --limit 1` — confirm success
+3. **Verify PDF on disk:** `Test-Path <pdf-path>` must return True
+4. **Create GitHub Release:** `gh release create v<tag> --repo qnfo/<repo-name> --title "..." --notes "..."`
+5. **Upload PDF as release asset:** `gh release upload v<tag> <pdf-path> --repo qnfo/<repo-name>`
+6. **Verify PDF in release:** `gh release view v<tag> --repo qnfo/<repo-name> --json assets` — PDF filename MUST appear in assets list
+7. **GATE: If PDF is missing from release assets →** `[BLOCKED: PDF missing from release]` — do NOT declare publication complete
+
+ labels throughout:
 
 ```markdown
 # [TITLE]

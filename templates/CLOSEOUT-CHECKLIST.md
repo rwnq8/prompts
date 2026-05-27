@@ -125,6 +125,13 @@ Tests: 10/10 passing
 
 ---
 
+**For sessions that produced a GitHub Release:**
+- [ ] **PDF generated:** `gh run list --repo qnfo/<name> --workflow=pdf-release.yml --limit 1` confirms success OR `build_pdf.py` executed (DEFAULT.md Persistent Preference 12)
+- [ ] **PDF in release:** `gh release view <tag> --repo qnfo/<name> --json assets` confirms PDF attached
+- [ ] **GATE: If PDF is missing from release assets, close-out is BLOCKED.** Retroactively upload before completing.
+
+---
+
 ## HUMAN SIGN-OFF
 
 - [ ] All Phase A-G gates passed (zero `[!]` blockers)
