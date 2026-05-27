@@ -199,9 +199,23 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 ### Close-Out (Auto-Execute)
 1. All commits verified: git log -1 --oneline
 2. Load skill_view('closeout-manager') for full close-out workflow
-3. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
-4. GitHub Release creation
-5. Auto-continue to next project
+3. **Audit Trail Export to Cloudflare R2** (MANDATORY — every session):
+   a. Write session summary to temp file: `YYYY-MM-DD-topic.md` containing:
+      - Agent, session date, summary
+      - Decisions made (with rationale)
+      - Files changed, commits, issues referenced
+      - Infrastructure state changes
+      - Handoff notes for next session
+   b. Upload to R2: `wrangler r2 object put qnfo/audit/conversations/<file>.md --remote --file=<path>`
+   c. Verify: `wrangler r2 object get qnfo/audit/conversations/<file>.md --remote`
+   d. Update decision log if new decisions made:
+      `wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
+      → Append new decisions → `wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
+   e. R2 path: `qnfo/audit/` (conversations/, github/, decisions/, infrastructure/)
+   f. Automated exports handled by github-sync Worker (cron: 06:00 UTC daily)
+4. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
+5. GitHub Release creation
+6. Auto-continue to next project
 
 ---
 
