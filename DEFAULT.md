@@ -304,20 +304,55 @@ At session end:
 2. Update project item statuses
 3. Create new issues for pending/blocked work
 
-#### File Deprecation Map
+#### File Deprecation Map — ALL File Types
 
-| Deprecated File | Replacement | Command |
-|:----------------|:------------|:--------|
-| `PROJECT STATE.md` | GitHub Issues (project-state label) | `gh issue` |
-| `SPRINT.md` | GitHub Projects | `gh project` |
-| `BACKLOG.md` | GitHub Issues | `gh issue` |
-| `CHANGELOG.md` | GitHub Releases | `gh release` |
-| `LEARNINGS.md` | GitHub Wiki | wiki git repo |
-| `DECISIONS.md` | GitHub Discussions | `gh api graphql` |
+**PRINCIPLE:** Every text file has a GitHub-native equivalent. Local files are DEPRECATED when GitHub provides a superior feature. This map covers ALL file categories — not just project management files.
 
-**RETAINED:** `README.md` (repo landing page) remains file-based. All other PM files including `PROJECT STATE.md` are DEPRECATED and replaced by GitHub-native features per §0.6.8 File Deprecation Map. `PROJECT STATE.md` → GitHub Issue with `project-state` label.
+##### Project Management (PM) Files
+| Deprecated File | GitHub-Native Replacement | Command |
+|:----------------|:--------------------------|:--------|
+| `PROJECT STATE.md` | GitHub Issue (label: `project-state`) | `gh issue create --label "project-state"` |
+| `SPRINT.md` | GitHub Projects (Kanban board) | `gh project item-create` |
+| `BACKLOG.md` | GitHub Issues | `gh issue create` |
+| `CHANGELOG.md` | GitHub Releases | `gh release create` |
+| `LEARNINGS.md` | GitHub Wiki | `OWNER/REPO.wiki.git` |
+| `DECISIONS.md` | GitHub Discussions | `gh api graphql` for discussions |
+| `PROJECT-INITIATION.md` | GitHub Issue body (project-state) | `gh issue comment` |
+| `CHARTER.md` | GitHub Issue (label: `charter`) | `gh issue create --label "charter"` |
+| `DEFINITION-OF-DONE.md` | GitHub Issue (label: `dod`) | `gh issue create --label "dod"` |
+| `RISK-REGISTER.md` | GitHub Issue per risk (label: `risk`) | `gh issue create --label "risk"` |
+| `CONTRIBUTING.md` | `CONTRIBUTING.md` in repo root | GitHub auto-surfaces in PR UI |
 
-**Do NOT create or update deprecated files.** If you encounter them, note that they are stale and use the GitHub-native equivalent instead.
+##### Audit & Health Reports
+| Deprecated File | GitHub-Native Replacement | Command |
+|:----------------|:--------------------------|:--------|
+| `audit-reports/*.md` | GitHub Issue (label: `audit`) | `gh issue create --label "audit" --body-file report.md` |
+| System health check output | GitHub Issue (label: `audit,severity-*`) | `tools/system_audit.py` → pipe to `gh issue create` |
+
+##### Documentation & Reference
+| Deprecated File | GitHub-Native Replacement | Command |
+|:----------------|:--------------------------|:--------|
+| `email/EMAIL-CAPABILITIES.md` | GitHub Wiki page | `OWNER/REPO.wiki.git` |
+| `email/EMAIL-TEST-SUITE.md` | GitHub Wiki page | `OWNER/REPO.wiki.git` |
+| `scholar/STAGE-*.md` | GitHub Wiki pages | `OWNER/REPO.wiki.git` |
+| `pdf/QUICKSTART.md` | GitHub Wiki page | `OWNER/REPO.wiki.git` |
+| Process docs (`*.md` in subdirectories) | GitHub Wiki | `OWNER/REPO.wiki.git` |
+
+##### SOURCE FILES — RETAINED (These ARE the product)
+| File | Reason Retained |
+|:-----|:----------------|
+| `DEFAULT.md`, `QWAV-DEFAULT.md`, `META-PROMPT-DEEPSEEK.md` | System prompts — the product itself |
+| `agents/*.md`, `agents/subagents/*.md` | Agent configuration — the product |
+| `templates/*.md` | Template source — fills into GitHub Issues |
+| `tools/*.py`, `email/*.py`, `pdf/*.py` | Source code — the product |
+| `.github/workflows/*.yml` | CI/CD — already GitHub-native (GitHub Actions) |
+| `README.md` | GitHub-rendered repo landing page |
+| `prompts.json` | Auto-generated cache — build artifact |
+| `.gitignore`, `.gitattributes`, `LICENSE` | Git/GitHub config |
+
+**RETAINED:** `README.md` (repo landing page) remains file-based. System prompts, agent configs, templates, and source code are RETAINED as local files because they ARE the product — they're the system prompt engineering deliverables. All documentation, reports, process guides, and reference materials are DEPRECATED locally and migrated to GitHub Issues, Wiki, or Discussions.
+
+**Do NOT create or update deprecated files.** If you encounter them, note that they are stale and refer to the GitHub-native equivalent. New content MUST be created in GitHub-native locations.
 
 
 ## 0.7 Project Documentation Standards — GITHUB-NATIVE MODEL (replaces THREE-TIER MODEL)
