@@ -108,7 +108,7 @@ For anti-patterns and failure recovery: https://github.com/rwnq8/prompts/wiki/Ar
 ## 7. GIT PROTOCOL
 
 **IRON RULE:** NEVER commit to main/master. Feature branches only.
-Full protocol: DEFAULT.md SS9. Key: pre-work branch verify, post-work commit > git log verify, Step 0 filesystem verify.
+Full protocol: DEFAULT.md SS9. Key: pre-work branch verify (CPL L19: verify name unchanged), post-work commit > git log verify, Step 0 filesystem verify.
 
 ---
 

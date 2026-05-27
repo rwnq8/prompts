@@ -5,7 +5,7 @@ tools: fill_prompt_template, list_all_prompt_template_names
 ---
 # Template Catalog
 
-## How to Use
+## When to Use
 1. Call `list_all_prompt_template_names` to get available templates
 2. Call `get_prompt_template_parameters("template-name")` for required params
 3. Call `fill_prompt_template("template-name", {args})` to invoke
