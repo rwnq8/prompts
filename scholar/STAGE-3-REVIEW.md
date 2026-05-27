@@ -150,7 +150,7 @@ Using Python:
 
 #### Cross-Paper Consistency & Methodology Audit (Deep-Dive Research)
 
-**WHEN TO USE:** Whenever the manuscript synthesizes claims from multiple published papers. Verifies that cross-paper claims are consistent, the deep-read protocol was followed, and the quantitative verification is reproducible. Applicable to any research domain.
+**WHEN TO USE:** Whenever the manuscript synthesizes claims from multiple published papers. Verifies that cross-paper claims are consistent, the deep-read protocol was followed, and the quantitative verification is reproducible. Applicable to any research domain. See `RESEARCH-PROTOCOL.md` for the complete six-phase methodology.
 
 **Step 3.5.1: Cross-Paper Consistency Audit** `[CODE-EXECUTED: Python comparison]`
 1. **Identify all cross-paper claims** in the manuscript — claims attributed to ≥2 source papers
@@ -188,6 +188,9 @@ Verify the complete evidence chain for every claim:
 - Every `[EXTERNAL-SOURCE]` citation → source file exists, contains the cited content
 - Every `[WEB-SEARCH]` claim → search record exists, content cross-referenced against local files
 - Every `[LLM-INFERRED]` claim → clearly labeled, no quantitative content mixed in
+- Every `[CONSENSUS]` claim → independently confirmed by ≥2 source papers
+- Every `[DISPUTED]` claim → both positions fairly presented
+- Every `[SINGLE-SOURCE]` claim → clearly identified as single-source, not overstated
 - Zero `[UNVERIFIED-LLM]` claims with quantitative content — if found, flag as `[BLOCKING: unverified quantitative claim]`
 
 ### PHASE 4: PURIFICATION & FINALIZATION

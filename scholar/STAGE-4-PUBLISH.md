@@ -191,7 +191,7 @@ Execute ALL of the following Python-powered checks. Any failure is BLOCKING — 
 
 **4.9 Methodology Reproducibility Gate** `[CODE-EXECUTED]`
 
-**WHEN TO USE:** Mandatory for ALL publications. Verifies that the complete research methodology is documented and reproducible by an independent researcher. Applicable to any research domain.
+**WHEN TO USE:** Mandatory for ALL publications. Verifies that the complete research methodology is documented and reproducible by an independent researcher. Applicable to any research domain. See `RESEARCH-PROTOCOL.md` for the complete methodology.
 
 **4.9.1 Deep-Read Protocol Verification:**
 For every paper cited in the publication:

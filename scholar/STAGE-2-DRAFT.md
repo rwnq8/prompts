@@ -214,6 +214,8 @@ Every factual claim:
 **Code execution error:** Debug and retry (max 3 attempts). If persistent, document limitation. NEVER substitute with LLM-inferred numbers.
 **Citation not in source catalog:** Flag as `[CITATION-NEEDED: no verified source available]`. Never invent.
 **Contradictory evidence:** Re-run with different seeds. Document as genuine uncertainty if persistent.
+**Missing source files for deep-read claims:** If a `[CODE-EXECUTED]` verification requires a source file that does not exist: `[MISSING-SOURCE: <file>]` — flag for Stage 3. Downgrade the claim to `[UNVERIFIED: source file missing]`. Never fabricate a source file or its contents.
+**Non-reproducible Python scripts:** If verification script produces different output on re-run: `[NON-REPRODUCIBLE: script output changed]` — flag for Stage 3. Check for random seeds, system-dependent behavior, or file encoding issues.
 
 ---
 
