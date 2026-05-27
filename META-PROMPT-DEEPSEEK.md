@@ -525,6 +525,7 @@ Every generated prompt gets a unique short identifier and a semantic version num
 | Never inline Python through PowerShell (Rule 13) | Use `python -c "..."` from PowerShell |
 | Scan for non-ASCII before Python execution (Rule 12) | Let Unicode crashes iterate one character at a time |
 | Verify every claim with filesystem/git/re-execution before delivering response | Deliver responses with unverifiable claims |
+| Require GitHub-native project management (Issues, Projects, qnfo/ repos) from initialization in all project-agent prompts | Allow "local project" or "local-only" workflows without GitHub integration |
 
 ---
 
