@@ -1105,33 +1105,85 @@ ALL prompt changes MUST undergo verification before merging to main:
 
 ---
 
-## 13. GITHUB-NATIVE PROJECT MANAGEMENT
+## 13. CLOUDFLARE-NATIVE OPERATIONS (GitHub Deprecated for Non-Git Functions)
 
-### GitHub-Native Workflow
+### Architecture Directive
 
-The `gh` CLI (v2.92.0+) is used for tracking this agent's work.
+> **GitHub = source control ONLY (git push/pull/merge). All project management, artifact storage, task tracking, and publication hosting is Cloudflare-native.**
+
+This directive eliminates dependency on GitHub's non-git features (Issues, Projects, Releases, Wiki, Discussions), which are deprecated wherever Cloudflare can provide equivalent functionality. The QNFO org is already flagged by GitHub — relying on GitHub for anything beyond git is an architectural risk.
+
+### Cloudflare-Native Replacements
+
+| Deprecated GitHub Feature | Cloudflare Replacement | Status |
+|:--------------------------|:-----------------------|:-------|
+| GitHub Issues | R2 `qnfo/audit/issues/` — JSON-based issue tracking via Workers API | Planned (P3) |
+| GitHub Projects (Kanban) | Cloudflare Pages app backed by D1 or R2 state | Planned (P3) |
+| GitHub Releases | **R2 `qnfo/releases/`** — artifact storage (ACTIVE NOW) | ✅ Operational |
+| GitHub Wiki | Cloudflare Pages static site | Trivial |
+| GitHub Discussions | Deferred — not critical path | Deferred |
+| GitHub Pages | **Cloudflare Pages** — `wrangler pages deploy` (ACTIVE NOW) | ✅ Operational |
+| GitHub Actions / CI | **Workers Cron Triggers** — `github-sync` Worker (ACTIVE NOW) | ✅ Operational |
+
+### File Deprecation Map — NEVER CREATE These Files (Updated for Cloudflare-Native):
+
+| Deprecated File | Cloudflare Replacement | Status |
+|:----------------|:----------------------|:-------|
+| PROJECT STATE.md | R2 `qnfo/audit/state/<project>.json` | ✅ Operational |
+| SPRINT.md | Cloudflare Pages Kanban app (P3) | Planned |
+| BACKLOG.md | R2 `qnfo/audit/backlog/<project>.json` | ✅ Operational |
+| CHANGELOG.md | R2 `qnfo/releases/CHANGELOG.json` | ✅ Operational |
+| LEARNINGS.md | R2 `qnfo/audit/learnings/` + Cloudflare Pages wiki | Planned (P3) |
+| DECISIONS.md | R2 `qnfo/audit/decisions/DECISION-LOG.md` | ✅ Operational |
+
+### Deployment Tracking (Cloudflare-Native)
 
 ```bash
-# Discover active work:
-gh issue list --repo rwnq8/prompts --label "meta" --state open
-gh issue list --repo rwnq8/prompts --label "scholar" --state open
+# Track deployments via R2 (Cloudflare-native — NO GitHub Issues):
+# Log deployment record:
+python -c "
+import json, datetime
+record = {
+    'project': '<project-name>',
+    'url': 'https://<domain>',
+    'date': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    'status': 'deployed',
+    'stage': 'STAGE-5',
+    'license': 'QNFO-COL-v1.1',
+    'publications': ['<slug1>', '<slug2>']
+}
+with open('_deploy_record.json', 'w') as f:
+    json.dump(record, f, indent=2)
+"
 
-# Track hosting deployments:
-gh issue create --repo rwnq8/prompts --title "STAGE-5: Deploy <project-name> to Cloudflare Pages" --body "..." --label "scholar,hosting"
+# Upload deployment record to R2:
+npx wrangler r2 object put qnfo/deployments/<project-name>-<date>.json --file=_deploy_record.json --remote
 
-# Update deployment status:
-gh issue comment --repo rwnq8/prompts <issue-num> --body "STATUS: DEPLOYED | URL: https://<domain> | DATE: <ISO 8601>"
+# List recent deployments:
+npx wrangler r2 object list qnfo/deployments/ --remote
+
+# Query deployment state:
+npx wrangler r2 object get qnfo/deployments/<project-name>-<date>.json --remote
 ```
 
-### File Deprecation Map — NEVER CREATE These Files:
-| Deprecated File | Replacement |
-|:----------------|:------------|
-| PROJECT STATE.md | GitHub Issue (label: `project-state`) |
-| SPRINT.md | GitHub Projects |
-| BACKLOG.md | GitHub Issues |
-| CHANGELOG.md | GitHub Releases |
-| LEARNINGS.md | GitHub Wiki |
-| DECISIONS.md | GitHub Discussions |
+### `gh` CLI Usage — Restricted to Git Operations Only
+
+```bash
+# ALLOWED (git source control):
+git push origin <branch>
+git pull origin main
+git merge <branch>
+gh auth status            # Verify git auth only
+
+# DEPRECATED (these functions are now Cloudflare-native):
+# gh issue create ...    → Use R2 qnfo/audit/
+# gh release create ...  → Use R2 qnfo/releases/
+# gh project ...         → Use Cloudflare Pages app (P3)
+```
+
+### Principle
+
+**If it's not `git push`, `git pull`, `git merge`, or `git log` — it doesn't belong on GitHub.** All operational state (deployments, issues, releases, decisions, backlogs) lives in Cloudflare R2 with Workers APIs for structured access. This eliminates the single-platform dependency and the reputational risk of GitHub org flagging.
 
 ---
 
