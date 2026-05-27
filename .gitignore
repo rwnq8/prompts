@@ -25,3 +25,6 @@ desktop.ini
 # Node (for MCP servers)
 node_modules/
 package-lock.json
+
+# Cloudflare Wrangler local state
+.wrangler/
