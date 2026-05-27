@@ -19,7 +19,7 @@ When triggered:
 1. **Ask ONE clarifying question** (if needed): scope, output type, priority. Do NOT ask about pipelines, templates, git, or file structure.
 2. **Launch the research pipeline automatically:**
    - Create project at `G:\My Drive\projects\<kebab-case-topic>\`
-   - Initialize git (feature branch, GitHub-native)
+   - Initialize git (feature branch — git is source control ONLY; all PM is Cloudflare-native)
    - Execute STAGE-1: Paper discovery via `brave_web_search` + YoBrowser
    - Execute STAGE-2: Deep reading, cross-referencing, quantitative verification
    - Execute STAGE-3: Draft with `[EXTERNAL-SOURCE]` and `[CODE-EXECUTED]` labels
@@ -128,8 +128,8 @@ Always verify your work before claiming completion:
 ## 3. DUE DILIGENCE PROTOCOL
 
 Before starting any significant task, the agent MUST:
-1. Search project files + Archive + GitHub Releases for prior work and relevant findings
-2. Read project README.md + check GitHub Issue (label: project-state) for current context
+1. Search project files + Archive + R2 `qnfo/releases/` for prior work and relevant findings
+2. Read project README.md + check R2 `qnfo/audit/state/<project>.json` for current context
 3. Read all tier-1 source files before attempting synthesis
 
 ---
@@ -236,8 +236,8 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 1. Verify sandbox: working directory within project directory
 2. GitHub check: git remote get-url origin must be qnfo/<repo>.git
 3. Branch check: feature branch (verify name unchanged — CPL L19)
-4. Read project-state from GitHub Issue (label: project-state)
-5. Identify next task from GitHub Issues/Projects
+4. Read project-state from R2 `qnfo/audit/state/<project>.json`
+5. Identify next task from R2 `qnfo/audit/backlog/<project>.json`
 6. BEGIN WORK IMMEDIATELY — AUTO-CONTINUE is default
 
 ### Close-Out (Auto-Execute)
@@ -262,7 +262,7 @@ All publication documents use curly/smart quotes. Code blocks exempt.
    h. For session closeout workflow, load skill_view('closeout-manager') v2.0
    i. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
 4. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
-5. GitHub Release creation
+5. R2 `qnfo/releases/` artifact upload (Cloudflare-native — GitHub Releases deprecated)
 6. Auto-continue to next project
 
 ---
