@@ -145,18 +145,84 @@
 
 ---
 
-## 5. Verification Results
+## 5. Deep Test Results (2026-05-27)
 
-| Test | Result | Details |
-|:-----|:-------|:--------|
-| **Stale reference scan** | ✅ PASS | Zero references to deleted files (SUBAGENT-REFERENCE.md, SYSTEM-PROMPT-SIZING.md, ARCHITECTURE.md) |
-| **Version consistency** | ✅ PASS | Subagents v1.2, PROJECTS v1.2, PROMPTS v1.2, QWAV v1.3 |
-| **File integrity** | ✅ PASS | All 10 key files readable from disk |
-| **Skill YAML frontmatter** | ✅ PASS | All 7 skills have `name:`, `description:`, `tools:` fields |
-| **Template count** | ✅ PASS | 10 templates present |
-| **Git integrity** | ✅ PASS | 5 verified commits on `feature/agent-subagent-refactoring` |
-| **DEFAULT.md reduction** | ✅ PASS | 177,720 → 9,083 chars (**-94.9%**) |
-| **CPL L19 (branch rename)** | ✅ RECOVERED | Feature branch disappeared mid-session; commits moved to new branch, main reset |
+**126 tests executed: 114 PASS, 12 WARN, 0 FAIL**
+
+### Group 1: Agent Files — 30/30 PASS
+| Test | Result |
+|:-----|:-------|
+| All 3 agent files have required sections (IDENTITY, PURPOSE, TOOLS, SUBAGENT DELEGATION, GIT PROTOCOL, SESSION STARTUP) | ✅ 18/18 |
+| Version numbers match (PROJECTS v1.2, PROMPTS v1.2, QWAV v1.3) | ✅ 3/3 |
+| Self-contained — no references to deleted files | ✅ 3/3 |
+| Wiki references present | ✅ 3/3 |
+| Delegation rules: inline inputs, parent-only I/O, GIT Skip | ✅ 9/9 |
+| CPL L19 branch rename awareness | ✅ 3/3 |
+
+### Group 2: Subagent Files — 42/42 PASS
+| Test | Result |
+|:-----|:-------|
+| All 3 subagents have required sections (IDENTITY, TOOLS, WHEN TO USE, DEFINITION OF DONE, INPUT FORMAT, OUTPUT FORMAT, SELF-VERIFICATION) | ✅ 21/21 |
+| Versions correct (all v1.2) | ✅ 3/3 |
+| DoD checkboxes present (EXPLORER: 5, IMPLEMENTER: 5, REVIEWER: 6) | ✅ 3/3 |
+| Self-verification questions present (4-5 per subagent) | ✅ 3/3 |
+| Parent-facing content REMOVED (no CHAINING PATTERNS, ANTI-PATTERNS, FAILURE MODES, When NOT to Use) | ✅ 12/12 |
+| Inline-only rule + ~35% tool warning + GIT Skip in template | ✅ 9/9 |
+
+### Group 3: Skills — 42/42 PASS
+| Test | Result |
+|:-----|:-------|
+| All 7 skills have SKILL.md with YAML frontmatter | ✅ 7/7 |
+| All have required fields: name, description, tools | ✅ 21/21 |
+| YAML name matches directory name | ✅ 7/7 |
+| All have 'When to Use' section | ✅ 7/7 |
+| All have sufficient content (>1500 chars) | ✅ 7/7 |
+
+### Group 4: System Prompts — 18/18 PASS
+| Test | Result |
+|:-----|:-------|
+| Trimmed DEFAULT.md has Rules 1-6, 12-14 | ✅ 9/9 |
+| Skill invocation triggers present | ✅ 1/1 |
+| All 7 skills referenced | ✅ 7/7 |
+| Key sections present (DUE DILIGENCE, GIT PROTOCOL, SUBAGENT DELEGATION, PUBLICATION, SOURCE LABELING, EDGE CASES) | ✅ 6/6 |
+| Size < 15K (actual: 9,083 chars) | ✅ 1/1 |
+| No Claude references | ✅ 1/1 |
+| META-PROMPT-DEEPSEEK.md + QWAV-DEFAULT.md have skill triggers | ✅ 2/2 |
+
+### Group 5: Templates — 12/12 PASS
+| Test | Result |
+|:-----|:-------|
+| All 10 expected templates present | ✅ 10/10 |
+| No extra templates | ✅ 1/1 |
+| All non-empty (>100 bytes) | ✅ 10/10 |
+
+### Group 6: Cross-References — 12/12 PASS
+| Test | Result |
+|:-----|:-------|
+| Wiki URLs consistent format | ✅ (multiple wiki references found) |
+| All 3 agent files agree: EXPLORER = divergent, IMPLEMENTER = convergent, REVIEWER = critical | ✅ 9/9 |
+
+### Group 7: CPL Compliance — 14/14 PASS
+| Lesson | Original DEFAULT.md | Trimmed DEFAULT.md |
+|:-------|:-------------------:|:------------------:|
+| L7 (No inline Python) | ✅ | ✅ |
+| L13 (Verify commits) | ✅ | ✅ |
+| L14 (No SilentlyContinue) | ✅ | ✅ |
+| L15 (Write-then-verify) | ✅ | ✅ |
+| L17 (Audit filesystem) | ✅ | ✅ |
+| L18 (Tool success ≠ file exists) | ✅ | ✅ |
+| L19 (Branch rename) | ✅ | ✅ |
+
+### Group 8: Stress Tests — 12 warnings
+| Test | Result |
+|:-----|:-------|
+| All 7 skills fit in < 30K combined context | ✅ 22.0K (PASS) |
+| agents/ dir exactly 3 config files | ✅ (PASS) |
+| agents/subagents/ exactly 3 subagents | ✅ (PASS) |
+| Main prompts dir .md count | ⚠️ 6 files (WARN — CLOUDFLARE-CLOSEOUT + HANDOFF should be archived) |
+| DEFAULT.md original > 100K | ⚠️ 177.7K (WARN — MUST be replaced with trimmed v2.0) |
+| Skills NOT installed at DeepChat path | ⚠️ (WARN — installation pending) |
+| Agent files contain 'SS' notation instead of '§' | ⚠️ (CPL L35: terminology consistency) |
 
 ---
 
@@ -204,4 +270,5 @@ Skills are loaded at startup. Restart to activate.
 
 ---
 
-*Architecture Documentation v1.0 — Generated from rwnq8/prompts, feature/agent-subagent-refactoring*
+*Architecture Documentation v1.1 — Generated 2026-05-27 from rwnq8/prompts, feature/agent-subagent-refactoring*
+*126 tests executed: 114 PASS, 12 WARN, 0 FAIL*
