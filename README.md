@@ -21,7 +21,8 @@
 ### Reference files (read, don't paste)
 | File | Purpose |
 |:-----|:--------|
-| `ARCHITECTURE.md` | System design, agent config, tool lists, slot IDs |
+| `ARCHITECTURE.md` (v1.4) | System design, agent taxonomy, slot IDs, sandboxing model |
+| `AGENT-CONFIG.md` (v5.3) | Agent write boundaries, tool lists, slot IDs |
 | `agents/PROJECTS-AGENT.md` | Detailed Projects agent execution spec (LLM reads this, you don't need to) |
 | `agents/PROMPTS-AGENT.md` | Detailed Prompts agent execution spec |
 | `agents/QWAV-AGENT.md` | Detailed QWAV agent execution spec |
@@ -29,8 +30,8 @@
 
 ### Ongoing (occasional)
 - Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `tools/system_audit.py`
-- Check `CHANGELOG.md` to see what changed
 - Check `ARCHITECTURE.md` for how the system is designed
+- Check GitHub Discussions (#32+) for Architecture Decision Records
 
 ### Everything Else
 **You never need to open, edit, or worry about any other file in this directory.** If an agent creates files you didn't ask for, tell it to explain or delete them.
@@ -75,9 +76,9 @@
 
 | Slot | Role | Use |
 |:-----|:-----|:----|
-| `slot-mp80a5ry-e7hn` | EXPLORER — Divergent thinking | Brainstorming, alternatives, edge cases |
-| `slot-mp80ay3u-yzqo` | IMPLEMENTER — Convergent execution | Drafting, structured output |
-| `slot-mp80b6bl-iix2` | REVIEWER — Critical evaluation | Blind validation, gap analysis |
+| `self` (auto-clone) | EXPLORER — Divergent thinking | Brainstorming, alternatives, edge cases |
+| `slot-mp80dr5g-oh9g` | IMPLEMENTER — Convergent execution | Drafting, structured output |
+| `slot-mp80e4mj-5s1l` | REVIEWER — Critical evaluation | Blind validation, gap analysis |
 
 ## Directory Structure
 
@@ -85,13 +86,18 @@
 prompts\
 ├── README.md                     ← YOU ARE HERE (human reference)
 ├── ARCHITECTURE.md               ← System taxonomy + agent config (LLM + human reference)
-├── CHANGELOG.md                  ← Change history
+├── AGENT-CONFIG.md               ← Agent write boundaries, tool lists, slot IDs
+├── CHANGELOG.md                  ← DEPRECATED — use GitHub Releases + Discussions
 │
 ├── META-PROMPT-DEEPSEEK.md       ← THE FACTORY: generates all system prompts
 ├── DEFAULT.md                    ← System prompt for Projects agent
 ├── QWAV-DEFAULT.md               ← System prompt for QWAV agent
 │
 ├── tools\                         ← Utility scripts (system_audit.py)
+│
+├── .github\                       ← GitHub-native infrastructure
+│   ├── workflows\                 ← CI/CD (pdf-release, zenodo-publish, etc.)
+│   └── ISSUE_TEMPLATE\            ← Issue templates (project-state, handoff, task, bug, audit)
 │
 ├── agents\                        ← Agent & subagent execution specs (LLM reference)
 │   ├── PROJECTS-AGENT.md
@@ -102,42 +108,21 @@ prompts\
 │       ├── IMPLEMENTER-SUBAGENT.md
 │       └── REVIEWER-SUBAGENT.md
 │
-├── templates\                    ← Prompt templates (consumed by fill_prompt_template) — 12 files
-│   ├── SOCIAL-ORCHESTRATOR-TEMPLATE.md
-│   ├── image-gen-banner-prompt.md
-│   ├── ADR-TEMPLATE.md
-│   ├── CHANGELOG-TEMPLATE.md
-│   ├── CONTRIBUTING-TEMPLATE.md
-│   ├── DEFINITION-OF-DONE-TEMPLATE.md
-│   ├── HANDOFF-TEMPLATE.md
-│   ├── PRODUCT-BACKLOG-TEMPLATE.md
-│   ├── PROJECT-CHARTER-TEMPLATE.md
-│   ├── README-TEMPLATE.md
-│   ├── RETROSPECTIVE-TEMPLATE.md
-│   └── SPRINT-BACKLOG-TEMPLATE.md
-│
-├── email\                        ← Email automation module (Outlook COM)
-│   ├── EMAIL-AGENT-TEMPLATE.md
-│   ├── EMAIL-CAPABILITIES.md
-│   ├── email_*.py (7 scripts)
-│   └── outlook_mcp_server\
-│
-├── scholar\                      ← Research pipeline (4 stages)
-│   ├── STAGE-1-SETUP.md
-│   ├── STAGE-2-DRAFT.md
-│   ├── STAGE-3-REVIEW.md
-│   └── STAGE-4-PUBLISH.md
-│
-└── audit-reports\                ← Generated health reports (auto)
+├── templates\                     ← Prompt templates
+├── email\                         ← Email agent workflow
+├── scholar\                       ← Scholar pipeline (4 stages)
+├── pdf\                           ← PDF builder workflow
+├── prompts.json                   ← Auto-generated template cache
+└── audit-reports\                 ← DEPRECATED — use GitHub Issues (label: audit)
 ```
 
 ## File Ownership
 
 | Audience | Files |
 |:---------|:------|
-| **HUMAN** (you) | `README.md`, `CHANGELOG.md` |
+| **HUMAN** (you) | `README.md`, `ARCHITECTURE.md`, `AGENT-CONFIG.md` |
 | **HUMAN — paste into DeepChat** | `DEFAULT.md`, `QWAV-DEFAULT.md`, `META-PROMPT-DEEPSEEK.md`, subagent descriptions from `agents/subagents/` |
-| **HUMAN — reference only** | `ARCHITECTURE.md` (system design, agent config, tools, slot IDs) |
+| **HUMAN — reference only** | `ARCHITECTURE.md` (system design, agent taxonomy, slot IDs) |
 | **LLM** (agents) | Everything else |
 
 **If you're ever confused about a file:** ask any agent "Why does this file exist? Is it for me or for you?"

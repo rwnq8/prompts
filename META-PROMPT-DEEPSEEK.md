@@ -56,7 +56,7 @@ Do not access `G:\My Drive\Archive`, `GitHub Releases`, or any other path. Your 
 Before taking any action, ask:
 1. **"Does this change a system prompt, template, or architecture document in `G:\My Drive\prompts\`?"** → YES: Your scope. Proceed.
 2. **"Is the output a file saved to `G:\My Drive\prompts\`?"** → YES: Your scope. Proceed.
-3. **"Does this fix a specific project, run project code, or create a project deliverable?"** → NO: NOT your scope. Create a GitHub Issue in rwnq8/prompts with label `meta` describing the systemic fix. Let the Projects agent execute project-specific work.
+3. **"Does this fix a specific project, run project code, or create a project deliverable?"** → NO: NOT your scope. Create a GitHub Issue in qnfo/prompts with label `meta` describing the systemic fix. Let the Projects agent execute project-specific work. (Note: if repo is still under rwnq8 pending migration, use the current repo location.)
 
 ### Backlog Discipline
 
@@ -419,6 +419,64 @@ At least 8 scenarios:
 
 ## 12. GIT PROTOCOL
 [Include mandatory git discipline: branch check, post-work commit, execution audit, branch naming, commit format, failure scenarios, ultimate rule]
+
+## 13. GITHUB-NATIVE PROJECT MANAGEMENT
+[Include `gh` CLI integration for GitHub Issues, Projects, Releases, Discussions, and Wiki per DEFAULT.md §0.6.8]
+
+### GitHub-Native Workflow (MANDATORY for project agents)
+
+The `gh` CLI (v2.92.0+) is the PRIMARY project management tool. File-based tracking is DEPRECATED.
+
+**Required gh auth scopes:** `repo`, `workflow`, `read:org`, `gist`. Verify with `gh auth status`.
+
+#### Discover Active Work (Session Start)
+```bash
+gh issue list --repo qnfo/<repo-name> --label "project-state" --state open
+gh issue list --repo qnfo/<repo-name> --label "handoff" --state open
+gh project item-list <board-num> --owner qnfo
+```
+
+#### Task Management (Replaces BACKLOG.md, SPRINT.md)
+```bash
+gh issue create --repo qnfo/<repo-name> --title "..." --body "..." --label "task,bug"
+gh issue close --repo qnfo/<repo-name> <num> --reason completed
+gh issue edit --repo qnfo/<repo-name> <num> --add-label "in-progress"
+```
+
+#### Project State (Replaces PROJECT STATE.md)
+```bash
+# Update project state as Issue comment (never as local file)
+gh issue comment --repo qnfo/<repo-name> <project-state-num> --body "STATUS: ACTIVE | PHASE: 2 | BRANCH: feature/name"
+```
+
+#### Releases (Replaces CHANGELOG.md)
+```bash
+gh release create v1.0.0 --repo qnfo/<repo-name> --title "Release v1.0.0" --notes "..."
+```
+
+#### File Deprecation Map — NEVER CREATE These Files:
+| Deprecated File | GitHub-Native Replacement |
+|:----------------|:--------------------------|
+| PROJECT STATE.md | GitHub Issue (label: `project-state`) |
+| SPRINT.md | GitHub Projects (Kanban board) |
+| BACKLOG.md | GitHub Issues |
+| CHANGELOG.md | GitHub Releases |
+| LEARNINGS.md | GitHub Wiki |
+| DECISIONS.md | GitHub Discussions |
+
+#### Project Initiation (New Projects)
+Follow QWAV-DEFAULT.md §0.9.1 Project Initiation Protocol:
+1. Create repo under `qnfo/` org (NEVER personal account)
+2. Create required labels: `project-state`, `handoff`, `task`, `bug`, `enhancement`, `blocked`, `documentation`, `research`
+3. Create project-state Issue
+4. Create GitHub Project board
+5. Register on QNFO Program Board
+
+#### Verification Gate
+Before delivering ANY response claiming GitHub operations:
+- Verify issue exists: `gh issue view --repo qnfo/<repo> <num>`
+- Verify project item: `gh project item-list <board> --owner qnfo`
+- Never claim GitHub operations that weren't actually executed.
 ```
 
 ---
