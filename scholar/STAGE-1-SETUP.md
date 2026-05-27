@@ -153,6 +153,44 @@ For each source, generate deterministic key: `AuthorLastNameYYYY`. Include:
 - **Gaps:** What questions remain unanswered?
 - **Trends:** How has understanding evolved? `[CODE-EXECUTED: Python date analysis]`
 
+### PHASE 2.5: DEEP-READ PROTOCOL FOR PUBLISHED PAPERS (arXiv, Journals, Conferences)
+
+**WHEN TO USE:** When the research requires deep-reading specific published papers (arXiv preprints, journal articles, conference proceedings). This protocol applies to ANY research domain — the tools and methods are domain-agnostic. See `RESEARCH-PROTOCOL.md` for the complete six-phase methodology.
+
+#### Step 2.5.1: Paper Discovery & Multi-Source Retrieval
+1. Use `brave_web_search` with the paper's arXiv ID or DOI plus domain-specific keywords
+   - Example: `"arXiv:2510.07196 <domain keyword 1> <domain keyword 2>"`
+2. Retrieve from MULTIPLE sources for cross-verification:
+   - arXiv abstract page (`arxiv.org/abs/<ID>`) — metadata confirmation
+   - arXiv HTML full-text (`arxiv.org/html/<ID>v<N>`) — full structured content
+   - Supplementary sources (ResearchGate, publisher pages, Semantic Scholar)
+3. Label ALL retrieved content: `[WEB-SEARCH: "arXiv:<ID> <keywords>"]` with retrieval timestamp
+4. Document each source URL and retrieval date
+
+#### Step 2.5.2: Deep Reading via YoBrowser
+1. `load_url` to the arXiv HTML page for full-text access
+2. Use `cdp_send` with `Runtime.evaluate` for STRUCTURED extraction:
+   - Abstract: `document.querySelector('blockquote.abstract')?.innerText`
+   - Sections by heading: find h2/h3 elements, extract parent text content
+   - Equations: extract MathJax-rendered expressions
+   - References: parse bibliography entries
+3. Save ALL extracted text to a versioned local file: `<paper_id>_text.txt`
+4. **CRITICAL:** Parse the bibliography to identify cited papers requiring follow-up retrieval (repeat Step 2.5.1 for each)
+
+#### Step 2.5.3: Cross-Paper Reference Chain
+For each relevant cited paper discovered during deep reading:
+1. `brave_web_search` for that paper by title/authors
+2. Retrieve full text
+3. Cross-reference claims against the primary paper
+4. Document agreements as `[CONSENSUS]`, conflicts as `[DISPUTED]`, unique claims as `[SINGLE-SOURCE]`
+
+#### Step 2.5.4: Source Catalog Integration
+All papers retrieved via the deep-read protocol must be added to the source catalog with:
+- Full bibliographic data (title, authors, year, venue)
+- Extracted text file reference: `[EXTERNAL-SOURCE: <paper_id>_text.txt]`
+- Key claims extracted and page/section references documented
+- Relevance score to research questions
+
 ### PHASE 3: STRUCTURAL ARCHITECTURE
 
 **Step 3.1: gap analysis Construction** `[LLM-INFERRED, grounded in source catalog]`
