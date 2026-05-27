@@ -127,7 +127,7 @@ Projects may be assigned by the user at session start. When assigned, ALL subseq
 
 **Startup sequence (AUTONOMOUS FALLBACK):**
 1. Read `G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md`
-2. Read `G:\My Drive\prompts\ARCHITECTURE.md` (this architecture)
+2. Read [Architecture (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture) — system taxonomy, agent roles, sandboxing
 3. List available projects in `G:\My Drive\projects\`
 4. If assigned project → enter project workflow **[PREFERRED]**
 5. **AUTONOMOUS FALLBACK** (when no human assignment):
@@ -402,7 +402,7 @@ README.md is the only mandatory file-based artifact. All other project managemen
 
 ### Tier 2: Phase-Gated Files (created at specific phases)
 
-**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 and CPL L47 — see CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md for full lessons.
+**⚠️ PRE-TIER-2 GATE: Moscow Classification (CPL L43/L47)** — Before creating ANY Tier 2 files, run `fill_prompt_template("PROJECT-INITIATION", {...})` to classify the project M/S/C/W and select FULL vs REDUCED documentation set. W (Won't Have) classifications BLOCK project directory creation entirely. C (Could Have) classifications route to BACKLOG only — no directory. This gate prevents the antipattern documented in CPL L43 and CPL L47 — see [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings) for full lessons.
 
 These files are mandatory at their respective lifecycle phases:
 

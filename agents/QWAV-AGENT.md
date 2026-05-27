@@ -121,7 +121,7 @@ Full protocol: DEFAULT.md §9. Key points:
 
 ## 8. KEY CROSS-PROJECT LEARNINGS
 
-All lessons in `CROSS-PROJECT-LEARNINGS.md` (L1-L66, see `CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md` for full text) apply, with emphasis on:
+All lessons in [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings) (L1-L66) apply, with emphasis on:
 - **L2** (isolation): QWAV must not access sibling project directories
 - **L20** (branch hygiene): Never reuse branches across projects
 - **L22-L24** (synthesis audit): Critical for ultrametric synthesis work

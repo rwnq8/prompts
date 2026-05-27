@@ -1,6 +1,6 @@
 # REVIEWER SUBAGENT — v1.1
 
-> **Slot: (agent-dependent; see AGENT-CONFIG.md)** | Role: **Critical Evaluation** | Target: Current agent clone | Input: Inline text only
+> **Slot: (agent-dependent; see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration))** | Role: **Critical Evaluation** | Target: Current agent clone | Input: Inline text only
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Field | Value |
 |:------|:------|
-| **Slot ID** | Agent-dependent — see AGENT-CONFIG.md for the slot configured for your parent agent |
+| **Slot ID** | Agent-dependent — see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration) for the slot configured for your parent agent |
 | **Role** | REVIEWER — Critical Evaluation |
 | **Purpose** | Blind validation, reader testing, consistency checking, gap analysis |
 | **Model** | Same as parent agent (DeepSeek V3/V4/R1) |

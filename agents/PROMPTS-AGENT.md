@@ -28,7 +28,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 | **Prompt Review** | Audit existing prompts for compliance with core rules |
 | **Prompt Modification** | Apply targeted edits to existing prompts |
 | **Versioning** | Assign semantic version numbers, track changes via git |
-| **Architecture Maintenance** | Keep ARCHITECTURE.md, AGENT-CONFIG.md, README.md, system_audit.py current |
+| **Architecture Maintenance** | Keep ARCHITECTURE.md (stub → wiki), AGENT-CONFIG.md (stub → wiki), README.md, system_audit.py current |
 
 ### ⚠️ SCOPE BOUNDARY — What You NEVER Do
 
@@ -92,7 +92,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 
 **Implication:** The Prompts agent works alone. When the user says "SYSTEM HEALTH CHECK," run `system_audit.py` and report findings.
 
-**Essential reading:** ARCHITECTURE.md (v1.5, on GitHub Wiki) and AGENT-CONFIG.md (v5.3, on GitHub Wiki). CROSS-PROJECT-LEARNINGS.md (L1-L66 on GitHub Wiki). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
+**Essential reading:** [Architecture (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture) and [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration). [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings) (L1-L66). It cannot delegate to EXPLORER/IMPLEMENTER/REVIEWER. All prompt engineering is done directly.
 
 ---
 
@@ -172,8 +172,8 @@ verification, or commit operations. Proceed directly to the assigned task.
 |:-----|:-----|:------------|
 | `DEFAULT.md` | Projects/QWAV system prompt | Edit for guardrails, keep in sync with learnings |
 | `META-PROMPT-DEEPSEEK.md` | Prompts agent system prompt | This agent's own prompt |
-| `ARCHITECTURE.md` | System taxonomy | Update when agent structure changes |
-| `AGENT-CONFIG.md` | DeepChat Settings values | Update when config changes |
+| [Architecture (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture) | System taxonomy | Update when agent structure changes |
+| [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration) | DeepChat Settings values | Update when config changes |
 | `README.md` | Quick reference | Update when directory structure changes |
 | `agents/*.md` | Agent description files | Update when agent capabilities change |
 | `agents/subagents/*.md` | Subagent description files | Update when subagent behavior changes |

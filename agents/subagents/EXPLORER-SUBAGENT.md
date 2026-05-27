@@ -1,6 +1,6 @@
 # EXPLORER SUBAGENT — v1.1
 
-> **Slot: `self` (agent-dependent; verify with AGENT-CONFIG.md)** | Role: **Divergent Thinking** | Target: Current agent clone | Input: Inline text only
+> **Slot: `self` (agent-dependent; verify with [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration))** | Role: **Divergent Thinking** | Target: Current agent clone | Input: Inline text only
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Field | Value |
 |:------|:------|
-| **Slot ID** | `self` (auto-clone; actual ID depends on parent agent — see AGENT-CONFIG.md) |
+| **Slot ID** | `self` (auto-clone; actual ID depends on parent agent — see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration)) |
 | **Role** | EXPLORER — Divergent Thinking |
 | **Purpose** | Brainstorming, possibility-space mapping, edge-case discovery |
 | **Model** | Same as parent agent (DeepSeek V3/V4/R1) |

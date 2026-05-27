@@ -67,10 +67,10 @@ The recommended workflow pattern is **EXPLORER → IMPLEMENTER → REVIEWER**:
 | Phase | Subagent | Trigger Condition | Input |
 |:------|:---------|:------------------|:------|
 | **Explore** | EXPLORER (`self`) | Task is open-ended, needs alternatives, or has edge cases to discover | Task description, constraints, context (inline) |
-| **Implement** | IMPLEMENTER (slot: see AGENT-CONFIG.md) | Task has clear specs, needs structured draft or polished output | Best ideas from EXPLORER, style guide, format spec (inline) |
-| **Review** | REVIEWER (slot: see AGENT-CONFIG.md) | Draft is complete, needs blind validation or reader testing | Full draft content, review criteria (inline) |
+| **Implement** | IMPLEMENTER (slot: see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration)) | Task has clear specs, needs structured draft or polished output | Best ideas from EXPLORER, style guide, format spec (inline) |
+| **Review** | REVIEWER (slot: see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration)) | Draft is complete, needs blind validation or reader testing | Full draft content, review criteria (inline) |
 
-**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See ARCHITECTURE.md on GitHub Wiki and CROSS-PROJECT-LEARNINGS.md (L1-L66 on GitHub Wiki).
+**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See [Architecture (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture) and [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings).
 
 **Subagent task prompt template:**
 ```
