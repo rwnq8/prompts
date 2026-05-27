@@ -96,7 +96,7 @@ Agents may MOVE completed or archived work OUT of their write sandbox and INTO r
 **HARD RULES:**
 - NEVER write directly to `Archive\` or GitHub Releases. ONLY move into them.
 - **ANY move/publish to GitHub Releases requires EXPLICIT USER APPROVAL.** No agent may autonomously place files in the releases directory. The agent must assemble an approval package (title, word count, integrity check results, DOI status, target path) and await the user's explicit "yes/approved/publish" before executing the move.
-- **Placeholder DOIs are BLOCKING for any release.** `10.5281/zenodo.########` (or any DOI with repeated placeholder characters) must NEVER appear in any file moved to GitHub Releases. If the real DOI is unknown, publication must be held with `[DOI-PENDING: user must supply]`.
+- **Placeholder DOIs are BLOCKING for any release.** `10.5281/zenodo.########` (or any DOI with repeated placeholder characters) must NEVER appear in any file moved to GitHub Releases. If the real DOI is unknown, the agent MUST register it via Zenodo API using `tools/zenodo_publish.py` (see §11.8 Zenodo DOI Registration Protocol). If `ZENODO_TOKEN` is unavailable, publication is held with `[DOI-PENDING: ZENODO_TOKEN not found — create at https://zenodo.org/account/settings/applications/]`.
 - **Date fields must be fresh.** Any date in a published document more than 1 calendar day behind `datetime.date.today()` is a publication blocker. Verify via Python before any move to releases.
 - **Generation delimiters must be stripped.** Bracket-delimited structural markers are LLM artifacts that must NEVER appear in final output. Scan and strip before any file write.
 - Before ANY write operation: verify the target path starts with your assigned sandbox. If not → `[ISOLATION-VIOLATION]` and STOP.
@@ -1068,7 +1068,7 @@ These standards apply to ALL scholarly and research output:
 6. **Error Correction:** When errors are discovered, acknowledge and correct them immediately. Document the correction.
 7. **Pre-Registration:** Research questions, methods, and success criteria must be defined BEFORE execution (per the research protocol).
 8. **Separation of Fact and Interpretation:** Clearly distinguish between what the evidence shows (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE]`) and what it means (`[LLM-INFERRED]`).
-9. **DOI Integrity:** Placeholder DOIs (`10.5281/zenodo.########`, `XXXX`, `....`, or any repeated placeholder characters) are PROHIBITED in all output. If a real DOI is unknown, use `[DOI-PENDING: user must supply]`. A real Zenodo DOI matches `10.5281/zenodo.\d{8}`. Verify via Python regex before any file write.
+9. **DOI Integrity:** Placeholder DOIs (`10.5281/zenodo.########`, `XXXX`, `....`, or any repeated placeholder characters) are PROHIBITED in all output. If a real DOI is unknown, the agent MUST register it via `tools/zenodo_publish.py` (see §11.8). If `ZENODO_TOKEN` is unavailable, use `[DOI-PENDING: ZENODO_TOKEN not found]`. A real Zenodo DOI matches `10.5281/zenodo.\d{8}`. Verify via Python regex before any file write.
 10. **Date Freshness:** All date fields in generated documents must be verified against `datetime.date.today()` via Python. Dates more than 1 calendar day stale are a delivery blocker — fix before output.
 11. **Output Purity:** Generation delimiters (bracket-delimited structural markers) must NEVER appear in final output. These are LLM generation artifacts — scan and strip via Python before delivering any file. YAML frontmatter (if used) must be at byte 0 of the file — no content may precede the opening `---`.
 
@@ -1144,7 +1144,7 @@ If ANY output contains bare Unicode math characters outside of `$$...$$`, `$...$
 ### Placeholder DOI Detected
 If Python scan detects `########`, `XXXX`, `....`, `<DOI>`, `[DOI]`, or any repeated placeholder characters in a DOI field:
 1. **BLOCK the file write.** Do not save or deliver output containing a placeholder DOI.
-2. **Replace with `[DOI-PENDING: user must supply real DOI]`.**
+2. **Replace with `[DOI-PENDING: ZENODO_TOKEN not found — see §11.8]`.**
 3. **Surface to user** with the exact location of the placeholder.
 4. **NEVER** fabricate a DOI. If the real one is unknown, it stays pending.
 
@@ -1770,6 +1770,82 @@ Execute a Python scan for ALL of the following categories BEFORE declaring any d
 
 This gate prevents F2 (Quality Blindness — internal language in publications) and F6 (metadata leakage).
 
+### 11.8 Zenodo DOI Registration Protocol (MANDATORY — Agent Responsibility)
+
+**Zenodo DOI registration is an AUTOMATED agent responsibility, NEVER a manual/user step.** The agent MUST attempt to register the DOI via the Zenodo REST API using `tools/zenodo_publish.py`. This is NOT optional — treat it as any other automated task.
+
+#### 11.8.1 Prerequisites
+
+- **Token:** `ZENODO_TOKEN` environment variable (primary) or `%USERPROFILE%\.zenodo_token` file (fallback). Required scopes: `deposit:actions`, `deposit:write`. Create at https://zenodo.org/account/settings/applications/
+- **File:** Publication file must exist on disk and pass Publication Language Gate (§11.7)
+- **Template:** `ZENODO-PUBLISH` template registered and callable via `fill_prompt_template`
+
+#### 11.8.2 Registration Protocol (Sandbox → Production)
+
+**Phase 1: Token Verification**
+```powershell
+if ($env:ZENODO_TOKEN) { Write-Output "ZENODO_TOKEN: SET" }
+elseif (Test-Path "$env:USERPROFILE\.zenodo_token") { 
+    $env:ZENODO_TOKEN = Get-Content "$env:USERPROFILE\.zenodo_token"
+    Write-Output "ZENODO_TOKEN: loaded from file"
+}
+else { Write-Output "[BLOCKED] ZENODO_TOKEN not found" }
+```
+If token missing: publication held with `[DOI-PENDING: ZENODO_TOKEN not found]`. Agent reports this as a BLOCKED automated task, NOT a manual step.
+
+**Phase 2: Sandbox Test (MANDATORY before production)**
+```powershell
+python "G:\My Drive\prompts\tools\zenodo_publish.py" --sandbox --token $env:ZENODO_TOKEN --title "<title>" --author "<author>" --file "<file.md>" --abstract "<abstract>" --keywords "<keywords>" --upload-type publication
+```
+Success: Deposition created, file uploaded, script reports "Testing complete." If fails: fix issues, retry. NEVER skip to production.
+
+**Phase 3: Production Publication**
+Only after Phase 2 success. Script will prompt `Type 'PUBLISH' to confirm:`:
+```powershell
+python "G:\My Drive\prompts\tools\zenodo_publish.py" --token $env:ZENODO_TOKEN --title "<title>" --author "<author>" --file "<file.md>" --abstract "<abstract>" --keywords "<keywords>" --upload-type publication
+```
+**Success output:** DOI (e.g., `10.5281/zenodo.15107688`), Zenodo URL, deposition ID. Capture ALL of these.
+
+**Phase 4: Update Publication File**
+Replace placeholder DOI in document YAML frontmatter with the real DOI from the API response. Verify with Python regex:
+```python
+import re
+with open("<file.md>", "r") as f: content = f.read()
+assert not re.search(r'10\.5281/zenodo\.(########|XXXX+)', content), "Placeholder DOI still present!"
+assert re.search(r'10\.5281/zenodo\.\d{8}', content), "Real DOI missing!"
+print("[PASS] DOI updated:", re.search(r'10\.5281/zenodo\.\d{8}', content).group())
+```
+
+**Phase 5: Alternative — GitHub Actions (for CI/CD)**
+If running in CI/CD (GitHub Actions), the `.github/workflows/zenodo-publish.yml` workflow triggers automatically on release. The agent should verify the workflow completed successfully:
+```bash
+gh run list --repo qnfo/<name> --workflow=zenodo-publish.yml --limit 1
+```
+
+#### 11.8.3 Failure Handling
+
+| Scenario | Action |
+|:---------|:-------|
+| No ZENODO_TOKEN | Report `[BLOCKED: ZENODO_TOKEN not found]`. Do NOT treat as "manual step." Provide link to create token. |
+| Sandbox test fails | Fix errors (API, file, metadata). Retry sandbox. Do NOT skip to production. |
+| Production API error | Check status.zenodo.org. Retry with backoff (30s, 60s, 120s). After 3 failures, report `[BLOCKED: Zenodo API unavailable]`. |
+| File not found | Verify with `Test-Path`. Use absolute path. |
+| DOI already exists (new version) | Pass existing DOI via `--doi <existing_doi>` to create a new version. |
+| Publishing to GitHub Releases | Never publish a file with placeholder DOI to releases (§0 Persistent Preferences). |
+
+#### 11.8.4 Source Labeling
+
+- DOI from API response: `[CODE-EXECUTED: zenodo_publish.py]`
+- Token status: `[EXTERNAL-SOURCE: %USERPROFILE%\.zenodo_token]` or `[EXTERNAL-SOURCE: $env:ZENODO_TOKEN]`
+- File verification: `[EXTERNAL-SOURCE: <file.md>]`
+- Registration status: `[CODE-EXECUTED: Zenodo API]`
+
+#### 11.8.5 Post-Registration
+
+- **Document** in closest GitHub Issue: DOI, deposition ID, date, file
+- **For new versions:** pass `--doi <existing_doi>` to create a new version (maintains version chain)
+- **Trigger social media** only AFTER DOI is registered (NOT before)
+
 ## 12. Project Close-Out Procedure
 
 No project closes out without final report, synthesis, documentation, and publication workflow completion. This section defines the mandatory close-out procedure — enforced, not optional. The system tracks completion of every item.
@@ -1815,11 +1891,13 @@ Date: [YYYY-MM-DD]
        message includes "PROJECT CLOSE-OUT" tag.
 
 [ ] 5. PUBLICATION WORKFLOW (if publication exists):
-       [ ] 5a. User prompted: "Published to Zenodo? [YES/NO]"
-       [ ] 5b. User prompted: "Published to ResearchGate? [YES/NO]"
-       [ ] 5c. If both confirmed: trigger SOCIAL-ORCHESTRATOR template
-             (fill_prompt_template with publication details, execute against 
-             release file, deliver social media content to user)
+       [ ] 5a. Zenodo DOI registration executed via `tools/zenodo_publish.py`
+             (sandbox → production per §11.8). DOI captured from API response.
+       [ ] 5b. Publication file updated: placeholder DOI replaced with real DOI,
+             verified via Python regex scan (zero placeholder chars).
+       [ ] 5c. Social media content generated via SOCIAL-ORCHESTRATOR template,
+             then posted via Buffer API (Bluesky, Twitter/X, Mastodon, LinkedIn).
+             LinkedIn Article + Substack content generated for direct posting.
 
 [ ] 6. AUTO-ARCHIVE (executed automatically during close-out):
        [ ] 6a. Project directory MOVED to `G:\My Drive\Archive\projects\YYYY\MM\<project-name>\`
@@ -1851,16 +1929,22 @@ Date: [YYYY-MM-DD]
 
 ### 12.4 Social Orchestration Integration
 
-When a publication has been released (user confirms Zenodo + ResearchGate), the agent MUST trigger the social media content generation workflow:
+When a publication has been released (Zenodo DOI registered per §11.8), the agent MUST trigger the social media publishing workflow:
 
 1. Call `fill_prompt_template` with:
    - `templateName`: `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"`
    - `templateArgs`: `{"publicationTitle": "...", "publicationAuthors": "...", "publicationDOI": "...", "publicationAbstract": "...", "publicationFindings": "...", "publicationPath": "https://github.com/QNFO/QWAV/blob/main/papers/<filename>.md"}`
    
 2. Execute the filled prompt (either as a subagent or in a new thread)
-3. Deliver the generated social media content to the user for copy/paste to platforms
 
-**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`.
+3. Post the generated social media content via Buffer API:
+   - Bluesky, Twitter/X, Mastodon: `create_post` via Buffer API
+   - LinkedIn Post: `create_post` via Buffer API
+   - LinkedIn Article + Substack: content generated for direct platform posting
+
+4. Verify posts: `list_posts` to confirm all posts created successfully
+
+**Note:** The SOCIAL-ORCHESTRATOR was converted from a standalone system prompt to a prompt template. The template is registered under `"SOCIAL-ORCHESTRATOR TEMPLATE v1.0"` and callable via `fill_prompt_template`. Buffer API tools (`create_post`, `list_posts`, `list_channels`) are available for automated posting — NEVER deliver social media content for manual copy/paste.
 
 **EMAIL-AGENT-TEMPLATE** — for drafting emails from project outputs:
   1. Call `fill_prompt_template` with:

@@ -33,14 +33,15 @@
 
 ## 2. WHAT THIS AGENT DOES
 
-Read a publication file. Generate ready-to-paste social media text. The calling agent must verify the publication has passed reader testing (DEFAULT.md §11.5) and synthesis audit (§11.6) before invoking this template.
+Read a publication file. Generate social media posts. The calling agent must verify the publication has passed reader testing (DEFAULT.md §11.5), synthesis audit (§11.6), and Zenodo DOI registration (§11.8) before invoking this template.
 
 **PRE-PUBLISH GATE (verified by calling agent before invoking this template):**
 - [x] Publication passed §11.5 Reader Testing Protocol (2-round minimum)
 - [x] All {{blocking_count}} and {{major_count}} issues resolved
 - [x] If multi-project synthesis, §11.6 audit completed
+- [x] Zenodo DOI registered per §11.8 (real DOI, not placeholder)
 
-You output COPY/PASTE TEXT displayed directly in chat — INLINE ONLY. No validation tables, no audit trails, no posting schedules. NO FILE OUTPUT of any kind.
+You output social media posts formatted for Buffer API consumption. The calling agent posts via `create_post` for Buffer-supported platforms (Bluesky, Twitter/X, Mastodon, LinkedIn) and generates longer-form content (LinkedIn Article, Substack) for direct platform posting. NO FILE OUTPUT of any kind.
 
 If "short" or specific platforms are named, generate only those. If unspecified, generate ALL platforms: Bluesky, Twitter/X, Mastodon, LinkedIn post, LinkedIn article, Substack.
 
@@ -120,11 +121,11 @@ Derive from publication subject:
 Read the publication file. Extract title, authors, abstract, DOI, key findings.
 
 ### Step 2: Generate
-Write copy/paste text for each platform. Keep within limits. Adapt tone per platform rules.
+Generate social media posts for each platform. Keep within limits. Adapt tone per platform rules.
 
 ### Step 3: Deliver
 1. Quick inline check: is each post under its limit? Trim if needed.
-2. Display ALL text directly in chat — the ONLY deliverable.
+2. Display ALL text directly in chat — the ONLY deliverable. Calling agent handles Buffer API posting.
 3. DO NOT save to files. Chat output ONLY.
 
 ---
@@ -135,7 +136,7 @@ Write copy/paste text for each platform. Keep within limits. Adapt tone per plat
 
 **RULE A: NO HARD LINE BREAKS.** Body text flows naturally. Only paragraph breaks.
 
-**RULE B: COPY/PASTE TEXT ONLY.** No validation tables. No schedules. No audit trails.
+**RULE B: POST-READY TEXT ONLY.** No validation tables. No schedules. No audit trails. Generated text is formatted for Buffer API consumption by the calling agent.
 
 **RULE C: ONLY REQUESTED PLATFORMS.** If "short" or specific platforms named, omit others.
 
