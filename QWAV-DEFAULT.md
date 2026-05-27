@@ -148,6 +148,81 @@ Buffer API tools are available: `get_account`, `list_channels`, `list_posts`, `c
 - Social media posts are EXTERNAL communications — same verification standard
 - Never post without user approval (like email send gate)
 
+### 0.6.7 Cloudflare-Native Deployment & Hosting
+
+**Cloudflare is the PRIMARY hosting and deployment platform for QWAV public-facing assets.**
+The `wrangler` CLI (v3.0+) provides programmatic access to Cloudflare Pages, R2 object storage,
+Workers, and Sandboxes. Cloudflare DNS already hosts QWAV domains (qwav.tech, quni.cloud) —
+deployment is a configuration change, not a migration.
+
+**⚠️ DUAL-PLATFORM MODEL:** GitHub remains the git remote and source of truth (code, Issues,
+Projects). Cloudflare handles public-facing deployment (hosting, storage, compute). This
+decouples hosting from the git platform, mitigating the reputational risk of GitHub flagging
+(see QNFO/QWAV#62 — QNFO Organization Flagged).
+
+#### Platform Commands
+
+**Authentication:**
+```bash
+wrangler --version                       # Must be v3.0+. npm install -g wrangler
+wrangler whoami                          # Confirm authenticated
+wrangler login                           # Interactive auth (if needed)
+```
+
+**Cloudflare Pages (static sites, JAMstack):**
+```bash
+wrangler pages project list                                          # All Pages projects
+wrangler pages project create <name> --production-branch main        # Create project
+wrangler pages deploy --project-name <name> --branch main            # Deploy
+wrangler pages project set-domain <name> <domain>                    # Custom domain
+wrangler pages deployment list --project-name <name>                 # Deployment history
+wrangler pages deployment rollback --project-name <name>             # Rollback
+```
+
+**Cloudflare R2 (object storage — zero egress fees):**
+```bash
+wrangler r2 bucket create <name>                                     # Create bucket
+wrangler r2 object put <bucket>/path --file ./local/file.pdf         # Upload
+wrangler r2 object list <bucket>                                     # List objects
+wrangler r2 object get <bucket>/path --head                          # Metadata
+```
+
+**Cloudflare Workers (edge compute, API endpoints):**
+```bash
+wrangler deploy --name <worker-name>                                 # Deploy worker
+wrangler deployments list                                             # Deployment history
+```
+
+**Cloudflare Sandboxes (full Linux VMs, replace Actions):**
+```bash
+wrangler sandbox create <name> --image ubuntu-22.04                  # Create sandbox
+wrangler sandbox exec <name> -- "<command>"                          # Execute command
+wrangler sandbox list                                                 # All sandboxes
+wrangler sandbox stop <name>                                          # Pause (cost: $0)
+```
+
+#### Cost Gate
+
+| Resource | Free Tier Limit | Overage |
+|:---------|:----------------|:--------|
+| Pages builds | 500/month | Builds queue |
+| Pages bandwidth | Unlimited | N/A |
+| Workers requests | 100k/day | $0.30/M |
+| R2 storage | 10 GB | $0.015/GB/mo |
+| R2 egress | **Free** | N/A |
+| Sandboxes | Free quota | $0.002/min |
+
+#### GitHub ↔ Cloudflare Integration
+
+```
+GitHub: commit → PR review → merge to main
+Cloudflare Pages: auto-deploy on push (configured once per project)
+R2: upload built PDFs/artifacts
+Buffer: social post → links custom domain (not github.io)
+```
+
+**Deployable Template:** `fill_prompt_template("CLOUDFLARE-DEPLOYMENT")`
+
 ---
 
 ## 0.7 Documentation Standards (Program Delta)
