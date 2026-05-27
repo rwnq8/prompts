@@ -1,77 +1,139 @@
 ---
 template: CLOSEOUT-CHECKLIST
-version: "1.1"
+version: "4.0"
 ---
 
-# PROJECT CLOSE-OUT CHECKLIST — [PROJECT NAME]
+# SESSION CLOSEOUT OPERATING PROCEDURE — [PROJECT/TOPIC]
 
-> **⚠️ GITHUB-NATIVE v3.0:** All project management is GitHub-native. Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8). Use GitHub-native equivalents throughout.
-> 
-> **⚠️ ERROR HANDLING:** All `gh` commands in this checklist inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 "Failure Handling & Retry Strategy." If a `gh` command fails: retry up to 3x. If still failing: mark the item `[!]` with rationale and continue. Do NOT block close-out on a single gh command failure — all items are independently verifiable. Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8). Use GitHub-native equivalents throughout.
+> **GATE:** Mandatory before declaring ANY session complete. Verify all items/tasks/phases executed, implemented, complete, and tested/audited. Save, commit, merge, push, and document everything.
+>
+> **SCOPE:** Universal — applies to ALL session types (project work, prompt engineering, system maintenance, research).
+>
+> **GitHub-Native:** All project management is GitHub-native. Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8).
+>
+> **ERROR HANDLING:** All `gh` commands inherit QWAV-DEFAULT.md §0.9.1 retry strategy (3x with backoff). If a gh command fails after retries: mark `[!]` with rationale and continue. Do NOT block closeout on a single gh command failure — all items are independently verifiable.
 
 **Date:** [YYYY-MM-DD]
-**Phase Gate:** P5 — Close-Out
-**GitHub Repo:** `qnfo/[repo-name]`
-**GitHub Project State Issue:** `gh issue view --repo qnfo/[repo-name] [issue-number]`
+**Session Type:** [PROJECT / PROMPT-ENGINEERING / SYSTEM-MAINTENANCE / RESEARCH]
+**Branch:** [feature/name]
 
-Every item must be verified and marked `[x]` before the session ends. Items marked `[!]` indicate a blocker that prevents close-out.
-
-## 1. FINAL REPORT / SYNTHESIS
-- [ ] Comprehensive final document (or publication itself) summarizing: what was done, key results, what was NOT done, known limitations, lessons learned, and handoff recommendations for any continuation.
-
-## 2. PUBLICATION DOCUMENT (if applicable)
-- [ ] YAML frontmatter complete (title, authors, date, DOI, abstract)
-- [ ] Curly/smart quotes verified (Python scan — zero straight quotes)
-- [ ] Math formatting verified (Python scan — zero bare Unicode math)
-- [ ] Descriptive filename (not versioned)
-- [ ] Copied to GitHub Releases via `gh release create --repo qnfo/[repo-name]`
-- [ ] Copy verified with `gh release view --repo qnfo/[repo-name]`
-
-## 3. ALL GITHUB-NATIVE PROJECT STATE UPDATED
-- [ ] **GitHub Issue (label: `project-state`):** Final status recorded — `gh issue comment --repo qnfo/[repo-name] [issue-number] --body "STATUS: CLOSED | DATE: [YYYY-MM-DD] | ARCHIVE: ..."`
-- [ ] **GitHub Issues:** All tasks closed with `gh issue close` or triaged with labels
-- [ ] **GitHub Project Board:** All items moved to `Done` column or archived
-- [ ] **GitHub Releases:** Close-out release created — `gh release create --repo qnfo/[repo-name] v1.0.0 --title "Project Complete" --notes "Final deliverables and close-out summary"`
-- [ ] **GitHub Wiki:** Final lessons recorded — `OWNER/REPO.wiki.git` updated with key findings
-- [ ] **GitHub Discussions:** Final decisions documented
-- [ ] **GitHub Issues (label: `backlog`):** Remaining items triaged (migrate, archive, or abandon)
-
-## 4. GIT FINALIZED
-- [ ] All changes committed on feature branch
-- [ ] No uncommitted changes (`git status` clean)
-- [ ] Branch merged to `main` (or ready for archival merge)
-- [ ] Final commit message includes `PROJECT CLOSE-OUT` tag
-- [ ] `git log -1 --oneline` confirms final commit exists
-
-## 5. PUBLICATION WORKFLOW (if publication exists)
-- [ ] User prompted: "Published to Zenodo? [YES/NO]"
-- [ ] User prompted: "Published to ResearchGate? [YES/NO]"
-- [ ] If both confirmed: trigger SOCIAL-ORCHESTRATOR template via `fill_prompt_template("SOCIAL-ORCHESTRATOR TEMPLATE v1.0", {...})`
-- [ ] GitHub Release created with DOI link if available — `gh release create --repo qnfo/[repo-name] --notes "DOI: [doi]"`
-
-## 6. ARCHIVING (CPL L44)
-- [ ] Move project directory to `G:\My Drive\Archive\projects\YYYY\MM\` — use `Move-Item` or Python `shutil.move`
-- [ ] Verify move succeeded: `Test-Path` at archive location returns True, original location returns False
-- [ ] Update QWAV program state: comment on GitHub Issue (label: `project-state`) in qnfo/program repo to reflect archival
-- [ ] Remove project from active GitHub Project boards (both project board and QNFO Program Board)
-- [ ] Archive location documented in the project's GitHub Issue (label: `project-state`)
-- [ ] Project directory is self-contained — a new agent from cold can read `README.md` and the GitHub Issue (project-state) and understand everything
-- [ ] No broken references (verify all linked files exist)
-- [ ] No temp files (scan for `_*.py`, `*.tmp`, `__pycache__`)
-- [ ] `.gitignore` covers build artifacts
-
-## 7. FINAL AUDIT
-- [ ] Python script verifies: README.md exists and is non-empty
-- [ ] Publication file exists in GitHub Releases (gh release view confirmed)
-- [ ] `git worktree` clean
-- [ ] No `__pycache__` or `.pyc` files in project directory
-- [ ] `system_audit.py` run and reports PASS on all applicable checks
-- [ ] GitHub Issue (label: `project-state`) reflects final CLOSED status
-
-## Human Sign-Off
-- [ ] Close-out checklist reviewed
-- [ ] All blockers resolved
-- [ ] Project approved for archive
+Every item must be verified and marked `[x]` before the session ends. `[!]` = blocker. `[/]` = not applicable (document why).
 
 ---
-*Generated from CLOSEOUT-CHECKLIST-TEMPLATE.md v3.0 — GitHub-Native*
+
+## PHASE A: GIT STATE VERIFICATION `[CODE-EXECUTED]`
+
+- [ ] **Working tree clean:** `git status --porcelain` returns empty (no uncommitted changes, no untracked files except intentional deliverables)
+- [ ] **Correct branch:** `git branch --show-current` returns `main` (or the approved feature branch if merging is pending)
+- [ ] **No stale branches:** `git branch` shows only `main` and the current feature branch. Delete all merged/abandoned feature branches.
+- [ ] **No uncommitted merges:** `git status` shows no "You have unmerged paths" or rebase-in-progress
+- [ ] **All changes committed:** `git log --oneline -5` shows all work committed. No `git stash list` items related to this session.
+
+**Blockers:** Dirty working tree, stale branches, uncommitted merges, missing commits.
+
+---
+
+## PHASE B: FILE EXISTENCE & INTEGRITY VERIFICATION `[CODE-EXECUTED]`
+
+- [ ] **All expected files on disk:** For each deliverable claimed in this session — `Test-Path <file>` returns `True`
+- [ ] **File sizes non-zero:** For each deliverable — `(Get-Item <file>).Length -gt 0`
+- [ ] **Content verified:** `Get-Content <file> -First 5` confirms file is readable and contains expected content
+- [ ] **No stale temp files:** Scan for `_*.py`, `*.tmp`, `__pycache__`, `.pyc` — none should remain unless they are intentional deliverables
+- [ ] **No broken references:** All `[EXTERNAL-SOURCE: filename]` and `[CODE-EXECUTED: script.py]` references resolve to existing files
+
+**Blockers:** Missing files, zero-byte files, broken references.
+
+---
+
+## PHASE C: TEMPLATE & REGISTRY INTEGRITY `[CODE-EXECUTED]`
+
+**For prompt engineering sessions (this repo):**
+- [ ] **prompts.json rebuilt:** Run `python tools/rebuild_prompts_json.py` — confirms all templates registered, no stale references
+- [ ] **New templates registered:** Any new `.md` files in `templates/`, `scholar/`, `email/`, or `agents/` appear in `prompts.json`
+- [ ] **prompts.json committed:** `git log -1 -- prompts.json` shows a commit from this session if templates were added/modified
+- [ ] **Fill template verification:** `fill_prompt_template` returns valid content for each new/updated template
+
+**For project sessions:**
+- [ ] **Fill template integrity:** All templates invoked during the session (`fill_prompt_template`) produced valid output
+- [ ] **No stale template content:** Templates used contain the latest version (check against source `.md` files)
+
+**Blockers:** prompts.json not rebuilt after template changes, new templates not registered.
+
+---
+
+## PHASE D: REMOTE SYNC & BRANCH MANAGEMENT `[CODE-EXECUTED]`
+
+- [ ] **Remote sync confirmed:** All local commits are on `origin/main` (or `origin/feature/name` if PR pending)
+- [ ] **Verify with gh CLI:** `gh api repos/rwnq8/prompts/commits/main -q '.sha[0:7]'` matches local HEAD (or local HEAD is ahead by a PR)
+- [ ] **PR created and merged** (if using feature branch): `gh pr view --repo [owner/repo] [number] --json state` returns `"MERGED"`
+- [ ] **Feature branch deleted after merge:** `gh pr view` shows `--delete-branch` was used, or branch manually deleted
+- [ ] **No orphan branches:** `git branch -a` shows no feature branches that should have been deleted after merge
+
+**For project sessions:**
+- [ ] **Project repo remote matches local:** `git log --oneline origin/main -3` matches local
+- [ ] **All project repos pushed:** Every repo modified in this session has been pushed
+
+**Blockers:** Unpushed commits, unmerged PRs, orphan feature branches, remote divergence.
+
+---
+
+## PHASE E: TRACKING & DOCUMENTATION `[CODE-EXECUTED]`
+
+- [ ] **GitHub Issue tracking:** All work tracked via GitHub Issues with appropriate labels. Issue closed or updated with final status.
+- [ ] **Project board updated:** Items moved to appropriate column (Done/Closed)
+- [ ] **Wiki updated:** If methodology, learnings, or documentation was produced — Wiki pages created/updated
+- [ ] **Labels created:** Any new labels needed for tracking were created (`gh label create`)
+- [ ] **Project-state Issue updated:** Final status recorded on the project-state Issue with branch, commit, and summary
+- [ ] **No stale documentation:** All referenced files, URLs, and paths are current and accessible
+
+**For prompt engineering sessions:**
+- [ ] **Wiki pages verified:** `gh api repos/rwnq8/prompts/wiki` (or browser load) confirms pages exist with correct content
+- [ ] **New labels documented:** Any new GitHub labels created are noted in the project-state Issue
+
+**Blockers:** Unclosed Issues, unupdated Wiki, undocumented changes.
+
+---
+
+## PHASE F: CLEANUP & FINAL STATE
+
+- [ ] **All temp files deleted:** `Remove-Item` all `_*.py`, `_*.txt`, and other temporary artifacts
+- [ ] **Working tree clean:** `git status --porcelain` returns empty (re-verified after cleanup)
+- [ ] **QWAV-DEFAULT.md unstaged:** If QWAV-DEFAULT.md or DEFAULT.md was inadvertently modified (line endings, stash artifacts), restore with `git checkout`
+- [ ] **Only main branch exists:** `git branch` shows `* main` as the only local branch
+- [ ] **Stash empty:** `git stash list` shows no items from this session
+
+---
+
+## PHASE G: QUANTITATIVE CLOSEOUT VERIFICATION `[CODE-EXECUTED]`
+
+Run a Python script that verifies:
+- [ ] **Test-Path chain:** Every file claimed in this session's outputs exists on disk
+- [ ] **Git log integrity:** All commits claimed in this session appear in `git log`
+- [ ] **prompts.json integrity:** Template count matches expected, new entries have valid `content` field
+- [ ] **Remote consistency:** Remote HEAD matches or is within 1 commit of local (accounting for CI auto-commits)
+- [ ] **Test evidence:** Any test suite claimed as "passed" re-executes and produces the same result
+
+**Verification script output:**
+```
+[CODE-EXECUTED]
+Files: 5/5 present
+Commits: 3/3 verified
+Templates: 26/26 registered  
+Remote: synced
+Tests: 10/10 passing
+```
+
+---
+
+## HUMAN SIGN-OFF
+
+- [ ] All Phase A-G gates passed (zero `[!]` blockers)
+- [ ] All deliverables verified on disk
+- [ ] All remote repositories synced
+- [ ] Session approved for closeout
+
+---
+
+*SESSION CLOSEOUT OPERATING PROCEDURE v4.0 — Universal | PROJECT, PROMPT-ENGINEERING, SYSTEM-MAINTENANCE, RESEARCH*
+
+*Trigger: `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<name>"})`*
