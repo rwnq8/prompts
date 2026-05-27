@@ -373,8 +373,12 @@ def render_paper(md_path, dry_run=False):
         title = os.path.basename(md_path).replace('.md', '').strip()
         print(f"  [WARN] No h1 found in {os.path.basename(md_path)}, using filename")
 
+    # Date extraction
+    date_str = fm.get('modified', fm.get('date', ''))
+    if not date_str:
+        date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+
     keywords = extract_keywords(body)
-    date_str = fm.get('modified', datetime.now(timezone.utc).strftime('%Y-%m-%d'))
     slug = unique_slug(title)
 
     # 3. Pandoc conversion
@@ -403,10 +407,21 @@ def render_paper(md_path, dry_run=False):
     return slug, title, date_str, keywords, len(html)
 
 
+def parse_date(date_str):
+    """Parse date string to tuple for sorting. Handles ISO 8601 with/without time."""
+    if not date_str:
+        return (0, 0, 0)
+    import re as _re
+    m = _re.match(r'^(\d{4})-(\d{1,2})-(\d{1,2})', date_str.strip())
+    if m:
+        return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    return (0, 0, 0)
+
+
 def rebuild_catalog(papers, dry_run=False):
     """Regenerate the papers/index.html catalog."""
     cards = []
-    for slug, title, date_str, keywords, _ in sorted(papers, key=lambda x: x[2] or '', reverse=True):
+    for slug, title, date_str, keywords, _ in sorted(papers, key=lambda x: parse_date(x[2]), reverse=True):
         topics_html = ''.join(
             f'<span class="paper-topic">{k}</span>' for k in (keywords or [])[:8]
         )
