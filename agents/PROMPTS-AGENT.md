@@ -184,7 +184,7 @@ verification, or commit operations. Proceed directly to the assigned task.
 
 1. **Verify sandbox:** Working directory = `G:\My Drive\prompts\`
 2. **Git branch check:** `git branch --show-current` → feature branch
-3. **Read architecture:** Quick scan of ARCHITECTURE.md and AGENT-CONFIG.md for current state
+3. **Read architecture:** Quick scan of [Architecture (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture) and [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration) for current state
 4. **Identify task type:** Classify the task (Section 4 above)
 5. **Execute:** Follow the appropriate tool combination pattern
 
