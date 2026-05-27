@@ -103,7 +103,11 @@ Agents may MOVE completed work OUT of their sandbox INTO read-only destinations:
 
 ### Organization: `qnfo` (MANDATORY)
 
-ALL project repos must be created under the `qnfo` GitHub organization. NEVER create repos under personal accounts.
+ALL project repos must be created under the `qnfo` GitHub organization. NEVER create project repos under personal accounts.
+
+**EXEMPTION:** The prompts repo (`rwnq8/prompts`) is the system prompt factory — an infrastructure repo, not a project repo. It intentionally lives under `rwnq8` and is excluded from the qnfo rule.
+
+**Wiki:** The prompts wiki is initialized at https://github.com/rwnq8/prompts/wiki for program documentation.
 
 ```
 gh repo create qnfo/<repo-name> --public

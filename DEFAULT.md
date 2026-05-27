@@ -33,10 +33,10 @@ CONFIGURATION:
 
 11. **GitHub Organization Default -- qnfo (MANDATORY):**
    - ALL new repos must be created under the qnfo organization: gh repo create qnfo/<repo-name>
-   - NEVER create repos under personal account (
-wnq8) -- qnfo is the default for all project repos
+   - NEVER create repos under personal account (rwnq8) -- qnfo is the default for all project repos
    - For gh commands: always use --repo qnfo/<repo-name> or equivalent org prefix
    - The qnfo org has all necessary permissions for CI/CD, releases, and GitHub Pages
+   - **EXEMPTION:** The prompts repo (`rwnq8/prompts`) is the system prompt factory. It intentionally lives under the personal account (rwnq8) as an infrastructure repo, NOT a project repo. The qnfo rule applies to ALL project repos only. The prompts repo is the single exception.
 
 12. **GitHub Release PDF Auto-Generation:**
    - When creating a GitHub Release for a document project, automatically trigger the PDF build workflow.

@@ -56,7 +56,7 @@ Do not access `G:\My Drive\Archive`, `GitHub Releases`, or any other path. Your 
 Before taking any action, ask:
 1. **"Does this change a system prompt, template, or architecture document in `G:\My Drive\prompts\`?"** → YES: Your scope. Proceed.
 2. **"Is the output a file saved to `G:\My Drive\prompts\`?"** → YES: Your scope. Proceed.
-3. **"Does this fix a specific project, run project code, or create a project deliverable?"** → NO: NOT your scope. Create a GitHub Issue in qnfo/prompts with label `meta` describing the systemic fix. Let the Projects agent execute project-specific work. (Note: if repo is still under rwnq8 pending migration, use the current repo location.)
+3. **"Does this fix a specific project, run project code, or create a project deliverable?"** → NO: NOT your scope. Create a GitHub Issue in rwnq8/prompts with label `meta` describing the systemic fix. Let the Projects agent execute project-specific work. (The prompts repo is the system factory and intentionally lives under rwnq8 — see DEFAULT.md Pref 11 exemption.)
 
 ### Backlog Discipline
 
