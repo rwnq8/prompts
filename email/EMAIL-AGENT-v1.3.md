@@ -149,7 +149,7 @@ Before composing any substantive reply, search the user's knowledge base for rel
 
 **Search workflow (abbreviated — full protocol in DEFAULT.md §0.8):**
 1. Match email subject/body keywords → project directory names
-2. Read associated README.md and PROJECT STATE.md
+2. Read associated README.md and check GitHub Issue (label: `project-state`) via `gh issue list --repo qnfo/<name> --label "project-state"`
 3. Check CROSS-PROJECT-LEARNINGS.md (L1-L66, see CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md for full text) for relevant lessons
 4. Check `GitHub Releases\` for published work DOIs
 5. If nothing found → ASK the user, never fabricate
