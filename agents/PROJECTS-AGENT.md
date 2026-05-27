@@ -1,4 +1,4 @@
-# PROJECTS AGENT — v1.1
+# PROJECTS AGENT — v1.2
 
 > **DeepChat Agent: `Projects`** | System Prompt: `DEFAULT.md` | Write Sandbox: `G:\My Drive\projects\<name>\`
 
@@ -10,6 +10,7 @@
 |:------|:------|
 | **Agent Name** | Projects |
 | **System Prompt** | `DEFAULT.md` — paste ENTIRE contents into DeepChat Settings → Agents → Projects → System Prompt |
+| **System Prompt Size** | ~177K chars (~45 pages) — 🔴 CRITICAL BLOT. See `agents/SYSTEM-PROMPT-SIZING.md` |
 | **Write Sandbox** | `G:\My Drive\projects\<name>\` — one project subdirectory per session |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `GitHub Releases`) |
 | **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\project-name\`, `GitHub Releases\` |
@@ -18,7 +19,7 @@
 
 ## 2. PURPOSE — What This Agent Does
 
-The Projects agent is the **primary workhorse** for all project-based work. It handles the full lifecycle **autonomously**: once started, it self-directs through all phases without asking for direction. You do NOT need explicit RESUME commands between tasks -- auto-continue is the default behavior (DEFAULT.md Section 13).
+The Projects agent is the **primary workhorse** for all project-based work. It handles the full lifecycle **autonomously**: once started, it self-directs through all phases without asking for direction.
 
 | Capability | DEFAULT.md Section | Description |
 |:-----------|:-------------------|:------------|
@@ -30,12 +31,14 @@ The Projects agent is the **primary workhorse** for all project-based work. It h
 | Social Media | §12 | Publication → SOCIAL-ORCHESTRATOR template invocation |
 | Publication | §11 | Visible Author Block, curly quotes, releases copy, reader testing (§11.5), synthesis audit (§11.6) |
 | Close-Out | §12 | 7-item checklist, phase gates P0-P5 |
+| Subagent Delegation | §Delegation | EXPLORER → IMPLEMENTER → REVIEWER pipeline |
 
 ---
 
 ## 3. TOOLS
 
 ### Confirmed (Always Available)
+
 | Tool | Purpose |
 |:-----|:--------|
 | `read` | Read files from any directory (read-only scope) |
@@ -47,12 +50,13 @@ The Projects agent is the **primary workhorse** for all project-based work. It h
 | `skill_list`, `skill_view`, `skill_manage` | Skill management |
 | `subagent_orchestrator` | Delegate work to EXPLORER/IMPLEMENTER/REVIEWER |
 | `fill_prompt_template` | Invoke prompt templates: functional (email, social, scholar, image-gen), project management (charter, DoD, handoff, README, project-initiation — all stored as GitHub Issues, not local PM files per DEFAULT.md §0.6.8) |
-| `gh` CLI (via `exec`) | GitHub CLI v2.92.0+ with scopes: `repo`, `workflow`, `read:org`, `gist`. Create repos under `qnfo/`, manage issues, projects, releases, PRs, workflows, wiki, discussions |
+| `gh` CLI (via `exec`) | GitHub CLI v2.92.0+ with scopes: `repo`, `workflow`, `read:org`, `gist` |
 | `search_conversations` | Search historical conversation records |
 | `brave_web_search`, `brave_local_search` | Web search for research, fact-checking |
 | `get_browser_status`, `load_url`, `cdp_send` | YoBrowser for autonomous web research |
 
 ### Write-then-Verify Protocol (§9.3 Step 0)
+
 After every `write` or `edit` operation, verify:
 - `Test-Path <file>` — file exists on disk
 - `Get-Content <file> -First 5` — expected content present
@@ -66,11 +70,11 @@ The recommended workflow pattern is **EXPLORER → IMPLEMENTER → REVIEWER**:
 
 | Phase | Subagent | Trigger Condition | Input |
 |:------|:---------|:------------------|:------|
-| **Explore** | EXPLORER (`self`) | Task is open-ended, needs alternatives, or has edge cases to discover | Task description, constraints, context (inline) |
-| **Implement** | IMPLEMENTER (slot: see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration)) | Task has clear specs, needs structured draft or polished output | Best ideas from EXPLORER, style guide, format spec (inline) |
-| **Review** | REVIEWER (slot: see [Agent Configuration (wiki)](https://github.com/rwnq8/prompts/wiki/Agent-Configuration)) | Draft is complete, needs blind validation or reader testing | Full draft content, review criteria (inline) |
+| **Explore** | EXPLORER | Task is open-ended, needs alternatives, or has edge cases to discover | Task description, constraints, context (inline) |
+| **Implement** | IMPLEMENTER | Task has clear specs, needs structured draft or polished output | Best ideas from EXPLORER, style guide, format spec (inline) |
+| **Review** | REVIEWER | Draft is complete, needs blind validation or reader testing | Full draft content, review criteria (inline) |
 
-**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See [Architecture (wiki)](https://github.com/rwnq8/prompts/wiki/Architecture) and [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings).
+**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See `agents/SUBAGENT-REFERENCE.md` for anti-patterns, chaining patterns, and failure recovery.
 
 **Subagent task prompt template:**
 ```
@@ -97,7 +101,23 @@ EXPECTED OUTPUT: [format, structure, scope]
 
 ---
 
-## 6. GIT PROTOCOL (See DEFAULT.md §9)
+## 6. SYSTEM PROMPT BLOAT — CRITICAL NOTICE
+
+**DEFAULT.md is ~177K chars (~45 pages).** Per Claude Code best practice: "Bloated CLAUDE.md files cause Claude to ignore your actual instructions!" Key guardrails (Rules 12-14, Anti-Phantom, Unicode Safety, No Inline Python) are at risk of being buried in noise.
+
+**What to do:**
+1. Review `agents/SYSTEM-PROMPT-SIZING.md` for extraction priorities
+2. Template reference documentation (§0.6.4, ~53K chars) → already in `templates/REFERENCE.md`
+3. Email COM automation (§E, ~25K chars) → already in `EMAIL-COMPOSER` template
+4. When using `fill_prompt_template`, trust the template — don't repeat its documentation inline
+5. When DEFAULT.md is refactored, this warning will be downgraded
+
+**CLAUDE.md Guidance (Resolved Conflict):**
+DEFAULT.md previously instructed setting CLAUDE.md to `"NO_CONTEXT"` (blanking it). Per Claude Code best practice: "CLAUDE.md is a special file that Claude reads at the start of every conversation. This gives Claude persistent context it can't infer from code alone." The correct approach is a **concise** CLAUDE.md (~1-2K chars) with project-specific commands, build conventions, and non-obvious gotchas — NOT a blank file. A concise CLAUDE.md reduces system prompt burden without losing persistent context.
+
+---
+
+## 7. GIT PROTOCOL (See DEFAULT.md §9)
 
 **IRON RULE:** NEVER commit to `main`/`master`. Feature branches only.
 
@@ -111,45 +131,97 @@ EXPECTED OUTPUT: [format, structure, scope]
 
 ---
 
-## 7. KEY CROSS-PROJECT LEARNINGS
+## 8. CLOUDFLARE-DEPLOYMENT — Cloudflare-Native Deployment & Hosting
 
-This agent MUST internalize lessons from CROSS-PROJECT-LEARNINGS.md (L1-L66, see CROSS-PROJECT-LEARNINGS-RECONSTRUCTED.md for full text). Key lessons for the Projects agent:
+**Cloudflare is the PRIMARY deployment platform for all QWAV public-facing assets.** GitHub remains the git remote and source of truth.
+
+### Startup Checklist (run before any deployment)
+```bash
+wrangler --version              # Must be v3.0+ (current: v4.95.0)
+wrangler whoami                 # Must be authenticated (CLOUDFLARE_API_TOKEN)
+wrangler pages project list     # Active Pages deployments
+```
+
+**⚠️ AUTH:** Prefer `CLOUDFLARE_API_TOKEN` env var — `wrangler login` OAuth is incompatible with autonomous agent execution.
+
+### Core Commands
+```bash
+# Pages (static sites)
+wrangler pages deploy --project-name <name> --branch main
+wrangler pages project list
+wrangler pages deployment list --project-name <name>
+
+# R2 (object storage — zero egress fees)
+wrangler r2 object put <bucket>/path --file ./local/file.pdf
+wrangler r2 object list <bucket>
+
+# Workers (edge compute)
+wrangler deploy --name <worker-name>
+wrangler deployments list
+
+# Sandboxes (full Linux VMs, replace GitHub Actions)
+wrangler sandbox exec <name> -- "<command>"
+wrangler sandbox list
+```
+
+### ⚠️ CNAME FIRST RULE (CRITICAL)
+**Create CNAME DNS record BEFORE adding domain to Pages.** Adding domain before CNAME → verification failure → HTTP 522.
+
+### Cost Gate (Free Tier)
+
+| Resource | Free Tier Limit | Overage |
+|:---------|:----------------|:--------|
+| Pages builds | 500/month | Builds queue |
+| Pages bandwidth | Unlimited | N/A |
+| Workers requests | 100k/day | $0.30/M |
+| R2 storage | 10 GB | $0.015/GB/mo |
+| R2 egress | **Free** | N/A |
+| Sandboxes | Free quota | $0.002/min |
+
+### Full Reference
+For migration procedures, bulk redirects, email routing, rollback, and failure catalog:
+`fill_prompt_template("CLOUDFLARE-DEPLOYMENT")`
+
+---
+
+## 9. KEY CROSS-PROJECT LEARNINGS
+
+This agent MUST internalize lessons from [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings) (L1-L66). Key lessons for the Projects agent:
 
 | L# | Lesson | Enforcement in DEFAULT.md |
 |:---|:-------|:--------------------------|
 | L1 | Per-project git repos | §0 Persistent Preferences item 1 |
-| L3 | Subagents need GIT: Skip | Subagent task prompt template (Section 4 above) |
-| L5 | PowerShell `;` not `&&` | §0 Persistent Preferences (implicit) |
+| L3 | Subagents need GIT: Skip | Subagent task prompt template (§4 above) |
 | L7 | No inline Python through PowerShell | §0 Persistent Preferences item 3 |
 | L13 | Verify commits with git log | §9.3 Step 4, §9.4 |
 | L14 | No `-ErrorAction SilentlyContinue` | §0 Persistent Preferences item 6 |
-| L15 | Write-then-verify | §9.3 Step 0, §E.5.1 item 8 |
-| L16 | Temperature 0.0 ≠ fabrication proof | CONFIGURATION note + §0 item 7 |
-| L17 | Audit filesystem, not memory | §0.8 Due Diligence, §E.5.1 item 8 |
+| L15 | Write-then-verify | §9.3 Step 0 |
+| L16 | Temperature 0.0 ≠ fabrication proof | CONFIGURATION note |
+| L17 | Audit filesystem, not memory | §0.8 Due Diligence |
 | L18 | write tool success ≠ file exists | §9.3 Step 0 |
 
 ---
 
-## 8. SESSION STARTUP SEQUENCE
+## 10. SESSION STARTUP SEQUENCE
 
 When a Projects agent session begins, it MUST execute a FAST startup (no analysis paralysis):
 
 1. **Verify filesystem sandbox:** Confirm working directory is within `G:\My Drive\projects\<name>\`
 2. **GitHub Identity Check (MANDATORY):** Verify `git remote get-url origin` returns `https://github.com/qnfo/<repo-name>.git`. If remote is missing or points to personal account: `[BLOCKED: Project not GitHub-integrated. Escalate to QWAV agent for proper initialization.]`
-3. **Git branch check:** `git branch --show-current` -> feature branch (per DEFAULT.md Section 9.2)
+3. **Git branch check:** `git branch --show-current` → feature branch (per DEFAULT.md Section 9.2)
 4. **Read project-state:** Check GitHub Issue (`label: project-state`) for current context. Also check `README.md` if it exists.
 5. **Identify next task:** Scan GitHub Issues/Projects for highest priority open task
-6. **BEGIN WORK IMMEDIATELY:** Do NOT spend excessive time on due diligence before starting. Execute the first task and run due diligence in parallel or as needed. Do NOT ask "what should I do?" or "I need your direction" -- self-direct through the Phase 0-5 pipeline autonomously.
+6. **BEGIN WORK IMMEDIATELY:** Do NOT spend excessive time on due diligence before starting. Execute the first task and run due diligence in parallel or as needed. Do NOT ask "what should I do?" or "I need your direction" — self-direct through the Phase 0-5 pipeline autonomously.
 
-**AUTO-CONTINUE is DEFAULT.** After completing a task, proceed to the next task automatically. The user only needs to intervene to redirect or pause. No RESUME command needed between sequential tasks (DEFAULT.md Section 13).
+**AUTO-CONTINUE is DEFAULT.** After completing a task, proceed to the next task automatically. No RESUME command needed between sequential tasks (DEFAULT.md Section 13).
 
 ---
 
-## 9. SESSION CLOSE-OUT
+## 11. SESSION CLOSE-OUT
 
-Before ending a session where project work is complete, execute AUTOMATICALLY (no user prompt needed for standard steps):
+Before ending a session where project work is complete, execute AUTOMATICALLY:
 
-1. Execute the close-out checklist (DEFAULT.md Section 12) -- ALL items including:
+1. Execute the close-out checklist (DEFAULT.md Section 12) — ALL items including:
    - **Auto-archive:** MOVE project to `G:\My Drive\Archive\projects\YYYY\MM\<project-name>\`
    - **Auto-PDF:** Trigger `gh workflow run pdf-release.yml --repo qnfo/<name>` for document projects
    - **GitHub Release:** `gh release create` with PDF attached
@@ -160,14 +232,6 @@ Before ending a session where project work is complete, execute AUTOMATICALLY (n
 
 **AUTO-CONTINUE:** After close-out, the agent identifies and moves to the next project automatically. No RESUME needed.
 
-**Post-Close-Out Sequence:**
-1. Check GitHub Issues (label: \`project-state\`) for next active project
-2. If multiple projects exist, prioritize by: P0 > P1 > P2 > unfiled
-3. If no projects found, report: "All projects closed out. Nothing pending."
-4. If a project is found, navigate to its directory and begin §8 SESSION STARTUP
-
 ---
 
----
-
-*Projects Agent v1.1 — Full research, writing, publication, email, and social media lifecycle.*
+*Projects Agent v1.2 — Full research, writing, publication, email, and social media lifecycle. See agents/SYSTEM-PROMPT-SIZING.md for DEFAULT.md bloat status.*

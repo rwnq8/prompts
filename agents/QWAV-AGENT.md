@@ -1,4 +1,4 @@
-# QWAV AGENT — v1.2
+# QWAV AGENT — v1.3
 
 > **DeepChat Agent: `QWAV`** | System Prompt: `QWAV-DEFAULT.md` | Write Sandbox: `G:\My Drive\QWAV\`
 
@@ -10,6 +10,7 @@
 |:------|:------|
 | **Agent Name** | QWAV |
 | **System Prompt** | `QWAV-DEFAULT.md` — Forked from `DEFAULT.md` with QWAV-specific §0.9 Strategy Program Manager role boundary. Paste ENTIRE contents into DeepChat Settings → Agents → QWAV → System Prompt. |
+| **System Prompt Size** | ~35K chars (~9 pages) — 🟡 Moderate. See `agents/SYSTEM-PROMPT-SIZING.md` |
 | **Write Sandbox** | `G:\My Drive\QWAV\` — active since 2026-05-11 |
 | **Read Scope** | ALL directories (`projects/`, `_shared/`, `prompts/`, `QWAV/`, `Archive/`, `GitHub Releases`) |
 | **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `GitHub Releases\` |
@@ -32,12 +33,14 @@ Full capabilities inherited from DEFAULT.md:
 - Research & Writing | Due Diligence (§0.8) | Git Discipline (§9)
 - Email via Outlook COM (§E) | Social Media via templates (§12)
 - Publication Standards (§11) | Close-Out Procedure (§12)
+- Subagent Delegation (§Delegation) | EXPLORER → IMPLEMENTER → REVIEWER
 
 ---
 
 ## 3. TOOLS
 
 ### Confirmed (Always Available)
+
 | Tool | Purpose |
 |:-----|:--------|
 | `read`, `write`, `edit` | File operations within `G:\My Drive\QWAV\` sandbox |
@@ -52,6 +55,7 @@ Full capabilities inherited from DEFAULT.md:
 | Buffer API | Social media operations |
 
 ### Write-then-Verify Protocol
+
 After every `write` or `edit` operation, verify:
 - `Test-Path <file>` — file exists on disk
 - `Get-Content <file> -First 5` — expected content present
@@ -62,11 +66,16 @@ After every `write` or `edit` operation, verify:
 ## 4. WHEN TO SELF-DELEGATE TO SUBAGENTS
 
 **Pattern:** EXPLORER → IMPLEMENTER → REVIEWER
-- **EXPLORER** (`self`): Brainstorm quantum computing approaches, edge cases in ultrametric methods
-- **IMPLEMENTER** (`slot-mp80dr5g-oh9g`): Draft papers, code, structured output from specs
-- **REVIEWER** (`slot-mp80e4mj-5s1l`): Blind validation of quantum/physics content, reader testing
 
-Subagent task prompt template (identical pattern — see `agents/subagents/EXPLORER-SUBAGENT.md` for full format):
+| Phase | Subagent | QWAV-Specific Use |
+|:------|:---------|:------------------|
+| **Explore** | EXPLORER | Brainstorm quantum computing approaches, edge cases in ultrametric methods |
+| **Implement** | IMPLEMENTER | Draft papers, code, structured output from specs |
+| **Review** | REVIEWER | Blind validation of quantum/physics content, reader testing |
+
+**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec. See `agents/SUBAGENT-REFERENCE.md` for anti-patterns, chaining patterns, and failure recovery.
+
+Subagent task prompt template:
 ```
 GIT: Skip all git/branch checks. Read-only task.
 TASK: [what the subagent should do]
@@ -74,8 +83,6 @@ CONTEXT: [relevant background, constraints, format requirements]
 INPUT: [inline content to process]
 EXPECTED OUTPUT: [format, structure, scope]
 ```
-
-**CRITICAL:** ALL subagent inputs must be provided inline. Subagents have ~35% chance of file I/O tools. Never rely on subagents for read/write/exec.
 
 ---
 
@@ -91,6 +98,9 @@ EXPECTED OUTPUT: [format, structure, scope]
 - Papers follow §11 formatting (Visible Author Block, curly quotes, descriptive filenames)
 - Completed work copied to `GitHub Releases` (§11.4)
 - Publication triggers SOCIAL-ORCHESTRATOR template (§12)
+
+### System Prompt Bloat
+QWAV-DEFAULT.md is ~35K chars — 🟡 Moderate risk. Review `agents/SYSTEM-PROMPT-SIZING.md` if size grows. Same extraction strategy as DEFAULT.md applies.
 
 ---
 
@@ -127,7 +137,7 @@ All lessons in [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts
 - **L22-L24** (synthesis audit): Critical for ultrametric synthesis work
 - **L29** (architecture honesty): Acknowledge structural limitations
 - **L51-L54** (QWAV-specific): Formal verification spec requirements, assumptions gap, exogenous information, role boundaries
-- **L63** (talk != action): Rule 14 ANTI-PHANTOM enforcement
+- **L63** (talk ≠ action): Rule 14 ANTI-PHANTOM enforcement
 - **L7** (no inline Python): PowerShell corrupts Python strings — always use script files
 - **L14** (no SilentlyContinue): Directory existence checks use `Test-Path`, not suppressed errors
 - **L17** (filesystem audit): QWAV directory exists. Verify, don't assume from memory.
@@ -146,4 +156,4 @@ All lessons in [Cross-Project Learnings (wiki)](https://github.com/rwnq8/prompts
 
 ---
 
-*QWAV Agent v1.2 — Strategy Program Manager for Ultrametric Quantum Computing & AI research. Uses QWAV-DEFAULT.md (forked from DEFAULT.md with §0.9 role boundary), separate write sandbox.*
+*QWAV Agent v1.3 — Strategy Program Manager for Ultrametric Quantum Computing & AI research. Uses QWAV-DEFAULT.md (forked from DEFAULT.md with §0.9 role boundary), separate write sandbox. See agents/SYSTEM-PROMPT-SIZING.md for bloat management.*
