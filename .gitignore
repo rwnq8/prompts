@@ -28,3 +28,9 @@ package-lock.json
 
 # Cloudflare Wrangler local state
 .wrangler/
+
+# Generated output (closeout manager audit trail)
+audit/
+
+# Former deployment staging (now consolidated into root)
+optimized-settings/
