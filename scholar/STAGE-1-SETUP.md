@@ -153,6 +153,69 @@ For each source, generate deterministic key: `AuthorLastNameYYYY`. Include:
 - **Gaps:** What questions remain unanswered?
 - **Trends:** How has understanding evolved? `[CODE-EXECUTED: Python date analysis]`
 
+### PHASE 2.5: DEEP-READ PROTOCOL FOR PUBLISHED PAPERS (arXiv, Journals, Conferences)
+
+**WHEN TO USE:** When the research requires deep-reading specific published papers (arXiv preprints, journal articles, conference proceedings). This protocol applies to ANY research domain — the tools and methods are domain-agnostic. See `RESEARCH-PROTOCOL.md` for the complete six-phase methodology.
+
+#### Step 2.5.1: Paper Discovery & Multi-Source Retrieval
+1. Use `brave_web_search` with the paper's arXiv ID or DOI plus domain-specific keywords
+   - Example: `"arXiv:2510.07196 <domain keyword 1> <domain keyword 2>"`
+2. Retrieve from MULTIPLE sources for cross-verification:
+   - arXiv abstract page (`arxiv.org/abs/<ID>`) — metadata confirmation
+   - arXiv HTML full-text (`arxiv.org/html/<ID>v<N>`) — full structured content
+   - Supplementary sources (ResearchGate, publisher pages, Semantic Scholar)
+3. Label ALL retrieved content: `[WEB-SEARCH: "arXiv:<ID> <keywords>"]` with retrieval timestamp
+4. Document each source URL and retrieval date
+
+#### Step 2.5.2: Deep Reading via YoBrowser
+1. `load_url` to the arXiv HTML page for full-text access
+2. Use `cdp_send` with `Runtime.evaluate` for STRUCTURED extraction:
+   - Abstract: `document.querySelector('blockquote.abstract')?.innerText`
+   - Sections by heading: find h2/h3 elements, extract parent text content
+   - Equations: extract MathJax-rendered expressions
+   - References: parse bibliography entries
+3. Save ALL extracted text to a versioned local file: `<paper_id>_text.txt`
+4. **CRITICAL:** Parse the bibliography to identify cited papers requiring follow-up retrieval (repeat Step 2.5.1 for each)
+
+#### Step 2.5.3: Cross-Paper Reference Chain
+For each relevant cited paper discovered during deep reading:
+1. `brave_web_search` for that paper by title/authors
+2. Retrieve full text
+3. Cross-reference claims against the primary paper
+4. Document agreements as `[CONSENSUS]`, conflicts as `[DISPUTED]`, unique claims as `[SINGLE-SOURCE]`
+
+#### Step 2.5.4: Source Catalog Integration
+All papers retrieved via the deep-read protocol must be added to the source catalog with:
+- Full bibliographic data (title, authors, year, venue)
+- Extracted text file reference: `[EXTERNAL-SOURCE: <paper_id>_text.txt]`
+- Key claims extracted and page/section references documented
+- Relevance score to research questions
+
+#### Edge Cases & Failure Recovery for Deep-Read Protocol
+
+**Paper retrieval failures:**
+- **arXiv search returns empty:** Retry with broader keywords, search by title + authors, try `brave_web_search` with publisher DOI. After 3 failed attempts: `[RETRIEVAL-FAILED: <paper ID> — cannot locate]`. Continue with available sources.
+- **brave_web_search rate-limited:** Wait 60 seconds, retry once. If still rate-limited: `[WEB-SEARCH-FAILED: rate-limit]`. Try alternative search: publisher website, Semantic Scholar, Google Scholar via YoBrowser.
+- **PDF-only papers (no arXiv HTML):** `load_url` to the arXiv abstract page, extract abstract + metadata. Use `brave_web_search` for PDF links. If PDF found: save as `src_<paper>.pdf`. If no full text accessible: flag as `[ABSTRACT-ONLY: <paper ID> — full text unavailable]`. NEVER cite claims from abstract-only access as authoritative.
+- **Paywalled papers:** If paper is behind a paywall: `[PAYWALL-BLOCKED: <paper ID>]`. Try: (a) arXiv preprint version via `brave_web_search`, (b) author's institutional page, (c) ResearchGate. After exhausting alternatives: flag as `[FULL-TEXT-UNAVAILABLE: paywall]` — do not fabricate paper content.
+
+**YoBrowser extraction failures:**
+- **Browser timeout (≥30 seconds):** Kill session via `close_session`, restart with fresh `load_url`. Document the failed URL. If persistent after 3 retries: `[BROWSER-TIMEOUT: <URL>]`. Fall back to `brave_web_search` for alternative sources.
+- **ArXiv HTML page malformed:** If `cdp_send` with `Runtime.evaluate` returns empty/null for required sections: try alternative selectors (`document.querySelector('.ltx_page_main')`, `document.querySelector('#content')`). If still fails: save the raw HTML via `DOM.getOuterHTML`, extract text via Python regex. Flag: `[MALFORMED-HTML: <paper ID> — partial extraction only]`.
+- **Non-standard paper structure:** If paper has no standard sections (Introduction, Methods, etc.): extract all available content. Flag: `[NON-STANDARD-STRUCTURE: <paper ID> — sections may be incomplete]`.
+- **Math/equation extraction failure:** If MathJax content fails to render: extract raw LaTeX from source. Flag: `[MATH-EXTRACTION-PARTIAL: equations may be incomplete]`.
+
+**Python extraction failures:**
+- **Python execution error during text processing:** Debug and retry up to 3 times. If persistent: `[PYTHON-FAILURE: <error>]`. Fall back to raw text processing via `read`.
+- **Encoding issues (Windows cp1252):** If extracted text contains non-ASCII characters causing Python crashes: (a) re-extract with explicit UTF-8 encoding, (b) use `errors='replace'` mode, (c) scan for and report problematic characters. See Rule 12 (Unicode Safety Scan).
+
+**Cross-paper retrieval failures:**
+- **Cited paper cannot be found:** Search by title + authors + year. Try: DOI lookup, Semantic Scholar, Google Scholar. After 3 failed searches: `[CITATION-UNRESOLVED: <paper title>]`. Document the gap — do NOT fabricate the citation.
+- **Non-English paper:** Flag: `[LANGUAGE-BARRIER: <paper ID> — content in <language>]`. Extract what's possible. Note that verification is incomplete.
+- **Multiple versions of same paper:** Always prefer the latest arXiv version (`vN`). Compare abstract/metadata across versions. Document which version was retrieved.
+
+**General recovery rule:** If deep-read protocol fails entirely for a paper, downgrade that source to `[ABSTRACT-ONLY]` or `[UNVERIFIED-LLM]` based on what was recoverable. Never fabricate paper content — an honest gap is better than a hallucinated citation.
+
 ### PHASE 3: STRUCTURAL ARCHITECTURE
 
 **Step 3.1: gap analysis Construction** `[LLM-INFERRED, grounded in source catalog]`
@@ -188,6 +251,7 @@ For each section, specify exactly what evidence Stage 2 needs:
 **Insufficient sources (<10):** Flag `insufficient_sources_warning`. Prioritize quality over quantity.
 **Source files with incomplete metadata:** Extract whatever is available. Flag missing fields. Lower confidence score.
 **Interdisciplinary topics:** Create separate verification streams per domain.
+**Unreadable source files:** If a source file exists but cannot be read (encoding errors, permissions, corruption): log as `[UNREADABLE-FILE: <path>]`, skip that file, continue with remaining sources. If ≥50% of sources are unreadable, escalate to `[BLOCKED: majority of sources unreadable]`.
 
 ---
 

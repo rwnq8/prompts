@@ -148,6 +148,51 @@ Using Python:
 - **CONDITIONALLY CERTIFIED:** Minor issues only, fixable in purification
 - **REJECTED:** Fabrications detected, hallucinated citations, or critical failures
 
+#### Cross-Paper Consistency & Methodology Audit (Deep-Dive Research)
+
+**WHEN TO USE:** Whenever the manuscript synthesizes claims from multiple published papers. Verifies that cross-paper claims are consistent, the deep-read protocol was followed, and the quantitative verification is reproducible. Applicable to any research domain. See `RESEARCH-PROTOCOL.md` for the complete six-phase methodology.
+
+**Step 3.5.1: Cross-Paper Consistency Audit** `[CODE-EXECUTED: Python comparison]`
+1. **Identify all cross-paper claims** in the manuscript — claims attributed to ≥2 source papers
+2. **Re-extract the relevant text** from each source file to verify the claim as stated
+3. **Build a consistency matrix:** For each cross-paper claim, compare what each paper actually says
+4. **Flag inconsistencies:**
+   - `[CONSENSUS-VERIFIED]` — claim confirmed in ≥2 sources as stated
+   - `[MISATTRIBUTED]` — manuscript claim doesn't match what the cited paper actually says
+   - `[OVERSTATED]` — manuscript claims stronger consensus than sources support
+   - `[MISSING-CONTRADICTION]` — sources disagree but manuscript presents only one side
+5. **For all `[DISPUTED]` claims:** Verify the manuscript presents BOTH positions fairly
+
+**Step 3.5.2: Deep-Read Protocol Compliance Audit** `[LLM-INFERRED + Python validation]`
+Verify that for every paper cited as `[EXTERNAL-SOURCE: <paper>_text.txt]`:
+1. The extracted text file EXISTS and contains the cited content
+2. A `brave_web_search` or `load_url` retrieval record exists (traceable retrieval)
+3. The paper was deep-read through ALL relevant sections (not just the abstract)
+4. References from that paper were parsed for follow-up retrieval
+5. If any paper was cited without full-text extraction, flag: `[SHALLOW-CITATION: only abstract-level verification]`
+
+**Step 3.5.3: Quantitative Reproducibility Gate** `[CODE-EXECUTED]`
+For EVERY `[CODE-EXECUTED]` claim in the manuscript:
+1. Locate the corresponding Python verification script in the evidence record
+2. **Re-execute the script** — capture output
+3. **Compare output** to the value stated in the manuscript
+4. **Result:**
+   - Output matches manuscript (within tolerance) → `[REPRODUCIBLE]`
+   - Output differs from manuscript → `[NON-REPRODUCIBLE: script produces X, manuscript claims Y]`
+   - Script cannot be executed (missing, syntax error) → `[BROKEN-ARTIFACT: <script> cannot execute]`
+5. **BLOCKING:** Any `[NON-REPRODUCIBLE]` or `[BROKEN-ARTIFACT]` result prevents certification
+
+**Step 3.5.4: Source Traceability Audit** `[CODE-EXECUTED: Python scan]`
+Verify the complete evidence chain for every claim:
+- Every `[CODE-EXECUTED]` claim → Python script exists, executes, produces same result
+- Every `[EXTERNAL-SOURCE]` citation → source file exists, contains the cited content
+- Every `[WEB-SEARCH]` claim → search record exists, content cross-referenced against local files
+- Every `[LLM-INFERRED]` claim → clearly labeled, no quantitative content mixed in
+- Every `[CONSENSUS]` claim → independently confirmed by ≥2 source papers
+- Every `[DISPUTED]` claim → both positions fairly presented
+- Every `[SINGLE-SOURCE]` claim → clearly identified as single-source, not overstated
+- Zero `[UNVERIFIED-LLM]` claims with quantitative content — if found, flag as `[BLOCKING: unverified quantitative claim]`
+
 ### PHASE 4: PURIFICATION & FINALIZATION
 
 Resolve ALL issues from the audit:

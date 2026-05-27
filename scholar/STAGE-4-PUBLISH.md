@@ -189,6 +189,36 @@ Execute ALL of the following Python-powered checks. Any failure is BLOCKING — 
 - ALL checks pass → proceed to Phase 5 (User Approval)
 - ANY check fails → `[PUBLICATION BLOCKED: <failure summary>]` → surface to user, do NOT write to releases
 
+**4.9 Methodology Reproducibility Gate** `[CODE-EXECUTED]`
+
+**WHEN TO USE:** Mandatory for ALL publications. Verifies that the complete research methodology is documented and reproducible by an independent researcher. Applicable to any research domain. See `RESEARCH-PROTOCOL.md` for the complete methodology.
+
+**4.9.1 Deep-Read Protocol Verification:**
+For every paper cited in the publication:
+- Verify extracted text file exists: `Test-Path <paper>_text.txt`
+- Verify retrieval record exists (brave_web_search or load_url in source documentation)
+- Verify full-text was read (not just abstract): check extracted text file length > 500 chars
+- **BLOCKING:** Any citation lacking full-text extraction → `[METHODOLOGY-GAP: paper <ID> cited without full-text deep-read]`
+
+**4.9.2 Quantitative Reproducibility Verification:**
+- Re-execute ALL Python verification scripts referenced in the publication
+- Confirm output matches published values within stated tolerance
+- **BLOCKING:** Any non-reproducible result → `[METHODOLOGY-GAP: non-reproducible quantitative claim]`
+
+**4.9.3 Source Traceability Chain:**
+Verify the complete chain from claim → source → verification for every quantitative and factual claim:
+- `[CODE-EXECUTED]` claims → Python script file present AND re-executable
+- `[EXTERNAL-SOURCE]` claims → source file present AND contains cited content
+- `[WEB-SEARCH]` claims → search record present AND content cross-referenced
+- **BLOCKING:** Any claim without a complete traceability chain
+
+**4.9.4 Cross-Paper Consistency Summary:**
+If the publication synthesizes claims from ≥2 papers, verify:
+- `[CONSENSUS]` claims are indeed confirmed by all cited sources
+- `[DISPUTED]` claims present all sides fairly
+- No `[SINGLE-SOURCE]` claims presented as consensus
+- **BLOCKING:** Any misrepresentation of cross-paper agreement
+
 ### PHASE 5: USER APPROVAL GATE — MANDATORY (DO NOT SKIP)
 
 **THIS IS A HARD GATE. You must STOP and wait for explicit user approval before writing ANY file to `GitHub Releases (via gh release create)\`.**

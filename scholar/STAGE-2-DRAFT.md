@@ -118,6 +118,42 @@ For qualitative requirements:
     3. Document reasoning clearly
 ```
 
+#### Quantitative Verification Protocol (Deep-Dive Research)
+
+**WHEN TO USE:** Whenever writing from published papers — this protocol ensures every quantitative claim from source papers is INDEPENDENTLY verified before inclusion. Applicable to any research domain. See `RESEARCH-PROTOCOL.md` for the complete methodology.
+
+**Step 1.2.5: Independent Claim Verification**
+For EVERY quantitative claim extracted from source papers:
+1. **Extract the claim exactly** as stated in the source: `[EXTERNAL-SOURCE: <paper>_text.txt]` — include page/section reference
+2. **Write an independent Python verification script** that calculates/reproduces the claim from first principles using standard library only
+3. **Execute the verification script** — compare output to the source claim
+4. **Document the result:**
+   - Match (within tolerance): `[CODE-EXECUTED: _verify_<claim>.py] — confirms source value of X`
+   - Discrepancy: `[DISCREPANCY: source claims X, independent verification yields Y]` — flag for Stage 3
+   - Cannot verify (insufficient data): `[UNVERIFIED: insufficient parameters in source]`
+
+**Step 1.2.6: Back-of-Envelope Sanity Checks**
+For every quantitative result, run Python-powered sanity checks:
+- Compare against known constants/relationships in the domain
+- Verify order-of-magnitude consistency
+- Check for physically/logically impossible values
+- Document ALL sanity check results: `[CODE-EXECUTED: sanity check]`
+
+**Step 1.2.7: Cross-Paper Validation**
+When multiple source papers address the same quantitative claim:
+1. Extract the claim from EACH paper independently
+2. Build a comparison matrix: `[CODE-EXECUTED: cross-paper comparison]`
+3. Label agreements as `[CONSENSUS]`, disagreements as `[DISPUTED]`, unique claims as `[SINGLE-SOURCE]`
+4. Flag contradictions for Stage 3 review
+
+**Step 1.2.8: Source Labeling Enhancement**
+In addition to the standard labels (`[CODE-EXECUTED]`, `[EXTERNAL-SOURCE]`, `[LLM-INFERRED]`), use these domain-agnostic research labels:
+- `[WEB-SEARCH: query]` — web-retrieved content (requires cross-reference verification per §0.8.6)
+- `[CONSENSUS]` — independently confirmed by ≥2 papers
+- `[DISPUTED]` — conflicting claims across sources; document both positions
+- `[SINGLE-SOURCE]` — only one source supports this claim
+- `[UNVERIFIED-LLM]` — claim from training data, not independently verified
+
 **Step 1.3: Artifact Generation**
 Each evidence artifact receives:
 - Unique ID: `ARTIFACT_XXX`
@@ -178,6 +214,8 @@ Every factual claim:
 **Code execution error:** Debug and retry (max 3 attempts). If persistent, document limitation. NEVER substitute with LLM-inferred numbers.
 **Citation not in source catalog:** Flag as `[CITATION-NEEDED: no verified source available]`. Never invent.
 **Contradictory evidence:** Re-run with different seeds. Document as genuine uncertainty if persistent.
+**Missing source files for deep-read claims:** If a `[CODE-EXECUTED]` verification requires a source file that does not exist: `[MISSING-SOURCE: <file>]` — flag for Stage 3. Downgrade the claim to `[UNVERIFIED: source file missing]`. Never fabricate a source file or its contents.
+**Non-reproducible Python scripts:** If verification script produces different output on re-run: `[NON-REPRODUCIBLE: script output changed]` — flag for Stage 3. Check for random seeds, system-dependent behavior, or file encoding issues.
 
 ---
 
