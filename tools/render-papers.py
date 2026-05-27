@@ -67,6 +67,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     th, td {{ border-color: #30363d; }}
   }}
 </style>
+<script>
+MathJax = {{
+  tex: {{ inlineMath: [['$', '$'], ['\\(', '\\)']] }},
+  svg: {{ fontCache: 'global' }}
+}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 </head>
 <body>
 <div class="nav">
@@ -296,6 +303,13 @@ def build_catalog(papers_meta, dry_run=False):
     input[type="search"] {{ background: #0d1117; color: #c9d1d9; border-color: #30363d; }}
   }}
 </style>
+<script>
+MathJax = {{
+  tex: {{ inlineMath: [['$', '$'], ['\\(', '\\)']] }},
+  svg: {{ fontCache: 'global' }}
+}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 </head>
 <body>
 <div class="nav">
