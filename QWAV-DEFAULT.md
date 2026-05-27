@@ -162,11 +162,13 @@ decouples hosting from the git platform, mitigating the reputational risk of Git
 
 #### Platform Commands
 
+**⚠️ AGENT AUTH:** Prefer `CLOUDFLARE_API_TOKEN` env var — `wrangler login` OAuth is incompatible with autonomous agent execution (requires manual browser credential entry).
+
 **Authentication:**
 ```bash
+set CLOUDFLARE_API_TOKEN=<api-token>     # Non-interactive (PREFERRED for agents)
 wrangler --version                       # Must be v3.0+. npm install -g wrangler
 wrangler whoami                          # Confirm authenticated
-wrangler login                           # Interactive auth (if needed)
 ```
 
 **Cloudflare Pages (static sites, JAMstack):**

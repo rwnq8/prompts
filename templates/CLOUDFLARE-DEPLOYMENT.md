@@ -53,10 +53,20 @@ parameters:
 
 ## 0. PREREQUISITES
 
+**⚠️ AGENT AUTH CRITICAL:** The `wrangler login` OAuth flow is **incompatible with autonomous agent execution** — it requires manual browser credential entry. Use `CLOUDFLARE_API_TOKEN` environment variable instead for non-interactive auth.
+
 ```bash
+# Agent-compatible auth (PREFERRED):
+set CLOUDFLARE_API_TOKEN=<global-api-key>
+# OR: set CLOUDFLARE_API_TOKEN=<api-token-with-scopes>
+
+# Verify:
 wrangler --version          # Must be v3.0+
-wrangler whoami             # Must be authenticated
-wrangler pages project list # Active projects
+wrangler whoami             # Must show authenticated account
+wrangler pages project list # Active Pages projects
+
+# Interactive auth (HUMAN ONLY — do NOT use in agent execution):
+# wrangler login            # Opens browser — requires manual credential entry
 ```
 
 ---
