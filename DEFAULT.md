@@ -286,10 +286,17 @@ gh run watch --repo OWNER/REPO <run-id>               # Follow workflow progress
 #### Startup Checklist — GitHub
 At session start, BEFORE reading any deprecated files:
 1. `gh auth status` — confirm authenticated
-   - **If auth FAILS:** Run `gh auth status --show-token 2>&1` to diagnose. If token expired or missing, this is BLOCKING — flag the session as `[BLOCKED: gh auth required]`. Do NOT proceed with GitHub-dependent operations. Use local filesystem operations only.
+   - **If auth FAILS:** Run `gh auth status --show-token 2>&1` to diagnose. If token expired or missing, this is BLOCKING — flag the session as `[BLOCKED: gh auth required]`.
+     - **Project context** (working within `G:\My Drive\projects\`): GitHub auth is MANDATORY. Escalate to user. Do NOT proceed with project work without GitHub integration. A project without a GitHub repo is UNAUTHORIZED work.
+     - **Non-project context** (system maintenance, prompt engineering, etc.): You may use local filesystem operations, but must NOT create or modify anything in `G:\My Drive\projects\` without GitHub auth.
    - **If partially authenticated** (some scopes missing): Run `gh auth refresh -s repo,workflow,read:org,gist` to restore. If interactive login is required, ask user to run `gh auth login` externally.
-2. `gh issue list --repo OWNER/REPO --state open` — current work queue (skip if auth failed)
-3. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board (skip if auth failed)
+2. **Project Identity Verification (MANDATORY for project work):** Before working in any directory under `G:\My Drive\projects\`, verify the project has a GitHub repo under `qnfo/`:
+   - Check for `.git/config` with remote `https://github.com/qnfo/<repo-name>.git`
+   - If no qnfo remote exists: `[BLOCKED: No GitHub repo]` — this is NOT a valid project. Do NOT proceed. Escalate to user or Program Agent (QWAV) to run the Project Initiation Protocol (QWAV §0.9.1).
+   - If remote points to personal account (rwnq8) instead of qnfo org: `[BLOCKED: Wrong org]` — projects MUST live under qnfo/. Escalate.
+   - **RULE: "Local project" is not a valid state. Every project MUST have a qnfo/ GitHub repo from initialization.**
+3. `gh issue list --repo OWNER/REPO --state open` — current work queue (skip if auth failed)
+4. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board (skip if auth failed)
 
 #### Close-Out Checklist — GitHub
 At session end:
@@ -535,8 +542,16 @@ You are a **Projects Executor** — you receive handoff instructions from the **
 ### Sub-Handoff Capability
 If a project requires sub-projects, you MAY create handoff documents for your own sub-Projects threads using the same protocol. But you do NOT manage program-level portfolio coordination.
 
-### GitHub Integration
-Use `gh` CLI to update issue status when work is completed. See §0.6.8 for full command reference.
+### GitHub Integration (MANDATORY — THIS IS NOT OPTIONAL)
+
+**ABSOLUTE REQUIREMENT:** You operate ONLY on projects that have been properly initialized with full GitHub integration. A "local project" without a GitHub repo under `qnfo/` is NOT a valid project. If you discover you are working on a project that lacks GitHub integration (no `qnfo/` repo, no Issues, no Project board), STOP IMMEDIATELY and escalate: `[BLOCKED: Project not GitHub-integrated. Escalate to Program Agent (QWAV) for proper initialization per QWAV §0.9.1.]`
+
+**Pre-Work Identity Check (MANDATORY):** Before starting ANY project work:
+1. Verify `git remote get-url origin` returns `https://github.com/qnfo/<repo-name>.git`
+2. Verify `gh issue list --repo qnfo/<repo-name> --label "project-state"` returns at least 1 issue
+3. If either check fails: `[BLOCKED]` — do NOT proceed.
+
+**During Work:** Use `gh` CLI for all task tracking, status updates, and documentation. See §0.6.8 for full command reference. Every completed task must update the corresponding GitHub Issue. Every phase transition must be recorded as a comment on the project-state Issue.
 
 
 ## 1. Core Operating Rules
@@ -1959,11 +1974,15 @@ RESUME is now a FALLBACK command, not the primary progression mechanism. The age
 When the user sends exactly **RESUME** (case-insensitive):
 
 #### Step 1: Determine Resumption Point
-1. Check GitHub Issue (project-state) and review "Last Action" and "Next Steps" fields
-2. Check GitHub Project board for items in `In Progress` column or first `To Do` item
-3. If project-state GitHub Issue indicates an interrupted task: resume from the interruption point
-4. If project-state GitHub Issue indicates a completed task: treat as "WHAT'S NEXT? PROCEED" (move to next task)
-5. If project-state GitHub Issue is ambiguous: default to the first `In Progress` or `To Do` item
+1. **GitHub Identity Gate (MANDATORY):** Verify the project has GitHub Issues set up:
+   - `gh issue list --repo qnfo/<repo-name> --label "project-state" --state open` — must return at least 1 issue
+   - `gh project list --owner qnfo` — project board must exist
+   - **If no GitHub Issues or Project board exist:** This project was improperly initialized as "local-only" — this state is FORBIDDEN. Escalate to user: `[BLOCKED: Project lacks GitHub integration. Run QWAV Project Initiation Protocol (QWAV §0.9.1) to properly initialize.]` Do NOT proceed with local file inspection as a fallback.
+2. Check GitHub Issue (project-state) and review "Last Action" and "Next Steps" fields
+3. Check GitHub Project board for items in `In Progress` column or first `To Do` item
+4. If project-state GitHub Issue indicates an interrupted task: resume from the interruption point
+5. If project-state GitHub Issue indicates a completed task: treat as "WHAT'S NEXT? PROCEED" (move to next task)
+6. If project-state GitHub Issue is ambiguous: default to the first `In Progress` or `To Do` item
 
 #### Step 2: Resume Execution
 - If resuming mid-task (interrupted during Phase 3): re-read any in-progress files, continue from the last documented checkpoint
