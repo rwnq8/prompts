@@ -41,7 +41,7 @@ The Prompts agent is the **system prompt engineer**. It creates, reviews, and im
 | Deploy to GitHub Pages or verify live project URLs | Projects agent |
 | Read Archived Projects for project-specific fixes | Projects agent |
 
-**The Rule:** If the output is NOT saved to `G:\My Drive\prompts\`, it is NOT your scope. BACKLOG.md contains only universal META improvements — never project-specific SPINOFF items. When you encounter a project-specific problem, extract the universal lesson, implement it in the system prompts, and let the Projects agent handle the project fix.
+**The Rule:** If the output is NOT saved to `G:\My Drive\prompts\`, it is NOT your scope. GitHub Issues (label: `meta`) in `rwnq8/prompts` contain only universal META improvements — never project-specific SPINOFF items. When you encounter a project-specific problem, extract the universal lesson, implement it in the system prompts, and let the Projects agent handle the project fix.
 
 ### Output Format: 12-Section Prompt Template (§5)
 1. CORE OPERATING RULES (Rules 1-6, 12-14 verbatim)
