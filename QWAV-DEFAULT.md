@@ -231,38 +231,103 @@ Before any action, ask: **"Am I setting up work for someone else, or doing the w
 
 ---
 
-### 0.9.1 Project Initiation Protocol (Template-Driven)
+### 0.9.1 Project Initiation Protocol (GitHub-Native — v3.0)
 
-When initiating a new project:
+**PRINCIPLE: GitHub is NOT optional. GitHub is NOT "later." GitHub is the FOUNDATION.**
+No project exists without a GitHub repo under `qnfo/`, tracked Issues, a Project board,
+and QNFO Program Board registration. Local filesystem scaffolding is REDUCED to the
+minimum required for version-controlled work. All project management, task tracking,
+and state tracking are GitHub-native from STEP ZERO.
 
-1. **Create directory:** `G:\My Drive\projects\YYYY\MM\project-name\`
-2. **Generate documentation** from templates via `fill_prompt_template`
-3. **Fill all `[PLACEHOLDER]` values** before writing to disk
+**ABSOLUTE BLOCK:** You MUST NOT create any local project directory or write any
+project files until the GitHub Foundation (Steps G0-G5) is complete and verified.
+A project without a GitHub repo is NOT a project — it is UNAUTHORIZED work.
 
-**⚠️ EXECUTION GATE (ANTI-PLANNING-SPIRAL):** After completing steps 0-3, you MUST
-pause and verify with `Test-Path` that at least the PROJECT-INITIATION.md,
-CHARTER.md, and DEFINITION-OF-DONE.md files exist on disk before continuing to
-steps 4-10. If no files exist yet, you are in a PLANNING SPIRAL — STOP listing
-future steps and START executing. Do not plan steps 4-10 until steps 0-2 are
-verified on disk with `Test-Path`.
+---
 
-**⚠️ PRE-INITIATION GATE (CPL L43/L47):** Run Step 0 FIRST. W (Won't Have) = BLOCK. C (Could Have) = BACKLOG only.
+#### PHASE A: GitHub Foundation (BLOCKING — Must Complete Before Any Local Files)
 
-| Step | Template | Produces | Purpose |
-|:-----|:---------|:---------|:--------|
-| 0 | `PROJECT-INITIATION` | `PROJECT-INITIATION.md` | Moscow M/S/C/W gate. **GATE** — block if W or C |
-| 1 | `PROJECT-CHARTER` | `CHARTER.md` | Scope, success criteria, constraints |
-| 2 | `DEFINITION-OF-DONE` | `DEFINITION-OF-DONE.md` | Task completion gates |
-| 3 | `RISK-REGISTER` | `RISK-REGISTER.md` | CPL risks + project-specific |
-| 4 | `README` | `README.md` | Dependencies, architecture, prior work |
-| 5 | `SPRINT-BACKLOG` | `SPRINT.md` | Active tasks (or create GitHub Issues instead) |
-| 6 | `PRODUCT-BACKLOG` | `BACKLOG.md` | Prioritized future queue (or use GitHub Issues) |
-| 7 | `CHANGELOG` | `CHANGELOG.md` | keepachangelog.com format |
-| 8 | `CONTRIBUTING` | `CONTRIBUTING.md` | Project-specific rules |
-| 9 | `PROJECT-STATE` | `PROJECT STATE.md` | Current status, branch, phase |
-| 10 | `LEARNINGS` | `LEARNINGS.md` | Kaizen engine |
+**⚠️ PRE-INITIATION GATE (CPL L43/L47):** Run template `PROJECT-INITIATION` first.
+W (Won't Have) = BLOCK. C (Could Have) = BACKLOG only (via GitHub Issue, not directory).
+Only projects that pass the Moscow M/S gate proceed to Phase A.
 
-**Note:** SPRINT.md and BACKLOG.md are DEPRECATED per DEFAULT.md §0.6.8. After scaffolding, migrate tasks to GitHub Issues/Projects and remove the deprecated files.
+| Step | Action | Command / Template | Verification |
+|:-----|:-------|:-------------------|:-------------|
+| **G0** | **Verify gh auth** | `gh auth status` | Must show authenticated with `repo, workflow, read:org, gist` scopes. If auth fails: `[BLOCKED: GitHub auth required]` |
+| **G1** | **Create GitHub repo** | `gh repo create qnfo/<repo-name> --public --description "<description>"` | `gh repo view qnfo/<repo-name>` — repo MUST exist under qnfo/ org. NEVER create under personal account (rwnq8). |
+| **G2** | **Create Issue labels** | `gh label create --repo qnfo/<repo-name> <label>` for: `project-state`, `handoff`, `task`, `bug`, `enhancement`, `blocked`, `documentation`, `research` | `gh label list --repo qnfo/<repo-name>` — all 8 labels confirmed |
+| **G3** | **Create Project State Issue** | `gh issue create --repo qnfo/<repo-name> --title "Project State: <project-name>" --label "project-state" --body "<status-body>"` | `gh issue list --repo qnfo/<repo-name> --label "project-state"` — exactly 1 issue exists |
+| **G4** | **Create GitHub Project board** | `gh project create --owner qnfo --title "<project-name> Sprint Board"` | `gh project list --owner qnfo` — board appears in list |
+| **G5** | **Register on QNFO Program Board** | Add project as item to the QWAV Program Board: `gh project item-create <qwav-board-num> --owner qnfo --title "<project-name>" --body "Repo: qnfo/<repo-name>"` | `gh project item-list <qwav-board-num> --owner qnfo` — project item confirmed |
+
+**⚠️ GATE CHECKPOINT:** After G5, verify ALL of the following before proceeding to Phase B:
+- `gh repo view qnfo/<repo-name>` returns repo details
+- `gh issue list --repo qnfo/<repo-name> --label "project-state"` returns 1 issue
+- `gh project list --owner qnfo` includes the sprint board
+- QNFO Program Board includes this project item
+
+**If ANY gate check fails:** STOP. Do NOT create local files. Fix the failed step.
+
+---
+
+#### PHASE B: Local Scaffolding (After GitHub Foundation)
+
+Only after Phase A passes ALL gate checks, create the minimal local structure:
+
+| Step | Action | Details |
+|:-----|:-------|:--------|
+| **L1** | **Create directory** | `G:\My Drive\projects\YYYY\MM\project-name\` |
+| **L2** | **Initialize git + set remote** | `git init` → `git remote add origin https://github.com/qnfo/<repo-name>.git` |
+| **L3** | **Generate README.md** | Via `fill_prompt_template("README")` — the ONLY mandatory local file. Contains: project description, repo link, setup instructions, architecture overview. |
+| **L4** | **Initial commit + push** | `git add README.md` → `git commit -m "INIT: Project initialization"` → `git push -u origin main` |
+| **L5** | **Create initial tasks as Issues** | Use `gh issue create` for each initial task identified in the PROJECT-INITIATION template. Label each as `task` + appropriate labels. |
+| **L6** | **Add tasks to Project board** | `gh project item-create <board-num> --owner qnfo` for each task Issue |
+| **L7** | **Update Project State Issue** | Add comment: `STATUS: INITIALIZED | PHASE: 0 | BRANCH: main | REPO: qnfo/<repo-name>` |
+
+---
+
+#### PHASE C: DEPRECATED LOCAL FILES — MUST NOT CREATE
+
+The following files are **PERMANENTLY DEPRECATED** per DEFAULT.md §0.6.8. Their creation
+at project initiation is **FORBIDDEN**. All their functions are served by GitHub-native
+features listed in the Replacement column.
+
+| DEPRECATED File | Replacement | Why GitHub-Native Is Better |
+|:----------------|:------------|:----------------------------|
+| `SPRINT.md` | GitHub Issues + Project board | Searchable, assignable, status-tracked, API-accessible |
+| `BACKLOG.md` | GitHub Issues (label: `backlog` or future milestone) | Prioritizable via labels/milestones, not a flat list |
+| `CHANGELOG.md` | GitHub Releases (`gh release create`) | Version-tagged, Markdown-rendered, discoverable |
+| `LEARNINGS.md` | GitHub Wiki (`OWNER/REPO.wiki.git`) | Cross-linked, searchable, collaborative |
+| `DECISIONS.md` | GitHub Discussions | Threaded, categorized, searchable |
+| `PROJECT STATE.md` | GitHub Issue (label: `project-state`) | Always accessible via `gh issue list`, not a file that can go stale |
+| `PROJECT-INITIATION.md` | GitHub Issue body (project-state Issue) + Moscow analysis in comment | Single source of truth, not a separate file to maintain |
+| `CHARTER.md` | GitHub Issue (label: `charter`) or Wiki page | Version-controlled via Issue history |
+| `DEFINITION-OF-DONE.md` | GitHub Issue (label: `dod`) | Referenced from every task Issue |
+| `RISK-REGISTER.md` | GitHub Issue (label: `risk`) per risk | Each risk is trackable, closeable, commentable |
+| `CONTRIBUTING.md` | `CONTRIBUTING.md` in repo root (GitHub-recognized) | GitHub surfaces this automatically in PR creation UI |
+
+**ENFORCEMENT:** Before any `write` to a project directory, scan the filename against
+this DEPRECATED list. If the filename matches, BLOCK the write and redirect to the
+GitHub-native replacement instead. Creating a deprecated file is a RULE VIOLATION.
+
+---
+
+#### Initiation Verification Checklist
+
+Before declaring project initiation COMPLETE, verify ALL:
+
+- [ ] GitHub repo exists at `qnfo/<repo-name>`
+- [ ] `gh issue list --repo qnfo/<repo-name> --label "project-state"` returns exactly 1 issue
+- [ ] Project board exists under qnfo org
+- [ ] Project registered on QNFO Program Board
+- [ ] Issue labels created (minimum: `project-state`, `handoff`, `task`, `blocked`)
+- [ ] Local directory exists at `G:\My Drive\projects\YYYY\MM\project-name\`
+- [ ] `git remote get-url origin` returns `https://github.com/qnfo/<repo-name>.git`
+- [ ] Initial tasks are GitHub Issues (NOT local SPRINT.md/BACKLOG.md)
+- [ ] ZERO deprecated local files exist in project directory
+- [ ] README.md committed and pushed to main
+
+**Any unchecked item = initiation INCOMPLETE. Do NOT proceed to project execution.**
 
 ---
 
