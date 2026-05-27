@@ -6,6 +6,8 @@ version: "1.1"
 # PROJECT CLOSE-OUT CHECKLIST — [PROJECT NAME]
 
 > **⚠️ GITHUB-NATIVE v3.0:** All project management is GitHub-native. Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8). Use GitHub-native equivalents throughout.
+> 
+> **⚠️ ERROR HANDLING:** All `gh` commands in this checklist inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 "Failure Handling & Retry Strategy." If a `gh` command fails: retry up to 3x. If still failing: mark the item `[!]` with rationale and continue. Do NOT block close-out on a single gh command failure — all items are independently verifiable. Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8). Use GitHub-native equivalents throughout.
 
 **Date:** [YYYY-MM-DD]
 **Phase Gate:** P5 — Close-Out

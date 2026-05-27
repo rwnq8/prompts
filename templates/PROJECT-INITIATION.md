@@ -8,6 +8,8 @@ version: "1.0"
 > **Purpose:** Moscow classification + size gate BEFORE GitHub repo creation. Per CPL L43 (not every idea needs a repo) and CPL L47 (documentation must not outweigh the deliverable).
 > **When to use:** Before ANY `gh repo create` or `git init` for a new project. If this gate says BLOCK or BACKLOG-ONLY, do NOT create a GitHub repo or local directory.
 > **⚠️ GITHUB-NATIVE v2.0:** All project management is GitHub-native from step zero (QWAV-DEFAULT.md §0.9.1 v3.0). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8).
+> 
+> **⚠️ ERROR HANDLING:** All `gh` commands in this template inherit the retry strategy and failure handling from QWAV-DEFAULT.md §0.9.1 "Failure Handling & Retry Strategy." Every gh command retries up to 3x with exponential backoff. Authentication failures are blocking — escalate, do not retry. Empty results are expected for new projects — do not treat as errors. (QWAV-DEFAULT.md §0.9.1 v3.0). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8).
 
 ---
 

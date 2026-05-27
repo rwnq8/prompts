@@ -139,8 +139,8 @@ All lessons in `CROSS-PROJECT-LEARNINGS.md` (L1-L66, see `CROSS-PROJECT-LEARNING
 ## 9. SESSION STARTUP SEQUENCE
 
 1. **Verify filesystem sandbox:** `G:\My Drive\QWAV\` — confirm with `Test-Path`
-2. **Read portfolio state:** Check GitHub Issues (label: `project-state`) across qnfo repos: `gh issue list --label "project-state" --state open` (per QWAV-DEFAULT.md §0.6.5)
-3. **Check GitHub Projects:** `gh project list --owner qnfo` for program board status
+2. **Read portfolio state:** Check GitHub Issues (label: `project-state`) across qnfo repos: `gh issue list --label "project-state" --state open 2>&1`. If empty: verify with `--state all`; empty is expected for new projects. If rate-limited: retry once after 60s. If auth fails: `[BLOCKED]`.
+3. **Check GitHub Projects:** `gh project list --owner qnfo 2>&1`. If empty: verify org name; empty is expected if no boards exist. If rate-limited: retry once after 60s.
 4. **Git branch check:** `git branch --show-current` → feature branch (§9.2)
 5. **Report state:** Summarize findings, next steps
 

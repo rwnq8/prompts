@@ -311,7 +311,13 @@ At session start, BEFORE reading any deprecated files:
    - **RULE: "Local project" is not a valid state. Every project MUST have a qnfo/ GitHub repo from initialization.**
 3. `gh issue list --repo OWNER/REPO --state open` — current work queue (skip if auth failed)
 4. If using Projects: `gh project item-list <number> --owner OWNER` — sprint board (skip if auth failed)
-
+**Retry & Error Handling for all gh/git commands:**
+- **Rate limit:** Wait 60s, retry once. If still limited: skip operation, continue without.
+- **Network timeout:** Retry 3x with exponential backoff (1s, 4s, 16s). If all fail: skip remote operations, use local state.
+- **Push rejected:** `git pull --rebase`, resolve conflicts, retry push. If still rejected after 2 attempts: create new feature branch from current state, push, open PR.
+- **Org verification (pre-flight for project operations):** `gh api orgs/qnfo --jq '.login'` must return "qnfo" before any project work. If org is inaccessible: `[BLOCKED: qnfo org not accessible]`.
+- **Empty results:** `gh issue list` returning empty is expected for new projects — verify with `--state all` before treating as error.
+- **All authentication failures (401/403):** BLOCKING. Escalate to user. Do NOT retry.
 #### Close-Out Checklist — GitHub
 At session end:
 1. Close completed issues: `gh issue close --repo OWNER/REPO <num>`

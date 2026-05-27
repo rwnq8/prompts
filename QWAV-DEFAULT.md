@@ -268,6 +268,42 @@ Only projects that pass the Moscow M/S gate proceed to Phase A.
 
 **If ANY gate check fails:** STOP. Do NOT create local files. Fix the failed step.
 
+---
+
+#### Failure Handling & Retry Strategy
+
+Every GitHub operation in Phase A MUST follow this retry protocol:
+
+| Scenario | Detection | Response | Max Retries |
+|:---------|:----------|:---------|:------------|
+| **gh auth failure** | `gh auth status` exits non-zero or shows "not authenticated" | `[BLOCKED: gh auth required]`. Run `gh auth login` or escalate to user. Do NOT proceed. | 0 (blocking) |
+| **gh rate limit** | Output contains "rate limit" or "429" or exit code 1 with quota message | Wait 60 seconds, retry once. If still rate-limited: `[BLOCKED: GitHub rate limit]`. | 1 |
+| **Org not found** | `gh api orgs/qnfo` returns 404 or "Not Found" | `[BLOCKED: qnfo organization not found]`. Verify org name. Do NOT create repos under wrong org. | 0 (blocking) |
+| **Repo name collision** | `gh repo create` fails with "already exists" or "name already exists" | Append unique suffix: `<name>-2`, `<name>-3`, etc. Retry up to 3 times. If all fail: `[BLOCKED: repo name collision]`. | 3 |
+| **Issue creation failure** | `gh issue create` exits non-zero | Verify label exists with `gh label list`. Retry once. If still fails: `[DEFERRED: issue creation — continue without]`. | 1 |
+| **Project board full** | `gh project create` fails with limit error | If org-level board limit reached: use repo-level Projects instead. If repo-level also full: `[DEFERRED: project board — continue without]`. | 1 |
+| **Token expiry** | `gh auth status --show-token` shows expired | Run `gh auth refresh -s repo,workflow,read:org,gist`. If refresh fails: `[BLOCKED: token expired — escalate to user]`. | 1 |
+| **Permission denied** | Output contains "403" or "permission denied" | Check token scopes: `gh auth status --show-token`. Add missing scopes. If still denied: `[BLOCKED: insufficient permissions]`. | 1 |
+| **Network timeout** | Command hangs >30s or returns "connection reset" | Retry with explicit `--hostname github.com`. If still fails: retry after 60s. After 3 failures: `[BLOCKED: network — retry later]`. | 3 |
+| **Empty issue list** | `gh issue list` returns zero results | NOT an error if project is new. Verify with `--state all`. If issues were expected: recreate via `gh issue create`. | 0 (expected for new projects) |
+| **Empty project list** | `gh project list` returns zero results | Verify org name is correct. Retry once. If org has no Projects feature enabled: skip board and use Issues-only tracking. | 1 |
+| **Push rejected** | `git push` fails with "rejected" | Pull remote changes first: `git pull --rebase`. Resolve conflicts. Push again. If still rejected: `[BLOCKED: push conflict]`. | 2 |
+| **Detached HEAD** | `git status` shows "HEAD detached" | Create feature branch from current state: `git checkout -b feature/recovery-<timestamp>`. Commit. Continue. | 0 (auto-recovery) |
+| **Disk full** | Write operations fail with "no space" | `[BLOCKED: disk full]`. Escalate to user. Do NOT attempt to delete files. | 0 (blocking) |
+
+**General retry rule:** All gh/git commands retry up to 3 times with exponential backoff (1s, 4s, 16s) for transient failures. Authentication and permission failures are NOT retried — they require human intervention.
+
+**Empty result handling:** `gh issue list` and `gh project list` returning empty is NOT an error for new projects. ONLY treat as an error if the project was expected to have existing issues/boards.
+
+**Pre-flight org verification (MANDATORY before G1):**
+```bash
+# Verify qnfo organization exists and is accessible
+gh api orgs/qnfo --jq '.login'  # Must return "qnfo"
+# Verify token has required scopes
+gh auth status --show-token 2>&1 | grep -q "repo, workflow, read:org, gist"
+```
+If either check fails: `[BLOCKED: org or auth]` — do NOT proceed.
+
 > **⚠️ GITHUB WIKI LIMITATION:** GitHub wikis cannot be initialized programmatically — the `.wiki.git` repo does not exist until a human creates the first page via the browser at `https://github.com/qnfo/<repo-name>/wiki`. This is a known GitHub limitation since 2014 with no API workaround. **Do NOT block project initialization on wiki availability.** For learnings/decisions, use the recommended programmatic alternatives: GitHub Discussions (GraphQL API), `docs/` directory in the main repo, or GitHub Issues (label: `learnings`). See DEFAULT.md §0.6.8 for full wiki documentation.
 
 ---
