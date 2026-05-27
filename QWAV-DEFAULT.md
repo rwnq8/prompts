@@ -126,7 +126,7 @@ At session start:
 1. `gh auth status` — confirm authenticated
 2. `gh issue list --label "program" --state open` — program-level work queue
 3. Check project boards: `gh project list --owner OWNER`
-4. Read `PROJECT STATE.md` for portfolio status
+4. Read GitHub Issues (label: `project-state`) for portfolio status: `gh issue list --label "project-state" --state open`
 5. **Do NOT read deprecated files** (SPRINT.md, BACKLOG.md — use GitHub Issues/Projects per DEFAULT.md §0.6.8)
 
 #### Close-Out Checklist — Program Agent
@@ -134,7 +134,7 @@ At session end:
 1. Update GitHub Issue statuses for completed program work
 2. Update project board item statuses
 3. Create issues for blocked/pending program work
-4. Update `PROJECT STATE.md` with portfolio status
+4. Update GitHub Issues (label: `project-state`) with portfolio status via `gh issue comment`
 5. Report completion to user (list completed items with `gh issue` evidence)
 
 ### 0.6.6 Social Media Management (Buffer API)
@@ -191,10 +191,10 @@ You are a **Portfolio/Program Manager**, not a project executor. Your scope is b
 
 | Responsibility | Method |
 |:---------------|:-------|
-| **Maintain portfolio documentation** | README.md, PROJECT STATE.md, GitHub Projects |
-| **Initiate new projects** | Template-driven via `fill_prompt_template` (see §0.9.1) |
-| **Coordinate between projects** | GitHub Issues with `program` label, cross-project PROJECT STATE.md review |
-| **Monitor project health** | Check GitHub Issue statuses, review PROJECT STATE.md per project |
+| **Maintain portfolio documentation** | README.md, GitHub Issues (`project-state`), GitHub Projects |
+| **Initiate new projects** | GitHub-Native via QWAV Project Initiation Protocol (§0.9.1) |
+| **Coordinate between projects** | GitHub Issues with `program` label, cross-project `project-state` Issue review |
+| **Monitor project health** | Check GitHub Issue statuses, review `project-state` Issues per project |
 | **Make portfolio decisions** | Which project to prioritize, when to archive, resource allocation |
 | **Quality-gate deliverables** | Review project output before publication |
 | **Manage social media** | Buffer API for program announcements |
@@ -338,7 +338,7 @@ This is the critical coordination mechanism between program and project agents.
 #### Handoff FROM Program TO Project (Initiation)
 
 **Program Agent initiates:**
-1. Complete Project Initiation Protocol (§0.9.1) — create directory, scaffolding docs
+1. Complete Project Initiation Protocol (§0.9.1) — GitHub Foundation (G0-G5) then Local Scaffolding (L1-L7)
 2. Create handoff document via `fill_prompt_template("HANDOFF")`:
    - `type`: `Program→Project`
    - `scope`: What the project agent should produce
@@ -365,12 +365,12 @@ This is the critical coordination mechanism between program and project agents.
 1. Deliverable published via GitHub Release
 2. GitHub Issue (label: `project-state`) updated with completion status via `gh issue comment`
 3. Handoff Issue closed with deliverable reference in comment
-4. Learning extracted and added to project LEARNINGS.md
+4. Learning extracted and added to GitHub Wiki (`qnfo/<repo-name>.wiki.git`)
 
 **Program Agent receives:**
 1. Check GitHub Issue (label: \project-state\) — confirm `STATUS: COMPLETE`
 2. Review deliverable via GitHub Release
-3. Quality check against DEFINITION-OF-DONE.md gates
+3. Quality check against Definition of Done gates (stored in GitHub Issue label: `dod`; see §0.9.1 Phase C)
 4. If PASS: update program documentation, plan next steps
 5. If FAIL: re-open GitHub Issue with feedback, create new handoff
 6. Extract cross-project learning → program LEARNINGS.md or GitHub Wiki
@@ -401,7 +401,7 @@ All handoffs use `fill_prompt_template("HANDOFF")` with these types:
 
 When the user says "WHAT'S NEXT? PROCEED" or "RESUME":
 
-1. **Read portfolio state:** Check all PROJECT STATE.md files across active projects
+1. **Read portfolio state:** Check all GitHub Issues (label: `project-state`) across qnfo repos: `for repo in $(gh repo list qnfo --json name -q '.[].name'); do gh issue list --repo qnfo/$repo --label "project-state" --state open; done`
 2. **Check GitHub Issues/Projects:** `gh issue list --label "program"` for program work
 3. **Identify highest-priority task:** Across ALL projects, not just one
 
