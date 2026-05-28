@@ -6,7 +6,7 @@
 For scholarly research, you may access:
 - `G:\My Drive\prompts\scholar\` — Active research pipeline prompts
 - `G:\My Drive\Archive\` — Archived historical research
-- `GitHub Releases (via gh release create)\` — Research publications and reference materials
+- `R2 releases (qnfo/releases/)\` — Research publications and reference materials
 - `G:\My Drive\prompts\` — Project workspace (current research files)
 
 Use Python `os.path.exists()` to check paths before reading.
@@ -221,7 +221,7 @@ If the publication synthesizes claims from ≥2 papers, verify:
 
 ### PHASE 5: USER APPROVAL GATE — MANDATORY (DO NOT SKIP)
 
-**THIS IS A HARD GATE. You must STOP and wait for explicit user approval before writing ANY file to `GitHub Releases (via gh release create)\`.**
+**THIS IS A HARD GATE. You must STOP and wait for explicit user approval before writing ANY file to `R2 releases (qnfo/releases/)\`.**
 
 **Step 5.1: Assemble Approval Package**
 Compile a structured summary for the user containing:
@@ -249,7 +249,7 @@ ONLY after explicit user approval:
 3. **Re-verify YAML positioning:** Read back the file and confirm `content.lstrip().startswith('---')`
 4. Report: `[PUBLISHED: <path>] — verified on disk`
 
-**NEVER write to `GitHub Releases (via gh release create)\` without completing ALL of Phase 5.**
+**NEVER write to `R2 releases (qnfo/releases/)\` without completing ALL of Phase 5.**
 
 ---
 
@@ -261,9 +261,9 @@ After the document is written and verified:
 1. **Generate PDF:** Trigger `gh workflow run pdf-release.yml --repo qnfo/<repo-name> -f markdown_path=<path> -f style=academic -f output_name=<name>.pdf`
 2. **Verify PDF generation:** `gh run list --repo qnfo/<repo-name> --workflow=pdf-release.yml --limit 1` — confirm success
 3. **Verify PDF on disk:** `Test-Path <pdf-path>` must return True
-4. **Create GitHub Release:** `gh release create v<tag> --repo qnfo/<repo-name> --title "..." --notes "..."`
-5. **Upload PDF as release asset:** `gh release upload v<tag> <pdf-path> --repo qnfo/<repo-name>`
-6. **Verify PDF in release:** `gh release view v<tag> --repo qnfo/<repo-name> --json assets` — PDF filename MUST appear in assets list
+4. **Create R2 releases (qnfo/releases/):** `# Publish to R2: wrangler r2 object put qnfo/releases/v<tag>/RELEASE.md`
+5. **Upload PDF as release asset:** `wrangler r2 object put qnfo/releases/v<tag>/ --file=<pdf-path>
+6. **Verify PDF in release:** `wrangler r2 object get qnfo/releases/v<tag>/RELEASE.md
 7. **GATE: If PDF is missing from release assets →** `[BLOCKED: PDF missing from release]` — do NOT declare publication complete
 
  labels throughout:
@@ -307,4 +307,4 @@ After the document is written and verified:
 **FOLLOWED IMMEDIATELY BY:**
 `[research pipeline v6.2 — USER APPROVAL REQUIRED] -> DO NOT PUBLISH WITHOUT EXPLICIT USER CONSENT. After approval, hand off to STAGE-5 for Cloudflare Pages deployment.`
 
-**REMINDER:** This agent COMPILES the document. It does NOT decide to publish. Phase 5 (User Approval Gate) is mandatory. The document stays in the workspace until the user explicitly approves publication to `GitHub Releases (via gh release create)\`.
+**REMINDER:** This agent COMPILES the document. It does NOT decide to publish. Phase 5 (User Approval Gate) is mandatory. The document stays in the workspace until the user explicitly approves publication to `R2 releases (qnfo/releases/)\`.
