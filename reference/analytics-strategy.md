@@ -166,13 +166,24 @@ curl "https://api.cloudflare.com/client/v4/zones/ZONE_ID/analytics/dashboard?sin
   -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" | jq '.result.totals'
 ```
 
-**Expected zones (from cf-dns-validator HANDOFF.md):**
-- qwav.tech (Zone ID: `331e4363fd05e8e4fc123ea7d2775411`)
-- qnfo.org
-- quni.cloud
-- qnfo.net, qnfo.uk
-- qwav.net, qwav.uk, qwav.org
-- q-wave.tech, qwave.tech
+**Zones confirmed active (May 28 audit via wrangler API):**
+
+| Zone | Zone ID | Plan | Status |
+|:-----|:--------|:-----|:-------|
+| qnfo.org | `84e9dc1d7fb72629ccdbe3174ed24420` | Free Website | active |
+| qwav.tech | `331e4363fd05e8e4fc123ea7d2775411` | Free Website | active |
+| q08.org | `fa732a265dd53230b9777908734a74d5` | Free Website | active |
+| qnfo.net | `d4e7855f3ed5f0a93204b7bd34e286ab` | Free Website | active (redirect) |
+| qnfo.uk | `26699a3b10699f257eabc34a0faee56d` | Free Website | active (redirect) |
+| qwav.net | `260c09728193c4f902435bad47ce976c` | Free Website | active (redirect) |
+| qwav.org | `4df9cb76facef38e78f6f6fc61cbb7c7` | Free Website | active (redirect) |
+| qwav.uk | `2e0b5be2a41da2a5754269984e7873ad` | Free Website | active (redirect) |
+| q-wave.tech | `dd6908d3cc04acb2efee47382fb94e8e` | Free Website | active (redirect) |
+| qwave.tech | `365f6eebc45b8075aece5a6ecbd2850a` | Free Website | active (redirect) |
+
+**Note:** quni.cloud is NOT in the zone list — DNS-only, not proxied. 3 non-QNFO zones also exist (bradworks.net, empoweringchange.today, ipatent.me) — these are out of scope.
+
+**API Access Blocked:** The OAuth token from `wrangler login` has `zone:read` but NOT `analytics:read` scope. Analytics API (`/zones/{id}/analytics/dashboard`) returns 403. To query analytics data programmatically, a Global API Key or scoped API Token with `Analytics:read` is needed. However, all analytics data IS being collected automatically for proxied traffic — it's visible in the Dashboard UI.
 
 ### 5.2 Cloudflare Web Analytics (RUM) — Per Pages Project
 
