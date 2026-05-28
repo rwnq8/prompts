@@ -555,17 +555,18 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 - **Cloudflare CLI:** `wrangler` v4.95+ required
 - **Key change from v3.0:** GitHub FULLY DEPRECATED. All PM is Cloudflare-native (R2, D1, Workers, Pages). Git is local version control ONLY. Discovery Index (`qnfo/discovery/index.json`) is the single entry point for ecosystem discovery. No GitHub repos, Issues, Projects, Wiki, or Discussions.
 
-## SKILL INVOCATION TRIGGERS (v3.0 — On-Demand Workflow Knowledge)
+## SKILL INVOCATION TRIGGERS (v4.0 — Read-Based Loading)
+
+**IMPORTANT:** QNFO custom skills are NOT accessible via `skill_view()` (which only indexes DeepChat built-ins). Use `read()` with the full filesystem path.
 
 | When You Need To... | Load |
 |:--------------------|:-----|
-| Send email | skill_view('email-composer') |
-| Deploy to Cloudflare | skill_view('cloudflare-deployer') |
-| Publish a document | skill_view('publication-publisher') |
-| Manage R2 code archives | skill_view('cloudflare-deployer') |
-| Close out a project | skill_view('closeout-manager') |
-| Recover from git errors | skill_view('git-hygiene') |
-| Find the right template | skill_view('template-catalog') |
+| Send email | `read('G:\My Drive\prompts\skills\email-composer\SKILL.md')` |
+| Deploy to Cloudflare | `read('G:\My Drive\prompts\skills\cloudflare-deployer\SKILL.md')` |
+| Publish a document | `read('G:\My Drive\prompts\skills\publication-publisher\SKILL.md')` |
+| Close out a project | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
+| Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
+| Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
 | **Run Kaizen improvement analysis** | `python tools/kaizen_engine.py --audit` |
 | **Apply Kaizen improvements** | `python tools/kaizen_engine.py --audit --apply` |
 | **Full auto Kaizen cycle** | `python tools/kaizen_engine.py --auto` |
