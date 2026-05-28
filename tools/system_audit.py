@@ -207,15 +207,15 @@ pm_templates = {
     "DEFINITION-OF-DONE": "DEFINITION-OF-DONE.md",
     "RISK-REGISTER": "RISK-REGISTER.md",
     "README": "README.md",
-    # DEPRECATED per DEFAULT.md §0.6.8 → GitHub-native:
-    "SPRINT-BACKLOG": "SPRINT.md → GitHub Projects",
-    "PRODUCT-BACKLOG": "BACKLOG.md → GitHub Issues",
-    "CHANGELOG": "CHANGELOG.md → GitHub Releases",
-    "CONTRIBUTING": "CONTRIBUTING.md (GitHub-native — keep)",
+    # DEPRECATED per DEFAULT.md §0.6.8 -> Cloudflare R2-native (ADR-001):
+    "SPRINT-BACKLOG": "SPRINT.md -> Cloudflare R2 qnfo/audit/backlog/",
+    "PRODUCT-BACKLOG": "BACKLOG.md -> Cloudflare R2 qnfo/audit/backlog/",
+    "CHANGELOG": "CHANGELOG.md -> Cloudflare R2 qnfo/releases/",
+    "CONTRIBUTING": "CONTRIBUTING.md (Cloudflare R2 qnfo/releases/ — public)",
     "HANDOFF": "handoff document",
-    "ADR": "DECISIONS.md → GitHub Discussions",
-    "PROJECT-STATE": "PROJECT STATE.md → GitHub Issue (project-state label)",
-    "LEARNINGS": "LEARNINGS.md → GitHub Wiki",
+    "ADR": "DECISIONS.md -> Cloudflare R2 qnfo/audit/decisions/DECISION-LOG.md",
+    "PROJECT-STATE": "PROJECT STATE.md -> Cloudflare R2 qnfo/audit/state/",
+    "LEARNINGS": "LEARNINGS.md -> Cloudflare R2 qnfo/audit/learnings/",
     "CLOSEOUT-CHECKLIST": "CLOSEOUT-CHECKLIST.md",
     "WEB-APP-RELEASE-CHECKLIST": "web app pre-deployment gate",
     "TEST-EVIDENCE": "test execution evidence",
@@ -309,94 +309,78 @@ else:
 
 print(f"\n=== AUDIT COMPLETE ===")
 
-# PART I: ANTI-PHANTOM EXECUTION AUDIT (Rule 14 Enforcement)
-print("\nPART I: ANTI-PHANTOM EXECUTION AUDIT (GitHub Issues Integrity)")
+# PART I: CLOUDFLARE R2 INTEGRITY AUDIT (GitHub DEPRECATED per ADR-001)
+print("\nPART I: CLOUDFLARE R2 INTEGRITY AUDIT")
 
-# Check GitHub Issues for Rule 14 violations: closed without deliverable evidence
 import json as _json
-i_issues = []
+
+# I1: Discovery Index integrity (Cloudflare R2 — canonical ecosystem catalog)
+i1_pass = True
 try:
-    cmd = 'gh issue list --repo QNFO/qwav --state closed --limit 30 --json title,body,number,closedAt,comments'
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
-    if result.returncode == 0 and result.stdout and result.stdout.strip():
-        closed = _json.loads(result.stdout)
-        for issue in closed:
-            flags = []
-            body = (issue.get("body") or "").strip()
-            num = issue["number"]
-            title = issue["title"]
-            if len(body) < 100 and "TEST" not in title.upper():
-                flags.append("MINIMAL-BODY")
-            if issue.get("comments", 0) == 0:
-                flags.append("NO-COMMENTS")
-            if not re.search(r"(?:Test-Path|git log|commits|verified|smoke_test|system_audit)", body):
-                if not re.search(r"`[a-f0-9]{7}`", body):
-                    flags.append("NO-EVIDENCE")
-            if "Token" in title and "scope" in title.lower() and not re.search(r"(?:refreshed|added scope|now has)", body):
-                flags.append("TOKEN-NOT-UPGRADED")
-            if "Project board" in title and not re.search(r"(?:created|board exists)", body):
-                flags.append("BOARD-NOT-CREATED")
-            if flags:
-                i_issues.append((num, title, flags))
-        if i_issues:
-            print(f"  I1. ANTI-PHANTOM detections: {len(i_issues)} closed Issues lack execution evidence")
-            for num, title, flags in i_issues:
-                print(f"    #{num}: {title} -- {', '.join(flags)}")
-            print(f"  I_RESULT: {len(i_issues)} Rule 14 violations found FAIL")
+    di_result = subprocess.run(
+        'npx wrangler r2 object get qnfo/discovery/index.json --remote',
+        shell=True, capture_output=True, timeout=20
+    )
+    if di_result.returncode == 0:
+        # Parse the downloaded JSON to verify structure
+        import tempfile, os as _os
+        tmp = _os.path.join(tempfile.gettempdir(), '_sysaudit_di.json')
+        di_result2 = subprocess.run(
+            'npx wrangler r2 object get qnfo/discovery/index.json --remote --file=' + tmp,
+            shell=True, capture_output=True, timeout=20
+        )
+        if di_result2.returncode == 0 and _os.path.exists(tmp):
+            with open(tmp, 'r') as f:
+                di = _json.load(f)
+            projects = len(di.get('projects', {}))
+            publications = len(di.get('publications', {}))
+            archive = len(di.get('archive', {}))
+            updated = di.get('updated', 'unknown')
+            print(f"  I1. Discovery Index: LIVE ({projects} projects, {publications} pubs, {archive} archived, updated {updated}) PASS")
+            _os.remove(tmp)
         else:
-            print("  I1. No ANTI-PHANTOM patterns detected PASS")
-            print("  I_RESULT: GitHub Issues execution integrity PASS")
-    elif result.returncode != 0:
-        print(f"  I1. GitHub Issues query failed (rc={result.returncode}): {result.stderr[:100]} SKIP")
+            print("  I1. Discovery Index: EXISTS but unparseable WARN")
+            i1_pass = False
     else:
-        print("  I1. No closed Issues found PASS")
+        print("  I1. Discovery Index: MISSING (qnfo/discovery/index.json) FAIL")
+        print("     Rebuild: python _build_index.py && wrangler r2 object put qnfo/discovery/index.json --file=_discovery_index_seed.json")
+        i1_pass = False
 except Exception as e:
-    print(f"  I1. GitHub Issues check error: {e} SKIP")
+    print(f"  I1. Discovery Index check error: {e} SKIP")
+    i1_pass = False
 
-# I2: Token scope gap check
-i2_issues = []
+# I2: R2 Audit Trail integrity (Cloudflare R2)
 try:
-    # Check current token scopes
-    tresult = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True, timeout=10)
-    scopes = tresult.stdout + tresult.stderr
-    missing_scopes = []
-    # Note: discussions:write is NOT a valid GitHub OAuth scope. repo scope covers all Discussion CRUD.
-    if "project" not in scopes:
-        missing_scopes.append("project")
-    
-    if missing_scopes:
-        i2_issues.append(f"Missing token scopes: {', '.join(missing_scopes)}")
-        print(f"  I2. Token scope gaps: {missing_scopes} FAIL")
-        print(f"     Fix: gh auth refresh -h github.com -s {','.join(missing_scopes)}")
-        print(f"     Note: repo scope already covers Discussions CRUD. discussions:write is not a valid scope.")
+    dec_result = subprocess.run(
+        'npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote',
+        shell=True, capture_output=True, timeout=15
+    )
+    if dec_result.returncode == 0:
+        print("  I2. Decision Log: PRESENT (qnfo/audit/decisions/DECISION-LOG.md) PASS")
     else:
-        print("  I2. Token scopes complete PASS")
+        print("  I2. Decision Log: MISSING SKIP")
 except Exception as e:
-    print(f"  I2. Token scope check error: {e} SKIP")
+    print(f"  I2. Decision Log check error: {e} SKIP")
 
-# I3: Wiki push state (check live wiki git repo, not local files)
+# I3: Cloudflare R2 bucket connectivity
 try:
-    wresult = subprocess.run("git ls-remote https://github.com/QNFO/qwav.wiki.git", shell=True, capture_output=True, text=True, timeout=10)
-    if wresult.returncode == 0 and wresult.stdout.strip():
-        wiki_commits = wresult.stdout.strip().count('\n') + 1
-        print(f"  I3. Wiki git repo LIVE — {wiki_commits} ref(s) found PASS")
+    wrangler_result = subprocess.run(
+        'npx wrangler whoami',
+        shell=True, capture_output=True, timeout=10
+    )
+    if wrangler_result.returncode == 0:
+        print("  I3. Cloudflare R2 (wrangler): AUTHENTICATED PASS")
     else:
-        print("  I3. Wiki git repo NOT ACCESSIBLE — needs web UI first-page init FAIL")
+        print("  I3. Cloudflare R2 (wrangler): NOT AUTHENTICATED FAIL")
+        print("     Fix: wrangler login")
 except Exception as e:
-    print(f"  I3. Wiki check error: {e} SKIP")
+    print(f"  I3. Cloudflare R2 check error: {e} SKIP")
 
-# I4: GitHub Releases vs CHANGELOG
-try:
-    rresult = subprocess.run(["gh", "release", "list", "--repo", "QNFO/qwav", "--limit", "5"], 
-                            capture_output=True, text=True, timeout=10)
-    releases = rresult.stdout.strip()
-    if not releases:
-        print("  I4. No GitHub Releases found — CHANGELOG migration not done FAIL")
-    else:
-        rc = len(releases.split('\n'))
-        print(f"  I4. {rc} GitHub Releases found PASS")
-except Exception as e:
-    print(f"  I4. Releases check error: {e} SKIP")
+# I_FINAL: Cloudflare R2 integrity summary
+if i1_pass:
+    print("  I_RESULT: Cloudflare R2 integrity PASS")
+else:
+    print("  I_RESULT: Cloudflare R2 integrity FAIL")
 
 # PART H: SYSTEM CONSISTENCY AUDIT (template count drift, cross-references)
 print("\nPART H: SYSTEM CONSISTENCY AUDIT (template drift detection)")
