@@ -4,14 +4,14 @@ description: Template discovery and parameter documentation. Use when the agent 
 version: "1.0"
 ---
 
-# TEMPLATE CATALOG SKILL — v1.0
+# TEMPLATE CATALOG SKILL — v1.1
 
 > **On-demand skill.** Load via `skill_view('template-catalog')` to discover available templates.
 > Source: `prompts.json` + `templates/` directory
 
 ---
 
-## Available Templates (12 total)
+## Available Templates (14 total)
 
 ### Core Project Templates
 
@@ -21,6 +21,7 @@ version: "1.0"
 | `PROJECT-CHARTER` | Project charter document | `project_name`, `scope`, `success_criteria`, `constraints` |
 | `DEFINITION-OF-DONE` | Quality gates | `project_name`, `deliverable_type`, `acceptance_criteria` |
 | `HANDOFF` | Agent-to-agent handoff | `type`, `scope`, `success_criteria`, `research_trail`, `return_protocol` |
+| `DISCOVERY-PROTOCOL` | **Unified ecosystem discovery** | `scope`, `topic`, `project_name` |
 | `README` | Project README | `project_name`, `description`, `repo_url`, `architecture` |
 
 ### Publication Templates
@@ -81,6 +82,11 @@ Template registry: `G:\My Drive\prompts\prompts.json`
 ---
 
 ## Common Patterns
+
+### Session Lifecycle
+```
+(Start) → DISCOVERY-PROTOCOL → RESEARCH-LAUNCH → ... → CLOSEOUT-CHECKLIST → CLOUDFLARE-AUDIT-EXPORT
+```
 
 ### New Project
 ```
