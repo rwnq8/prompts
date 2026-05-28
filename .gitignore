@@ -34,3 +34,6 @@ audit/
 
 # Former deployment staging (now consolidated into root)
 optimized-settings/
+
+# Google Drive artifacts (moved/renamed directories with broken permissions)
+scholar/

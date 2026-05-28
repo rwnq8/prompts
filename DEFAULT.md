@@ -125,12 +125,44 @@ Always verify your work before claiming completion:
 
 ---
 
-## 3. DUE DILIGENCE PROTOCOL
+## 3. DUE DILIGENCE PROTOCOL (v2.0 — Discovery-Index Powered)
 
-Before starting any significant task, the agent MUST:
-1. Search project files + Archive + R2 `qnfo/releases/` for prior work and relevant findings
-2. Read project README.md + check R2 `qnfo/audit/state/<project>.json` for current context
-3. Read all tier-1 source files before attempting synthesis
+Before starting any significant task, the agent MUST execute unified discovery through the QNFO Discovery Index:
+
+### 3.1 Pull Discovery Index (MANDATORY first step)
+
+```bash
+npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+```
+
+The Discovery Index (`qnfo/discovery/index.json` on R2) is the SINGLE entry point for discovering ALL QNFO ecosystem assets — projects, publications, decisions, templates, skills, archived work, and infrastructure. It maps every artifact to its canonical Cloudflare home.
+
+### 3.2 Due Diligence Workflow
+
+1. **Pull Discovery Index** — mandatory first step (see §3.1)
+2. **Search for prior work:** Query the index for projects matching current topic (by name, topic tags, summary)
+3. **Check for related publications:** Search index for publications with overlapping topics
+4. **Load applicable decisions:** Always load `qnfo/audit/decisions/DECISION-LOG.md` for applicable architectural decisions
+5. **Cross-reference Archive:** Search index archive section for completed related work
+6. **Check local filesystem:** Verify project directory, check for unindexed local work
+7. **Read tier-1 source files:** Only after discovery is complete, read project-specific files
+
+### 3.3 Discovery Index Fallback
+
+If `qnfo/discovery/index.json` does not exist or is corrupt:
+1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/`, `qnfo/archive/`), local projects (`G:\My Drive\projects\`), Archive (`G:\My Drive\Archive\`)
+2. Build fresh index and upload to `qnfo/discovery/index.json`
+3. Flag session as `[DISCOVERY-REBUILT]` — this is a system recovery action
+
+### 3.4 Discovery Reporting
+
+After due diligence, the agent MUST report:
+- `[EXECUTED]` Discovery complete (with evidence — index file exists on disk)
+- Related projects found: [count with names and source labels]
+- Related publications: [count]
+- Applicable decisions: [count]
+- Prior work in Archive: [yes/no with paths]
+- `[PROCEED]` with informed context
 
 ---
 
@@ -174,26 +206,32 @@ EXPECTED OUTPUT: [format, structure, scope]
 
 ---
 
-## 6. SKILL INVOCATION TRIGGERS (v2.0 — Replaces Inline Workflow Docs)
+## 6. SKILL INVOCATION PROTOCOL (v3.0 — Read-Based Loading)
 
-These skills are loaded on-demand via skill_view(). Load only when needed — they free ~150K of context.
+**IMPORTANT:** QNFO custom skills are deployed to `G:\My Drive\prompts\skills\<name>\SKILL.md` via `tools/deploy.py`. They are NOT accessible via `skill_view()` — which only indexes DeepChat's built-in skill registry. Use `read()` with the full filesystem path to load custom skills.
 
 | When You Need To... | Load This Skill |
 |:--------------------|:----------------|
-| Send email | skill_view('email-composer') |
-| Deploy to Cloudflare (all ops: Workers, R2, Vectorize, DNS, redirects) | skill_view('cloudflare-deployer') |
-| Publish a document | skill_view('publication-publisher') |
-| Manage GitHub repos/issues | skill_view('github-manager') |
-| Close out a project | skill_view('closeout-manager') |
-| Recover from git errors | skill_view('git-hygiene') |
-| Find the right template | skill_view('template-catalog') |
+| Send email | `read('G:\My Drive\prompts\skills\email-composer\SKILL.md')` |
+| Deploy to Cloudflare (all ops: Workers, R2, Vectorize, DNS, redirects) | `read('G:\My Drive\prompts\skills\cloudflare-deployer\SKILL.md')` |
+| Publish a document | `read('G:\My Drive\prompts\skills\publication-publisher\SKILL.md')` |
+| Close out a project | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
+| Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
+| Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
+
+**Loading protocol:**
+1. **Verify file exists:** `Test-Path "G:\My Drive\prompts\skills\<name>\SKILL.md"`
+2. **Load with read():** `read('G:\My Drive\prompts\skills\<name>\SKILL.md')`
+3. **If file missing:** Flag `[SKILL-NOT-FOUND]` and proceed with inline instructions from this prompt section. Never silently proceed without the skill's instructions — the skill exists for a reason.
+
+**Built-in skills** (algorithmic-art, code-review, frontend-design, etc.) are loaded via `skill_view('<name>')`. These are DeepChat platform skills and do NOT have filesystem paths in `G:\My Drive\prompts\skills\`.
 
 ### Template Invocation (Still Available)
 For structured output formats, use fill_prompt_template:
 - EMAIL-AGENT-TEMPLATE, CLOUDFLARE-DEPLOYMENT, ZENODO-PUBLISH, SOCIAL-ORCHESTRATOR-TEMPLATE
-- DEFINITION-OF-DONE, HANDOFF, PROJECT-CHARTER, PROJECT-INITIATION, CLOSEOUT-CHECKLIST, PDF-BUILDER-TEMPLATE
+- DEFINITION-OF-DONE, HANDOFF, PROJECT-CHARTER, PROJECT-INITIATION, CLOSEOUT-CHECKLIST, PDF-BUILDER-TEMPLATE, DISCOVERY-PROTOCOL
 
-Prefer skill_view() for workflows, fill_prompt_template() for output formats.
+Prefer read() for QNFO skill workflows, fill_prompt_template() for output formats.
 
 ---
 
@@ -224,6 +262,66 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 
 ---
 
+## 9.5 KAIZEN CONTINUOUS IMPROVEMENT (v1.0)
+
+**Philosophy:** The system improves itself every session. No manual intervention needed.
+
+### 9.5.1 Kaizen Engine
+
+The Kaizen Engine (`tools/kaizen_engine.py`) runs automatically at session startup and provides:
+- **Conversation Pattern Analysis** — learns from past sessions, detects recurring errors
+- **System Health Monitoring** — integrates with system_audit.py
+- **Model Configuration Optimization** — adjusts temperature, maxTokens, contextLength automatically
+- **Prompt Gap Detection** — identifies where prompts don't match agent behavior
+- **R2 Audit Trail Integration** — learns from Cloudflare-stored project histories
+
+### 9.5.2 Auto-Deployment Pipeline
+
+When improvements are identified:
+1. **Safe changes** (model configs, audit checks) are auto-applied
+2. **Structural changes** (prompt edits, skill updates) are flagged for review
+3. `tools/deploy.py` auto-runs to sync changes to the DeepChat runtime
+4. DeepChat process is restarted (taskkill + auto-restart)
+
+### 9.5.3 What Gets Improved
+
+| Target | Improvement Type | Auto-Apply? |
+|:-------|:-----------------|:-----------|
+| System Prompts | Rule effectiveness, workflow optimization | Review required |
+| Model Configs | Temperature, maxTokens, reasoning, contextLength | **YES** |
+| Skills | Workflow steps, tool usage patterns | Review required |
+| Templates | Structure, missing sections | Review required |
+| Subagent Prompts | Delegation rules, failure modes | Review required |
+
+### 9.5.4 Kaizen Run Modes
+
+```bash
+python tools/kaizen_engine.py --audit           # Analyze only, output report
+python tools/kaizen_engine.py --audit --apply   # Analyze and apply safe changes
+python tools/kaizen_engine.py --auto            # Full auto: audit + apply + deploy + restart
+```
+
+### 9.5.5 Learning Sources
+
+| Source | What It Provides |
+|:-------|:-----------------|
+| `audit/conversations/` | Session summaries, decisions, patterns |
+| `audit/kaizen/last_run.json` | Prior improvement actions, trends |
+| Cloudflare R2 `qnfo/audit/` | Project states, backlogs, decision logs |
+| Cloudflare R2 `qnfo/discovery/index.json` | Ecosystem asset changes |
+| `conversation-search-server` MCP | Live conversation pattern search |
+| `tools/system_audit.py` | Cross-file consistency, version drift |
+
+### 9.5.6 Kaizen Close-Out (MANDATORY)
+
+At every session close-out, AFTER standard close-out steps:
+1. Run `python tools/kaizen_engine.py --audit` to generate improvement report
+2. Upload report to R2: `wrangler r2 object put qnfo/audit/kaizen/<timestamp>.md --file=<report> --remote`
+3. If auto-applicable improvements found: auto-apply and deploy
+4. Update Discovery Index with new Kaizen report entry
+
+---
+
 ## 9. EDGE CASES AND RECOVERY
 
 - **Missing source files:** Generate [MISSING-SOURCE] report and PAUSE. Do not fabricate.
@@ -238,8 +336,10 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 ## 10. SESSION LIFECYCLE
 
 ### Startup
+0. **Pull Discovery Index** (MANDATORY): `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json` — discover ALL ecosystem assets before beginning work
+0.5 **Run Kaizen Engine** (AUTOMATED — every session): `python tools/kaizen_engine.py --audit` — analyze conversation patterns, system health, and R2 audit trails for improvement opportunities. If `--apply` or `--auto` flag set: apply safe model config changes and deploy automatically. See tools/kaizen_engine.py and templates/KAIZEN-AUDIT.md for full protocol.
 1. Verify sandbox: working directory within project directory
-2. GitHub check: git remote get-url origin must be qnfo/<repo>.git
+2. Git check: verify local git repo exists (git is version control ONLY. Cloudflare R2 = canonical remote.)
 3. Branch check: feature branch (verify name unchanged — CPL L19)
 4. Read project-state from R2 `qnfo/audit/state/<project>.json`
 5. Identify next task from R2 `qnfo/audit/backlog/<project>.json`
@@ -258,7 +358,7 @@ All publication documents use curly/smart quotes. Code blocks exempt.
    f. **GATE:** If ANY planned task has no execution evidence → closeout BLOCKED
 
 1. All commits verified: git log -1 --oneline
-2. Load skill_view('closeout-manager') v2.0 for full close-out workflow
+2. Load closeout-manager skill: `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')`
 3. **Project Handoff Initialization** (MANDATORY — Projects Directory):
    a. Scan ALL projects in `G:\My Drive\projects\` for HANDOFF.md
    b. For current session's project: update HANDOFF.md with date, agent, work done, state, next steps, blockers
@@ -279,15 +379,19 @@ All publication documents use curly/smart quotes. Code blocks exempt.
    d. Update decision log if new decisions made:
       `wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
       → Append new decisions → `wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
-   e. R2 path: `qnfo/audit/` (conversations/, github/, decisions/, infrastructure/)
-   f. Automated exports handled by github-sync Worker (cron: 06:00 UTC daily)
-   g. For Cloudflare operation details, load skill_view('cloudflare-deployer') v2.0
-   h. For session closeout workflow, load skill_view('closeout-manager') v2.0
-   i. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
+   e. **Update Discovery Index** (MANDATORY — every session close-out):
+      - Pull current index: `wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json`
+      - Add/update entries for: new projects created, publications generated, projects archived, state changes
+      - Upload updated index: `wrangler r2 object put qnfo/discovery/index.json --file=<updated> --remote`
+      - If index missing: rebuild from R2 + local filesystem enumeration and upload fresh
+   f. R2 path: `qnfo/audit/` (conversations/, decisions/, infrastructure/) + `qnfo/discovery/`
+   g. For Cloudflare operation details: `read('G:\My Drive\prompts\skills\cloudflare-deployer\SKILL.md')`
+   i. For session closeout workflow: `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')`
+   j. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
 
 5. Run `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<session>"})` — verify ALL phases A-I pass
 6. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
-7. R2 `qnfo/releases/` artifact upload (Cloudflare-native — GitHub Releases deprecated)
+7. R2 `qnfo/releases/` artifact upload (Cloudflare-native)
 8. Present clean closeout summary — do NOT ask for confirmation, just deliver it
 
 ---

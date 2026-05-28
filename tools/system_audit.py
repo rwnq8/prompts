@@ -413,3 +413,20 @@ if os.path.exists(consistency_script):
             print(f"    {line}")
 else:
     print(f"  H_RESULT: Consistency audit script not found at {consistency_script}")
+
+# PART K: KAIZEN ENGINE HEALTH
+print("\nPART K: KAIZEN ENGINE HEALTH")
+kaizen_path = os.path.join(prompts_dir, "tools", "kaizen_engine.py")
+if os.path.exists(kaizen_path):
+    print(f"  K1. Kaizen engine present: PASS")
+    # Check if it's been run recently
+    audit_file = os.path.join(prompts_dir, "audit", "kaizen", "last_run.json")
+    if os.path.exists(audit_file):
+        with open(audit_file, "r") as f:
+            last_run = json.load(f)
+        last_time = last_run.get("timestamp", "unknown")
+        print(f"  K2. Last Kaizen run: {last_time} PASS")
+    else:
+        print(f"  K2. No prior Kaizen run CHECK")
+else:
+    print(f"  K1. Kaizen engine MISSING WARNING: FAIL")

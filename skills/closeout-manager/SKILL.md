@@ -1,9 +1,9 @@
 ---
 name: closeout-manager
 description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, archive operations, and handoff documentation. Auto-executes at session end without user prompting.
-version: "2.0"
+version: "2.1"
 ---
-# CLOSEOUT MANAGER SKILL — v2.0
+# CLOSEOUT MANAGER SKILL — v2.1
 
 > **AUTONOMOUS skill.** Do NOT wait for user to say "TERMINATE." Detect completion and auto-initiate closeout.
 > Source: `CLOSEOUT-CHECKLIST.md` + DEFAULT.md §10 + QWAV-DEFAULT.md close-out checklist
@@ -94,7 +94,29 @@ Verify upload:
 npx wrangler r2 object get qnfo/audit/conversations/<file>.md
 ```
 
-### 5. Update Decision Log
+### 5. Update Discovery Index (MANDATORY — Every Session Close-Out)
+
+Every session close-out MUST update the unified Discovery Index on Cloudflare R2:
+
+```bash
+# 1. Pull current index
+npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+
+# 2. Add/update entries for:
+#    - New projects created this session
+#    - Publications generated this session  
+#    - Projects archived this session
+#    - State changes (active -> complete, etc.)
+
+# 3. Upload updated index
+npx wrangler r2 object put qnfo/discovery/index.json --file=_updated_index.json --remote
+```
+
+**If index is missing or corrupt:** Rebuild from R2 enumeration + local filesystem + GitHub repo listing. Upload fresh. Flag session as `[DISCOVERY-REBUILT]`.
+
+**Verify:** `npx wrangler r2 object get qnfo/discovery/index.json --remote` must succeed.
+
+### 6. Update Decision Log
 
 If new decisions were made:
 ```bash
@@ -107,20 +129,20 @@ npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --file=<temp>
 npx wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --file=<temp>
 ```
 
-### 6. Update Project State
+### 7. Update Project State
 
 ```bash
 # Upload state JSON
 npx wrangler r2 object put qnfo/audit/state/<project>.json --file=<local-state-file>
 ```
 
-### 7. Archive to Local Storage
+### 8. Archive to Local Storage
 
 ```bash
 Move-Item -Path "<project>" -Destination "G:\My Drive\Archive\projects\YYYY\MM\<name>\"
 ```
 
-### 8. Clean Up Temporary Files
+### 9. Clean Up Temporary Files
 
 Remove temporary fix scripts and work files:
 ```bash
@@ -128,7 +150,7 @@ Remove-Item "G:\My Drive\QWAV_fix_*.py" -ErrorAction SilentlyContinue
 Remove-Item "G:\My Drive\QWAV_temp_*" -ErrorAction SilentlyContinue
 ```
 
-### 9. Final Verification — Full Closeout Checklist
+### 10. Final Verification — Full Closeout Checklist
 
 Run `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<session-topic>"})` and verify ALL phases pass. Deliver the completed checklist as part of the closeout summary.
 
@@ -142,11 +164,12 @@ Use `fill_prompt_template("CLOSEOUT-CHECKLIST")` for the full verification check
 - [ ] Step 2: ALL planned tasks executed (Task Execution Verification)
 - [ ] Step 3: ALL projects have HANDOFF.md updated (Project Handoff Init)
 - [ ] Step 4: Audit trail exported to R2
-- [ ] Step 5: Decision log updated
-- [ ] Step 6: Project state updated
-- [ ] Step 7: Archive completed
-- [ ] Step 8: Temp files cleaned
-- [ ] Step 9: Full CLOSEOUT-CHECKLIST passed (all phases)
+- [ ] Step 5: Discovery Index updated (qnfo/discovery/index.json)
+- [ ] Step 6: Decision log updated
+- [ ] Step 7: Project state updated
+- [ ] Step 8: Archive completed
+- [ ] Step 9: Temp files cleaned
+- [ ] Step 10: Full CLOSEOUT-CHECKLIST passed (all phases)
 
 ---
 
