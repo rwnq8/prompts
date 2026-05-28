@@ -15,8 +15,10 @@
 |:------|:------|:---------|
 | All source code | GitHub: `rwnq8/*` repos | ✅ |
 | All git history | GitHub | ✅ |
-| All Issues/Projects | GitHub Issues/Projects | ✅ |
-| All Wiki docs | GitHub Wiki (rwnq8/prompts) | ✅ |
+| All project tasks | Cloudflare D1 (qnfo-audit) + Workers API | ✅ |
+| All audit events | Cloudflare D1 (qnfo-audit) + R2 (qnfo/audit/) | ✅ |
+| All Wiki docs | Cloudflare Pages (per-project) + Vectorize search | ✅ |
+| PM Infrastructure | Cloudflare Workers (audit, task, search) | ✅ |
 | All Cloudflare config | Cloudflare (Pages, Workers, R2, DNS, Vectorize) | ✅ |
 | Audit trail | Cloudflare R2: `qnfo/audit/` | ✅ |
 | Repo archives | Cloudflare R2: `qnfo/` (15+ repos) | ✅ |
@@ -172,6 +174,110 @@ wrangler vectorize list
 # Should show: qwav-research (768d, cosine)
 ```
 
+### 4.4 Clone and Deploy the PM Infrastructure (Cloudflare-Native PM)
+
+> These three workers replace GitHub Issues, Projects, and Wiki with Cloudflare-native equivalents.
+> Source: `G:\My Drive\projects\cloudflare-pm-infrastructure\`
+
+```powershell
+# Clone the infrastructure project
+cd "G:\My Drive\projects"
+git clone https://github.com/rwnq8/cloudflare-pm-infrastructure.git cloudflare-pm-infrastructure
+cd cloudflare-pm-infrastructure
+
+# Verify the project
+git log --oneline -3
+# Should show commits for D1 schema, Workers, Vectorize pipeline, Wiki config
+```
+
+#### Deploy Audit Worker (Event Logging)
+
+```powershell
+cd G:\My Drive\projects\cloudflare-pm-infrastructure\workers\audit-worker
+wrangler deploy
+# API: POST /api/events, GET /api/events?project=X&agent=Y, GET /api/events/:id
+# Verify:
+Invoke-RestMethod -Uri "https://audit-worker.DOMAIN.workers.dev/api/events?limit=1" -Method Get
+```
+
+#### Deploy Task Worker (Project Board)
+
+```powershell
+cd G:\My Drive\projects\cloudflare-pm-infrastructure\workers\task-worker
+wrangler deploy
+# API: GET/POST/PATCH/DELETE /api/tasks, GET /api/tasks/:id/dependencies, GET /api/columns
+# Verify:
+Invoke-RestMethod -Uri "https://task-worker.DOMAIN.workers.dev/api/tasks?limit=1" -Method Get
+```
+
+#### Deploy Search Worker (Semantic + Keyword)
+
+```powershell
+cd G:\My Drive\projects\cloudflare-pm-infrastructure\workers\search-worker
+wrangler deploy
+# API: GET /api/search?q=keyword&type=all, GET /api/search/semantic?q=...
+# Verify:
+Invoke-RestMethod -Uri "https://search-worker.DOMAIN.workers.dev/api/search?q=test&type=all" -Method Get
+```
+
+### 4.5 Create the D1 Database (qnfo-audit)
+
+```powershell
+# Create the database
+wrangler d1 create qnfo-audit
+
+# Get the database ID (needed for worker bindings)
+wrangler d1 list
+# → Copy the UUID for qnfo-audit
+
+# Update each worker's wrangler.toml with the database ID:
+# workers/audit-worker/wrangler.toml  → [[d1_databases]].database_id
+# workers/task-worker/wrangler.toml   → [[d1_databases]].database_id
+# workers/search-worker/wrangler.toml → [[d1_databases]].database_id
+# Then re-deploy each worker: wrangler deploy
+
+# Run the schema (creates events, tasks, wiki_pages tables + FTS5 indexes)
+cd G:\My Drive\projects\cloudflare-pm-infrastructure
+wrangler d1 execute qnfo-audit --file=d1/schema.sql
+
+# Seed initial data (task board + first event)
+wrangler d1 execute qnfo-audit --file=d1/seed.sql
+
+# Verify tables exist
+wrangler d1 execute qnfo-audit --command="SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+# Should show: events, events_fts, tasks, tasks_fts, wiki_pages, wiki_fts
+```
+
+### 4.6 Populate the Vectorize Index (Semantic Search)
+
+```powershell
+cd G:\My Drive\projects\cloudflare-pm-infrastructure
+
+# Ingest session closeouts into the qwav-research index
+python vectorize_pipeline.py --source-dir "G:\My Drive\prompts" --type sessions --index qwav-research
+
+# Ingest wiki pages (if docs/ directories exist)
+python vectorize_pipeline.py --source-dir "G:\My Drive\prompts\docs" --type wiki --index qwav-research
+
+# Verify the index has data
+wrangler vectorize describe qwav-research
+```
+
+### 4.7 Deploy Wiki Pages
+
+```powershell
+cd G:\My Drive\projects\cloudflare-pm-infrastructure
+
+# Initialize the wiki catalog (auto-discovers projects with docs/ directories)
+python scripts/deploy-wiki.py --init-catalog
+
+# Deploy all wikis
+python scripts/deploy-wiki.py --all
+
+# Or deploy a specific wiki
+python scripts/deploy-wiki.py --project qwav --docs-dir "G:\My Drive\projects\qwav\docs"
+```
+
 ---
 
 ## 5. POPULATE — Restore State From Cloud
@@ -223,15 +329,17 @@ Test-Path "G:\My Drive\Archive"            # Must be True
 ### 6.2 GitHub Verification
 ```powershell
 gh auth status                             # rwnq8 authenticated
-gh issue list --repo rwnq8/prompts --limit 1  # Must return results
+# Note: gh issue/project/release are deprecated per ADR-001
+# Use Cloudflare-native equivalents: curl task-worker API
 ```
 
 ### 6.3 Cloudflare Verification
 ```powershell
 wrangler whoami                # quniverse, 20+ scopes
 wrangler r2 bucket list        # qnfo, mail, 0pus
+wrangler d1 list               # qnfo-audit
 wrangler vectorize list        # qwav-research
-wrangler deployments list      # github-sync
+wrangler deployments list      # github-sync, audit-worker, task-worker, search-worker
 ```
 
 ### 6.4 Worker Verification
@@ -272,6 +380,14 @@ When an agent starts its first session after a rebuild:
 |:-----|:----|:-----|:---------|:-------|
 | github-sync | github-sync.q08.workers.dev | 0 6 * * * | QNFO (R2) | rwnq8/github-sync-worker |
 | ask-qwav | ask-qwav.q08.workers.dev | — (HTTP only) | AI, VECTORIZE | (source TBD) |
+| audit-worker | (deploy pending) | — (HTTP only) | DB (D1), QNFO (R2) | rwnq8/cloudflare-pm-infrastructure |
+| task-worker | (deploy pending) | — (HTTP only) | DB (D1), QNFO (R2) | rwnq8/cloudflare-pm-infrastructure |
+| search-worker | (deploy pending) | — (HTTP only) | DB (D1), VECTORIZE | rwnq8/cloudflare-pm-infrastructure |
+
+### D1 Databases
+| Name | Tables | Purpose |
+|:-----|:-------|:--------|
+| qnfo-audit | events, tasks, wiki_pages (+ FTS5) | Project management, audit trail, wiki |
 
 ### R2 Buckets
 | Name | Purpose | Key Contents |
