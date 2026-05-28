@@ -10,7 +10,7 @@ import glob
 import hashlib
 import sys
 
-DIRS = ['templates', 'scholar', 'email', 'agents']
+DIRS = ['templates', '../projects/research-pipeline', 'email', 'agents']
 OUTPUT = 'prompts.json'
 
 def rebuild():

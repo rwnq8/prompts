@@ -1,20 +1,19 @@
 ---
 name: email-composer
 description: Outlook email composition, sending, reading, and management via COM automation. Use when the agent needs to send, read, search, or manage emails through Outlook.
-version: "1.0"
+version: 2.0
 ---
-
-# EMAIL COMPOSER SKILL — v1.0
+# EMAIL COMPOSER SKILL — v2.0
 
 > **On-demand skill.** Load via `skill_view('email-composer')` when email operations are needed.
-> Source: `G:\My Drive\prompts\email\EMAIL-CAPABILITIES.md` v1.4 + `EMAIL-AGENT-v1.3.md`
+> Source: `EMAIL-AGENT-v1.3.md` (template) + email-composer skill
 
 ---
 
 ## Quick Start
 
 For sending email, use `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {...})` with all required parameters.
-For reading/searching email, use the Python scripts in `G:\My Drive\prompts\email\`.
+For reading/searching email, use the Python scripts in `G:\My Drive\projects\email-agent\`.
 
 ---
 
@@ -22,28 +21,28 @@ For reading/searching email, use the Python scripts in `G:\My Drive\prompts\emai
 
 ### Read Inbox
 ```powershell
-python "G:\My Drive\prompts\email\email_inbox.py" --folder "Inbox" --count 20
+python "G:\My Drive\projects\email-agent\email_inbox.py" --folder "Inbox" --count 20
 ```
 
 ### Search Email
 ```powershell
-python "G:\My Drive\prompts\email\email_search.py" --query "quantum computing" --folder "Inbox"
+python "G:\My Drive\projects\email-agent\email_search.py" --query "quantum computing" --folder "Inbox"
 ```
 
 ### Send Email
 Use `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {to, subject, body, cc, bcc, attachments})` then execute the generated script:
 ```powershell
-python "G:\My Drive\prompts\email\email_send.py"
+python "G:\My Drive\projects\email-agent\email_send.py"
 ```
 
 ### Reply to Email
 ```powershell
-python "G:\My Drive\prompts\email\email_reply.py" --message-id "<id>" --body "Response text"
+python "G:\My Drive\projects\email-agent\email_reply.py" --message-id "<id>" --body "Response text"
 ```
 
 ### Archive Email
 ```powershell
-python "G:\My Drive\prompts\email\email_archive.py" --message-id "<id>" --folder "Archive"
+python "G:\My Drive\projects\email-agent\email_archive.py" --message-id "<id>" --folder "Archive"
 ```
 
 ---
@@ -64,7 +63,7 @@ Before sending ANY email, run through DEFAULT.md §E.5.1 checklist:
 
 - **Default account:** rowan.quni@qnfo.org
 - **Profile:** Outlook COM automation via `win32com.client`
-- **Scripts:** `G:\My Drive\prompts\email\`
+- **Scripts:** `G:\My Drive\projects\email-agent\`
 
 ---
 
@@ -72,8 +71,8 @@ Before sending ANY email, run through DEFAULT.md §E.5.1 checklist:
 
 ### Checking for Prior Threads
 ```powershell
-python "G:\My Drive\prompts\email\email_search.py" --query "<contact-name>" --folder "Inbox"
-python "G:\My Drive\prompts\email\email_search.py" --query "<contact-name>" --folder "Sent Items"
+python "G:\My Drive\projects\email-agent\email_search.py" --query "<contact-name>" --folder "Inbox"
+python "G:\My Drive\projects\email-agent\email_search.py" --query "<contact-name>" --folder "Sent Items"
 ```
 
 ### Drafting Without Sending
@@ -94,12 +93,11 @@ Set `confirm_send: false` in the EMAIL-AGENT-TEMPLATE parameters. The script wil
 
 ## Reference Files
 
-- Full documentation: `G:\My Drive\prompts\email\EMAIL-CAPABILITIES.md`
 - Agent template: `G:\My Drive\prompts\email\EMAIL-AGENT-v1.3.md`
 - Test suite: `G:\My Drive\prompts\email\EMAIL-TEST-SUITE.md`
-- All scripts: `G:\My Drive\prompts\email\email_*.py`
-- Shared utilities: `G:\My Drive\prompts\email\_email_utils.py`
+- Scripts: `G:\My Drive\projects\email-agent\email_*.py`
+- Shared utilities: `G:\My Drive\projects\email-agent\_email_utils.py`
 
 ---
 
-*email-composer skill v1.0 — Load on-demand via skill_view(). Source: EMAIL-CAPABILITIES.md v1.4*
+*email-composer skill v2.0 — Load on-demand via skill_view(). Email scripts moved to projects/email-agent/.*
