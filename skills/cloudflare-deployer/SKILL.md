@@ -82,6 +82,8 @@ async def on_fetch(request, env):
 | Response headers | Python dict in Response.new() | `Object.fromEntries([...])` |
 | wrangler get/delete | Without `--remote` | Always use `--remote` for get/delete |
 | Compatibility | Default `compatibility_date` only | Add `compatibility_flags = ["python_workers"]` |
+| **compatibility_date** | `compatibility_date >= "2026-01-01"` — server introspection fails: `ModuleNotFoundError: No module named 'workers'` | **Always use `compatibility_date = "2025-08-01"` for Python Workers (wrangler 4.95.0)** |
+| Vectorize binding | `[[vectorize_indexes]]` | `[[vectorize]]` (singular) |
 | R2 from Worker | `bucket.put(key, value)` Python string | Python strings auto-convert to JS |
 
 **STEP 2: Write wrangler.toml**
@@ -452,6 +454,10 @@ resp = requests.post(
 | F8 | `wrangler r2 object get` → "key does not exist" | Default local mode | Use `--remote` flag |
 | F9 | `wrangler r2 object` no list subcommand | Not implemented in CLI | Use REST API or bucket-level list |
 | F10 | Python Worker: `python_workers` compatibility flag required | Missing in wrangler.toml | Add `compatibility_flags = ["python_workers"]` |
+| **F11** | `list_all_prompt_template_names()` missing new templates | Runtime caches pre-rebuild list | Restart DeepChat (F5 reload) to pick up new prompts.json |
+| **F12** | wrangler stdout crashes Python subprocess: `UnicodeEncodeError: cp1252` | wrangler uses Unicode box-drawing chars (U+2500-U+257F) | `encoding='utf-8', errors='replace'` or `text=False` + manual decode |
+| **F13** | GitHub API returns HTTP 200 with `[]` for flagged orgs | QNFO org flagged — API silently returns empty | Worker handles gracefully. Cannot distinguish "no issues" from "org flagged." |
+| **F14** | Worker deploy fails: `ModuleNotFoundError: No module named 'workers'` in introspection.py | `compatibility_date >= "2026-01-01"` triggers new `workers` SDK introspection on server-side that doesn't exist yet (wrangler 4.95.0) | **Permanent fix: use `compatibility_date = "2025-08-01"` for ALL Python Workers.** Same date as working github-sync. Also triggered by `[[vectorize_indexes]]` — use `[[vectorize]]` (singular). |
 
 ---
 

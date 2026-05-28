@@ -6,6 +6,8 @@
 >
 > **⚠️ KNOWN QUIRK (F11):** After rebuilding `prompts.json`, the runtime system caches the OLD template list. Templates added during rebuild (like CLOUDFLARE-AUDIT-EXPORT) won't appear in `list_all_prompt_template_names()` until DeepChat restarts. Agents must fall back to manual `wrangler` commands from DEFAULT.md §10 until reloaded.
 
+> **⚠️ KNOWN QUIRK (F14):** Python Workers MUST use `compatibility_date = "2025-08-01"` (NOT 2026+). Wrangler 4.95.0 server-side introspection fails with `ModuleNotFoundError: No module named 'workers'` when the compatibility date is 2026-01-01 or later. Template at `cloudflare-pm-infrastructure/templates/python-worker.wrangler.toml`. Also use `[[vectorize]]` (singular) not `[[vectorize_indexes]]`.
+
 ---
 
 ## 0. SYSTEM ARCHITECTURE — Where Everything Lives
@@ -335,11 +337,14 @@ gh auth status                             # rwnq8 authenticated
 
 ### 6.3 Cloudflare Verification
 ```powershell
-wrangler whoami                # quniverse, 20+ scopes
-wrangler r2 bucket list        # qnfo, mail, 0pus
-wrangler d1 list               # qnfo-audit
-wrangler vectorize list        # qwav-research
-wrangler deployments list      # github-sync, audit-worker, task-worker, search-worker
+# Quick auth check (faster than whoami, no OAuth trigger):
+wrangler r2 bucket list | head -3    # Should list qnfo, mail, 0pus
+# Full auth check:
+wrangler whoami                      # quniverse, 20+ scopes
+wrangler r2 bucket list              # qnfo, mail, 0pus
+wrangler d1 list                     # qnfo-audit
+wrangler vectorize list              # qwav-research
+wrangler deployments list            # github-sync, audit-worker, task-worker, search-worker
 ```
 
 ### 6.4 Worker Verification
@@ -365,9 +370,9 @@ When an agent starts its first session after a rebuild:
 1. **Read this document** — The agent should read REBUILD-FROM-SCRATCH.md
 2. **Run system health check** — `python "G:\My Drive\prompts\tools\system_audit.py"`
 3. **Verify git state** — `git log -1 --oneline` + `git status`
-4. **Check Cloudflare** — `wrangler whoami` + `wrangler deployments list`
+4. **Check Cloudflare** — `wrangler r2 bucket list` (fast) or `wrangler whoami` (full scopes)
 5. **Read latest state from R2** — Check `audit/conversations/` for most recent session
-6. **Check GitHub Issues** — `gh issue list --repo rwnq8/prompts --label project-state`
+6. **Check project tasks** — `wrangler d1 execute qnfo-audit --remote --command="SELECT * FROM tasks WHERE column_name = 'In Progress' OR column_name = 'Blocked';"`
 7. **Resume work** — Pick up from the most recent session's handoff notes
 8. **⚠️ Template availability:** New templates (CLOUDFLARE-AUDIT-EXPORT) may require a DeepChat restart after prompts.json rebuild. Use manual wrangler commands from DEFAULT.md §10 until templates appear.
 
