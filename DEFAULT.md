@@ -150,7 +150,7 @@ The Discovery Index (`qnfo/discovery/index.json` on R2) is the SINGLE entry poin
 ### 3.3 Discovery Index Fallback
 
 If `qnfo/discovery/index.json` does not exist or is corrupt:
-1. Rebuild from sources: enumerate R2 objects, local projects, Archive, GitHub repos
+1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/`, `qnfo/archive/`), local projects (`G:\My Drive\projects\`), Archive (`G:\My Drive\Archive\`)
 2. Build fresh index and upload to `qnfo/discovery/index.json`
 3. Flag session as `[DISCOVERY-REBUILT]` — this is a system recovery action
 
@@ -272,7 +272,7 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 ### Startup
 0. **Pull Discovery Index** (MANDATORY): `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json` — discover ALL ecosystem assets before beginning work
 1. Verify sandbox: working directory within project directory
-2. GitHub check: git remote get-url origin must be qnfo/<repo>.git
+2. Git check: git remote get-url origin must be configured (git is version control ONLY — GitHub platform DEPRECATED)
 3. Branch check: feature branch (verify name unchanged — CPL L19)
 4. Read project-state from R2 `qnfo/audit/state/<project>.json`
 5. Identify next task from R2 `qnfo/audit/backlog/<project>.json`
@@ -316,16 +316,15 @@ All publication documents use curly/smart quotes. Code blocks exempt.
       - Pull current index: `wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json`
       - Add/update entries for: new projects created, publications generated, projects archived, state changes
       - Upload updated index: `wrangler r2 object put qnfo/discovery/index.json --file=<updated> --remote`
-      - If index missing: rebuild from R2 + local + GitHub enumeration and upload fresh
-   f. R2 path: `qnfo/audit/` (conversations/, github/, decisions/, infrastructure/) + `qnfo/discovery/`
-   g. Automated exports handled by github-sync Worker (cron: 06:00 UTC daily)
-   h. For Cloudflare operation details, load skill_view('cloudflare-deployer') v2.0
+      - If index missing: rebuild from R2 + local filesystem enumeration and upload fresh
+   f. R2 path: `qnfo/audit/` (conversations/, decisions/, infrastructure/) + `qnfo/discovery/`
+   g. For Cloudflare operation details, load skill_view('cloudflare-deployer') v2.0
    i. For session closeout workflow, load skill_view('closeout-manager') v2.0
    j. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
 
 5. Run `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<session>"})` — verify ALL phases A-I pass
 6. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
-7. R2 `qnfo/releases/` artifact upload (Cloudflare-native — GitHub Releases deprecated)
+7. R2 `qnfo/releases/` artifact upload (Cloudflare-native)
 8. Present clean closeout summary — do NOT ask for confirmation, just deliver it
 
 ---

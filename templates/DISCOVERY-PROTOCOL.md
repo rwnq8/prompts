@@ -29,8 +29,9 @@ Before beginning any significant work, the agent MUST:
    npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
    
    The index is a unified catalog of ALL projects, publications, decisions, 
-   templates, skills, and archived work. It is the single entry point 
-   for discovering what exists in the QNFO ecosystem.
+   templates, skills, and archived work on Cloudflare R2. It is the single 
+   entry point for discovering what exists in the QNFO ecosystem.
+   GitHub is DEPRECATED. All assets are Cloudflare-native.
 
 2. IF current project {{project_name}} is in the index:
    - Read state: npx wrangler r2 object get qnfo/audit/state/{{project_name}}.json --remote
@@ -145,10 +146,9 @@ Before beginning any significant work, the agent MUST:
   "projects": {
     "<project-name>": {
       "status": "active|archived|complete",
-      "repo": "qnfo/<repo-name>",
-      "state_r2": "qnfo/audit/state/<project>.json",
-      "backlog_r2": "qnfo/audit/backlog/<project>.json",
-      "releases_r2": "qnfo/releases/<project>/",
+      "r2_state": "qnfo/audit/state/<project>.json",
+      "r2_backlog": "qnfo/audit/backlog/<project>.json",
+      "r2_releases": "qnfo/releases/<project>/",
       "pages_url": "deep.qwav.tech/<path>/",
       "local_path": "G:/My Drive/projects/<project>/",
       "archive_path": "G:/My Drive/Archive/<project>/",
@@ -224,11 +224,10 @@ npx wrangler r2 object put qnfo/discovery/index.json --file=_updated_index.json 
 
 If `qnfo/discovery/index.json` is missing or corrupt:
 
-1. **Rebuild from sources:**
-   - Enumerate R2 objects: check `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/releases/`
+1. **Rebuild from Cloudflare sources:**
+   - Enumerate R2 objects: check `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/releases/`, `qnfo/archive/`
    - Enumerate local: `G:\My Drive\projects\`, `G:\My Drive\Archive\`
-   - Enumerate GitHub: `gh repo list rwnq8 --json name,description`
-   - Build fresh index and upload
+   - Build fresh index and upload to `qnfo/discovery/index.json`
 
 2. **If wrangler not available:**
    - Manual discovery: search local filesystem + Archive + R2 individually

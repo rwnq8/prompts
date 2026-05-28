@@ -88,9 +88,9 @@ python tools/deploy.py --skills-only  # Skills only
 Always run `--dry-run` first to audit what will change, then run live. DeepChat restart required for system prompt and skill changes to take effect.
 
 **Three-Way Redundancy** (mitigates platform failure risk):
-1. **GitHub** — `git push origin main` on every commit; automatic via git
-2. **Google Drive** — The canonical `G:\My Drive\prompts\` IS on Google Drive; inherent redundancy
-3. **Cloudflare R2** — Sync via `cloudflare-deployer` skill (`skill_view('cloudflare-deployer')`); provides off-Google redundancy in case of Google account/org flag
+1. **Cloudflare R2** — All project state, audit trails, and the Discovery Index live on R2. Automatic redundancy through Cloudflare's infrastructure.
+2. **Google Drive** — The canonical `G:\My Drive\prompts\` IS on Google Drive; inherent redundancy with local agent access.
+3. **Git (version control)** — `git push origin main` for code versioning. Git is source control ONLY; all project management is Cloudflare-native.
 
 **Rule:** NEVER recreate `optimized-settings/`. It was a deployment staging fork that diverged from canonical source. All deployment now flows directly from canonical root paths via `tools/deploy.py`.
 
@@ -334,7 +334,7 @@ npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_
 ```
 The Discovery Index is the single entry point for discovering ALL QNFO ecosystem assets. Every generated prompt MUST include this as Step 0 in its workflow. The agent must NOT proceed to project-specific work until discovery is complete.
 
-If the index does not exist: rebuild from R2 + local filesystem + GitHub enumeration and upload. Flag session as `[DISCOVERY-REBUILT]`.
+If the index does not exist: rebuild from R2 + local filesystem enumeration and upload. Flag session as `[DISCOVERY-REBUILT]`.
 
 ### Mid-Session Execution Checkpoint (MANDATORY — integrated into Step-by-Step Workflow)
 
@@ -389,15 +389,15 @@ PERMANENT (NEVER DELETE — project provenance):
 - These ARE the project's chronological record. Deleting them destroys
   the audit trail. Even if superseded, they document WHAT was done WHEN.
 
-**PM FILES DEPRECATED (Migrated to GitHub):** All traditional project
-management files are replaced by Cloudflare-native features per DEFAULT.md
-§0.6.8 File Deprecation Map:
-- PROJECT STATE.md → Cloudflare task (project-state label)
-- SPRINT.md → Cloudflare project board
-- BACKLOG.md → Cloudflare tasks (D1)
-- CHANGELOG.md → R2 releases (qnfo/releases/)
-- LEARNINGS.md → GitHub Wiki
-- DECISIONS.md → GitHub Discussions
+**PM FILES DEPRECATED (Migrated to Cloudflare):** All traditional project
+management files are replaced by Cloudflare-native storage per DEFAULT.md
+File Deprecation Map:
+- PROJECT STATE.md → R2 `qnfo/audit/state/<project>.json`
+- SPRINT.md → R2 `qnfo/audit/backlog/<project>.json`
+- BACKLOG.md → R2 `qnfo/audit/backlog/<project>.json`
+- CHANGELOG.md → R2 `qnfo/releases/`
+- LEARNINGS.md → R2 `qnfo/audit/learnings/`
+- DECISIONS.md → R2 `qnfo/audit/decisions/DECISION-LOG.md`
 Do NOT include these in new generated prompts as PERMANENT files.
 
 EPHEMERAL (DELETE when workflow complete):
@@ -477,9 +477,9 @@ At least 8 scenarios:
 
 ### Cloudflare-Native Workflow (MANDATORY for project agents)
 
-The `gh` CLI (v2.92.0+) is the PRIMARY project management tool. File-based tracking is DEPRECATED.
+`wrangler` (v4.95+) is the PRIMARY project management tool. File-based tracking is DEPRECATED. GitHub platform features (Issues, Projects, Wiki, Discussions) are DEPRECATED. Git is used for version control ONLY.
 
-**Required gh auth scopes:** `repo`, `workflow`, `read:org`, `gist`. Verify with `gh auth status`.
+**Required wrangler auth:** `wrangler whoami` must succeed. Cloudflare is the PRIMARY platform for all project management, discovery, and state storage.
 
 #### Discover Active Work (Session Start)
 
@@ -492,7 +492,7 @@ npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_
 
 The Discovery Index (`qnfo/discovery/index.json` on R2) is the SINGLE entry point for discovering ALL QNFO assets — projects, publications, decisions, templates, skills, archive, and infrastructure. Every session MUST start here. Without the index, agents cannot know what exists.
 
-If the index does not exist: rebuild from R2 enumeration + local filesystem + GitHub repos → upload to `qnfo/discovery/index.json`. Flag session as `[DISCOVERY-REBUILT]`.
+If the index does not exist: rebuild from R2 enumeration + local filesystem → upload to `qnfo/discovery/index.json`. Flag session as `[DISCOVERY-REBUILT]`.
 
 **Step 1: Active Work Discovery**
 
@@ -550,26 +550,25 @@ If the index is missing: rebuild from R2 + local filesystem + GitHub enumeration
 #### File Deprecation Map — NEVER CREATE These Files:
 | Deprecated File | Cloudflare-Native Replacement |
 |:----------------|:--------------------------|
-| PROJECT STATE.md | Cloudflare task (label: `project-state`) |
-| SPRINT.md | Cloudflare project board (Kanban board) |
-| BACKLOG.md | Cloudflare tasks (D1) |
-| CHANGELOG.md | R2 releases (qnfo/releases/) |
-| LEARNINGS.md | GitHub Wiki |
-| DECISIONS.md | GitHub Discussions |
+| PROJECT STATE.md | R2 `qnfo/audit/state/<project>.json` |
+| SPRINT.md | R2 `qnfo/audit/backlog/<project>.json` |
+| BACKLOG.md | R2 `qnfo/audit/backlog/<project>.json` |
+| CHANGELOG.md | R2 `qnfo/releases/` |
+| LEARNINGS.md | R2 `qnfo/audit/learnings/` |
+| DECISIONS.md | R2 `qnfo/audit/decisions/DECISION-LOG.md` |
 
 #### Project Initiation (New Projects)
-Follow QWAV-DEFAULT.md §0.9.1 Project Initiation Protocol:
-1. Create repo under `qnfo/` org (NEVER personal account)
-2. Create required labels: `project-state`, `handoff`, `task`, `bug`, `enhancement`, `blocked`, `documentation`, `research`
-3. Create project-state Issue
-4. Create Cloudflare project board board
-5. Register on QNFO Program Board
+Follow QWAV-DEFAULT.md Project Initiation Protocol (Cloudflare-Native):
+1. Create R2 state object: `wrangler r2 object put qnfo/audit/state/<project>.json`
+2. Create R2 backlog object: `wrangler r2 object put qnfo/audit/backlog/<project>.json`
+3. Register in Discovery Index: add project entry to `qnfo/discovery/index.json`
+4. Register on QNFO Program infrastructure (D1 + Worker API)
 
 #### Verification Gate
-Before delivering ANY response claiming GitHub operations:
-- Verify issue exists: `curl "https://task-worker.DOMAIN/api/tasks/<num>`"
-- Verify project item: `curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT"
-- Never claim GitHub operations that weren't actually executed.
+Before delivering ANY response claiming R2 operations:
+- Verify object exists: `wrangler r2 object get qnfo/audit/state/<project>.json --remote`
+- Verify Discovery Index: `wrangler r2 object get qnfo/discovery/index.json --remote`
+- Never claim Cloudflare operations that weren't actually executed.
 ```
 
 ---
@@ -676,7 +675,7 @@ Every generated prompt gets a unique short identifier and a semantic version num
 | Never inline Python through PowerShell (Rule 13) | Use `python -c "..."` from PowerShell |
 | Scan for non-ASCII before Python execution (Rule 12) | Let Unicode crashes iterate one character at a time |
 | Verify every claim with filesystem/git/re-execution before delivering response | Deliver responses with unverifiable claims |
-| Require Cloudflare-native project management (Issues, Projects, qnfo/ repos) from initialization in all project-agent prompts | Allow "local project" or "local-only" workflows without GitHub integration |
+| Require Cloudflare-native project management (R2 state/backlog, Discovery Index) from initialization in all project-agent prompts | Allow "local project" or "local-only" workflows without Cloudflare integration |
 
 ---
 
