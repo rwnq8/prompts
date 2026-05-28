@@ -423,7 +423,7 @@ if os.path.exists(kaizen_path):
     audit_file = os.path.join(prompts_dir, "audit", "kaizen", "last_run.json")
     if os.path.exists(audit_file):
         with open(audit_file, "r") as f:
-            last_run = json.load(f)
+            last_run = _json.load(f)
         last_time = last_run.get("timestamp", "unknown")
         print(f"  K2. Last Kaizen run: {last_time} PASS")
     else:
