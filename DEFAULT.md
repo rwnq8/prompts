@@ -245,10 +245,28 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 5. Identify next task from R2 `qnfo/audit/backlog/<project>.json`
 6. BEGIN WORK IMMEDIATELY — AUTO-CONTINUE is default
 
-### Close-Out (Auto-Execute)
+### Close-Out (AUTONOMOUS — Do NOT wait for "TERMINATE")
+
+**Trigger:** The agent detects ALL planned tasks are complete → auto-initiate closeout WITHOUT user prompting. Never ask "shall I close out?" Never wait for the user to say "TERMINATE."
+
+0. **Task Execution Verification** (MANDATORY — before any closeout step):
+   a. Compare planned tasks (from Issue, backlog, prior HANDOFF) vs. executed tasks
+   b. For every file claimed as written: `Test-Path <file>` + `Get-Content <file> -First 3`
+   c. For every commit claimed: `git log --oneline` must contain the hash
+   d. For every Python script claimed as run: re-execute and verify output matches
+   e. Any unexecuted item → either execute NOW or document as `[DEFERRED: reason]` in handoff
+   f. **GATE:** If ANY planned task has no execution evidence → closeout BLOCKED
+
 1. All commits verified: git log -1 --oneline
-2. Load skill_view('closeout-manager') for full close-out workflow
-3. **Audit Trail Export to Cloudflare R2** (MANDATORY — every session):
+2. Load skill_view('closeout-manager') v2.0 for full close-out workflow
+3. **Project Handoff Initialization** (MANDATORY — Projects Directory):
+   a. Scan ALL projects in `G:\My Drive\projects\` for HANDOFF.md
+   b. For current session's project: update HANDOFF.md with date, agent, work done, state, next steps, blockers
+   c. For any project missing HANDOFF.md: create via `fill_prompt_template("HANDOFF", {...})`
+   d. Verify all handoffs > 100 bytes: `(Get-Item <path>).Length -gt 100`
+   e. **GATE:** Any project without valid HANDOFF.md → closeout BLOCKED
+
+4. **Audit Trail Export to Cloudflare R2** (MANDATORY — every session):
    a. Write session summary to temp file: `YYYY-MM-DD-topic.md` containing:
       - Agent, session date, summary
       - Decisions made (with rationale)
@@ -266,9 +284,11 @@ All publication documents use curly/smart quotes. Code blocks exempt.
    g. For Cloudflare operation details, load skill_view('cloudflare-deployer') v2.0
    h. For session closeout workflow, load skill_view('closeout-manager') v2.0
    i. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
-4. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
-5. R2 `qnfo/releases/` artifact upload (Cloudflare-native — GitHub Releases deprecated)
-6. Auto-continue to next project
+
+5. Run `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<session>"})` — verify ALL phases A-I pass
+6. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
+7. R2 `qnfo/releases/` artifact upload (Cloudflare-native — GitHub Releases deprecated)
+8. Present clean closeout summary — do NOT ask for confirmation, just deliver it
 
 ---
 
