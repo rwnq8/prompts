@@ -94,6 +94,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] Console audit: zero unexpected errors on page load and during ALL interaction paths
 - [ ] Mobile responsiveness check OR explicit "desktop-only" declaration visible in UI
 - [ ] Accessibility baseline: color contrast ratios pass WCAG AA, keyboard-navigable, alt text on key visuals
+- [ ] **Analytics verified active:** For deployed sites, confirm analytics data is flowing — either Cloudflare zone analytics returning non-zero requests OR GA4 Real-Time showing test visit. No analytics confirmation = site is live but blind.
 - [ ] All assets load from live URL (zero 404s on JS/CSS/images — verify with browser network tab)
 - [ ] `<title>`, `<meta description>`, and Open Graph tags present in `<head>`
 - [ ] `.nojekyll` file present at root (GitHub Pages requirement)
@@ -106,3 +107,22 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 
 ---
 *Generated from DEFINITION-OF-DONE-TEMPLATE.md v2.0*
+
+## DEPLOYMENT TASK (Cloudflare Pages / Workers / R2)
+
+- [ ] Site returns HTTP 200 with valid HTML on production URL
+- [ ] HTTPS enforced (HTTP → HTTPS redirect working)
+- [ ] Custom domain verified active (not pending/initializing)
+- [ ] **Analytics gate (BLOCKING):** At least one analytics provider confirmed active:
+  - [ ] Cloudflare zone analytics: non-zero requests in dashboard API response, OR
+  - [ ] Cloudflare Web Analytics: RUM site tag returns 200, OR
+  - [ ] GA4: Real-Time report shows test visit within 60 seconds, OR
+  - [ ] Google Sites Analytics: measurement ID confirmed inserted in site settings
+  - [ ] If NO analytics provider confirmed: `[BLOCKED: analytics-not-verified]`
+- [ ] `cf-ray` header confirmed present (proxied traffic flowing)
+- [ ] DNS CNAME record verified with `dig` or `curl -sI`
+- [ ] Deployment evidence posted to GitHub Issue (deployment URL, analytics status, verification output)
+- [ ] Original source (GitHub Pages / prior host) still functional (dual-running until cutover)
+- [ ] Free tier thresholds checked: no cost risk from deployment
+- [ ] Test visit from at least 2 geographic locations (generate traffic via browser + curl)
+- [ ] UNIVERSAL GATES above satisfied

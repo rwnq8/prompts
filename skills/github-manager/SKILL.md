@@ -1,110 +1,140 @@
 ---
 name: github-manager
-description: Manage GitHub repositories, issues, projects, releases, and PRs via gh CLI. Use when the agent needs to create repos, manage project boards, or interact with GitHub Issues/Projects.
-tools: exec
+description: GitHub repository management — Issues, Projects, Releases, Wiki, and PR operations via gh CLI. Use when the agent needs to manage GitHub-native resources, as FALLBACK when Cloudflare R2 is unavailable for PM operations.
+version: "1.0"
 ---
-# GitHub Manager
 
-## When to Use
-- Creating new repositories (under qnfo/ org)
-- Managing GitHub Issues (create, label, close, comment)
-- Managing GitHub Projects (Kanban boards)
-- Creating GitHub Releases
-- Managing Pull Requests
-- Updating wiki pages
+# GITHUB MANAGER SKILL — v1.0
+
+> **On-demand skill.** Load via `skill_view('github-manager')` for GitHub operations.
+> **NOTE:** Cloudflare R2 is the PRIMARY platform for PM state. GitHub is FALLBACK for issue tracking when R2 is unavailable.
+
+---
 
 ## Authentication
+
 ```bash
-gh auth status  # Must show: repo, workflow, read:org, gist
-# If not authenticated: gh auth login
+# Verify auth
+gh auth status
+
+# Required scopes: repo, workflow, read:org, gist
 ```
 
-## Quick Reference
+**Account:** rwnq8
+**⚠️ QNFO org is FLAGGED by GitHub.** Use rwnq8/qwav-program for tracking when qnfo is unavailable.
 
-### Repositories
+---
+
+## Repository Management
+
 ```bash
-# Create under qnfo/ org (NEVER personal account)
-gh repo create qnfo/<name> --public --description "..."
+# Create repo
+gh repo create qnfo/<repo-name> --public --description "<desc>"
 
-# Clone
-gh repo clone qnfo/<name>
+# View repo
+gh repo view qnfo/<repo-name>
+
+# List repos
+gh repo list qnfo --limit 50
 ```
 
-### Issues
+---
+
+## Issues (FALLBACK ONLY)
+
 ```bash
-# Discover active work
-gh issue list --repo qnfo/<name> --label "project-state" --state open
-gh issue list --repo qnfo/<name> --label "handoff" --state open
+# Create issue
+gh issue create --repo qnfo/<repo> --title "<title>" --label "<label>" --body "<body>"
 
-# Create
-gh issue create --repo qnfo/<name> --title "..." --body "..." --label "task,bug"
+# List issues
+gh issue list --repo qnfo/<repo> --label "project-state"
 
-# Close
-gh issue close --repo qnfo/<name> <num> --reason completed
+# Close issue
+gh issue close <num> --repo qnfo/<repo> --reason completed
 
-# Edit labels
-gh issue edit --repo qnfo/<name> <num> --add-label "in-progress"
-
-# Comment
-gh issue comment --repo qnfo/<name> <num> --body "STATUS: ACTIVE | PHASE: 2"
+# Comment on issue
+gh issue comment <num> --repo qnfo/<repo> --body "<comment>"
 ```
 
-### Required Labels (Create on Repo Init)
-```
-project-state, handoff, task, bug, enhancement, blocked, documentation, research
-```
+---
+
+## Labels
+
 ```bash
-gh label create "project-state" --repo qnfo/<name> --color "0E8A16"
-gh label create "handoff" --repo qnfo/<name> --color "D93F0B"
+# Create label
+gh label create --repo qnfo/<repo> <label> --color <hex>
+
+# List labels
+gh label list --repo qnfo/<repo>
+
+# Standard labels: project-state, handoff, task, bug, enhancement, blocked, documentation, research
 ```
 
-### Projects (Kanban Boards)
+---
+
+## Projects
+
 ```bash
+# List projects
 gh project list --owner qnfo
-gh project item-list <board-num> --owner qnfo
-gh project item-create <board-num> --owner qnfo --title "..." --body "..."
+
+# Create project
+gh project create --owner qnfo --title "<name>"
+
+# Add item
+gh project item-create <board-num> --owner qnfo --title "<title>" --body "<body>"
 ```
 
-### Releases
+---
+
+## Releases
+
 ```bash
-gh release create v1.0.0 --repo qnfo/<name> --title "Release v1.0.0" --notes "..."
-gh release upload v1.0.0 ./file.pdf --repo qnfo/<name>
+# Create release
+gh release create v1.0 --repo qnfo/<repo> --title "v1.0" --notes "<notes>" <file.pdf>
+
+# List releases
+gh release list --repo qnfo/<repo>
 ```
 
-### Wiki
+---
+
+## Wiki
+
 ```bash
-# Clone wiki repo
-git clone https://github.com/rwnq8/prompts.wiki.git
-# Edit pages, commit, push
+# Clone wiki
+git clone https://github.com/qnfo/<repo>.wiki.git
+
+# Edit and push changes
+cd <repo>.wiki
+# Edit files
+git add .
+git commit -m "Update wiki"
+git push
 ```
 
-### Pull Requests
-```bash
-gh pr create --repo qnfo/<name> --title "..." --body "..."
-gh pr list --repo qnfo/<name>
-gh pr merge <num> --repo qnfo/<name> --squash
-```
+---
 
-## Project Initiation Protocol (New Projects)
-1. Create repo: `gh repo create qnfo/<name> --public`
-2. Create required labels (8 labels above)
-3. Create project-state Issue
-4. Create GitHub Project board
-5. Register on QNFO Program Board
-6. Clone and initialize with README.md
+## Platform Failure Recovery
 
-## Failure Scenarios
-| Failure | Cause | Recovery |
-|:--------|:------|:---------|
-| gh not authenticated | No token | `gh auth login` |
-| Repo already exists | Name collision | Use unique name or check existing |
-| Label creation fails | Permission issue | Verify org membership |
-| Issue rate-limited | Too many requests | Wait 60s, retry once |
-| QNFO org flagged | Platform abuse detection | Document and escalate |
+If QNFO org is flagged/blocked:
+1. Use `rwnq8/` personal account as fallback
+2. Annotate all files with `[GITHUB-FALLBACK: rwnq8/<repo>]`
+3. Local files become the primary record
+4. See DEFAULT.md §0.6.8.1 for full recovery protocol
 
-## Platform Failure Recovery Protocol
-If GitHub is unavailable (rate limiting, outage, QNFO org flagging):
-1. Continue work locally — do NOT block on GitHub
-2. Local PM files serve as MANDATORY REDUNDANT BACKUP
-3. Sync to GitHub when available
-4. Priority: local filesystem first, GitHub second
+---
+
+## When NOT to Use GitHub
+
+| Operation | Prefer Instead |
+|:----------|:---------------|
+| Project state tracking | R2 `qnfo/audit/state/<project>.json` |
+| Backlog management | R2 `qnfo/audit/backlog/<project>.json` |
+| Decision logging | R2 `qnfo/audit/decisions/DECISION-LOG.md` |
+| Release artifacts | R2 `qnfo/releases/` |
+| Deployment tracking | R2 `qnfo/deployments/` |
+
+---
+
+*github-manager skill v1.0 — Load on-demand via skill_view(). GitHub is FALLBACK for PM operations.*

@@ -1,93 +1,105 @@
 ---
 name: publication-publisher
-description: Publish documents with proper formatting, Zenodo DOI registration, and social media cross-posting. Use when the agent is publishing a research document, paper, or report.
-tools: exec, fill_prompt_template
+description: End-to-end publication workflow — formatting, PDF building, Zenodo upload, Cloudflare deployment, and social media orchestration. Use when publishing papers, reports, or other documents.
+version: "1.0"
 ---
-# Publication Publisher
 
-## When to Use
-- Publishing research papers or reports
-- Registering Zenodo DOIs
-- Cross-posting to social media
-- Applying publication formatting standards
+# PUBLICATION PUBLISHER SKILL — v1.0
 
-## Workflow
-1. Apply formatting standards (Visible Author Block, curly quotes)
-2. Register Zenodo DOI (if applicable)
-3. Copy to GitHub Releases
-4. Trigger PDF generation (if applicable)
-5. Trigger social media cross-posting
+> **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
+> Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `PDF-BUILDER-TEMPLATE.md`
 
-## Visible Author Block (MANDATORY)
-Every release document MUST include at the top:
+---
+
+## Publication Pipeline
+
 ```
-**Author:** [Full Name] | **Date:** [YYYY-MM-DD] | **License:** CC BY 4.0
-```
-This block MUST be present in visible content — not hidden in metadata.
-
-## Curly Quotes Standard
-All publication documents use curly/smart quotes:
-- Opening: `“` (")  |  Closing: `”` (")
-- Single: `‘` (')  |  Single closing: `’` (')
-Code blocks and inline code are exempt.
-
-## Zenodo DOI Registration
-```bash
-# Via Zenodo REST API (preferred)
-python -c "
-import requests, json
-# Create deposit
-resp = requests.post(
-    'https://zenodo.org/api/deposit/depositions',
-    params={'access_token': ZENODO_TOKEN},
-    json={'metadata': {'title': '...', 'upload_type': 'publication', ...}},
-    headers={'Content-Type': 'application/json'}
-)
-deposition_id = resp.json()['id']
-
-# Upload file
-with open('paper.pdf', 'rb') as f:
-    requests.put(
-        f'https://zenodo.org/api/deposit/depositions/{deposition_id}/files/paper.pdf',
-        params={'access_token': ZENODO_TOKEN},
-        data=f
-    )
-
-# Publish
-requests.post(
-    f'https://zenodo.org/api/deposit/depositions/{deposition_id}/actions/publish',
-    params={'access_token': ZENODO_TOKEN}
-)
-"
+Draft Complete → Format (§11) → Build PDF → Zenodo Upload → Cloudflare Deploy → Social Posts
 ```
 
-### Sandbox vs Production
-- Sandbox: `https://sandbox.zenodo.org/api/` (requires separate token)
-- Production: `https://zenodo.org/api/`
-- If sandbox token unavailable: document as [SANDBOX-SKIPPED], proceed to production
+---
 
-### Failure: sandbox.zenodo.org 403
-Zenodo sandbox requires a separate token from production. If 403:
-1. Document as [SANDBOX-SKIPPED]
-2. Proceed directly to production deposit
-3. Do NOT retry loop against 403
+## Step 1: Format (§11 Standards)
 
-## Social Media Cross-Posting
-```python
-fill_prompt_template("SOCIAL-ORCHESTRATOR", {
-    "platforms": "twitter, linkedin, mastodon",
-    "content": "[Title] + link to publication",
-    "schedule": "now"
-})
+### Visible Author Block (MANDATORY)
+Every release document must start with:
+```
+**Author:** Rowan Quni-Gudzinas | **Date:** YYYY-MM-DD | **License:** CC BY 4.0
 ```
 
-## Pre-Publication Checklist
+### Curly Quotes
+All publication documents use curly/smart quotes (Unicode: \u201c \u201d \u2018 \u2019). Code blocks exempt.
+
+### Pre-Publication Checklist
 - [ ] Visible Author Block present
-- [ ] Curly quotes applied (scan for straight quotes outside code blocks)
-- [ ] All file references verified (Test-Path)
-- [ ] Git log confirms all changes committed
+- [ ] Curly quotes applied
 - [ ] REVIEWER subagent passed fabrication audit
-- [ ] PDF generated (if document project)
-- [ ] Copied to GitHub Releases
-- [ ] Zenodo DOI registered (if applicable)
-- [ ] Social cross-post triggered (if applicable)
+- [ ] All file references verified (`Test-Path`)
+- [ ] Git log confirms all changes committed
+- [ ] PDF generated and verified
+
+---
+
+## Step 2: Build PDF
+
+Use `fill_prompt_template("PDF-BUILDER-TEMPLATE", {source, output, ...})` to generate PDF configuration, then:
+```bash
+python "G:\My Drive\prompts\tools\build_pdf.py"
+```
+
+---
+
+## Step 3: Zenodo Upload
+
+Use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
+```bash
+python "G:\My Drive\prompts\tools\zenodo_publish.py"
+```
+
+---
+
+## Step 4: Cloudflare Deploy
+
+```bash
+# Deploy to Cloudflare Pages
+npx wrangler pages deploy <dir> --project-name qwav --branch main
+
+# Upload PDF to R2
+npx wrangler r2 object put qnfo/releases/<file>.pdf --file=<path>
+
+# Generate SEO files
+python "G:\My Drive\prompts\tools\generate-seo.py"
+```
+
+---
+
+## Step 5: Social Media Orchestration
+
+Use `fill_prompt_template("SOCIAL-ORCHESTRATOR-TEMPLATE", {...})` to generate posts for all channels.
+Post via Buffer API `create_post` tool with `schedulingType: "notification"` for manual approval.
+
+**Channels:** Twitter/X, Bluesky, LinkedIn (Mastodon pending Buffer plan upgrade)
+
+---
+
+## Descriptive Filenames
+
+Use descriptive publication filenames (DEFAULT.md §10):
+```
+QUANTUM-ERROR-CORRECTION-ULTRAMETRIC-v1.0.pdf
+```
+NOT: `paper.pdf`, `final.pdf`, `output.pdf`
+
+---
+
+## Reference Files
+
+- Publication standards: DEFAULT.md §11
+- PDF builder: `templates/PDF-BUILDER-TEMPLATE.md`
+- Zenodo: `templates/ZENODO-PUBLISH.md`
+- Social orchestrator: `templates/SOCIAL-ORCHESTRATOR-TEMPLATE.md`
+- Cloudflare deploy: `templates/CLOUDFLARE-DEPLOYMENT.md`
+
+---
+
+*publication-publisher skill v1.0 — Load on-demand via skill_view()*

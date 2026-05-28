@@ -1,129 +1,146 @@
 ---
 name: git-hygiene
-description: Git failure recovery, branch management, and advanced scenarios. Use when the agent encounters git errors, branch issues, or needs to recover from git problems.
-tools: exec
+description: Git recovery and hygiene procedures — branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when git operations fail or the workspace is in an unexpected state.
+version: "1.0"
 ---
-# Git Hygiene
 
-## When to Use
-- Git operation fails (commit rejected, merge conflict, detached HEAD)
-- Branch was renamed by parallel process (CPL L19)
-- Need to recover lost commits
-- Dirty worktree preventing operations
-- Accidentally committed to main/master
+# GIT HYGIENE SKILL — v1.0
 
-## Core Rules (Always Applied)
-1. NEVER commit to main/master — feature branches only
-2. Pre-work: `git branch --show-current` → must be `feature/<name>`
-3. Post-work: `git log -1 --oneline` after every commit
-4. Write-then-verify: filesystem verification before staging
-5. Never use `-ErrorAction SilentlyContinue`
+> **On-demand skill.** Load via `skill_view('git-hygiene')` when git operations fail.
+> Source: DEFAULT.md §9 + QWAV-AGENT.md §7
 
-## Failure Scenario Quick Reference
+---
 
-### F1: On main/master
+## IRON RULE: NEVER Commit to main/master
+
+**Feature branches only.** Always verify before work:
 ```bash
-git checkout -b feature/<kebab-case-description>
+git branch --show-current
+# Must return: feature/<kebab-case-description>
 ```
 
-### F2: Dirty worktree (uncommitted changes)
+---
+
+## Common Recovery Scenarios
+
+### Detached HEAD
 ```bash
-git stash push -m "WIP: <description>"
-# ... do work ...
+# Create rescue branch from current state
+git checkout -b feature/recovery-<timestamp>
+
+# Verify state
+git log -1 --oneline
+git branch --show-current
+```
+
+### Merge Conflicts
+```bash
+# Abort and retry
+git merge --abort
+git pull --rebase
+# Resolve conflicts manually, then:
+git add .
+git rebase --continue
+```
+
+### Branch Renamed by Another Process (CPL L19)
+```bash
+# Verify current branch name
+git branch --show-current
+
+# If different from expected, update recorded name — do NOT create another branch
+# Continue work on current branch
+```
+
+### Push Rejected
+```bash
+# Pull remote changes first
+git pull --rebase
+# Resolve any conflicts
+git push
+```
+
+### Wrong Branch — Uncommitted Changes
+```bash
+# Stash changes
+git stash
+# Switch to correct branch
+git checkout feature/<correct-branch>
+# Apply stash
 git stash pop
 ```
 
-### F3: Commit not executed (phantom claim)
+---
+
+## Git Protocol (Pre-Work)
+
 ```bash
-# Verify what's staged
-git diff --cached --name-status
-# If nothing staged: git add <files>, then git commit
+# 1. Verify branch
+git branch --show-current
+# Must be feature/<name>
+
+# 2. Verify branch name hasn't changed (CPL L19)
+# Compare against expected name
+
+# 3. Pull latest
+git pull --rebase
 ```
 
-### F4: Detached HEAD
-```bash
-git checkout -b feature/<recovery-branch>
-```
+## Git Protocol (Post-Work)
 
-### F5: Merge conflict
 ```bash
-git status  # See conflicted files
-# Resolve conflicts in editor
-git add <resolved-files>
-git commit -m "ACTION:MERGE FILE: <files> RATIONALE:Resolve conflicts"
-```
+# 1. Filesystem verify
+Test-Path <file>
+Get-Content <file> -First 5
 
-### F6: Wrong branch (committed to wrong feature branch)
-```bash
-git log -1 --oneline  # Note commit hash
-git checkout <correct-branch>
-git cherry-pick <hash>
-git checkout <wrong-branch>
-git reset --hard HEAD~1
-```
-
-### F7: Forgot to commit
-```bash
-git status  # See what changed
+# 2. Stage
 git add <files>
+
+# 3. Commit with format
 git commit -m "ACTION:[CREATE|EDIT|DELETE] FILE: <path> RATIONALE:<reason>"
+
+# 4. Verify commit
+git log -1 --oneline
+
+# 5. Verify branch
+git branch --show-current
 ```
 
-### F8: Accidental `git add .` (staged too many files)
-```bash
-git reset HEAD <unwanted-file>  # Unstage specific files
-# Or: git reset HEAD  (unstage all, then selectively re-add)
-```
-
-### F9: Orphan feature branch never merged
-```bash
-# If work is complete:
-git checkout main
-git merge feature/<name>
-git branch -d feature/<name>
-
-# If work is abandoned:
-git branch -D feature/<name>  # Force delete with documented rationale
-```
-
-### F10: Branch renamed by parallel process (CPL L19)
-```bash
-# Symptom: git branch --show-current shows different name
-#        but git log shows same commits
-# Action: Update recorded branch name, continue — do NOT create another branch
-git branch --show-current  # Note new name
-git log -1 --oneline       # Verify commits match
-# Continue work on renamed branch
-```
-
-### F11: git log verification fails (CPL L13)
-```bash
-# Expected: git log -1 --oneline shows the commit you just made
-# If not: check git status, re-stage, re-commit
-```
-
-### F12: Write-then-verify failure (CPL L15)
-```bash
-# After every file write or edit:
-Test-Path <file>           # Must return True
-Get-Content <file> -First 5 # Must show expected content
-# If either fails: re-write file, re-verify
-```
-
-## Branch Naming Convention
-```
-feature/<kebab-case-description>
-```
-- Lowercase, hyphens, concise
-- Examples: `feature/git-hygiene-enforcement`, `feature/add-email-skill`
-- Anti-patterns: `fix`, `test`, `update`, `my-branch`, `temp`
+---
 
 ## Commit Format
+
 ```
 ACTION:[CREATE|EDIT|DELETE] FILE: <path> RATIONALE:<reason>
 ```
-Example: `ACTION:CREATE FILE: skills/email-composer/SKILL.md RATIONALE:Extract email COM from DEFAULT.md into on-demand skill`
 
-## Ultimate Rule
-**If you say you committed, the commit MUST exist.**
-Verify with `git log -1 --oneline` before claiming any git operation.
+Examples:
+- `ACTION:CREATE FILE: papers/quantum-error-v1.md RATIONALE:Initial draft`
+- `ACTION:EDIT FILE: README.md RATIONALE:Update project state`
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Fix |
+|:-------------|:----|
+| "I committed" without `git log -1` verification | Always verify with git log |
+| Direct commits to main/master | Feature branches only — IRON RULE |
+| Creating new branch when branch renamed | Update recorded name (CPL L19) |
+| `-ErrorAction SilentlyContinue` in git commands | Use `$LASTEXITCODE`, `try/catch` |
+
+---
+
+## Verification Rules
+
+| After Every... | Verify With... |
+|:---------------|:---------------|
+| Commit | `git log -1 --oneline` |
+| Branch switch | `git branch --show-current` |
+| Push | `git log -1 --oneline` (confirm remote) |
+
+**Never claim "committed" without git log verification (CPL L13).**
+
+---
+
+*git-hygiene skill v1.0 — Load on-demand via skill_view() for git recovery*

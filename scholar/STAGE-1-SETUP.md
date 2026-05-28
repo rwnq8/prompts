@@ -6,12 +6,12 @@
 For scholarly research, you may access:
 - `G:\My Drive\prompts\scholar\` — Active research pipeline prompts
 - `G:\My Drive\Archive\` — Archived historical research
-- `GitHub Releases (via gh release)\` — Research publications and reference materials **(READ-ONLY for this stage; writes to releases require STAGE-4 user-approval gate)**
+- `R2 releases (qnfo/releases/)\` — Research publications and reference materials **(READ-ONLY for this stage; writes to releases require STAGE-4 user-approval gate)**
 - `G:\My Drive\prompts\` — Project workspace (current research files)
 
 Use Python `os.path.exists()` to check paths before reading.
 
-**RELEASE PUBLISHING RULE:** This stage (Setup) does NOT write to `GitHub Releases (via gh release)\`. Publication happens ONLY through STAGE-4, which requires explicit user approval. Do not autonomously place files in the releases directory.
+**RELEASE PUBLISHING RULE:** This stage (Setup) does NOT write to `R2 releases (qnfo/releases/)\`. Publication happens ONLY through STAGE-4, which requires explicit user approval. Do not autonomously place files in the releases directory.
 
 ## 0.5 FILE NAMING CONVENTION (PROVENANCE & AUDIT)
 

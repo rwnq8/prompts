@@ -149,6 +149,11 @@ Before starting any significant task, the agent MUST:
 
 **Pattern:** EXPLORER (alternatives) → IMPLEMENTER (draft) → REVIEWER (validate) → Parent saves + commits.
 
+**Subagents** (invoke via `subagent_orchestrator` with `mode: "parallel"` or `"chain"`):
+- `slot-mp9wx0q7-7125` → **IMPLEMENTER** (convergent execution: drafting, building from specs)
+- `slot-mp9wx1oa-ypw2` → **REVIEWER** (critical evaluation: blind validation, gap analysis)
+- `self` → **EXPLORER** (divergent thinking: brainstorming, edge-case discovery)
+
 ### Delegation Rules (HARD)
 1. ALL subagent inputs MUST be inline — never reference file paths (~35% file I/O reliability)
 2. ALL file I/O, Python, git stays in parent

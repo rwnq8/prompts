@@ -1,11 +1,11 @@
 ---
 template: CLOUDFLARE-DEPLOYMENT
-version: "2.0"
+version: "2.1"
 parameters:
   - name: action
     type: string
     required: true
-    description: "Operation: deploy-pages, upload-r2, deploy-worker, migrate-pages-from-github, sandbox-build, audit, configure, domain-add"
+    description: "Operation: deploy-pages, upload-r2, deploy-worker, migrate-pages-from-github, sandbox-build, audit, configure, domain-add, enable-analytics"
   - name: project_name
     type: string
     required: true
@@ -50,6 +50,20 @@ parameters:
     required: false
     default: "331e4363fd05e8e4fc123ea7d2775411"
     description: "Cloudflare Zone ID for qwav.tech"
+  - name: ga4_measurement_id
+    type: string
+    required: false
+    description: "Google Analytics 4 Measurement ID (G-XXXXXXXXXX) for GA4/GTM injection"
+  - name: analytics_provider
+    type: string
+    required: false
+    default: "cloudflare"
+    description: "Analytics provider: cloudflare (Web Analytics), ga4 (Google Analytics 4), both (dual tracking)"
+  - name: site_type
+    type: string
+    required: false
+    default: "pages"
+    description: "Site hosting type: pages (Cloudflare Pages), google-site (Google Sites), worker (Cloudflare Worker), proxied (zone-level only)"
 ---
 
 # CLOUDFLARE DEPLOYMENT — {{action}} for {{project_name}}
@@ -58,7 +72,7 @@ parameters:
 > Cloudflare already hosts QWAV domains (qwav.tech, quni.cloud) via DNS.
 > **⚠️ DUAL-PLATFORM MODEL:** GitHub = git + Issues. Cloudflare = hosting + storage + compute.
 > **⚠️ COST GATE:** Check free tier thresholds before any operation (Pages: unlimited bandwidth, R2: 10GB, Workers: 100k/day).
-> **⚠️ VERSION NOTICE:** Template v2.0 updated 2026-05-27 after qlof-primer PoC. Key changes: domain management via API (wrangler 4.95.0 lacks `set-domain`), OAuth+YoBrowser auth path verified, branch default changed to `master` (QWAV convention), static sites omit build flags.
+> **⚠️ VERSION NOTICE:** Template v2.1 updated 2026-05-28. Key changes: v2.0 added domain management via API (wrangler 4.95.0 lacks `set-domain`), OAuth+YoBrowser auth path verified, branch default changed to `master` (QWAV convention), static sites omit build flags. v2.1 adds `enable-analytics` operation (Cloudflare Web Analytics + GA4/GTM injection), analytics parameters, and post-deployment analytics verification.
 
 ---
 
@@ -374,6 +388,187 @@ wrangler pages project list --json
 
 ---
 
+## 8.5 OPERATION: enable-analytics
+
+Enable traffic analytics and user tracking on deployed sites. Supports Cloudflare Web Analytics (native, free, no code changes for Pages), Google Analytics 4 injection (via Cloudflare Zaraz or manual HTML), and dual tracking.
+
+### 8.5.1 Choose Analytics Strategy
+
+| Site Type | Cloudflare Web Analytics | GA4/GTM | Recommended | Method |
+|:----------|:------------------------:|:-------:|:-----------|:-------|
+| **Cloudflare Pages** (`*.pages.dev`, `*.qnfo.org`, `*.qwav.tech`) | ✅ Native, zero-code | ✅ Via Zaraz or manual `<script>` injection | **Both** — CF for real-time, GA4 for deeper user journeys | Enable CF Analytics in Dashboard; inject GA4 via Zaraz |
+| **Google Sites** (`qnfo.org`, `qwav.tech`, `q08.org`) | ❌ Not proxied by CF | ✅ Built-in support | **GA4 only** | Insert → Analytics in Google Sites editor |
+| **Proxied DNS-only** (domains routing through CF to external origins) | ✅ Zone-level analytics | ✅ Manual injection | **CF Analytics** (automatic) | Enable at zone level in Dashboard |
+| **Cloudflare Workers** | ❌ No built-in pages analytics | ✅ Manual via `fetch` to GA4 endpoint | **GA4** (server-side) | Worker code adds GA4 Measurement Protocol calls |
+
+### 8.5.2 Enable Cloudflare Web Analytics (Pages Sites)
+
+For each Cloudflare Pages project, enable Web Analytics:
+
+```bash
+# METHOD 1: Via Cloudflare Dashboard (recommended for initial setup)
+# Navigate: dash.cloudflare.com → Analytics & Logs → Web Analytics → Add a site
+# Select: Pages project → {{project_name}}
+# Note: Analytics data begins flowing within 60 seconds.
+
+# METHOD 2: Via API (for programmatic enablement)
+# Get Pages project deployment info:
+curl -X GET "https://api.cloudflare.com/client/v4/accounts/{{cf_account_id}}/pages/projects/{{project_name}}" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json"
+
+# Enable Web Analytics on existing Pages project:
+# NOTE: Web Analytics must be enabled via Dashboard for the initial site tag.
+# After site tag is created, use the RUM site tag for SPA/manual injection.
+```
+
+**Automatic analytics for proxied zones:** If the domain (e.g., `laws.qnfo.org`) is proxied through Cloudflare (orange cloud), zone-level analytics are automatically collected. No action needed. Verify:
+
+```bash
+# Check if domain is proxied:
+curl -sI "https://{{domain}}" | findstr "cf-ray"
+# → If cf-ray header present, traffic is proxied and analytics are collecting.
+
+# View zone analytics data:
+curl "https://api.cloudflare.com/client/v4/zones/{{cf_zone_id}}/analytics/dashboard?since=-1440" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### 8.5.3 Inject Google Analytics 4 (GA4/GTM)
+
+Two injection methods, ranked by simplicity:
+
+#### Method A: Cloudflare Zaraz (Recommended — No Code Changes)
+
+Zaraz is Cloudflare's built-in third-party tool loader. It injects GA4/GTM at the edge without modifying site HTML.
+
+```bash
+# 1. Enable Zaraz on the zone via Dashboard:
+#    dash.cloudflare.com → {{cf_zone_id}} → Zaraz → Enable
+
+# 2. Add Google Analytics 4 tool via Zaraz API:
+curl -X POST "https://api.cloudflare.com/client/v4/zones/{{cf_zone_id}}/zaraz/tools" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tool_id": "google-analytics-4",
+    "enabled": true,
+    "settings": {
+      "measurement_id": "{{ga4_measurement_id}}"
+    }
+  }'
+
+# 3. Verify Zaraz is injecting:
+curl -s "https://{{domain}}" | findstr "zaraz"
+# → Should show zaraz script reference in <head>
+```
+
+**⚠️ Zaraz Prerequisites:** The domain must be proxied through Cloudflare (orange cloud). Google Sites (`qnfo.org`, `qwav.tech`) are NOT proxied by Cloudflare — use Method B for those.
+
+#### Method B: Manual HTML Injection (Pages Sites)
+
+For Cloudflare Pages sites, add the GA4/GTM snippet directly to the HTML template:
+
+```html
+<!-- Google tag (gtag.js) — GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ga4_measurement_id}}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ga4_measurement_id}}');
+</script>
+```
+
+Add this to every page's `<head>` in the Pages project, then redeploy:
+
+```bash
+# After adding GA4 snippet to HTML files:
+wrangler pages deploy C:\Temp\{{project_name}}-deploy --project-name {{project_name}} --branch {{branch}}
+```
+
+#### Method C: Google Sites GA4 (for qnfo.org, qwav.tech, q08.org)
+
+For Google Sites, GA4 is built-in:
+1. Open the Google Site in edit mode
+2. Click **Insert** → **Analytics** (or Settings gear → Analytics)
+3. Enter the GA4 Measurement ID: `{{ga4_measurement_id}}`
+4. Publish the site
+5. Verify: Visit the site, then check GA4 Real-Time report for active users
+
+### 8.5.4 Verification Checklist
+
+After enabling analytics, verify ALL of the following:
+
+```bash
+# VERIFY CLOUDFLARE WEB ANALYTICS:
+# 1. Check Pages project analytics status:
+curl "https://api.cloudflare.com/client/v4/accounts/{{cf_account_id}}/pages/projects/{{project_name}}" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" | python -c "import sys,json; d=json.load(sys.stdin); print('Analytics:', d.get('result',{}).get('analytics', 'NOT FOUND'))"
+
+# 2. Visit the site to generate test traffic:
+curl -sI "https://{{domain}}"
+
+# 3. Wait 60 seconds, then check zone analytics:
+curl "https://api.cloudflare.com/client/v4/zones/{{cf_zone_id}}/analytics/dashboard?since=-5" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" | python -c "import sys,json; d=json.load(sys.stdin); print('Requests:', d.get('result',{}).get('totals',{}).get('requests',{}).get('all', 'NO DATA'))"
+
+# VERIFY GOOGLE ANALYTICS 4:
+# 4. Check GA4 snippet present in site HTML:
+curl -s "https://{{domain}}" | findstr "googletagmanager\|gtag\|{{ga4_measurement_id}}"
+# → Must show GA4 script or Zaraz reference
+
+# 5. Check GA4 Real-Time report:
+#    analytics.google.com → {{ga4_measurement_id}} → Reports → Real-Time
+#    → Should show active users within 30 seconds of test visit
+```
+
+### 8.5.5 Analytics Endpoint Reference
+
+Record these endpoints in audit trail for dashboard building:
+
+| Endpoint | Purpose | Access |
+|:---------|:--------|:-------|
+| `https://api.cloudflare.com/client/v4/zones/{zone}/analytics/dashboard` | Zone-level analytics (requests, bandwidth, threats, unique visitors) | API Token with `Analytics:read` |
+| `https://api.cloudflare.com/client/v4/accounts/{account}/rum/site_info` | Web Analytics RUM sites | API Token with `Account:read` |
+| `https://api.cloudflare.com/client/v4/accounts/{account}/rum/analytics` | Web Analytics RUM data | API Token with `Account:read` |
+| `https://analyticsdata.googleapis.com/v1beta/properties/{property}:runReport` | GA4 Data API | OAuth2 with `https://www.googleapis.com/auth/analytics.readonly` |
+| `https://www.googleapis.com/analytics/v3/data/ga` | Universal Analytics API (legacy, if any UA properties exist) | OAuth2 |
+
+### 8.5.6 Unified Dashboard Architecture (Future)
+
+For combining Cloudflare + GA4 data into a single dashboard:
+
+```
+                    ┌──────────────────────────────┐
+                    │   Cloudflare Worker Dashboard │
+                    │   (analytics.qnfo.org)         │
+                    └──────────┬───────────────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+    ┌─────────────────┐ ┌───────────┐ ┌─────────────────┐
+    │ CF GraphQL API   │ │ GA4 Data  │ │ CF Zone         │
+    │ (RUM analytics)  │ │ API       │ │ Dashboard API   │
+    └─────────────────┘ └───────────┘ └─────────────────┘
+
+Worker aggregates:
+- Traffic by source (referrer, country, device)
+- Top pages accessed
+- Real-time active users (from GA4)
+- Bot vs. human traffic (from CF)
+- Page load performance (Web Vitals from CF RUM)
+```
+
+**Implementation (P2 — after analytics data is flowing):**
+1. Create Worker: `analytics-dashboard` @ analytics.qnfo.org
+2. Worker fetches from CF Analytics API + GA4 Data API
+3. Renders HTML dashboard with Chart.js visualizations
+4. Requires: CF API Token (`Analytics:read`), GA4 OAuth2 credentials stored in KV
+
+---
+
 ## 9. FREE TIER THRESHOLDS
 
 | Resource | Limit | Static HTML Impact |
@@ -419,5 +614,5 @@ For migrating all QWAV research sites from GitHub Pages to Cloudflare Pages:
 
 ---
 
-*Template v2.0 — Updated 2026-05-27 after qlof-primer PoC deployment.*
+*Template v2.1 — Updated 2026-05-28 after analytics integration. v2.0: qlof-primer PoC deployment.*
 *Reference: QNFO/QWAV#63 (migration investigation), QNFO/QWAV#62 (QNFO flagging incident)*

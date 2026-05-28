@@ -1,491 +1,169 @@
 ---
 name: cloudflare-deployer
-description: Complete Cloudflare platform automation — Pages, Workers (cron + HTTP), R2, Vectorize, D1, Queues, DNS, Bulk Redirects, Secrets. Covers Python Worker quirks, REST API fallbacks, audit trail patterns, and full worker lifecycle. Use when the agent needs ANY Cloudflare operation.
-tools: exec, fill_prompt_template, read, write
+description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Sandboxes. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
+version: "1.0"
 ---
 
-# Cloudflare Deployer v2.0 — Complete Platform Automation
+# CLOUDFLARE DEPLOYER SKILL — v1.0
 
-## When to Use
-- Deploying static sites to Cloudflare Pages
-- Creating/deploying Workers (HTTP, cron-triggered, Python or JS)
-- Managing R2 buckets & objects (storage, audit trail, backups)
-- Managing Vectorize indexes (embeddings, semantic search)
-- Setting secrets for Workers
-- Managing DNS records (requires REST API)
-- Creating Bulk Redirect rules (requires REST API)
-- Any Cloudflare resource lifecycle
-
-## Quick Start
-```bash
-wrangler --version    # Must be v3.0+ (current: v4.95.0)
-wrangler whoami       # Verify OAuth token + scopes
-```
-
-## Agent Authentication
-
-Three methods, ranked by agent reliability:
-
-| Method | Setup | Persistence | Use Case |
-|:-------|:------|:------------|:---------|
-| **OAuth Token** (`wrangler login`) | One-time via YoBrowser | ✅ Permanent (`%APPDATA%\xdg.config\.wrangler\config\default.toml`) | Primary — do this ONCE |
-| **Global API Key** (`CLOUDFLARE_API_KEY` + `CLOUDFLARE_EMAIL`) | Per-session env vars | ❌ | REST API operations wrangler can't do |
-| **API Token** (`CLOUDFLARE_API_TOKEN`) | Per-session env vars | ❌ | Scoped CI/CD operations |
-
-```bash
-# Verify OAuth (must show 20+ scopes including workers:write, r2:write, ai:write)
-wrangler whoami
-
-# For REST API operations (DNS, redirects, some domain ops):
-$env:CLOUDFLARE_API_KEY = "<global-api-key>"
-$env:CLOUDFLARE_EMAIL = "<account-email>"
-# NOTE: Both required. API Key alone is insufficient.
-```
-
-### Account Identifiers
-```
-Account ID: edb167b78c9fb901ea5bca3ce58ccc4b (quniverse)
-Zone IDs vary by domain — query via REST API or wrangler.
-```
+> **On-demand skill.** Load via `skill_view('cloudflare-deployer')` for all Cloudflare operations.
+> Source: `templates/CLOUDFLARE-DEPLOYMENT.md` v2.1 + QWAV-DEFAULT.md §0.6.5-0.6.7
 
 ---
 
-## 1. WORKERS — Complete Lifecycle
+## ⚠️ WRANGLER v4.95+ COMPATIBILITY
 
-### 1.1 Cron Worker Deployment (Proven Pattern)
-
-**STEP 1: Write Worker Code** (Python)
-```python
-# src/entry.py
-from js import Response, Object, fetch, console
-import json
-
-async def scheduled(event, env, ctx):
-    """Called by cron trigger — do work here"""
-    token = env.MY_SECRET
-    bucket = env.MY_BUCKET
-    # ... work ...
-    pass
-
-async def on_fetch(request, env):
-    """HTTP trigger for manual testing"""
-    await scheduled(None, env, None)
-    return Response.new("OK", Object.fromEntries([
-        ["headers", Object.fromEntries([["Content-Type", "text/plain"]])]
-    ]))
-```
-
-**CRITICAL Python Worker Quirks** (discovered 2026-05-27):
-| Quirk | Wrong | Right |
-|:------|:------|:------|
-| Fetch options | Python dict `{"headers": {...}}` | `Object.fromEntries([...])` for ALL nested objects |
-| Response headers | Python dict in Response.new() | `Object.fromEntries([...])` |
-| wrangler get/delete | Without `--remote` | Always use `--remote` for get/delete |
-| Compatibility | Default `compatibility_date` only | Add `compatibility_flags = ["python_workers"]` |
-| R2 from Worker | `bucket.put(key, value)` Python string | Python strings auto-convert to JS |
-
-**STEP 2: Write wrangler.toml**
-```toml
-name = "my-worker"
-main = "src/entry.py"
-compatibility_date = "2025-08-01"
-compatibility_flags = ["python_workers"]
-
-[triggers]
-crons = ["0 6 * * *"]         # Daily at 06:00 UTC
-# crons = ["*/15 * * * *"]    # Every 15 minutes
-
-[[r2_buckets]]
-binding = "MY_BUCKET"
-bucket_name = "qnfo"
-
-[[vectorize]]
-binding = "VECTORIZE"
-index_name = "qwav-research"
-
-[ai]
-binding = "AI"
-```
-
-**STEP 3: Set Secrets**
-```bash
-cd <worker-project-dir>
-echo "<secret-value>" | wrangler secret put MY_SECRET
-wrangler secret list                    # Verify
-```
-
-**STEP 4: Deploy**
-```bash
-wrangler deploy                         # Deploys worker + cron triggers
-# Output: https://<name>.q08.workers.dev
-#         schedule: 0 6 * * *
-```
-
-**STEP 5: Verify**
-```bash
-wrangler whoami                         # Auth check
-wrangler deployments list               # Confirm deployed
-Invoke-RestMethod https://<name>.q08.workers.dev  # Trigger manually
-wrangler tail <name>                    # Live logs (timeout after ~30s)
-```
-
-### 1.2 Worker Deletion
-```bash
-wrangler delete <name>
-```
-
-### 1.3 Worker Bindings Reference
-
-| Binding Type | wrangler.toml Syntax | Access in Python Worker |
-|:-------------|:---------------------|:------------------------|
-| R2 Bucket | `[[r2_buckets]]` → `binding = "X"`, `bucket_name = "y"` | `env.X.put(key, value)` / `env.X.get(key)` |
-| Vectorize | `[[vectorize]]` → `binding = "X"`, `index_name = "y"` | `env.X.query(vector)` / `env.X.insert(vectors)` |
-| AI | `[ai]` → `binding = "X"` | `env.X.run(model, input)` |
-| D1 Database | `[[d1_databases]]` → `binding = "X"`, `database_name = "y"` | `env.X.prepare(sql).run()` |
-| Queue | `[[queues]]` → `binding = "X"`, `queue_name = "y"` | `env.X.send(message)` |
-| Secret | Via `wrangler secret put` | `env.SECRET_NAME` (bare string) |
-| Service (other Worker) | `[[services]]` → `binding = "X"`, `service = "y"` | `env.X.fetch(request)` |
+**`r2 object list` was REMOVED in wrangler v4.95+.** Only `get`, `put`, `delete` are available.
+The `--remote` flag is deprecated (remote is default in v4+). For directory enumeration, deploy a list-objects Worker or use per-object `get` operations.
 
 ---
 
-## 2. R2 — Object Storage Operations
+## Authentication
 
-### 2.1 Bucket Management
 ```bash
-wrangler r2 bucket list                      # All buckets
-wrangler r2 bucket create <name>             # New bucket
-wrangler r2 bucket delete <name>             # Delete (must be empty)
+# Preferred: API token (non-interactive)
+set CLOUDFLARE_API_TOKEN=<api-token>
+
+# Verify
+npx wrangler whoami
 ```
 
-### 2.2 Object Operations (ALWAYS use --remote for get/delete)
-```bash
-# Upload
-wrangler r2 object put <bucket>/path/to/file.md --file=./local/file.md
-wrangler r2 object put qnfo/audit/data.json --remote --file=./data.json
-
-# Download
-wrangler r2 object get qnfo/audit/data.json --remote --file=./local-copy.json
-
-# Delete
-wrangler r2 object delete qnfo/audit/old-file.md --remote
-
-# NOTE: `wrangler r2 object` has NO list subcommand.
-# To list objects, use `wrangler r2 bucket` or the REST API.
-```
-
-### 2.3 R2 Audit Trail Pattern
-```
-qnfo/audit/
-├── README.md                    ← Bucket documentation
-├── conversations/               ← Agent session exports (.md)
-├── github/                      ← GitHub Issues/Projects exports
-│   ├── YYYY-MM-DD/              ← Dated snapshots
-│   └── latest/                  ← Overwritten daily
-├── decisions/                   ← DECISION-LOG.md
-├── infrastructure/              ← State snapshots (.json)
-└── wiki/                        ← GitHub Wiki mirror
-```
-
-### 2.4 Local vs. Remote Mode (CRITICAL)
-| Operation | Without `--remote` | With `--remote` |
-|:----------|:-------------------|:----------------|
-| `object put` | ✅ Uploads (local mode, still works) | ✅ Uploads (explicit) |
-| `object get` | ❌ Returns "key does not exist" (false negative) | ✅ Downloads correctly |
-| `object delete` | ❌ Fails silently | ✅ Deletes correctly |
-
-**Rule:** Always use `--remote` for `get` and `delete`. `put` works without it but using `--remote` is safer.
+**Account:** quniverse (edb167b78c9fb901ea5bca3ce58ccc4b)
+**Email:** rwnquni@outlook.com
 
 ---
 
-## 3. VECTORIZE — Semantic Search Indexes
+## Cloudflare Pages
 
-### 3.1 Index Management
 ```bash
-wrangler vectorize list                                      # All indexes
-wrangler vectorize create <name> --dimensions=768 --metric=cosine
-wrangler vectorize delete <name>
-wrangler vectorize info <name>                               # Details + status
+# List all Pages projects
+npx wrangler pages project list
+
+# Deploy
+npx wrangler pages deploy <dir> --project-name <name> --branch main
+
+# Custom domain
+npx wrangler pages project set-domain <name> <domain>
+
+# Deployment history
+npx wrangler pages deployment list --project-name <name>
+
+# Rollback
+npx wrangler pages deployment rollback --project-name <name>
 ```
 
-### 3.2 Vector Operations
+**Active Projects:** qwav (deep.qwav.tech), prompts-wiki, qnfo-archive (archive.qnfo.org),
+quantum-laws-of-form (laws.qnfo.org), qlof-primer (primer.qwav.tech), +11 more.
+
+---
+
+## Cloudflare R2 (Object Storage)
+
 ```bash
-# Insert vectors (from file)
-wrangler vectorize insert <name> --file=./vectors.ndjson
+# Get an object (v4.95+ compatible)
+npx wrangler r2 object get qnfo/audit/state/<project>.json
 
-# Upsert (insert or update)
-wrangler vectorize upsert <name> --file=./vectors.ndjson
+# Put an object
+npx wrangler r2 object put qnfo/audit/state/<project>.json --file=<local-file>
 
-# Query (vector search)
-wrangler vectorize query <name> --vector="[0.1, 0.2, ...]" --top-k=10
+# Delete an object
+npx wrangler r2 object delete qnfo/audit/state/<project>.json
 
-# Query with metadata filter
-wrangler vectorize query <name> --vector="[...]" --filter='{"category": "decisions"}'
-
-# List vectors
-wrangler vectorize list-vectors <name>
-
-# Get specific vectors
-wrangler vectorize get-vectors <name> --ids=id1,id2,id3
-
-# Delete vectors
-wrangler vectorize delete-vectors <name> --ids=id1,id2
+# NOTE: r2 object list does NOT exist in v4.95+
+# Use per-object get operations instead
 ```
 
-### 3.3 Metadata Indexes (Enable Filtering)
+**Primary bucket:** `qnfo`
+**R2 paths:** `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/audit/decisions/`,
+`qnfo/releases/`, `qnfo/deployments/`
+
+---
+
+## Cloudflare Workers
+
 ```bash
-wrangler vectorize create-metadata-index <name> --property-name=category
-wrangler vectorize list-metadata-index <name>
-wrangler vectorize delete-metadata-index <name> --property-name=category
-```
+# Deploy a worker
+npx wrangler deploy --name <worker-name>
 
-### 3.4 Vectorize + Workers AI Embedding Pattern
-```python
-# In Worker code: generate embedding → insert into Vectorize
-async def on_fetch(request, env):
-    # Generate embedding via Workers AI
-    result = await env.AI.run("@cf/baai/bge-base-en-v1.5", {
-        "text": "What is quantum computing?"
-    })
-    embedding = result["data"][0]  # 768-dimensional vector
-
-    # Insert into Vectorize
-    await env.VECTORIZE.upsert([{
-        "id": "doc-001",
-        "values": embedding,
-        "metadata": {"source": "paper-0.1.md", "category": "research"}
-    }])
-
-    # Query
-    results = await env.VECTORIZE.query(embedding, {
-        "topK": 5,
-        "filter": {"category": "research"}
-    })
+# Deployment history
+npx wrangler deployments list
 ```
 
 ---
 
-## 4. PAGES — Static Site Deployment
-
-### 4.1 CNAME FIRST RULE (CRITICAL — 6 documented failures)
-**Create CNAME DNS record BEFORE adding domain to Pages.**
-Adding domain before CNAME → verification failure → HTTP 522.
+## Cloudflare Sandboxes
 
 ```bash
-# STEP 1: Create CNAME via Cloudflare REST API
-# STEP 2: THEN add domain to Pages via REST API
-# STEP 3: Wait 30-60s for verification
+# Create
+npx wrangler sandbox create <name> --image ubuntu-22.04
 
-# Deploy static files
-wrangler pages deploy --project-name <name> --branch main
+# Execute
+npx wrangler sandbox exec <name> -- "<command>"
 
-# Create Pages project (first time)
-wrangler pages project create <name> --production-branch main
-```
+# List
+npx wrangler sandbox list
 
-### 4.2 Domain Management (REST API — wrangler removed set-domain in v4.95)
-```python
-# Python script: _pages_domain.py
-import requests
-ACCOUNT_ID = "edb167b78c9fb901ea5bca3ce58ccc4b"
-
-# 1. Add custom domain to Pages project
-resp = requests.post(
-    f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/pages/projects/<name>/domains",
-    headers={"Authorization": f"Bearer {API_TOKEN}"},
-    json={"name": "subdomain.example.com"}
-)
-# 2. Wait for verification (poll status)
+# Stop (cost: $0 when paused)
+npx wrangler sandbox stop <name>
 ```
 
 ---
 
-## 5. SECRETS MANAGEMENT
+## Vectorize (Semantic Search)
 
+For paper vectorization, use:
 ```bash
-wrangler secret put <key>        # Set/update (prompts for value or piped)
-wrangler secret delete <key>     # Remove
-wrangler secret list             # List all secrets (shows names only)
-wrangler secret bulk <file>      # Upload multiple from JSON file
+python "G:\My Drive\prompts\tools\vectorize-papers.py"
 ```
 
-**Setting secrets non-interactively:**
+---
+
+## Cost Gate
+
+| Resource | Free Tier | Overage |
+|:---------|:----------|:--------|
+| Pages builds | 500/month | Builds queue |
+| Pages bandwidth | Unlimited | N/A |
+| Workers requests | 100k/day | $0.30/M |
+| R2 storage | 10 GB | $0.015/GB/mo |
+| R2 egress | **Free** | N/A |
+| Sandboxes | Free quota | $0.002/min |
+
+---
+
+## Common Patterns
+
+### Deploy a Publication
 ```bash
-echo "<secret-value>" | wrangler secret put GITHUB_TOKEN
+# 1. Build PDF
+python "G:\My Drive\prompts\tools\build_pdf.py" --input <file>
+
+# 2. Deploy to Pages
+npx wrangler pages deploy <dir> --project-name qwav --branch main
+
+# 3. Upload PDF to R2
+npx wrangler r2 object put qnfo/releases/<file>.pdf --file=<path>
+
+# 4. Generate SEO
+python "G:\My Drive\prompts\tools\generate-seo.py"
+```
+
+### Check Infrastructure Health
+```bash
+npx wrangler whoami
+npx wrangler pages project list
+npx wrangler r2 object get qnfo/audit/state/qwav.json
 ```
 
 ---
 
-## 6. DNS MANAGEMENT (REST API)
+## Reference Files
 
-wrangler does NOT manage DNS. Use Cloudflare REST API:
-
-```python
-# _manage_dns.py
-import requests, os
-
-ZONE_ID = "<zone-id>"  # Get from Cloudflare Dashboard or API
-API_TOKEN = os.environ["CLOUDFLARE_API_TOKEN"]
-
-headers = {
-    "Authorization": f"Bearer {API_TOKEN}",
-    "Content-Type": "application/json"
-}
-
-# List records
-resp = requests.get(
-    f"https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records",
-    headers=headers
-)
-
-# Create CNAME
-resp = requests.post(
-    f"https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records",
-    headers=headers,
-    json={
-        "type": "CNAME",
-        "name": "sub.example.com",
-        "content": "target.pages.dev",
-        "proxied": True,
-        "ttl": 1  # Auto TTL
-    }
-)
-
-# Create A record
-resp = requests.post(
-    f"https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records",
-    headers=headers,
-    json={
-        "type": "A",
-        "name": "example.com",
-        "content": "192.0.2.1",
-        "proxied": True,
-        "ttl": 1
-    }
-)
-```
+- Full deployment template: `templates/CLOUDFLARE-DEPLOYMENT.md`
+- Cloudflare audit: `G:\My Drive\QWAV\SESSION-HANDOFF-2026-05-28.md`
+- SEO generator: `tools/generate-seo.py`
+- Vectorize: `tools/vectorize-papers.py`
 
 ---
 
-## 7. BULK REDIRECTS (REST API)
-
-```python
-# _create_redirects.py
-import requests
-
-ACCOUNT_ID = "edb167b78c9fb901ea5bca3ce58ccc4b"
-headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
-
-# 1. Create redirect list
-resp = requests.post(
-    f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/rules/lists",
-    headers=headers,
-    json={
-        "name": "my-redirects",
-        "kind": "redirect",
-        "description": "Domain redirects"
-    }
-)
-list_id = resp.json()["result"]["id"]
-
-# 2. Add items
-resp = requests.post(
-    f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/rules/lists/{list_id}/items",
-    headers=headers,
-    json=[{
-        "redirect": {
-            "source_url": "old.example.com/",
-            "target_url": "new.example.com/",
-            "status_code": 301,
-            "include_subdomains": True
-        }
-    }]
-)
-
-# 3. Create Bulk Redirect Rule referencing the list
-resp = requests.post(
-    f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/rulesets",
-    headers=headers,
-    json={
-        "name": "default",
-        "kind": "zone",
-        "phase": "http_request_redirect",
-        "rules": [{
-            "expression": "true",
-            "action": "redirect",
-            "action_parameters": {"from_list": {"name": "my-redirects", "key": "redirect"}}
-        }]
-    }
-)
-```
-
----
-
-## 8. COST GATE (Free Tier — QWAV/QNFO)
-
-| Resource | Free Tier | Current Usage | Status |
-|:---------|:----------|:--------------|:------|
-| Pages bandwidth | Unlimited | — | ✅ |
-| Pages builds | 500/month | ~10 | ✅ |
-| Workers requests | 100k/day | <1k | ✅ |
-| Workers CPU | 10ms/request | <5ms | ✅ |
-| R2 storage | 10 GB | ~85 MB | ✅ |
-| R2 Class A ops | 1M/month | <1k | ✅ |
-| R2 Class B ops | 10M/month | <1k | ✅ |
-| Vectorize queries | 30M/month | <100 | ✅ |
-| Vectorize storage | 5M vectors | 0 | ✅ |
-| Cron triggers | 3 free | 1 (github-sync) | ✅ |
-| Queues | 1M operations/month | 0 | ✅ |
-
----
-
-## 9. FAILURE CATALOG (PoC-Verified, 2026-05-27)
-
-| # | Symptom | Root Cause | Resolution |
-|:--|:--------|:----------|:-----------|
-| F1 | `wrangler pages project set-domain` → Unknown arguments | Removed in wrangler 4.95.0 | Use REST API |
-| F2 | Domain verification: "CNAME not set" | CNAME created after domain | CNAME FIRST, then domain |
-| F3 | HTTP 522 after domain add | CNAME missing | Delete domain, create CNAME, re-add |
-| F4 | `CLOUDFLARE_API_TOKEN` → Invalid | Global Key needs both API_KEY + EMAIL | Set both env vars |
-| F5 | Inline Python corrupted by PowerShell | PowerShell intercepts quotes/brackets | Write to temp file, execute file |
-| F6 | DNS records lost | Session artifact cleanup | Re-create via REST API |
-| F7 | Python Worker: R2 writes fail silently | Python dicts in fetch/Response options | Use Object.fromEntries() |
-| F8 | `wrangler r2 object get` → "key does not exist" | Default local mode | Use `--remote` flag |
-| F9 | `wrangler r2 object` no list subcommand | Not implemented in CLI | Use REST API or bucket-level list |
-| F10 | Python Worker: `python_workers` compatibility flag required | Missing in wrangler.toml | Add `compatibility_flags = ["python_workers"]` |
-
----
-
-## 10. DEPLOYMENT EVIDENCE TEMPLATE
-
-After every Cloudflare operation, post evidence to the relevant GitHub Issue:
-
-```markdown
-## Cloudflare Deploy
-| Field | Value |
-|:------|:------|
-| Resource | Worker: github-sync |
-| URL | https://github-sync.q08.workers.dev |
-| Cron | 0 6 * * * (daily) |
-| Bindings | QNFO (R2), GITHUB_TOKEN (secret) |
-| Deploy time | 13.35 sec |
-| Status | [HTTP 200 verified] or [wrangler tail verified] |
-| Cost | $0.00/mo (free tier) |
-```
-
----
-
-## 11. AGENT PATTERNS — When to Use What
-
-| Task | Pattern | Example |
-|:-----|:--------|:--------|
-| Deploy a Worker | Write code → wrangler.toml → secrets → `wrangler deploy` | github-sync |
-| Upload to R2 | `wrangler r2 object put --remote --file=...` | Audit trail export |
-| Semantic search | Worker → AI.run() → Vectorize.query() | ask-qwav |
-| Add DNS record | Python script → REST API POST | Domain setup |
-| Bulk redirect | Python script → REST API (lists + rulesets) | Domain mirrors |
-| Tail Worker logs | `wrangler tail <name>` (timeout ~30s) | Debugging |
-| Session closeout | Export conversation → R2 audit/conversations/ | DEFAULT.md §10 |
-
----
-
-*Cloudflare Deployer v2.0 — Updated 2026-05-27 with Python Worker quirks, Vectorize patterns, REST API fallbacks, and full worker lifecycle. Six failing patterns documented from PoC.*
+*cloudflare-deployer skill v1.0 — Load on-demand via skill_view(). Compatible with wrangler v4.95+*
