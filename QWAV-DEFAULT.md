@@ -94,7 +94,7 @@ Incoming request → WHO check → WHEN check → WHAT check → Draft → User 
 
 ### 0.6.5 Cloudflare-Native Program Management — `wrangler` + R2
 
-**GitHub = source control ONLY (git push/pull/merge). All program management is Cloudflare-native via R2 `qnfo/audit/` with `wrangler` CLI.** `gh` CLI is RESTRICTED to git authentication only (`gh auth status`). All issue tracking, project state, backlogs, and release management use R2 objects + Workers APIs.
+**GitHub = source control (git push/pull/merge) + FALLBACK issue tracking. PRIMARY program management is Cloudflare-native via R2 `qnfo/audit/` with `wrangler` CLI.** `gh` CLI is used for: git auth (`gh auth status`), repo creation (`gh repo create`), and as FALLBACK for issue tracking when Cloudflare R2 state is unavailable. PREFERRED: issue tracking, project state, backlogs, and releases via R2 objects.
 
 **Cloudflare Account:** `edb167b78c9fb901ea5bca3ce58ccc4b` (quniverse)
 **Primary R2 Bucket:** `qnfo`
@@ -105,22 +105,24 @@ Incoming request → WHO check → WHEN check → WHAT check → Draft → User 
 **Portfolio/State View:**
 ```bash
 # List project states:
-npx wrangler r2 object list qnfo/audit/state/ --remote
+# PREFERRED (v4.95+): npx wrangler r2 object get qnfo/audit/state/<project>.json
+# NOTE: wrangler v4.95+ removed "r2 object list". Use per-object get.
 
 # Read a specific project state:
-npx wrangler r2 object get qnfo/audit/state/<project>.json --remote
+npx wrangler r2 object get qnfo/audit/state/<project>.json
 
 # List backlogs:
-npx wrangler r2 object list qnfo/audit/backlog/ --remote
+# PREFERRED (v4.95+): npx wrangler r2 object get qnfo/audit/backlog/<project>.json
+# NOTE: wrangler v4.95+ removed "r2 object list". Use per-object get.
 
 # Read decision log:
-npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote
+npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md
 ```
 
-**R2-Based Task Tracking (replaces Cloudflare tasks (D1 qnfo-audit/tasks)):**
+**R2-Based Task Tracking (replaces Cloudflare tasks (R2 qnfo/audit/state/)):**
 ```bash
 # Read backlog (prioritized tasks):
-npx wrangler r2 object get qnfo/audit/backlog/<project>.json --remote
+npx wrangler r2 object get qnfo/audit/backlog/<project>.json
 
 # Update project state:
 # Write state JSON locally → upload to R2:
@@ -128,7 +130,7 @@ npx wrangler r2 object put qnfo/audit/state/<project>.json --file=<local-file> -
 
 # Track deployments:
 npx wrangler r2 object put qnfo/deployments/<project>-<date>.json --file=_deploy_record.json --remote
-npx wrangler r2 object list qnfo/deployments/ --remote
+# NOTE: wrangler v4.95+ removed "r2 object list". Use per-object: wrangler r2 object get qnfo/deployments/<project>-<date>.json
 ```
 
 **Cloudflare Pages (replaces Cloudflare Pages/Kanban):**
@@ -146,9 +148,9 @@ npx wrangler pages deployment list --project-name <name>
 #### Startup Checklist — Program Agent (Cloudflare-Native)
 At session start:
 1. `npx wrangler whoami` — confirm Cloudflare authenticated
-2. `npx wrangler r2 object list qnfo/audit/state/ --remote` — portfolio status
-3. `npx wrangler r2 object list qnfo/audit/backlog/ --remote` — program work queue
-4. `npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote` — latest decisions
+2. `npx wrangler r2 object get qnfo/audit/state/<project>.json` (v4.95+ compatible)
+3. `npx wrangler r2 object get qnfo/audit/backlog/<project>.json` (v4.95+ compatible)
+4. `npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md` — latest decisions
 5. `npx wrangler pages project list` — active Cloudflare Pages sites
 6. **git operations only:** `gh auth status` — verify git auth (NOT for Issues/Projects/Releases)
 
@@ -159,7 +161,7 @@ At session end:
 3. Log decisions to R2 `qnfo/audit/decisions/DECISION-LOG.md` (append to existing)
 4. Upload deployment records to R2 `qnfo/deployments/<project>-<date>.json`
 5. Upload release artifacts to R2 `qnfo/releases/`
-6. Report completion to user with `wrangler r2 object get` evidence
+6. Report completion to user with `wrangler r2 object get qnfo/audit/state/<project>.json` evidence
 
 ### 0.6.6 Social Media Management (Buffer API)
 
@@ -186,6 +188,8 @@ decouples hosting from the git platform, mitigating the reputational risk of Git
 
 #### Platform Commands
 
+**⚠️ WRANGLER v4.95+:** `r2 object list` removed. Use per-object `get`/`put`/`delete`. `--remote` flag deprecated. For directory enumeration, deploy a list-objects Worker.
+
 **⚠️ AGENT AUTH:** Prefer `CLOUDFLARE_API_TOKEN` env var — `wrangler login` OAuth is incompatible with autonomous agent execution (requires manual browser credential entry).
 
 **Authentication:**
@@ -209,7 +213,7 @@ wrangler pages deployment rollback --project-name <name>             # Rollback
 ```bash
 wrangler r2 bucket create <name>                                     # Create bucket
 wrangler r2 object put <bucket>/path --file ./local/file.pdf         # Upload
-wrangler r2 object list <bucket>                                     # List objects
+# NOTE (v4.95+): wrangler removed "r2 object list". Use per-object get/put/delete. Deploy a list-objects Worker for enumeration.
 wrangler r2 object get <bucket>/path --head                          # Metadata
 ```
 
@@ -269,7 +273,7 @@ Buffer: social post → links custom domain (not github.io — Cloudflare Pages 
 | `LEARNINGS.md` | Program-level lessons | **DEPRECATED → R2 `qnfo/audit/learnings/` (P3)** |
 | `DECISIONS.md` | Architecture decisions | **DEPRECATED → R2 `qnfo/audit/decisions/DECISION-LOG.md`** |
 
-Cloudflare tasks (D1 qnfo-audit/tasks), Projects, Releases, Wiki, and Discussions are DEPRECATED per ADR-001. All PM state lives in Cloudflare R2 `qnfo/audit/`. See `ARCHITECTURE-DECISION-GITHUB-DEPRECATION.md` for full migration plan.
+Cloudflare tasks (R2 qnfo/audit/state/), Projects, Releases, Wiki, and Discussions are DEPRECATED per ADR-001. All PM state lives in Cloudflare R2 `qnfo/audit/`. See `ARCHITECTURE-DECISION-GITHUB-DEPRECATION.md` for full migration plan.
 
 ---
 
@@ -282,7 +286,7 @@ As a program agent, your due diligence scope is CROSS-PROJECT. Before initiating
 3. **Check for duplication:** Does a similar project already exist?
 4. **Check for dependency conflicts:** Will this project compete for resources with active projects?
 5. **Cross-project learning check:** Review LEARNINGS.md across active projects for applicable lessons
-6. **Backlog check:** `npx wrangler r2 object list qnfo/audit/backlog/ --remote` for related program work
+6. **Backlog check:** `npx wrangler r2 object get qnfo/audit/backlog/<project>.json` for related program work
 
 Standard DEFAULT.md §0.8 due diligence protocol still applies per-project.
 
@@ -321,7 +325,7 @@ You are a **Portfolio/Program Manager**, not a project executor. Your scope is b
 
 When the next task is **project execution**: 
 1. Create handoff document via `fill_prompt_template("HANDOFF")` with type `Program→Project`
-2. Update Cloudflare tasks (D1 qnfo-audit/tasks)/Projects to reflect delegation
+2. Update Cloudflare tasks (R2 qnfo/audit/state/)/Projects to reflect delegation
 3. **PAUSE** — wait for the Projects agent to complete
 4. On return: review deliverable, update program documentation, coordinate next steps
 
@@ -352,7 +356,7 @@ A project without a GitHub repo is NOT a project — it is UNAUTHORIZED work.
 #### PHASE A: GitHub Foundation (BLOCKING — Must Complete Before Any Local Files)
 
 **⚠️ PRE-INITIATION GATE (CPL L43/L47):** Run template `PROJECT-INITIATION` first.
-W (Won't Have) = BLOCK. C (Could Have) = BACKLOG only (via Cloudflare tasks (D1 qnfo-audit/tasks), not directory).
+W (Won't Have) = BLOCK. C (Could Have) = BACKLOG only (via Cloudflare tasks (R2 qnfo/audit/state/), not directory).
 Only projects that pass the Moscow M/S gate proceed to Phase A.
 
 | Step | Action | Command / Template | Verification |
@@ -361,14 +365,14 @@ Only projects that pass the Moscow M/S gate proceed to Phase A.
 | **G1** | **Create GitHub repo** | `gh repo create qnfo/<repo-name> --public --description "<description>"` | `gh repo view qnfo/<repo-name>` — repo MUST exist under qnfo/ org. NEVER create under personal account (rwnq8). |
 | **G2** | **Create Issue labels** | `gh label create --repo qnfo/<repo-name> <label>` for: `project-state`, `handoff`, `task`, `bug`, `enhancement`, `blocked`, `documentation`, `research` | `gh label list --repo qnfo/<repo-name>` — all 8 labels confirmed |
 | **G3** | **Create Project State Issue** | `# [QNFO ORG FLAGGED — use Cloudflare-native]
-# Original: gh issue create --repo qnfo/<repo-name> --title "Project State: <project-name>" --label "project-state" --body "<status-body>"` | `curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT" — exactly 1 issue exists |
+# Original: gh issue create --repo qnfo/<repo-name> --title "Project State: <project-name>" --label "project-state" --body "<status-body>"` | `wrangler r2 object get qnfo/audit/state/PROJECT.json — exactly 1 issue exists |
 | **G4** | **Create Cloudflare project board board** | `# [QNFO ORG FLAGGED — use Cloudflare-native]
 # Original: gh project create --owner qnfo --title "<project-name> Sprint Board"` | `gh project list --owner qnfo` — board appears in list |
-| **G5** | **Register on Program Board** | Add project as item to the QWAV Program Board: `curl -X POST https://task-worker.DOMAIN/api/tasks -H "Content-Type: application/json" -d \'{"id":"T...","project":"PROJECT","title":"<project-name>"}\'`. If qnfo org is unavailable, use rwnq8 board: `gh project item-create <board-num> --owner rwnq8`. | `curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT&column=To+Do" — project item confirmed |
+| **G5** | **Register on Program Board** | Add project as item to the QWAV Program Board: `curl -X POST https://R2 qnfo/audit/state//api/tasks -H "Content-Type: application/json" -d \'{"id":"T...","project":"PROJECT","title":"<project-name>"}\'`. If qnfo org is unavailable, use rwnq8 board: `gh project item-create <board-num> --owner rwnq8`. | `wrangler r2 object get qnfo/audit/state/PROJECT&column=To+Do.json — project item confirmed |
 
 **⚠️ GATE CHECKPOINT:** After G5, verify ALL of the following before proceeding to Phase B:
 - `gh repo view qnfo/<repo-name>` returns repo details
-- `curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT" returns 1 issue
+- `wrangler r2 object get qnfo/audit/state/PROJECT.json returns 1 issue
 - `# [QNFO ORG FLAGGED — use Cloudflare-native]
 # Original: gh project list --owner qnfo` includes the sprint board
 - Program Board includes this project item (qnfo org, or rwnq8 fallback if qnfo unavailable)
@@ -440,16 +444,16 @@ The following local .md files are **MANDATORY REDUNDANT BACKUP** per DEFAULT.md 
 
 | Local File (REDUNDANT BACKUP) | Cloudflare-Native (PRIMARY) | Why Dual-System |
 |:------------------------------|:------------------------|:----------------|
-| `SPRINT.md` | Cloudflare tasks (D1 qnfo-audit/tasks) + Project board | Issues are searchable/assignable; local file survives platform blocking |
+| `SPRINT.md` | Cloudflare tasks (R2 qnfo/audit/state/) + Project board | Issues are searchable/assignable; local file survives platform blocking |
 | `BACKLOG.md` | GitHub Issues (label: `backlog` or future milestone) | Issues are prioritizable; local file is unblockable |
 | `CHANGELOG.md` | R2 releases (qnfo/releases/) (`gh release create`) | Releases are version-tagged; local file is always readable |
 | `LEARNINGS.md` | Cloudflare Pages wiki (`OWNER/REPO.wiki.git`) | Wiki is collaborative; local file survives wiki.git unavailability |
 | `DECISIONS.md` | Cloudflare Discussions (Pages + D1) | Discussions are threaded; local file is platform-independent |
-| `PROJECT STATE.md` | Cloudflare task (label: `project-state`) | Issue is queryable via `gh`; local file is the session-handoff fallback |
-| `PROJECT-INITIATION.md` | Cloudflare tasks (D1 qnfo-audit/tasks) body (project-state Issue) + Moscow analysis in comment | Issue is API-accessible; local file is the canonical initiation record |
-| `CHARTER.md` | Cloudflare task (label: `charter`) or Wiki page | Issue has history; local file is the fallback charter |
-| `DEFINITION-OF-DONE.md` | Cloudflare task (label: `dod`) | Issue is referenceable from tasks; local file is always available |
-| `RISK-REGISTER.md` | Cloudflare task (label: `risk`) per risk | Each risk is trackable; local file survives org blocking |
+| `PROJECT STATE.md` | R2 state object (label: `project-state`) | Issue is queryable via `gh`; local file is the session-handoff fallback |
+| `PROJECT-INITIATION.md` | Cloudflare tasks (R2 qnfo/audit/state/) body (project-state Issue) + Moscow analysis in comment | Issue is API-accessible; local file is the canonical initiation record |
+| `CHARTER.md` | R2 state object (label: `charter`) or Wiki page | Issue has history; local file is the fallback charter |
+| `DEFINITION-OF-DONE.md` | R2 state object (label: `dod`) | Issue is referenceable from tasks; local file is always available |
+| `RISK-REGISTER.md` | R2 state object (label: `risk`) per risk | Each risk is trackable; local file survives org blocking |
 | `CONTRIBUTING.md` | `CONTRIBUTING.md` in repo root (GitHub-recognized) | GitHub auto-surfaces; local file is the canonical source |
 
 **ENFORCEMENT:** At project initiation, create the Cloudflare-native equivalent AND the local .md file for every row above. If GitHub becomes unavailable (flagging, API errors), the local files are the surviving record. Annotate local files with `[GITHUB-BLOCKED: YYYY-MM-DD]` if GitHub write operations fail. See DEFAULT.md §0.6.8.1 Platform Failure Recovery Protocol for full recovery procedure.
@@ -463,13 +467,13 @@ The following local .md files are **MANDATORY REDUNDANT BACKUP** per DEFAULT.md 
 Before declaring project initiation COMPLETE, verify ALL:
 
 - [ ] GitHub repo exists at `qnfo/<repo-name>`
-- [ ] `curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT" returns exactly 1 issue
+- [ ] `wrangler r2 object get qnfo/audit/state/PROJECT.json returns exactly 1 issue
 - [ ] Project board exists under qnfo org
 - [ ] Project registered on Program Board (qnfo org, or rwnq8 fallback if qnfo unavailable)
 - [ ] Issue labels created (minimum: `project-state`, `handoff`, `task`, `blocked`)
 - [ ] Local directory exists at `G:\My Drive\projects\YYYY\MM\project-name\`
 - [ ] `git remote get-url origin` returns `https://github.com/qnfo/<repo-name>.git`
-- [ ] Initial tasks exist as BOTH Cloudflare tasks (D1 qnfo-audit/tasks) AND local SPRINT.md/BACKLOG.md (dual-system per §0.6.8)
+- [ ] Initial tasks exist as BOTH Cloudflare tasks (R2 qnfo/audit/state/) AND local SPRINT.md/BACKLOG.md (dual-system per §0.6.8)
 - [ ] MANDATORY redundant local files exist (SPRINT.md, BACKLOG.md, PROJECT-STATE.md, etc.) per §0.6.8 Dual-System File Map
 - [ ] README.md committed and pushed to main
 
@@ -492,8 +496,8 @@ This is the critical coordination mechanism between program and project agents.
    - `constraints`: Budget, time, technology, domain rules
    - `research_trail`: Files/directories to explore for context
    - `return_protocol`: Where to publish deliverables (R2 releases (qnfo/releases/) + Cloudflare Pages). ALL releases MUST include a PDF (DEFAULT.md Persistent Preference 12).
-3. Create Cloudflare task (label: `handoff`, repo: OWNER/REPO) with full handoff specification in body
-4. Create/update Cloudflare task (label: `project-state`): `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `gh issue comment`
+3. Create R2 state object (label: `handoff`, repo: OWNER/REPO) with full handoff specification in body
+4. Create/update R2 state object (label: `project-state`): `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `gh issue comment`
 5. **PAUSE** — do not continue until Projects agent returns results
 
 **Project Agent discovers and executes** (autonomous discovery, see DEFAULT.md §0.6.5 Startup Sequence):
@@ -502,23 +506,23 @@ This is the critical coordination mechanism between program and project agents.
 3. Follows research trail (Archive, releases, active projects)
 4. Executes via Phases 0-5 (DEFAULT.md §5)
 5. Publishes via R2 releases (qnfo/releases/) + Cloudflare Pages (with PDF attached per DEFAULT.md Persistent Preference 12)
-6. Updates Cloudflare task (label: `project-state`): `STATUS: COMPLETE | DELIVERABLE: path` via `gh issue comment`
+6. Updates R2 state object (label: `project-state`): `STATUS: COMPLETE | DELIVERABLE: path` via `gh issue comment`
 7. Closes handoff Issue: `gh issue close <num> --reason completed`
 
 #### Handoff FROM Project TO Program (Completion)
 
 **Project Agent returns:**
 1. Deliverable published via R2 releases (qnfo/releases/) (with PDF attached and verified — DEFAULT.md Persistent Preference 12)
-2. Cloudflare task (label: `project-state`) updated with completion status via `gh issue comment`
+2. R2 state object (label: `project-state`) updated with completion status via `gh issue comment`
 3. Handoff Issue closed with deliverable reference in comment
 4. Learning extracted and added to Cloudflare Pages wiki (`qnfo/<repo-name>.wiki.git`)
 
 **Program Agent receives:**
-1. Check Cloudflare task (label: \project-state\) — confirm `STATUS: COMPLETE`
+1. Check R2 state object (label: \project-state\) — confirm `STATUS: COMPLETE`
 2. Review deliverable via R2 releases (qnfo/releases/)
 3. Quality check against Definition of Done gates (stored in Cloudflare task label: `dod`; see §0.9.1 Phase C)
 4. If PASS: update program documentation, plan next steps
-5. If FAIL: re-open Cloudflare tasks (D1 qnfo-audit/tasks) with feedback, create new handoff
+5. If FAIL: re-open Cloudflare tasks (R2 qnfo/audit/state/) with feedback, create new handoff
 6. Extract cross-project learning → program LEARNINGS.md or Cloudflare Pages wiki
 
 #### Handoff Status States
@@ -526,7 +530,7 @@ This is the critical coordination mechanism between program and project agents.
 | State | Meaning | Action |
 |:------|:--------|:-------|
 | `INITIATED` | Handoff created, not yet picked up | Wait for Projects agent |
-| `IN-PROGRESS` | Projects agent is executing | Monitor Cloudflare tasks (D1 qnfo-audit/tasks) |
+| `IN-PROGRESS` | Projects agent is executing | Monitor Cloudflare tasks (R2 qnfo/audit/state/) |
 | `COMPLETE` | Deliverable produced, ready for review | Review and quality-gate |
 | `REJECTED` | Deliverable failed quality gate | Re-open with feedback |
 | `BLOCKED` | Cannot proceed (dependency, missing info) | Escalate to user |
@@ -547,11 +551,11 @@ All handoffs use `fill_prompt_template("HANDOFF")` with these types:
 
 When the user says "WHAT'S NEXT? PROCEED" or "RESUME":
 
-1. **Read portfolio state:** Check all GitHub Issues (label: `project-state`) across qnfo repos: `for repo in $(gh repo list qnfo --json name -q '.[].name'); do curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT" --state open; done`
+1. **Read portfolio state:** Check all GitHub Issues (label: `project-state`) across qnfo repos: `for repo in $(gh repo list qnfo --json name -q '.[].name'); do wrangler r2 object get qnfo/audit/state/PROJECT.json --state open; done`
 2. **Check GitHub Issues/Projects:** `gh issue list --label "program"` for program work
 3. **Identify highest-priority task:** Across ALL projects, not just one
 
-3.6. **Cloudflare health check:** Run `wrangler pages project list` + `wrangler whoami` to verify Cloudflare infrastructure is live. Check `curl "https://task-worker.DOMAIN/api/tasks?project=PROJECT" for Phase 4 audit items. If `wrangler whoami` fails: Cloudflare is DOWN — flag to user, fall back to GitHub-only operations. Check local SPRINT.md + BACKLOG.md before querying GitHub — QNFO flagging blocks API on QNFO repos.
+3.6. **Cloudflare health check:** Run `wrangler pages project list` + `wrangler whoami` to verify Cloudflare infrastructure is live. Check `wrangler r2 object get qnfo/audit/state/PROJECT.json for Phase 4 audit items. If `wrangler whoami` fails: Cloudflare is DOWN — flag to user, fall back to GitHub-only operations. Check local SPRINT.md + BACKLOG.md before querying GitHub — QNFO flagging blocks API on QNFO repos.
 
 3.5. **⚠️ ANTI-PLANNING-SPIRAL GATE (MANDATORY — execute BEFORE step 4):**
    Before proceeding to execution (step 4) or delegation (step 5), audit your
@@ -594,8 +598,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 - **Extends:** DEFAULT.md (all versions)
 - **Date:** 2026-05-24
 - **GitHub CLI:** `gh` v2.92.0+ required
-- **Key change from v2.0:** Reversed file deprecation policy per DEFAULT.md v1.15. Local PM files are now MANDATORY REDUNDANT BACKUP — maintained in parallel with Cloudflare tasks (D1 qnfo-audit/tasks). Added GitHub fallback (rwnq8) when qnfo org is unavailable. §0.9.1 initiation protocol updated to Dual-System v3.1. Platform Failure Recovery Protocol (§0.6.8.1) integrated. Trigger: QNFO org flagging destroyed 32+ phantom-created issues on 2026-05-27.
-
+- **Key change from v2.0:** Reversed file deprecation policy per DEFAULT.md v1.15. Local PM files are now MANDATORY REDUNDANT BACKUP — maintained in parallel with Cloudflare tasks (R2 qnfo/audit/state/). Added GitHub fallback (rwnq8) when qnfo org is unavailable. §0.9.1 initiation protocol updated to Dual-System v3.1. Platform Failure Recovery Protocol (§0.6.8.1) integrated. Trigger: QNFO org flagging destroyed 32+ phantom-created issues on 2026-05-27.
 
 ## SKILL INVOCATION TRIGGERS (v3.0 — On-Demand Workflow Knowledge)
 

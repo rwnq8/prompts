@@ -1,166 +1,111 @@
 ---
 name: closeout-manager
-description: Execute project close-out procedures: archive, R2 audit trail export, PDF generation, GitHub Release creation, and state update. Use when the agent is completing a project or session. MANDATORY for every session end.
-tools: exec, fill_prompt_template, write
+description: Session close-out procedures — audit trail export, R2 state upload, archive operations, and handoff documentation. Use at the end of every session.
+version: "1.0"
 ---
-# Closeout Manager v2.0 — With Cloudflare R2 Audit Trail
 
-## When to Use
-- Project work is complete
-- Session is ending
-- Agent needs to archive, release, and transition
-- MANDATORY: Every session must export to Cloudflare R2 audit trail
+# CLOSEOUT MANAGER SKILL — v1.0
 
-## Workflow (7 Steps)
+> **On-demand skill.** Load via `skill_view('closeout-manager')` at session end.
+> Source: `CLOSEOUT-CHECKLIST.md` + DEFAULT.md §10 + QWAV-DEFAULT.md close-out checklist
 
-### 1. Complete All Pending Commits
+---
+
+## Session Close-Out Protocol (MANDATORY)
+
+Execute these steps at the end of EVERY session:
+
+### 1. Verify All Commits
 ```bash
-git log -1 --oneline          # Verify last commit
-git status                     # Check for uncommitted changes
-Test-Path <changed-files>      # Filesystem verification before commit
-Get-Content <file> -First 5    # Content verification
-git add <files>
-git commit -m "ACTION:... RATIONALE:..."
-git log -1 --oneline          # Verify commit succeeded
+git log -1 --oneline
+git branch --show-current
 ```
 
-### 2. Export Session to R2 Audit Trail (NEW — MANDATORY)
-Create a structured session summary and upload to Cloudflare R2:
-```
-R2 Path: qnfo/audit/conversations/YYYY-MM-DD-description.md
-```
+### 2. Audit Trail Export to R2
 
-**Session Summary Format:**
-```markdown
-# Session: [Brief Description]
-**Date:** YYYY-MM-DD
-**Agent:** [Agent Name] vX.Y
-**User:** [Username]
+Write session summary to temp file `YYYY-MM-DD-topic.md` containing:
+- Agent name, session date, summary
+- Decisions made (with rationale)
+- Files changed, commits, issues referenced
+- Infrastructure state changes
+- Handoff notes for next session
 
-## Summary
-2-3 sentence summary of what was accomplished.
+Use `fill_prompt_template("CLOUDFLARE-AUDIT-EXPORT", {...})` for consistent format.
 
-## Decisions Made
-1. **Decision title** — Rationale, alternatives considered, status
-2. ...
-
-## Files Changed
-- path/to/file.md (EDIT) — What changed and why
-- path/to/new-file.py (CREATE) — Purpose
-
-## Commits
-- abc1234 ACTION:EDIT FILE: path RATIONALE:reason
-
-## Infrastructure State Changes
-- Workers: [deployed/modified/deleted]
-- R2: [files uploaded]
-- DNS: [records changed]
-- Domains: [added/removed]
-
-## Handoff Notes
-- What the next agent/session needs to know
-- Blocking issues
-- Deferred items
-```
-
-**Upload Commands:**
+Upload to R2 (v4.95+ compatible):
 ```bash
-# 1. Write session summary to temp file
-# 2. Upload to R2
-wrangler r2 object put qnfo/audit/conversations/YYYY-MM-DD-topic.md --remote --file=<temp-file>
-
-# 3. Verify upload
-wrangler r2 object get qnfo/audit/conversations/YYYY-MM-DD-topic.md --remote
+npx wrangler r2 object put qnfo/audit/conversations/<file>.md --file=<path>
 ```
 
-### 3. Update Decision Log (If New Decisions Made)
+Verify upload:
 ```bash
-# 1. Download current decision log
-wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote --file=./temp-decision-log.md
-
-# 2. Read current log, prepend new decisions
-# 3. Upload updated log
-wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --remote --file=./temp-decision-log.md
-
-# 4. Verify
-wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote
+npx wrangler r2 object get qnfo/audit/conversations/<file>.md
 ```
 
-### 4. Run Mandatory Close-Out Checklist
-- [ ] All code committed: README.md reflects final documentation
-- [ ] All tests pass: Python self-tests return success
-- [ ] Git log verified: `git log -1 --oneline` confirms last commit
-- [ ] **R2 audit trail exported: session summary + decisions updated** (NEW)
-- [ ] Publication-ready docs copied to GitHub Releases
-- [ ] Auto-archive to: `G:\My Drive\Archive\projects\YYYY\MM\<name>\`
-- [ ] Auto-PDF: `gh workflow run pdf-release.yml --repo qnfo/<name>`
-- [ ] GitHub Release: `gh release create vX.Y.Z --repo qnfo/<name> --title "..." --notes "..."`
-- [ ] Project-state Issue updated with final status + archive location
+### 3. Update Decision Log
 
-### 5. Archive Project to Archive Directory
+If new decisions were made:
 ```bash
-# Path convention
-G:\My Drive\Archive\projects\YYYY\MM\<project-name>\
+# Download current log
+npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --file=<temp>
 
-# Copy project files (not .git)
-robocopy "G:\My Drive\projects\<name>" "G:\My Drive\Archive\projects\2026\05\<name>" /E /XD .git
+# Append new decisions to temp file
+
+# Upload updated log
+npx wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --file=<temp>
 ```
 
-### 6. Create GitHub Release
+### 4. Update Project State
+
 ```bash
-# For document projects with DOI/publication
-gh release create v1.0.1 --repo qnfo/<name> \
-  --title "Release v1.0.1" \
-  --notes "$(cat CHANGELOG.md)"
-gh release upload v1.0.1 ./output/paper.pdf --repo qnfo/<name>
+# Upload state JSON
+npx wrangler r2 object put qnfo/audit/state/<project>.json --file=<local-state-file>
 ```
 
-### 7. Update Project-State Issue
+### 5. Archive to Local Storage
+
 ```bash
-gh issue comment <num> --repo qnfo/<name> --body "
-## Session Complete
-| Field | Value |
-|:------|:------|
-| Status | CLOSED (or ACTIVE if continuing) |
-| Archive | G:\\My Drive\\Archive\\projects\\YYYY\\MM\\<name>\\ |
-| R2 Audit | qnfo/audit/conversations/YYYY-MM-DD-topic.md |
-| Release | https://github.com/qnfo/<name>/releases/tag/vX.Y.Z |
-| PDF | Attached to Release |
-"
+Move-Item -Path "<project>" -Destination "G:\My Drive\Archive\projects\YYYY\MM\<name>\"
+```
+
+### 6. Clean Up Temporary Files
+
+Remove temporary fix scripts and work files:
+```bash
+Remove-Item "G:\My Drive\QWAV\_fix_*.py" -ErrorAction SilentlyContinue
+Remove-Item "G:\My Drive\QWAV\_temp_*" -ErrorAction SilentlyContinue
 ```
 
 ---
 
-## R2 Audit Trail Integration
+## Close-Out Checklist
 
-The Cloudflare R2 audit trail captures EVERY agent session, decision, and infrastructure change. This is the system's memory — if your computer crashes, the audit trail survives on Cloudflare.
-
-| R2 Path | Content | Updated By |
-|:--------|:--------|:-----------|
-| `qnfo/audit/conversations/` | Session summaries | closeout-manager (every session) |
-| `qnfo/audit/github/latest/` | GitHub Issues | github-sync Worker (daily cron) |
-| `qnfo/audit/decisions/DECISION-LOG.md` | All decisions | closeout-manager (when decisions made) |
-| `qnfo/audit/infrastructure/` | CF state snapshots | closeout-manager (when infra changes) |
-
-**Recovery:** New agent on new machine → queries R2 (`wrangler r2 object get qnfo/audit/... --remote`) → gets full context from last session.
+Use `fill_prompt_template("CLOSEOUT-CHECKLIST")` for the full verification checklist:
+- [ ] All commits verified
+- [ ] Audit trail exported to R2
+- [ ] Decision log updated
+- [ ] Project state updated
+- [ ] Archive completed
+- [ ] Branch verified (NOT main/master)
 
 ---
 
-## Social Media Trigger (If Publication Occurred)
-```python
-fill_prompt_template("SOCIAL-ORCHESTRATOR", {
-    "platforms": "twitter, linkedin",
-    "content": "New publication: [Title] | [DOI/URL]",
-    "schedule": "now"
-})
+## Handoff Document
+
+When handing off to another agent:
+```bash
+fill_prompt_template("HANDOFF", {type: "Program->Project", scope: "...", ...})
 ```
 
-## Post-Close-Out Auto-Continue
-1. Check GitHub Issues (label: project-state) for next active project
-2. Prioritize: P0 > P1 > P2 > unfiled
-3. If no projects: report "All projects closed out. Nothing pending."
-4. If found: navigate to directory and begin session startup
+---
+
+## Reference Files
+
+- Close-out checklist: `templates/CLOSEOUT-CHECKLIST.md`
+- Audit export template: `templates/CLOUDFLARE-AUDIT-EXPORT.md`
+- Handoff template: `templates/HANDOFF.md`
+- Rebuild from scratch: `REBUILD-FROM-SCRATCH.md`
 
 ---
 
-*Closeout Manager v2.0 — Updated 2026-05-27 with mandatory Cloudflare R2 audit trail export. Every session ends with a survivable record on R2.*
+*closeout-manager skill v1.0 — Load on-demand via skill_view() at session end*

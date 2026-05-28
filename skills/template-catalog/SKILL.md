@@ -1,86 +1,102 @@
 ---
 name: template-catalog
-description: Catalog of all available fill_prompt_template templates with descriptions, parameters, and use cases. Use when the agent needs to find the right template for a task.
-tools: fill_prompt_template, list_all_prompt_template_names
+description: Template discovery and parameter documentation. Use when the agent needs to find the right template for a task or check template parameters.
+version: "1.0"
 ---
-# Template Catalog
 
-## When to Use
-1. Call `list_all_prompt_template_names` to get available templates
-2. Call `get_prompt_template_parameters("template-name")` for required params
-3. Call `fill_prompt_template("template-name", {args})` to invoke
+# TEMPLATE CATALOG SKILL — v1.0
 
-## Template Reference
+> **On-demand skill.** Load via `skill_view('template-catalog')` to discover available templates.
+> Source: `prompts.json` + `templates/` directory
 
-### EMAIL-AGENT-TEMPLATE (7.5 KB)
-Compose and send emails via Outlook COM automation.
-- Parameters: `to`, `subject`, `body`, `cc` (optional), `bcc` (optional), `attachments` (optional), `send_mode` (draft|send)
-- Use when: Sending any email
+---
 
-### CLOUDFLARE-AUDIT-EXPORT (NEW — v1.0)
-Session closeout export for Cloudflare R2 audit trail. MANDATORY for every session.
-- Parameters: `session_date`, `topic`, `agent`, `summary`, `decisions`, `files_changed`, `commits`, `infrastructure_changes`, `handoff_notes`, `related_issues`
-- Use when: Ending any agent session (part of DEFAULT.md §10 closeout)
+## Available Templates (12 total)
 
-### CLOUDFLARE-DEPLOYMENT (15.2 KB)
-Deploy to Cloudflare Pages, R2, Workers, or Sandboxes.
-- Parameters: `project_name`, `resource_type` (pages|r2|workers|sandbox), `branch`, `command`
-- Use when: Deploying to Cloudflare
+### Core Project Templates
 
-### ZENODO-PUBLISH (4.3 KB)
-Register DOI and publish to Zenodo.
-- Parameters: `title`, `authors`, `description`, `file_path`, `upload_type`, `sandbox` (true|false)
-- Use when: Publishing research with DOI
+| Template | Use For | Parameters |
+|:---------|:--------|:-----------|
+| `PROJECT-INITIATION` | New project setup | `project_name`, `description`, `domain`, `moscow_analysis` |
+| `PROJECT-CHARTER` | Project charter document | `project_name`, `scope`, `success_criteria`, `constraints` |
+| `DEFINITION-OF-DONE` | Quality gates | `project_name`, `deliverable_type`, `acceptance_criteria` |
+| `HANDOFF` | Agent-to-agent handoff | `type`, `scope`, `success_criteria`, `research_trail`, `return_protocol` |
+| `README` | Project README | `project_name`, `description`, `repo_url`, `architecture` |
 
-### SOCIAL-ORCHESTRATOR-TEMPLATE (7.4 KB)
-Cross-post to social media platforms via Buffer API.
-- Parameters: `platforms` (comma-separated), `content`, `schedule` (now|custom), `media_urls` (optional)
-- Use when: Publishing to social media
+### Publication Templates
 
-### DEFINITION-OF-DONE (6.6 KB)
-Checklist for task completion verification.
-- Parameters: `task_description`, `acceptance_criteria`, `evidence_required` (true|false)
-- Use when: Verifying task completion
+| Template | Use For | Parameters |
+|:---------|:--------|:-----------|
+| `ZENODO-PUBLISH` | Zenodo upload | `title`, `authors`, `description`, `keywords`, `file_path` |
+| `PDF-BUILDER-TEMPLATE` | PDF generation | `source`, `output`, `template_style`, `include_toc` |
+| `SOCIAL-ORCHESTRATOR-TEMPLATE` | Social media posts | `publication_title`, `url`, `abstract`, `channels` |
 
-### HANDOFF (2.8 KB)
-Multi-agent handoff with state transfer.
-- Parameters: `target_agent`, `project_state`, `next_tasks`, `blockers`
-- Use when: Handing off work between agents
+### Operations Templates
 
-### PROJECT-CHARTER (2.1 KB)
-Project charter with scope, timeline, and deliverables.
-- Parameters: `project_name`, `scope`, `timeline`, `deliverables`
-- Use when: Initiating a new project
+| Template | Use For | Parameters |
+|:---------|:--------|:-----------|
+| `CLOUDFLARE-DEPLOYMENT` | Cloudflare deploy | `action`, `project_name`, `branch`, `domain` |
+| `CLOUDFLARE-AUDIT-EXPORT` | Session audit export | `agent`, `session_date`, `summary`, `decisions`, `files_changed` |
+| `CLOSEOUT-CHECKLIST` | Session close-out | `project_name`, `session_type` |
+| `EMAIL-AGENT-TEMPLATE` | Email composition | `to`, `subject`, `body`, `cc`, `bcc`, `attachments` |
 
-### PROJECT-INITIATION (6.3 KB)
-Full project initialization workflow with GitHub integration.
-- Parameters: `project_name`, `description`, `repo_org` (default: qnfo)
-- Use when: Creating a new project from scratch
+### Research Templates
 
-### CLOSEOUT-CHECKLIST (7.9 KB)
-Comprehensive project closeout with archive, PDF, and release.
-- Parameters: `project_name`, `archive` (true|false), `pdf` (true|false), `release` (true|false)
-- Use when: Closing out a project
+| Template | Use For | Parameters |
+|:---------|:--------|:-----------|
+| `RESEARCH-LAUNCH` | Research pipeline launch | `topic`, `scope`, `output_type`, `priority` |
 
-### PDF-BUILDER-TEMPLATE (7.4 KB)
-Convert markdown to PDF with formatting.
-- Parameters: `input_file`, `output_file`, `template` (default|academic|report)
-- Use when: Generating PDF from markdown
+---
 
-## Template Size Reference
-| Template | Size | Load Cost |
-|:---------|:-----|:----------|
-| CLOUDFLARE-DEPLOYMENT | 15.2 KB | Heavy — use skill instead |
-| CLOSEOUT-CHECKLIST | 7.9 KB | Medium |
-| PDF-BUILDER-TEMPLATE | 7.4 KB | Medium |
-| SOCIAL-ORCHESTRATOR-TEMPLATE | 7.4 KB | Medium |
-| EMAIL-AGENT-TEMPLATE | 7.5 KB | Medium |
-| DEFINITION-OF-DONE | 6.6 KB | Medium |
-| PROJECT-INITIATION | 6.3 KB | Medium |
-| ZENODO-PUBLISH | 4.3 KB | Light |
-| CLOUDFLARE-AUDIT-EXPORT | 2.6 KB | Light — MANDATORY for every session |
-| HANDOFF | 2.8 KB | Light |
-| PROJECT-CHARTER | 2.1 KB | Light |
+## How to Use Templates
 
-## Best Practice
-For complex workflows, use a SKILL (skill_view) instead of repeatedly invoking templates. Skills carry the workflow logic; templates just provide the output format.
+```python
+# Get template parameters
+fill_prompt_template("get_prompt_template_parameters", {templateName: "HANDOFF"})
+
+# Fill a template
+fill_prompt_template("HANDOFF", {
+    type: "Program->Project",
+    scope: "Research quantum error correction...",
+    success_criteria: "Peer-review-ready paper...",
+    ...
+})
+
+# List all templates
+list_all_prompt_template_names()
+```
+
+---
+
+## Template Discovery
+
+For full parameter documentation of any template:
+```python
+get_prompt_template_parameters(templateName="<name>")
+```
+
+All templates stored in: `G:\My Drive\prompts\templates\`
+Template registry: `G:\My Drive\prompts\prompts.json`
+
+---
+
+## Common Patterns
+
+### New Project
+```
+PROJECT-INITIATION → PROJECT-CHARTER → DEFINITION-OF-DONE → README → HANDOFF
+```
+
+### Publication
+```
+PDF-BUILDER-TEMPLATE → ZENODO-PUBLISH → CLOUDFLARE-DEPLOYMENT → SOCIAL-ORCHESTRATOR-TEMPLATE
+```
+
+### Session Lifecycle
+```
+(Start) → RESEARCH-LAUNCH → ... → CLOSEOUT-CHECKLIST → CLOUDFLARE-AUDIT-EXPORT
+```
+
+---
+
+*template-catalog skill v1.0 — Load on-demand via skill_view() for template discovery*
