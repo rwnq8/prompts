@@ -1,11 +1,12 @@
 ---
 template: CLOSEOUT-CHECKLIST
-version: "4.0"
+version: "5.0"
 ---
-
 # SESSION CLOSEOUT OPERATING PROCEDURE — [PROJECT/TOPIC]
 
 > **GATE:** Mandatory before declaring ANY session complete. Verify all items/tasks/phases executed, implemented, complete, and tested/audited. Save, commit, merge, push, and document everything.
+>
+> **AUTONOMOUS:** Do NOT wait for user to say "TERMINATE." Detect when all tasks are complete and auto-initiate closeout. The agent is responsible for recognizing completion and closing out without user prompting.
 >
 > **SCOPE:** Universal — applies to ALL session types (project work, prompt engineering, system maintenance, research).
 >
@@ -132,15 +133,47 @@ Tests: 10/10 passing
 
 ---
 
-## HUMAN SIGN-OFF
+## PHASE H: PROJECT HANDOFF VERIFICATION `[CODE-EXECUTED]`
 
-- [ ] All Phase A-G gates passed (zero `[!]` blockers)
-- [ ] All deliverables verified on disk
-- [ ] All remote repositories synced
-- [ ] Session approved for closeout
+Before terminating the session, verify that ALL projects in `G:\My Drive\projects\` have up-to-date handoff documents:
+
+- [ ] **All projects scanned:** `Get-ChildItem -Path "G:\My Drive\projects" -Directory` enumerated. Every project directory checked for `HANDOFF.md`.
+- [ ] **No missing handoffs:** Zero projects return "NO HANDOFF.md." Any missing handoff created via `fill_prompt_template("HANDOFF", {...})`.
+- [ ] **Handoff content non-trivial:** All HANDOFF.md files > 100 bytes. Verify with `(Get-Item <path>).Length -gt 100`.
+- [ ] **Current project handoff updated:** The project worked on in this session has HANDOFF.md updated with: session date, agent, work completed, current state, next steps, blockers, branch reference.
+- [ ] **All handoffs read-verified:** `Get-Content <path> -First 3` on every HANDOFF.md confirms readability.
+
+**Blockers:** Any project missing HANDOFF.md, zero-byte handoff, handoff not updated for current session's project.
 
 ---
 
-*SESSION CLOSEOUT OPERATING PROCEDURE v4.0 — Universal | PROJECT, PROMPT-ENGINEERING, SYSTEM-MAINTENANCE, RESEARCH*
+## PHASE I: TASK EXECUTION AUDIT `[CODE-EXECUTED]`
 
-*Trigger: `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<name>"})`*
+Verify that ALL planned tasks were actually EXECUTED — not just claimed in text:
+
+- [ ] **Planned vs executed comparison:** Every task from the session's plan (Issue, backlog, or prior HANDOFF) has a corresponding execution artifact (file, commit, test output).
+- [ ] **No phantom claims:** Audit response text for action claims without tool invocation. Any "I will..." or "PROCEED" without corresponding tool call → `[!]` BLOCKER. Remove from response.
+- [ ] **File write verification:** Every file claimed as written → `Test-Path <file>` returns True AND `Get-Content <file> -First 3` matches expected content.
+- [ ] **Commit verification:** Every commit claimed → `git log --oneline` contains the commit hash.
+- [ ] **Python execution verification:** Every script claimed as run → re-execute and confirm output matches claim.
+- [ ] **Test verification:** Every test claimed as "passed" → re-run and confirm exit code 0 with matching output.
+- [ ] **Unexecuted items documented:** Any planned-but-unexecuted item has `[DEFERRED: reason]` or `[BLOCKED: reason]` documentation in the handoff.
+- [ ] **No silent omissions:** Review the full session plan. Every line item has a status: `[x]` done, `[!]` blocked, `[/]` N/A, or `[→]` deferred.
+
+**Blockers:** Any executed task with no evidence, any phantom claim in response text, any planned item with no status.
+
+---
+
+## HUMAN SIGN-OFF
+
+- [ ] All Phase A-I gates passed (zero `[!]` blockers)
+- [ ] All deliverables verified on disk
+- [ ] All remote repositories synced
+- [ ] All projects have updated HANDOFF.md
+- [ ] Closeout complete — session ready to end
+
+---
+
+*SESSION CLOSEOUT OPERATING PROCEDURE v5.0 — Universal | PROJECT, PROMPT-ENGINEERING, SYSTEM-MAINTENANCE, RESEARCH*
+
+*Trigger: `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<name>"})` — or auto-triggered by closeout-manager skill v2.0 when all tasks complete.*
