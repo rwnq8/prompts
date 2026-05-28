@@ -215,7 +215,7 @@ These skills are loaded on-demand via skill_view(). Load only when needed — th
 | Send email | skill_view('email-composer') |
 | Deploy to Cloudflare (all ops: Workers, R2, Vectorize, DNS, redirects) | skill_view('cloudflare-deployer') |
 | Publish a document | skill_view('publication-publisher') |
-| Manage GitHub repos/issues | skill_view('github-manager') |
+| Manage Cloudflare R2 code archives | skill_view('cloudflare-deployer') |
 | Close out a project | skill_view('closeout-manager') |
 | Recover from git errors | skill_view('git-hygiene') |
 | Find the right template | skill_view('template-catalog') |
@@ -272,7 +272,7 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 ### Startup
 0. **Pull Discovery Index** (MANDATORY): `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json` — discover ALL ecosystem assets before beginning work
 1. Verify sandbox: working directory within project directory
-2. Git check: git remote get-url origin must be configured (git is version control ONLY — GitHub platform DEPRECATED)
+2. Git check: verify local git repo exists (git is version control ONLY. Cloudflare R2 = canonical remote.)
 3. Branch check: feature branch (verify name unchanged — CPL L19)
 4. Read project-state from R2 `qnfo/audit/state/<project>.json`
 5. Identify next task from R2 `qnfo/audit/backlog/<project>.json`

@@ -94,7 +94,7 @@ Incoming request → WHO check → WHEN check → WHAT check → Draft → User 
 
 ### 0.6.5 Cloudflare-Native Program Management — `wrangler` + R2
 
-**GitHub = source control (git push/pull/merge) + FALLBACK issue tracking. PRIMARY program management is Cloudflare-native via R2 `qnfo/audit/` with `wrangler` CLI.** `gh` CLI is used for: git auth (`gh auth status`), repo creation (`gh repo create`), and as FALLBACK for issue tracking when Cloudflare R2 state is unavailable. PREFERRED: issue tracking, project state, backlogs, and releases via R2 objects.
+**Git = version control ONLY. Cloudflare R2 is the CANONICAL remote for ALL assets (code, state, releases).** `wrangler` CLI is the PRIMARY tool for all operations. `gh` CLI is DEPRECATED. All project management, code archiving, and state tracking is Cloudflare-native via R2 `qnfo/`.
 
 **Cloudflare Account:** `edb167b78c9fb901ea5bca3ce58ccc4b` (quniverse)
 **Primary R2 Bucket:** `qnfo`
@@ -181,10 +181,7 @@ The `wrangler` CLI (v3.0+) provides programmatic access to Cloudflare Pages, R2 
 Workers, and Sandboxes. Cloudflare DNS already hosts QWAV domains (qwav.tech, quni.cloud) —
 deployment is a configuration change, not a migration.
 
-**⚠️ DUAL-PLATFORM MODEL:** GitHub remains the git remote and source of truth (code, Issues,
-Projects). Cloudflare handles public-facing deployment (hosting, storage, compute). This
-decouples hosting from the git platform, mitigating the reputational risk of GitHub flagging
-(see QNFO/QWAV#62 — QNFO Organization Flagged).
+**Cloudflare R2 is the SINGLE canonical source.** Git is local version control ONLY. R2 stores code archives (`qnfo/code/<project>.bundle`), project state, releases, and audit trails. No dual-platform — everything is Cloudflare-native.
 
 #### Platform Commands
 
@@ -242,20 +239,18 @@ wrangler sandbox stop <name>                                          # Pause (c
 | R2 egress | **Free** | N/A |
 | Sandboxes | Free quota | $0.002/min |
 
-#### Git → Cloudflare Integration (GitHub = source control ONLY)
+#### Code Versioning (Git local ONLY, R2 canonical)
 
 ```
-GitHub: commit → PR review → merge to main
-Cloudflare Pages: auto-deploy on push (configured once per project)
-R2: upload built PDFs/artifacts
-Buffer: social post → links custom domain (not github.io — Cloudflare Pages domains only)
+Local: git commit → git bundle create → wrangler r2 object put qnfo/code/<project>.bundle
+Cloudflare Pages: auto-deploy on R2 upload (configured once per project)
+R2: canonical storage for code bundles, PDFs, artifacts, state, audit
+Buffer: social post → links custom Cloudflare Pages domain
 ```
 
 **Deployable Template:** `fill_prompt_template("CLOUDFLARE-DEPLOYMENT")`
 
-**Master Strategy:** QNFO/QWAV#66 — full Phase 1-4 plan with dependency graph, monitoring framework, and cost projections. All Cloudflare sub-tasks (#67-#84) are children of this issue. Coordinate deployments through #66.
-
-**Canonical source:** QNFO organization is flagged by GitHub. All project management state lives in Cloudflare R2 `qnfo/audit/` (state/, backlog/, decisions/). For git-only `gh` operations, use `rwnq8/qwav-program` for tracking. See ADR-001: GitHub deprecated for non-git functions.
+**Canonical source:** ALL project state lives in Cloudflare R2 `qnfo/` (discovery/, audit/, code/, releases/, archive/). Git is local version control ONLY. No GitHub. See ADR-001: GitHub fully deprecated.
 
 ---
 
@@ -273,7 +268,7 @@ Buffer: social post → links custom domain (not github.io — Cloudflare Pages 
 | `LEARNINGS.md` | Program-level lessons | **DEPRECATED → R2 `qnfo/audit/learnings/` (P3)** |
 | `DECISIONS.md` | Architecture decisions | **DEPRECATED → R2 `qnfo/audit/decisions/DECISION-LOG.md`** |
 
-Cloudflare tasks (R2 qnfo/audit/state/), Projects, Releases, Wiki, and Discussions are DEPRECATED per ADR-001. All PM state lives in Cloudflare R2 `qnfo/audit/`. GitHub platform features are DEPRECATED — git is version control ONLY.
+Cloudflare R2 `qnfo/` (discovery/, audit/, code/, releases/, archive/) is the CANONICAL source for ALL project management state. GitHub is FULLY DEPRECATED — no Issues, Projects, Wiki, Discussions, or repos. Git is local version control ONLY.
 
 ---
 
@@ -388,7 +383,7 @@ Before any action, ask: **"Am I setting up work for someone else, or doing the w
 
 ### 0.9.1 Project Initiation Protocol (Cloudflare-Native — v4.0)
 
-**PRINCIPLE: Cloudflare R2 is the CANONICAL source of truth. Git is version control ONLY. GitHub platform features (Issues, Projects, Wiki, Discussions) are DEPRECATED.**
+**PRINCIPLE: Cloudflare R2 is the CANONICAL source of truth. Git is version control ONLY. GitHub is FULLY DEPRECATED.**
 
 Every project exists as:
 1. **R2 state object** (`qnfo/audit/state/<project>.json`) — canonical project state
@@ -457,7 +452,7 @@ This is the critical coordination mechanism between program and project agents.
    - `research_trail`: Files/directories to explore for context
    - `return_protocol`: Where to publish deliverables (R2 releases (qnfo/releases/) + Cloudflare Pages). ALL releases MUST include a PDF (DEFAULT.md Persistent Preference 12).
 3. Create R2 state object (label: `handoff`, repo: OWNER/REPO) with full handoff specification in body
-4. Create/update R2 state object (label: `project-state`): `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `gh issue comment`
+4. Create/update R2 state object: `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `wrangler r2 object put`
 5. **PAUSE** — do not continue until Projects agent returns results
 
 **Project Agent discovers and executes** (autonomous discovery, see DEFAULT.md §0.6.5 Startup Sequence):
@@ -511,11 +506,11 @@ All handoffs use `fill_prompt_template("HANDOFF")` with these types:
 
 When the user says "WHAT'S NEXT? PROCEED" or "RESUME":
 
-1. **Read portfolio state:** Check all GitHub Issues (label: `project-state`) across qnfo repos: `for repo in $(gh repo list qnfo --json name -q '.[].name'); do wrangler r2 object get qnfo/audit/state/PROJECT.json --state open; done`
-2. **Check GitHub Issues/Projects:** `gh issue list --label "program"` for program work
+1. **Read portfolio state:** Pull Discovery Index → check all active projects → read R2 state objects for each: `for proj in $(python -c "import json; [print(k) for k in json.load(open('_discovery_index.json'))['projects']]"); do wrangler r2 object get qnfo/audit/state/$proj.json --remote; done`
+2. **Check active work:** Use Discovery Index to identify projects with recent activity (last_active within 30 days)
 3. **Identify highest-priority task:** Across ALL projects, not just one
 
-3.6. **Cloudflare health check:** Run `wrangler pages project list` + `wrangler whoami` to verify Cloudflare infrastructure is live. Check `wrangler r2 object get qnfo/audit/state/PROJECT.json for Phase 4 audit items. If `wrangler whoami` fails: Cloudflare is DOWN — flag to user, fall back to GitHub-only operations. Check local SPRINT.md + BACKLOG.md before querying GitHub — QNFO flagging blocks API on QNFO repos.
+3.6. **Cloudflare health check:** Run `wrangler pages project list` + `wrangler whoami` to verify Cloudflare infrastructure is live. Check `wrangler r2 object get qnfo/audit/state/PROJECT.json` for Phase 4 audit items. All operations are Cloudflare-native — no GitHub fallback needed.
 
 3.5. **⚠️ ANTI-PLANNING-SPIRAL GATE (MANDATORY — execute BEFORE step 4):**
    Before proceeding to execution (step 4) or delegation (step 5), audit your
@@ -534,7 +529,7 @@ When the user says "WHAT'S NEXT? PROCEED" or "RESUME":
 4. **If program-level task:** Execute directly (documentation, coordination, initiation)
 5. **If project-level task:** Create handoff, delegate, pause
 6. **Report with Execution Evidence:** What was actually EXECUTED (with `Test-Path` /
-   `git log` / `gh issue view` evidence), what's delegated (with issue link), what's
+   `wrangler r2 object get` evidence), what's delegated (with R2 state reference), what's
    pending. If you cannot produce evidence that an action was executed, do NOT claim
    it was done. Use `[EXECUTED]` / `[DELEGATED]` / `[PENDING]` tags.
 
@@ -558,7 +553,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 - **Extends:** DEFAULT.md (all versions)
 - **Date:** 2026-05-24
 - **Cloudflare CLI:** `wrangler` v4.95+ required
-- **Key change from v3.0:** GitHub platform DEPRECATED. All PM is Cloudflare-native (R2, D1, Workers, Pages). Git is version control ONLY. Project Initiation Protocol v4.0: Cloudflare Foundation (C0-C5) replaces GitHub Foundation (G0-G5). Discovery Index is the single entry point for ecosystem discovery.
+- **Key change from v3.0:** GitHub FULLY DEPRECATED. All PM is Cloudflare-native (R2, D1, Workers, Pages). Git is local version control ONLY. Discovery Index (`qnfo/discovery/index.json`) is the single entry point for ecosystem discovery. No GitHub repos, Issues, Projects, Wiki, or Discussions.
 
 ## SKILL INVOCATION TRIGGERS (v3.0 — On-Demand Workflow Knowledge)
 
@@ -567,7 +562,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Send email | skill_view('email-composer') |
 | Deploy to Cloudflare | skill_view('cloudflare-deployer') |
 | Publish a document | skill_view('publication-publisher') |
-| Manage git repos | skill_view('github-manager') |
+| Manage R2 code archives | skill_view('cloudflare-deployer') |
 | Close out a project | skill_view('closeout-manager') |
 | Recover from git errors | skill_view('git-hygiene') |
 | Find the right template | skill_view('template-catalog') |

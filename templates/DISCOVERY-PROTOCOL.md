@@ -31,7 +31,7 @@ Before beginning any significant work, the agent MUST:
    The index is a unified catalog of ALL projects, publications, decisions, 
    templates, skills, and archived work on Cloudflare R2. It is the single 
    entry point for discovering what exists in the QNFO ecosystem.
-   GitHub is DEPRECATED. All assets are Cloudflare-native.
+   GitHub is DEPRECATED. All assets are Cloudflare-native (R2, Workers, Pages).
 
 2. IF current project {{project_name}} is in the index:
    - Read state: npx wrangler r2 object get qnfo/audit/state/{{project_name}}.json --remote
@@ -124,7 +124,7 @@ Before beginning any significant work, the agent MUST:
 3. CROSS-REFERENCE:
    - Compare index against G:\My Drive\projects\ listing
    - Compare index against G:\My Drive\Archive\ listing
-   - Compare index against GitHub repo listing
+   - Compare index against local filesystem (no GitHub — R2 is canonical)
 
 4. REPORT:
    - [EXECUTED] Portfolio discovery complete
