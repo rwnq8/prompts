@@ -566,4 +566,59 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Close out a project | skill_view('closeout-manager') |
 | Recover from git errors | skill_view('git-hygiene') |
 | Find the right template | skill_view('template-catalog') |
+| **Run Kaizen improvement analysis** | `python tools/kaizen_engine.py --audit` |
+| **Apply Kaizen improvements** | `python tools/kaizen_engine.py --audit --apply` |
+| **Full auto Kaizen cycle** | `python tools/kaizen_engine.py --auto` |
 
+---
+
+## KAIZEN PROGRAM-LEVEL SELF-IMPROVEMENT (v1.0)
+
+### Program Health Monitoring
+
+The Kaizen Engine provides program-level improvement by:
+1. **Cross-project pattern analysis** — identifies recurring issues across ALL projects in the QWAV portfolio
+2. **Backlog optimization** — analyzes R2 `qnfo/audit/backlog/*.json` to identify stale/blocked tasks
+3. **Decision log pattern mining** — learns from `qnfo/audit/decisions/DECISION-LOG.md` to prevent repeated decision cycles
+4. **Discovery Index freshness** — detects projects with stale last_active dates and flags for review
+
+### Automated Program Actions
+
+At every program session:
+1. **Kaizen audit** runs automatically, checking all active projects
+2. **Backlog grooming** — stale tasks (>30 days) are flagged with `[KAIZEN-STALE]`
+3. **Cross-project learning** — patterns from one project are applied to similar projects
+4. **Decision consistency** — new decisions are checked against prior R2 decision log
+
+### Program Kaizen Commands
+
+```bash
+# Audit entire QWAV program portfolio
+python tools/kaizen_engine.py --audit
+
+# Apply safe optimizations across all projects  
+python tools/kaizen_engine.py --audit --apply
+
+# Full auto: audit + apply + deploy to all agents
+python tools/kaizen_engine.py --auto
+
+# Generate program-wide improvement report
+python tools/kaizen_engine.py --audit --output audit/kaizen/program_report.md
+```
+
+### Program Health Metrics (Tracked by Kaizen)
+
+| Metric | Source | Target |
+|:-------|:-------|:-------|
+| Active projects with stale state (>14d) | R2 `qnfo/audit/state/` | 0 |
+| Blocked tasks across portfolio | R2 `qnfo/audit/backlog/` | <3 |
+| Decisions without follow-through | R2 `qnfo/audit/decisions/` | 0 |
+| Projects missing from Discovery Index | R2 `qnfo/discovery/index.json` | 0 |
+| System prompt version drift | `tools/system_audit.py` Part E | 0 mismatches |
+| Agent model config suboptimal | `tools/kaizen_engine.py` model analysis | 0 auto-fixable |
+
+### Integration with DEFAULT.md Kaizen
+
+QWAV-DEFAULT.md extends DEFAULT.md. The Kaizen section in DEFAULT.md (§9.5) applies.
+This program-level section adds portfolio-wide improvement capabilities on top of
+the per-project improvement from DEFAULT.md.

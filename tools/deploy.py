@@ -16,8 +16,9 @@ Usage:
   python tools/deploy.py --skills-only  # Deploy only skills
   python tools/deploy.py --prompts-only # Deploy only system prompts
   python tools/deploy.py --config-only  # Deploy only config files
+  python tools/deploy.py --kaizen     # Run Kaizen + deploy
 
-v1.0 -- 2026-05-27
+v1.1 -- 2026-05-28 (Kaizen integration)
 """
 
 import os
@@ -284,7 +285,27 @@ def main():
     parser.add_argument(
         "--config-only", action="store_true", help="Deploy only config files"
     )
+    parser.add_argument(
+        "--kaizen", action="store_true",
+        help="Run Kaizen Engine then deploy all changes (auto mode)"
+    )
     args = parser.parse_args()
+
+    # Kaizen auto mode: run improvement engine before deploying
+    if args.kaizen:
+        import subprocess as sp
+        kaizen_path = CANONICAL_ROOT / "tools" / "kaizen_engine.py"
+        if kaizen_path.exists():
+            print("--- Running Kaizen Engine (auto mode) ---")
+            result = sp.run(
+                ["python", str(kaizen_path), "--auto"],
+                capture_output=True, text=True, cwd=str(CANONICAL_ROOT)
+            )
+            print(result.stdout[-500:] if result.stdout else "No output")
+            if result.returncode != 0:
+                print(f"Kaizen warning (exit {result.returncode})")
+        else:
+            print(f"Kaizen engine not found at {kaizen_path}")
 
     run_all = not (args.prompts_only or args.skills_only or args.config_only)
     dry = args.dry_run
