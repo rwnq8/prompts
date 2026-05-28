@@ -277,18 +277,64 @@ Cloudflare tasks (R2 qnfo/audit/state/), Projects, Releases, Wiki, and Discussio
 
 ---
 
-## 0.8 Pre-Project Due Diligence (Program Delta)
+## 0.8 Pre-Project Due Diligence (Program Delta — v2.0 Discovery-Index Powered)
 
-As a program agent, your due diligence scope is CROSS-PROJECT. Before initiating any new project or making portfolio decisions:
+As a program agent, your due diligence scope is CROSS-PROJECT. Before initiating any new project or making portfolio decisions, execute unified discovery through the QNFO Discovery Index:
 
-1. **Scan all active projects:** List all directories under `G:\My Drive\projects\`
-2. **Check for prior work:** Search Archive for related completed projects
-3. **Check for duplication:** Does a similar project already exist?
-4. **Check for dependency conflicts:** Will this project compete for resources with active projects?
-5. **Cross-project learning check:** Review LEARNINGS.md across active projects for applicable lessons
-6. **Backlog check:** `npx wrangler r2 object get qnfo/audit/backlog/<project>.json` for related program work
+### 0.8.1 Pull Discovery Index (MANDATORY — every session, every decision)
 
-Standard DEFAULT.md §0.8 due diligence protocol still applies per-project.
+```bash
+npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+```
+
+The Discovery Index is the SINGLE entry point for ALL QNFO ecosystem discovery. It eliminates the need for manual filesystem scanning.
+
+### 0.8.2 Cross-Project Discovery Workflow
+
+1. **Pull Discovery Index** — mandatory first step (§0.8.1)
+2. **Scan active projects:** Query index for all projects with status "active" — get canonical paths instantly
+3. **Check for prior work:** Search index by topic tags for related completed/archived projects
+4. **Check for duplication:** Use index topic-tag overlap analysis to detect near-duplicate projects
+5. **Check for dependency conflicts:** Review active project backlogs from R2 via index references
+6. **Cross-project learning:** Search index for applicable decisions from DECISION-LOG.md
+7. **Backlog check:** Use index to locate each project's backlog R2 path, then pull relevant ones
+8. **Local filesystem reconciliation:** Compare index against `G:\My Drive\projects\` and `G:\My Drive\Archive\` — any local project NOT in the index is UNINDEXED and needs cataloging
+
+### 0.8.3 Portfolio Health Audit (using Discovery Index)
+
+When asked to assess portfolio health or before major decisions:
+
+```bash
+python -c "
+import json
+with open('_discovery_index.json') as f:
+    idx = json.load(f)
+
+active = [p for p in idx.get('projects',{}).values() if p.get('status') == 'active']
+stale = [p for p in active if p.get('last_audit','') < '2026-05-01']  # 30+ day threshold
+unindexed = []  # Discovered by comparing index against local filesystem
+
+print(f'Active projects: {len(active)}')
+print(f'Stale (no audit > 30d): {len(stale)}')
+print(f'Archived: {len([p for p in idx[\"projects\"].values() if p[\"status\"] == \"archived\"])}')
+print(f'Publications: {len(idx.get(\"publications\",{}))}')
+print(f'Total ecosystem size: {len(idx[\"projects\"]) + len(idx.get(\"publications\",{})) + len(idx.get(\"archive\",{}))} artifacts')
+"
+```
+
+### 0.8.4 Index Integrity Check
+
+Before declaring due diligence complete, verify index integrity:
+
+1. **Index exists:** `npx wrangler r2 object get qnfo/discovery/index.json --remote` must succeed
+2. **Index is recent:** `updated` timestamp must be within 30 days
+3. **No orphan references:** Every project in index must have a verifiable repo/R2/local path
+4. **No missing projects:** Every `G:\My Drive\projects\` directory must appear in index
+5. **No missing archive:** Every `G:\My Drive\Archive\` directory must appear in index
+
+**If integrity check fails: REBUILD the index.** Do NOT proceed with stale discovery data.
+
+Standard DEFAULT.md §3 due diligence protocol still applies per-project.
 
 ---
 
