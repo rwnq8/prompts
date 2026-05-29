@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.0 — Cloudflare-Native)
+# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.5 — Cloudflare-Native)
 
 > **This prompt EXTENDS DEFAULT.md.** DEFAULT.md contains all base rules, protocols,
 > and standards. This prompt adds ONLY program/portfolio-level capabilities.
@@ -643,3 +643,15 @@ python tools/kaizen_engine.py --audit --output audit/kaizen/program_report.md
 QWAV-DEFAULT.md extends DEFAULT.md. The Kaizen section in DEFAULT.md (§9.5) applies.
 This program-level section adds portfolio-wide improvement capabilities on top of
 the per-project improvement from DEFAULT.md.
+
+---
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v3.5** | 2026-05-29 | **Discovery Index First Gate (fail-closed):** Enforced index pull before any non-read tool invocation. Prevents agents from spending 8+ tool calls investigating DNS when the index already has the answer. Added mandatory VERSION HISTORY section per §8.3. Header bumped from v3.0 to v3.5. |
+| v3.0 | 2026-05-28 | **Cloudflare-Native rewrite:** Replaced PHASE A GitHub Foundation (G0-G5) with Cloudflare Foundation (C0-C5). Removed all gh CLI, GitHub Issues, GitHub Projects references. Replaced with wrangler/R2/D1/Discovery Index. |
+| v2.1 | 2026-04 | Dual-System architecture (GitHub + Cloudflare). |
+| v2.0 | 2026-03 | Project initiation protocol, program-level due diligence. |
+| v1.0 | 2026-02 | Initial QWAV project manager agent. |
