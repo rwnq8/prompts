@@ -146,7 +146,25 @@ npx wrangler pages deployment list --project-name <name>
 ```
 
 #### Startup Checklist — Program Agent (Cloudflare-Native)
+
+**⚠️ DISCOVERY INDEX FIRST GATE (FAIL-CLOSED — v3.5 security patch):**
+The Discovery Index (`qnfo/discovery/index.json`) is the SINGLE source of truth for the entire QNFO ecosystem. It contains ALL project domains, deployment IDs, statuses, license URLs, infrastructure details, and known issues.
+
+**BEFORE invoking ANY non-read tool** (`curl`, `npx wrangler pages deploy`, Cloudflare API PATCH/POST/DELETE, `git push`, `write`, `edit`), the agent MUST:
+1. Pull Discovery Index: `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json`
+2. Read it into context: `read("_discovery_index.json")` or `python -c "import json; ..."` summary
+3. **Print a summary to the user:** "Discovered: X projects [Y active, Z degraded], A publications, B legal docs. Known issues: [...]"
+4. Answer ALL factual questions about the ecosystem FROM THE INDEX, not from memory or inference
+5. If the index contradicts any assumption → **TRUST THE INDEX, discard the assumption**
+
+**FAIL-CLOSED enforcement:** If step 0 is not completed before any non-read tool is invoked → **CRITICAL PROCEDURE VIOLATION.** The agent MUST abort, pull the index, and re-evaluate ALL conclusions drawn without it.
+
+**This gate exists because (2026-05-29 incident):** An agent spent 8+ tool calls investigating DNS for qnfo.org, said "likely a Cloudflare Pages site" — but the Discovery Index ALREADY contained `"qnfo.org"` mapped to `"cloudflare_pages": "qnfo-hub"` with `"deployment_id": "c14bedb9"`. The word "likely" was a failure of record-keeping, not of knowledge. The index knew. The agent didn't wait.
+
+---
+
 At session start:
+0. ⚠️ **PULL DISCOVERY INDEX FIRST** (see gate above) — `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json` then `read`
 1. `npx wrangler whoami` — confirm Cloudflare authenticated
 2. `npx wrangler r2 object get qnfo/audit/state/<project>.json` (v4.95+ compatible)
 3. `npx wrangler r2 object get qnfo/audit/backlog/<project>.json` (v4.95+ compatible)
@@ -283,6 +301,8 @@ npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_
 ```
 
 The Discovery Index is the SINGLE entry point for ALL QNFO ecosystem discovery. It eliminates the need for manual filesystem scanning.
+
+**⚠️ FAIL-CLOSED ENFORCEMENT (v3.5):** The Discovery Index MUST be pulled and read BEFORE any non-read tool is invoked. This is enforced by the Discovery Index First Gate in the Startup Checklist (§0.6.5). If a task begins without the index loaded, all conclusions drawn are suspect and must be re-verified against the index. The word "likely" has no place in QNFO infrastructure answers — the index provides certainty.
 
 ### 0.8.2 Cross-Project Discovery Workflow
 
