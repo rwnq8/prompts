@@ -60,8 +60,9 @@ if "DEFAULT.md" in files:
     d_content = files["DEFAULT.md"]
     d_found = set()
     for name in subagent_names:
-        # Look for the subagent name in the slot ID column of the subagent table
-        if re.search(rf"\|\s*\*\*{name.upper()}\*\*\s*\|", d_content):
+        # Look for **NAME** (bold) in the DEFAULT.md text
+        # DEFAULT.md uses bullet-list format: `**EXPLORER** (description)`
+        if re.search(rf"\*\*{name.upper()}\*\*", d_content):
             d_found.add(name)
     if d_found == subagent_names:
         print(f"  B1. DEFAULT.md subagent refs (explorer/implementer/reviewer): PASS")
@@ -84,14 +85,17 @@ if "DEFAULT.md" in files:
 
 # PART C: Documentation Drift
 print("\nPART C: DOCUMENTATION DRIFT CHECK")
+# CPL is now wiki-based: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 cpl_path = r"G:\My Drive\projects\_shared\CROSS-PROJECT-LEARNINGS.md"
+cpl_wiki_url = "https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings"
 if os.path.exists(cpl_path):
     with open(cpl_path, "r", encoding="utf-8") as f:
         cpl = f.read()
     lesson_count = len(re.findall(r"^### L\d+:", cpl, re.MULTILINE))
-    print(f"  C1/C2. CPL lessons: {lesson_count} (expected >=10) {'PASS' if lesson_count >= 10 else 'CHECK'}")
+    print(f"  C1. CPL lessons (local): {lesson_count} (expected >=10) {'PASS' if lesson_count >= 10 else 'CHECK'}")
 else:
-    print(f"  C1. CROSS-PROJECT-LEARNINGS.md MISSING WARNING: FAIL")
+    print(f"  C1. CROSS-PROJECT-LEARNINGS.md not found locally (expected: wiki-based)")
+    print(f"      Wiki: {cpl_wiki_url}")
 
 # PART D: Archive Integrity
 print("\nPART D: ARCHIVE INTEGRITY CHECK")
@@ -201,28 +205,38 @@ else:
 # PART F: Template Integration Check
 print("\nPART F: TEMPLATE INTEGRATION CHECK")
 
-# Project management template names
-pm_templates = {
-    "PROJECT-CHARTER": "CHARTER.md",
+# Active template names (correspond to files in templates/ directory)
+# These SHOULD be referenced in at least one system prompt
+active_templates = {
+    "PROJECT-CHARTER": "PROJECT-CHARTER.md",
     "DEFINITION-OF-DONE": "DEFINITION-OF-DONE.md",
-    "RISK-REGISTER": "RISK-REGISTER.md",
-    "README": "README.md",
-    # DEPRECATED per DEFAULT.md §0.6.8 -> Cloudflare R2-native (ADR-001):
-    "SPRINT-BACKLOG": "SPRINT.md -> Cloudflare R2 qnfo/audit/backlog/",
-    "PRODUCT-BACKLOG": "BACKLOG.md -> Cloudflare R2 qnfo/audit/backlog/",
-    "CHANGELOG": "CHANGELOG.md -> Cloudflare R2 qnfo/releases/",
-    "CONTRIBUTING": "CONTRIBUTING.md (Cloudflare R2 qnfo/releases/ — public)",
-    "HANDOFF": "handoff document",
-    "ADR": "DECISIONS.md -> Cloudflare R2 qnfo/audit/decisions/DECISION-LOG.md",
-    "PROJECT-STATE": "PROJECT STATE.md -> Cloudflare R2 qnfo/audit/state/",
-    "LEARNINGS": "LEARNINGS.md -> Cloudflare R2 qnfo/audit/learnings/",
+    "HANDOFF": "HANDOFF.md",
     "CLOSEOUT-CHECKLIST": "CLOSEOUT-CHECKLIST.md",
-    "WEB-APP-RELEASE-CHECKLIST": "web app pre-deployment gate",
-    "TEST-EVIDENCE": "test execution evidence",
-    "RETROSPECTIVE": "sprint retrospective",
-    "QA-QC-TESTING-PROTOCOL": "QA-QC-TESTING-PROTOCOL.md",
     "PROJECT-INITIATION": "PROJECT-INITIATION.md",
-    "SOCIAL-ORCHESTRATOR-TEMPLATE": "social media orchestration",
+    "SOCIAL-ORCHESTRATOR-TEMPLATE": "SOCIAL-ORCHESTRATOR-TEMPLATE.md",
+}
+
+# Deprecated PM docs (migrated to Cloudflare R2 per DEFAULT.md section 0.6.8)
+# These should NOT be wired - they are R2-native
+deprecated_r2_docs = {
+    "SPRINT-BACKLOG": "R2 qnfo/audit/backlog/",
+    "PRODUCT-BACKLOG": "R2 qnfo/audit/backlog/",
+    "CHANGELOG": "R2 qnfo/releases/",
+    "CONTRIBUTING": "R2 qnfo/releases/",
+    "PROJECT-STATE": "R2 qnfo/audit/state/",
+    "LEARNINGS": "R2 qnfo/audit/learnings/",
+    "ADR": "R2 qnfo/audit/decisions/DECISION-LOG.md",
+}
+
+# Legacy PM docs - names referenced in older workflows but no template files exist
+# These are aspirational and not required
+legacy_docs = {
+    "RISK-REGISTER": "No template file (aspirational)",
+    "QA-QC-TESTING-PROTOCOL": "No template file (aspirational)",
+    "WEB-APP-RELEASE-CHECKLIST": "No template file (aspirational)",
+    "TEST-EVIDENCE": "No template file (aspirational)",
+    "RETROSPECTIVE": "No template file (aspirational)",
+    "README": "README.md (not a template - standard project doc)",
 }
 
 default_path = os.path.join(prompts_dir, "DEFAULT.md")
@@ -230,52 +244,50 @@ qwav_path = os.path.join(prompts_dir, "QWAV-DEFAULT.md")
 default_wired = set()
 qwav_wired = set()
 
+# Check wiring for active templates only
 if os.path.exists(default_path):
     with open(default_path, 'r', encoding='utf-8') as f:
         d_content = f.read()
-    for tmpl_name in pm_templates:
+    for tmpl_name in active_templates:
         if tmpl_name in d_content:
             default_wired.add(tmpl_name)
 
 if os.path.exists(qwav_path):
     with open(qwav_path, 'r', encoding='utf-8') as f:
         q_content = f.read()
-    for tmpl_name in pm_templates:
+    for tmpl_name in active_templates:
         if tmpl_name in q_content:
             qwav_wired.add(tmpl_name)
 
 all_wired = default_wired | qwav_wired
-unwired = set(pm_templates.keys()) - all_wired
+unwired = set(active_templates.keys()) - all_wired
 
-print(f"  F1. DEFAULT.md wired: {len(default_wired)}/{len(pm_templates)}")
-for tmpl in sorted(pm_templates.keys()):
+print(f"  F1. DEFAULT.md wired: {len(default_wired)}/{len(active_templates)} active templates")
+for tmpl in sorted(active_templates.keys()):
     status = "WIRED" if tmpl in default_wired else "MISSING"
     print(f"    {status}: {tmpl}")
 
-print(f"  F2. QWAV-DEFAULT.md wired: {len(qwav_wired)}/{len(pm_templates)}")
-for tmpl in sorted(pm_templates.keys()):
-    if tmpl in qwav_wired:
-        status = "WIRED"
-    elif tmpl in {"SOCIAL-ORCHESTRATOR-TEMPLATE", "ADR", "CLOSEOUT-CHECKLIST", 
-                  "QA-QC-TESTING-PROTOCOL", "RETROSPECTIVE", "TEST-EVIDENCE", 
-                  "WEB-APP-RELEASE-CHECKLIST"}:
-        status = "OMITTED"
-    else:
-        status = "MISSING"
+print(f"  F2. QWAV-DEFAULT.md wired: {len(qwav_wired)}/{len(active_templates)} active templates")
+for tmpl in sorted(active_templates.keys()):
+    status = "WIRED" if tmpl in qwav_wired else "MISSING"
     print(f"    {status}: {tmpl}")
 
-if unwired:
-    print(f"  F3. UNWIRED (dead code): {len(unwired)}/{len(pm_templates)} {sorted(unwired)}")
-else:
-    print(f"  F3. All {len(pm_templates)} templates wired in at least one agent")
+# Deprecated R2 docs: confirm they exist on R2 (skip local check)
+print(f"  F3. Deprecated PM docs (R2-native): {len(deprecated_r2_docs)} - SKIP (expected)")
+for name, path in sorted(deprecated_r2_docs.items()):
+    print(f"    DEPRECATED: {name} -> {path}")
+
+# Legacy docs: note they have no template files
+print(f"  F4. Legacy PM docs (no template files): {len(legacy_docs)} - INFO")
+for name, note in sorted(legacy_docs.items()):
+    print(f"    LEGACY: {name} - {note}")
 
 if len(unwired) == 0:
-    print(f"  F_RESULT: All {len(pm_templates)} project management templates wired PASS")
-elif len(unwired) <= 2:
-    print(f"  F_RESULT: {len(unwired)} templates unwired WARNING")
+    print(f"  F_RESULT: All {len(active_templates)} active templates wired PASS")
+elif len(unwired) <= 1:
+    print(f"  F_RESULT: {len(unwired)} active template(s) unwired WARNING")
 else:
-    print(f"  F_RESULT: {len(unwired)} templates unwired (dead code) FAIL")
-
+    print(f"  F_RESULT: {len(unwired)} active templates unwired FAIL")
 
 # PART G: Template File Content Verification
 print("\nPART G: TEMPLATE FILE CONTENT CHECK")

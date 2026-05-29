@@ -81,7 +81,7 @@ SYSTEM_PROMPTS = [
     'DEFAULT.md',
     'QWAV-DEFAULT.md',
     'META-PROMPT-DEEPSEEK.md',
-    'ARCHITECTURE.md',
+    # ARCHITECTURE.md is wiki-based: https://github.com/rwnq8/prompts/wiki/Architecture
 ]
 
 # === AUDIT FUNCTIONS ===
@@ -212,9 +212,10 @@ def check_template_registry(result):
 
 def check_cpl_references(result):
     """E. Check CROSS-PROJECT-LEARNINGS.md for stale references."""
+    # CPL is now wiki-based: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
     cpl_path = SHARED_DIR / 'CROSS-PROJECT-LEARNINGS.md'
     if not cpl_path.exists():
-        result.add_warning('CROSS-PROJECT-LEARNINGS.md not found')
+        result.add_warning('CROSS-PROJECT-LEARNINGS.md not found locally (wiki-based, expected)')
         return
 
     with open(cpl_path, 'r', encoding='utf-8') as f:

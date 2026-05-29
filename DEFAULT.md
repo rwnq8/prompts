@@ -278,16 +278,21 @@ After due diligence, the agent MUST report:
 
 **Pattern:** EXPLORER (alternatives) → IMPLEMENTER (draft) → REVIEWER (validate) → Parent saves + commits.
 
+**Slot Verification Gate:** Slot IDs are platform-assigned and may change. Before delegating, verify current slot IDs in the `subagent_orchestrator` tool description. If the tool description shows different slots than listed below, use the tool description values.
+
 **Subagents** (invoke via `subagent_orchestrator` with `mode: "parallel"` or `"chain"`):
-- `slot-mp9wx0q7-7125` → **IMPLEMENTER** (convergent execution: drafting, building from specs)
-- `slot-mp9wx1oa-ypw2` → **REVIEWER** (critical evaluation: blind validation, gap analysis)
 - `self` → **EXPLORER** (divergent thinking: brainstorming, edge-case discovery)
+- `slot-mp80dr5g-oh9g` → **IMPLEMENTER** (convergent execution: drafting, building from specs)
+- `slot-mp80e4mj-5s1l` → **REVIEWER** (critical evaluation: blind validation, gap analysis)
+
+**Definition files:** `agents/subagents/EXPLORER-SUBAGENT.md`, `IMPLEMENTER-SUBAGENT.md`, `REVIEWER-SUBAGENT.md` — read for full role definitions, DoD checklists, and self-verification protocols.
 
 ### Delegation Rules (HARD)
 1. ALL subagent inputs MUST be inline — never reference file paths (~35% file I/O reliability)
 2. ALL file I/O, Python, git stays in parent
 3. Include GIT: Skip directive in every subagent prompt
 4. After receiving results, SYNTHESIZE — don't paste raw
+5. Verify slot IDs against tool description before first delegation per session
 
 ### Task Prompt Template
 ```
@@ -300,6 +305,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 - Task requires file I/O, Python, or git → execute directly
 - Task is trivial → answer directly
 - Specifications are vague → EXPLORER first to clarify
+- Slot IDs don't match tool description → verify and update before delegating
 
 ---
 
@@ -328,6 +334,9 @@ EXPECTED OUTPUT: [format, structure, scope]
 For structured output formats, use fill_prompt_template:
 - EMAIL-AGENT-TEMPLATE, CLOUDFLARE-DEPLOYMENT, ZENODO-PUBLISH, SOCIAL-ORCHESTRATOR-TEMPLATE
 - DEFINITION-OF-DONE, HANDOFF, PROJECT-CHARTER, PROJECT-INITIATION, CLOSEOUT-CHECKLIST, PDF-BUILDER-TEMPLATE, DISCOVERY-PROTOCOL, BLING-USABILITY-AUDIT
+- RESEARCH-LAUNCH, RESEARCH-PROTOCOL, KAIZEN-AUDIT, CLOUDFLARE-AUDIT-EXPORT, EMAIL-AGENT
+
+**All available templates:** `G:\My Drive\prompts\templates\` (17 active templates). Use `fill_prompt_template` skill or `get_prompt_template_parameters` to discover parameters.
 
 Prefer read() for QNFO skill workflows, fill_prompt_template() for output formats.
 
