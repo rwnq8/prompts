@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import time
 """
 deploy.py -- Canonical Source -> DeepChat Runtime Deployment Pipeline
 
@@ -43,6 +44,7 @@ DEEPCHAT_DIR = APPDATA / "DeepChat"
 DEEPCHAT_SKILLS = DEEPCHAT_DIR / "skills"
 AGENT_DB = DEEPCHAT_DIR / "app_db" / "agent.db"
 APP_SETTINGS = DEEPCHAT_DIR / "app-settings.json"
+CUSTOM_PROMPTS = DEEPCHAT_DIR / "custom_prompts.json"
 
 # --- Agent -> System Prompt Mapping -----------------------------------
 AGENT_PROMPT_MAP = {
@@ -55,6 +57,7 @@ AGENT_PROMPT_MAP = {
 CONFIG_MAP = {
     "mcp-settings.json": DEEPCHAT_DIR / "mcp-settings.json",
     "acp_agents.json": DEEPCHAT_DIR / "acp_agents.json",
+    "model-config.json": DEEPCHAT_DIR / "model-config.json",
 }
 
 
@@ -265,6 +268,82 @@ def deploy_default_system_prompt(dry_run=False):
 # MAIN
 # =====================================================================
 
+def deploy_templates(dry_run=False):
+    """Sync canonical templates/ to custom_prompts.json.
+
+    Canonical .md files in templates/ are the source of truth. This function:
+    1. Reads all .md files from CANONICAL_ROOT/templates/
+    2. Reads deployed custom_prompts.json
+    3. Adds any missing canonical templates; updates content if drifted
+    4. Does NOT remove deployed-only templates (they may be UI-created)
+    """
+    results = {}
+    templates_dir = CANONICAL_ROOT / "templates"
+
+    if not templates_dir.exists():
+        results["error"] = "Canonical templates directory not found"
+        return results
+
+    # Read deployed custom_prompts.json
+    if not CUSTOM_PROMPTS.exists():
+        results["error"] = "custom_prompts.json not found"
+        return results
+
+    with open(CUSTOM_PROMPTS, "r", encoding="utf-8") as f:
+        cp = json.load(f)
+
+    prompts = cp.get("prompts", [])
+    prompts_by_name = {p["name"]: p for p in prompts}
+
+    # Scan canonical templates
+    for md_file in sorted(templates_dir.glob("*.md")):
+        template_name = md_file.stem  # filename without .md
+        canonical_content = read_file(md_file)
+
+        if canonical_content is None:
+            continue
+
+        if template_name in prompts_by_name:
+            deployed_entry = prompts_by_name[template_name]
+            deployed_content = deployed_entry.get("content", "")
+            if hash_content(canonical_content) == hash_content(deployed_content):
+                results[template_name] = "UNCHANGED"
+                continue
+            if dry_run:
+                results[template_name] = "WOULD_UPDATE"
+                continue
+            deployed_entry["content"] = canonical_content
+            deployed_entry["updatedAt"] = str(int(time.time() * 1000))
+            results[template_name] = "UPDATED"
+        else:
+            if dry_run:
+                results[template_name] = "WOULD_INSTALL"
+                continue
+            new_id = str(int(time.time() * 1000))
+            new_entry = {
+                "id": new_id,
+                "name": template_name,
+                "description": "",
+                "content": canonical_content,
+                "parameters": [],
+                "files": [],
+                "enabled": True,
+                "source": "local",
+                "createdAt": new_id,
+                "updatedAt": new_id,
+            }
+            prompts.append(new_entry)
+            results[template_name] = "INSTALLED"
+
+    # Write back if not dry run
+    if not dry_run:
+        cp["prompts"] = prompts
+        with open(CUSTOM_PROMPTS, "w", encoding="utf-8") as f:
+            json.dump(cp, f, indent=2, ensure_ascii=False)
+
+    return results
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Deploy canonical prompts to DeepChat runtime"
@@ -284,6 +363,10 @@ def main():
     )
     parser.add_argument(
         "--config-only", action="store_true", help="Deploy only config files"
+    )
+    parser.add_argument(
+        "--templates-only", action="store_true",
+        help="Deploy only templates to custom_prompts.json"
     )
     parser.add_argument(
         "--kaizen", action="store_true",
@@ -307,7 +390,7 @@ def main():
         else:
             print(f"Kaizen engine not found at {kaizen_path}")
 
-    run_all = not (args.prompts_only or args.skills_only or args.config_only)
+    run_all = not (args.prompts_only or args.skills_only or args.config_only or args.templates_only)
     dry = args.dry_run
 
     print("=" * 60)
@@ -343,6 +426,14 @@ def main():
             status = results[cfg]
             flag = "->" if "UPDATE" in status or "INSTALL" in status else "  "
             print("  {} {}: {}".format(flag, cfg, status))
+
+    if run_all or args.templates_only:
+        print("\n--- Templates (custom_prompts.json) ---")
+        results = deploy_templates(dry_run=dry)
+        for tmpl in sorted(results.keys()):
+            status = results[tmpl]
+            flag = "->" if "UPDATE" in status or "INSTALL" in status else "  "
+            print("  {} {}: {}".format(flag, tmpl, status))
 
     if run_all:
         print("\n--- Default System Prompt (app-settings.json) ---")
