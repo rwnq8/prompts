@@ -149,7 +149,7 @@ Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 
 ## 9. CLOUDFLARE-DEPLOYMENT (Quick Reference)
 
-**Startup:** `wrangler --version` (v3.0+), `wrangler whoami` (CLOUDFLARE_API_TOKEN)
+**Startup:** `$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()` (FULL account API token), `wrangler --version` (v3.0+), `wrangler whoami`
 **Pages:** `wrangler pages deploy --project-name <name> --branch main`
 **R2:** `wrangler r2 object put <bucket>/path --file ./local/file.pdf`
 **CRITICAL:** Create CNAME DNS record BEFORE adding domain to Pages.
