@@ -205,14 +205,18 @@ deployment is a configuration change, not a migration.
 
 **⚠️ WRANGLER v4.95+:** `r2 object list` removed. Use per-object `get`/`put`/`delete`. `--remote` flag deprecated. For directory enumeration, deploy a list-objects Worker.
 
-**⚠️ AGENT AUTH:** Prefer `CLOUDFLARE_API_TOKEN` env var — `wrangler login` OAuth is incompatible with autonomous agent execution (requires manual browser credential entry).
+**⚠️ AGENT AUTH:** The Cloudflare API token with FULL account access is stored persistently at `C:\Users\LENOVO\.cloudflare\api-token`. Load it at session start — `wrangler login` OAuth has LIMITED scopes (zone:read only) and cannot perform DNS writes or redirect management.
 
 **Authentication:**
 ```bash
-set CLOUDFLARE_API_TOKEN=<api-token>     # Non-interactive (PREFERRED for agents)
+# MANDATORY — Load API token from persistent file (DO THIS FIRST):
+$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()
+
+# Verify:
 wrangler --version                       # Must be v3.0+. npm install -g wrangler
-wrangler whoami                          # Confirm authenticated
+wrangler whoami                          # Confirm authenticated (may show OAuth — API token used for direct calls)
 ```
+**Token scopes:** The API token has zone:write, DNS:edit, redirect rules, Pages, Workers, R2, D1, Vectorize — FULL account access. The wrangler OAuth token has zone:read only. NEVER use OAuth for DNS/redirect operations.
 
 **Cloudflare Pages (static sites, JAMstack):**
 ```bash

@@ -84,17 +84,24 @@ Three auth methods, ranked by reliability for agent execution:
 
 | Method | Agent-Compatible | Persistence | Notes |
 |:-------|:----------------:|:-----------|:------|
-| **OAuth Token** (`wrangler login`) | ✅ With YoBrowser | ✅ Persisted to `%APPDATA%\xdg.config\.wrangler\config\default.toml` | Once done, survives sessions. YoBrowser can complete the browser flow. |
-| **Global API Key** (`CLOUDFLARE_API_KEY` + `CLOUDFLARE_EMAIL`) | ✅ Fully | ❌ Per-session env vars | Use for headless/non-browser agents |
-| **API Token** (`CLOUDFLARE_API_TOKEN`) | ✅ Fully | ❌ Per-session env vars | Scoped tokens recommended for CI/CD |
+| **API Token (PERSISTENT FILE)** | Yes Fully | Yes Persisted to `C:\Users\LENOVO\.cloudflare\api-token` | **PRIMARY METHOD -- FULL account access.** Load at session start. zone:write, DNS:edit, redirects, Pages, Workers, R2. |
+| **OAuth Token** (`wrangler login`) | Yes With YoBrowser | Yes Persisted to `%APPDATA%\xdg.config\.wrangler\config\default.toml` | **LIMITED SCOPES (zone:read only).** CANNOT do DNS writes or redirect management. Useful for wrangler CLI only. |
+| **Global API Key** (`CLOUDFLARE_API_KEY`+`CLOUDFLARE_EMAIL`) | Yes Fully | No Per-session env vars | Use for headless/non-browser agents |
 
 ```bash
-# METHOD 1: OAuth (PERSISTENT — do this ONCE):
-wrangler login
-# → Opens browser. Authenticate via Cloudflare Dashboard.
-# → Token stored permanently. Verify with `wrangler whoami`.
+# METHOD 1: API Token from persistent file (PREFERRED -- FULL account access):
+$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()
+# Token has zone:write, DNS:edit, redirect rules, Pages, Workers, R2, D1, Vectorize
+# Use for ALL direct API calls (curl, Python) to Cloudflare REST API
+# The wrangler OAuth token has zone:read ONLY -- never use for DNS/redirect operations
 
-# METHOD 2: Global API Key (per-session):
+# METHOD 2: OAuth (PERSISTENT -- do this ONCE):
+wrangler login
+# -> Opens browser. Authenticate via Cloudflare Dashboard.
+# -> Token stored permanently. Verify with "wrangler whoami".
+# -> LIMITED TO zone:read -- DNS writes and redirects WILL FAIL.
+
+# METHOD 3: Global API Key (per-session):
 $env:CLOUDFLARE_API_KEY = "<global-api-key>"
 $env:CLOUDFLARE_EMAIL = "<cloudflare-account-email>"
 # NOTE: Both env vars required. API Key alone is insufficient.

@@ -20,12 +20,22 @@ The `--remote` flag is deprecated (remote is default in v4+). For directory enum
 
 ## Authentication
 
+**⚠️ MANDATORY:** Load the API token from the persistent file BEFORE any Cloudflare operations. The `wrangler` OAuth token has zone:read only — CANNOT do DNS writes or redirect management.
+
 ```bash
-# Preferred: API token (non-interactive)
-set CLOUDFLARE_API_TOKEN=<api-token>
+# MANDATORY — Load FULL-ACCESS API token:
+$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()
 
 # Verify
 npx wrangler whoami
+```
+
+**Token scopes (API token):** zone:write, DNS:edit, redirect rules, Pages, Workers, R2, D1, Vectorize — FULL account access.
+**OAuth scopes (wrangler):** zone:read only — DNS reads work, DNS WRITES and redirects FAIL.
+
+For direct API calls (DNS, redirects, zone management), use the API token with Bearer auth:
+```bash
+curl -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" https://api.cloudflare.com/client/v4/...
 ```
 
 **Account:** quniverse (edb167b78c9fb901ea5bca3ce58ccc4b)
