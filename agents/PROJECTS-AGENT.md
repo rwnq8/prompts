@@ -136,7 +136,19 @@ Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 
 ---
 
-## 8. SESSION CLOSE-OUT (Auto-Execute)
+## 8. KAIZEN CONTINUOUS IMPROVEMENT
+
+The Kaizen Engine (`tools/kaizen_engine.py`) runs at session startup. For autonomous system-wide updates, load:
+```
+read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')
+```
+or use `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE", {...})`.
+
+When the Kaizen engine detects 5+ unapplied improvements or user triggers "UPDATE ALL FROM KAIZEN", execute the autonomous update protocol.
+
+---
+
+## 9. SESSION CLOSE-OUT (Auto-Execute)
 
 1. Close-out checklist (DEFAULT.md SS12): archive, PDF, GitHub Release
 2. Verify all commits: `git log -1 --oneline`
@@ -147,7 +159,7 @@ Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 
 ---
 
-## 9. CLOUDFLARE-DEPLOYMENT (Quick Reference)
+## 10. CLOUDFLARE-DEPLOYMENT (Quick Reference)
 
 **Startup:** `$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()` (FULL account API token), `wrangler --version` (v3.0+), `wrangler whoami`
 **Pages:** `wrangler pages deploy --project-name <name> --branch main`

@@ -1,4 +1,4 @@
-# PROMPTS AGENT — v1.2
+# PROMPTS AGENT — v1.3
 
 > **DeepChat Agent: `Prompts`** | System Prompt: `META-PROMPT-DEEPSEEK.md` | Write Sandbox: `G:\My Drive\prompts\`
 
@@ -9,7 +9,7 @@
 | Field | Value |
 |:------|:------|
 | **Agent Name** | Prompts |
-| **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.6+) |
+| **System Prompt** | `META-PROMPT-DEEPSEEK.md` (v4.9+) |
 | **Write Sandbox** | `G:\My Drive\prompts\` — git-tracked prompt engineering workspace |
 | **Read Scope** | ALL directories |
 | **MOVE Destination** | `G:\My Drive\Archive\prompts\` |
@@ -126,7 +126,17 @@ Sizing reference: https://github.com/rwnq8/prompts/wiki/Architecture
 
 ---
 
-## 8. GIT PROTOCOL
+## 8. KAIZEN CONTINUOUS IMPROVEMENT
+
+The Kaizen Engine runs at session startup. For autonomous system-wide updates:
+```
+read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')
+```
+Use `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE", {...})` for structured updates.
+
+---
+
+## 9. GIT PROTOCOL
 
 **IRON RULE:** NEVER commit to main/master. Feature branches only.
 - Pre-work: `git branch --show-current` > feature branch (CPL L19: verify name unchanged)
@@ -136,7 +146,7 @@ Sizing reference: https://github.com/rwnq8/prompts/wiki/Architecture
 
 ---
 
-## 9. SESSION STARTUP
+## 10. SESSION STARTUP
 
 1. Verify sandbox: `G:\My Drive\prompts\`
 2. Git branch check: feature branch
@@ -146,4 +156,4 @@ Sizing reference: https://github.com/rwnq8/prompts/wiki/Architecture
 
 ---
 
-*Prompts Agent v1.2 — System prompt engineering with subagent delegation (EXPLORER, IMPLEMENTER, REVIEWER).*
+*Prompts Agent v1.3 — System prompt engineering with subagent delegation (EXPLORER, IMPLEMENTER, REVIEWER). Kaizen-integrated.*

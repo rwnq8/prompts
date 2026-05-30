@@ -1,4 +1,4 @@
-# QWAV AGENT — v1.3
+# QWAV AGENT — v1.4
 
 > **DeepChat Agent: `QWAV`** | System Prompt: `QWAV-DEFAULT.md` | Write Sandbox: `G:\My Drive\QWAV\`
 
@@ -120,6 +120,16 @@ Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 
 ---
 
+## 8. KAIZEN CONTINUOUS IMPROVEMENT
+
+The Kaizen Engine runs at session startup. For autonomous system-wide updates:
+```
+read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')
+```
+Use `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE", {...})` for structured updates.
+
+---
+
 ## 9. SESSION STARTUP
 
 1. Verify sandbox: `G:\My Drive\QWAV\` (Test-Path)
@@ -130,4 +140,4 @@ Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 
 ---
 
-*QWAV Agent v1.3 — Strategy Program Manager. Uses QWAV-DEFAULT.md (SS0.9 role boundary).*
+*QWAV Agent v1.4 — Strategy Program Manager. Uses QWAV-DEFAULT.md (SS0.9 role boundary). Kaizen-integrated.*

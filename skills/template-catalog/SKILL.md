@@ -11,7 +11,7 @@ version: "1.0"
 
 ---
 
-## Available Templates (14 total)
+## Available Templates (18 total + 1 deprecated)
 
 ### Core Project Templates
 
@@ -22,7 +22,7 @@ version: "1.0"
 | `DEFINITION-OF-DONE` | Quality gates | `project_name`, `deliverable_type`, `acceptance_criteria` |
 | `HANDOFF` | Agent-to-agent handoff | `type`, `scope`, `success_criteria`, `research_trail`, `return_protocol` |
 | `DISCOVERY-PROTOCOL` | **Unified ecosystem discovery** | `scope`, `topic`, `project_name` |
-| `README` | Project README | `project_name`, `description`, `repo_url`, `architecture` |
+| `BLING-USABILITY-AUDIT` | BLING UI usability audit | `project_name`, `url`, `screenshots` |
 
 ### Publication Templates
 
@@ -39,6 +39,8 @@ version: "1.0"
 | `CLOUDFLARE-DEPLOYMENT` | Cloudflare deploy | `action`, `project_name`, `branch`, `domain` |
 | `CLOUDFLARE-AUDIT-EXPORT` | Session audit export | `agent`, `session_date`, `summary`, `decisions`, `files_changed` |
 | `CLOSEOUT-CHECKLIST` | Session close-out | `project_name`, `session_type` |
+| `KAIZEN-AUDIT` | Kaizen improvement report | `health_score`, `total_findings`, `auto_applied_count` |
+| `KAIZEN-AUTONOMOUS-UPDATE` | Autonomous system-wide update | `trigger_type`, `components`, `auto_apply` |
 | `EMAIL-AGENT-TEMPLATE` | Email composition | `to`, `subject`, `body`, `cc`, `bcc`, `attachments` |
 
 ### Research Templates
@@ -46,6 +48,7 @@ version: "1.0"
 | Template | Use For | Parameters |
 |:---------|:--------|:-----------|
 | `RESEARCH-LAUNCH` | Research pipeline launch | `topic`, `scope`, `output_type`, `priority` |
+| `RESEARCH-PROTOCOL` | Research methodology protocol | `topic`, `methodology`, `sources` |
 
 ---
 
@@ -86,6 +89,11 @@ Template registry: `G:\My Drive\prompts\prompts.json`
 ### Session Lifecycle
 ```
 (Start) → DISCOVERY-PROTOCOL → RESEARCH-LAUNCH → ... → CLOSEOUT-CHECKLIST → CLOUDFLARE-AUDIT-EXPORT
+```
+
+### Autonomous Update
+```
+KAIZEN-AUDIT → KAIZEN-AUTONOMOUS-UPDATE → deploy → commit → discovery-update
 ```
 
 ### New Project

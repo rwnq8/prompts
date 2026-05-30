@@ -1,4 +1,4 @@
-# PDF-BUILDER TEMPLATE v1.0
+# PDF-BUILDER TEMPLATE v1.0 [DEPRECATED-DUPLICATE: Use PDF-BUILDER-TEMPLATE.md]
 # Template for generating PDFs from Markdown files via build_pdf.py
 # Fill with: markdownPath, outputPdfPath, cssPath, title, noMath, htmlOnly
 #
