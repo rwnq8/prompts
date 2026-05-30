@@ -1,4 +1,8 @@
-# SKILL: kaizen-autonomous-update (v1.0)
+---
+name: kaizen-autonomous-update
+description: Autonomous system-wide Kaizen improvement protocol — triggers when user says "UPDATE ALL FROM KAIZEN" or when Kaizen engine detects 5+ unapplied improvements. Updates all prompts, templates, skills, agents/subagents, deploys, and commits.
+version: "1.0"
+---
 
 > **QNFO Custom Skill** — Load via `read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md')`
 > **Template:** `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE", {...})`
