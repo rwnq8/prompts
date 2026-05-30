@@ -1,0 +1,547 @@
+{
+  "ecosystem": "QNFO/QWAV â€” Git on Cloudflare R2",
+  "updated": "2026-05-30T17:19:23.914024+00:00",
+  "license": {
+    "name": "QNFO Unified License Agreement v2.0",
+    "spdx": "LicenseRef-QNFO-ULA-2.0",
+    "base": "CC BY-NC-SA 4.0",
+    "url": "https://qnfo.org/legal/license",
+    "r2_path": "qnfo/releases/licenses/QNFO-ULA-v2.0.md",
+    "local_path": "G:\\My Drive\\QWAV\\legal\\QNFO-ULA-v2.0.md",
+    "effective_date": "2026-05-29",
+    "supersedes": [
+      "QNFO Content License Agreement v1.1",
+      "AI System License Agreement (ASLA)",
+      "CC BY-NC-SA 4.0 (various)",
+      "CC BY-NC 4.0 (various)",
+      "MIT License (project-specific)",
+      "Unlicense (q08.org archive)"
+    ],
+    "key_provisions": [
+      "CC BY-NC-SA 4.0 base with ShareAlike copyleft",
+      "85% liquidated damages on unauthorized commercial use",
+      "Mandatory patent prior art citation",
+      "AI/ML training prohibition for commercial models",
+      "RAIL-inspired behavioral restrictions",
+      "Search & Discovery Exception (6 carve-outs)",
+      "Publication Exception for CC BY 4.0 content",
+      "7 edge case clarifications",
+      "7 platform enforcement channels",
+      "Structured commercial license pathway (Ã‚Â§10.7)",
+      "Swiss governing law + ICC Geneva arbitration",
+      "New York Convention + 5 treaty references",
+      "EU sui generis database rights coverage",
+      "SPDX identifier: LicenseRef-QNFO-ULA-2.0",
+      "Binding on Access clause",
+      "Anti-circumvention provisions (Ã‚Â§2.5)",
+      "Liquidated damages fallback provision"
+    ]
+  },
+  "projects": {
+    "qnfo-hub": {
+      "name": "qnfo-hub",
+      "description": "QNFO Research Infrastructure Hub â€” master directory of all QWAV/QNFO sites",
+      "type": "hub",
+      "status": "active",
+      "domains": [
+        "qnfo-hub.pages.dev",
+        "qnfo.org",
+        "hub.qnfo.org"
+      ],
+      "cloudflare_pages": "qnfo-hub",
+      "deployment_id": "a0f1a985",
+      "created": "2026-05-29",
+      "last_audit": "2026-05-30",
+      "source_dir": "G:/My Drive/QWAV/hub-deploy"
+    },
+    "qwav-scan": {
+      "name": "qwav-scan",
+      "description": "arXiv Discovery Engine for QWAV research domains",
+      "type": "worker",
+      "status": "mvp-deployed",
+      "domains": [
+        "qwav-scan-scraper.q08.workers.dev",
+        "qwav-scan.pages.dev"
+      ],
+      "cloudflare_worker": "qwav-scan-scraper",
+      "cloudflare_pages": "qwav-scan",
+      "d1": "qwav-scan",
+      "created": "2026-05-29"
+    },
+    "concept-graph": {
+      "name": "concept-graph",
+      "description": "Discovery Momentum Navigator",
+      "type": "worker",
+      "status": "mvp-deployed",
+      "domains": [
+        "concept-graph.q08.workers.dev",
+        "concept-graph.pages.dev"
+      ],
+      "cloudflare_worker": "concept-graph",
+      "cloudflare_pages": "concept-graph",
+      "d1": "concept-graph",
+      "created": "2026-05-29",
+      "last_audit": "2026-05-30"
+    },
+    "discovery-momentum-assets": {
+      "name": "discovery-momentum-assets",
+      "type": "assets",
+      "status": "active",
+      "source_dir": "G:/My Drive/projects/discovery-momentum-assets",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-30",
+      "files": 2,
+      "note": "Social posts scheduled. PDF blocked on wkhtmltopdf. Handoff delegated to Projects Agent."
+    },
+    "email-agent": {
+      "name": "email-agent",
+      "type": "tool",
+      "status": "active",
+      "source_dir": "G:/My Drive/projects/email-agent",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 10
+    },
+    "knowing-patterns-css": {
+      "name": "knowing-patterns-css",
+      "type": "frontend",
+      "status": "active",
+      "source_dir": "G:/My Drive/projects/knowing-patterns-css",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2
+    },
+    "pdf-builder": {
+      "name": "pdf-builder",
+      "type": "tool",
+      "status": "active",
+      "source_dir": "G:/My Drive/projects/pdf-builder",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 8
+    },
+    "research-pipeline": {
+      "name": "research-pipeline",
+      "type": "infrastructure",
+      "status": "active",
+      "source_dir": "G:/My Drive/projects/research-pipeline",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 10
+    },
+    "design-system-deploy": {
+      "name": "design-system-deploy",
+      "description": "Single-source CSS/JS design system for ALL QNFO/QWAV publication sites. Edit one CSS file -> deploy once -> every site updates via CDN.",
+      "type": "infrastructure",
+      "status": "active",
+      "domains": [
+        "qnfo-design-system.pages.dev"
+      ],
+      "cloudflare_pages": "qnfo-design-system",
+      "source_dir": "G:/My Drive/QWAV/design-system-deploy",
+      "created": "2026-05-29",
+      "last_audit": "2026-05-30",
+      "files": 2,
+      "note": "v1.1 deployed. 498/499 papers + marquee-site reference CDN CSS. Navigation CSS/JS added for unified site nav."
+    },
+    "quantum-ecosystem-audit": {
+      "name": "quantum-ecosystem-audit",
+      "description": "Quantum ecosystem UI/UX audit and refactoring. Transformed quantum.qnfo.org from single paper to Quantum Hub Portal. Fixed 28 broken links on unity.qnfo.org, added nav to laws.qnfo.org.",
+      "status": "active",
+      "local_path": "G:\\My Drive\\projects\\quantum-ecosystem-audit",
+      "pages_projects": [
+        "ultrametric-quantum",
+        "unity-of-ultrametric-physics",
+        "quantum-laws-of-form"
+      ],
+      "domains": [
+        "quantum.qnfo.org",
+        "unity.qnfo.org",
+        "laws.qnfo.org"
+      ],
+      "topic_tags": [
+        "quantum",
+        "ultrametric",
+        "ui-ux",
+        "design-system",
+        "cross-linking"
+      ],
+      "last_updated": "2026-05-30T16:44:17.554392",
+      "last_audit": "2026-05-30",
+      "note": "Quantum Hub Portal deployed. 28 broken links fixed on unity.qnfo.org. Nav added to laws.qnfo.org."
+    },
+    "analytics-infrastructure": {
+      "name": "analytics-infrastructure",
+      "description": "QNFO/QWAV Unified Analytics Integration — GA4, Cloudflare Web Analytics, R2 beacon storage, Kaizen analytics engine. Deployed snippets to qnfo.org + qwav.tech. Google OAuth pending for GTM/GA4 automation.",
+      "type": "infrastructure",
+      "status": "active",
+      "domains": [
+        "analytics.qwav.tech",
+        "analytics.qnfo.org"
+      ],
+      "cloudflare_worker": "qnfo-kaizen-analytics",
+      "source_dir": "G:/My Drive/projects/analytics-infrastructure",
+      "created": "2026-05-30",
+      "last_audit": "2026-05-30",
+      "files": 32,
+      "note": "Core deployed. Blocked on Google OAuth client_id for GTM/GA4 automation. 4/23 sites injected."
+    },
+    "knowing-patterns-refactor": {
+      "name": "knowing-patterns-refactor",
+      "description": "Unified QNFO UI/UX — refactored knowing.qnfo.org (23 pages), qnfo.org hub, and 12 research paper sites to QNFO Design System v1.1 with unified navigation CSS/JS.",
+      "type": "migration",
+      "status": "active",
+      "domains": [
+        "knowing.qnfo.org",
+        "paradigm.qnfo.org",
+        "adelic.qnfo.org",
+        "cocyle.qnfo.org",
+        "hierarchy.qnfo.org",
+        "lexicon.qnfo.org",
+        "different.qnfo.org",
+        "unity.qnfo.org",
+        "solo.qnfo.org",
+        "ai-poc.qnfo.org",
+        "ask.qwav.tech",
+        "primer.qwav.tech",
+        "laws.qnfo.org",
+        "measure.qnfo.org",
+        "quantum.qnfo.org"
+      ],
+      "source_dir": "G:/My Drive/projects/knowing-patterns-refactor",
+      "created": "2026-05-30",
+      "last_audit": "2026-05-30",
+      "files": 23,
+      "note": "Phase 1-4: COMPLETE (15/16 sites migrated). Phase 5-6: PENDING (archive.qnfo.org, chapter content, deep.qwav.tech audit)."
+    }
+  },
+  "publications": {
+    "dns-health-report-2026-05-29": {
+      "title": "Cloudflare DNS Health Report",
+      "date": "2026-05-29",
+      "type": "report"
+    },
+    "google-site-audit-2026-05-29": {
+      "title": "Google Site Broken Link Audit",
+      "date": "2026-05-29",
+      "type": "report"
+    },
+    "project-audit-2026-05-29": {
+      "title": "QWAV Project Portfolio Audit",
+      "date": "2026-05-29",
+      "type": "audit"
+    },
+    "mathjax-displaymath-fix-2026-05-29": {
+      "title": "MathJax Display Math Configuration Fix",
+      "date": "2026-05-29",
+      "type": "bugfix",
+      "note": "Fixed Pandoc-generated config that blocked display math across 4 sites."
+    }
+  },
+  "archive": {
+    "portfolio-linkage": {
+      "name": "portfolio-linkage",
+      "description": "QNFO Universal Footer on 13 sites",
+      "type": "deployment",
+      "status": "complete",
+      "created": "2026-05-29",
+      "archived_date": "2026-05-29T11:00:41.413374",
+      "archive_reason": "Completed â€” deliverables published"
+    },
+    "cf-dns-validator": {
+      "name": "cf-dns-validator",
+      "description": "DNS health validation",
+      "type": "audit",
+      "status": "complete",
+      "created": "2026-05-29",
+      "archived_date": "2026-05-29T11:00:41.413374",
+      "archive_reason": "Completed â€” deliverables published"
+    },
+    "google-site-auditor": {
+      "name": "google-site-auditor",
+      "description": "Google Site broken link audit",
+      "type": "audit",
+      "status": "complete",
+      "created": "2026-05-29",
+      "archived_date": "2026-05-29T11:00:41.413374",
+      "archive_reason": "Completed â€” deliverables published"
+    },
+    "qnfo-site-migration": {
+      "name": "qnfo-site-migration",
+      "description": "Phase A: quantum+solo migrated to design system",
+      "type": "migration",
+      "status": "complete",
+      "created": "2026-05-29",
+      "note": "Phase B: 8/9 sites migrated. different-physics deferred.",
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Completed — deliverables published. Phase B: 8/9 sites migrated. different-physics deferred."
+    },
+    "portfolio-license-audit": {
+      "name": "portfolio-license-audit",
+      "type": "legal",
+      "status": "complete",
+      "source_dir": "G:/My Drive/projects/portfolio-license-audit",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "note": "24 projects backfilled with LICENSE.md v2.0 stubs.",
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Completed — deliverables published. 24 projects backfilled with LICENSE.md v2.0 stubs."
+    },
+    "qwav-app-branding": {
+      "name": "qwav-app-branding",
+      "type": "design",
+      "status": "complete",
+      "source_dir": "G:/My Drive/projects/qwav-app-branding",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "note": "Dark theme deployed on deep.qwav.tech + ask.qwav.tech.",
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Completed — deliverables published. Dark theme deployed on deep.qwav.tech + ask.qwav.tech."
+    },
+    "agent-swarm": {
+      "name": "agent-swarm",
+      "type": "scaffold",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/agent-swarm",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "applications": {
+      "name": "applications",
+      "type": "scaffold",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/applications",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 3,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "automated-peer-review": {
+      "name": "automated-peer-review",
+      "type": "research",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/automated-peer-review",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "consistency-engine": {
+      "name": "consistency-engine",
+      "type": "scaffold",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/consistency-engine",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "pm-mirror-builder": {
+      "name": "pm-mirror-builder",
+      "type": "scaffold",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/pm-mirror-builder",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 1,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "qwav-compute-cloud": {
+      "name": "qwav-compute-cloud",
+      "type": "scaffold",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/qwav-compute-cloud",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "reproducibility-as-code": {
+      "name": "reproducibility-as-code",
+      "type": "research",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/reproducibility-as-code",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "ultrametric-playground": {
+      "name": "ultrametric-playground",
+      "type": "research",
+      "status": "stub",
+      "source_dir": "G:/My Drive/projects/ultrametric-playground",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 2,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Stub scaffold (1-2 files, no activity since 2026-05-28). Archived as noise reduction."
+    },
+    "audit": {
+      "name": "audit",
+      "type": "coordination",
+      "status": "informal",
+      "source_dir": "G:/My Drive/projects/audit",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 1,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Relocated to G:\\My Drive\\QWAV\\coordination\\ (not a project)."
+    },
+    "handoffs": {
+      "name": "handoffs",
+      "type": "coordination",
+      "status": "informal",
+      "source_dir": "G:/My Drive/projects/handoffs",
+      "created": "2026-05-28",
+      "last_audit": "2026-05-29",
+      "files": 4,
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Relocated to G:\\My Drive\\QWAV\\coordination\\ (not a project)."
+    },
+    "phase-a-remaining": {
+      "name": "phase-a-remaining",
+      "description": "Encoding scrub (52 HTML files normalized from CP1252 to UTF-8) + paper router fix (deep.qwav.tech client-side router). All 29 sites verified UTF-8 clean.",
+      "type": "migration",
+      "status": "complete",
+      "source_dir": "G:/My Drive/projects/phase-a-remaining",
+      "created": "2026-05-30",
+      "last_audit": "2026-05-30",
+      "files": 37,
+      "note": "All critical fixes deployed. Living-paper API returns test template (content population deferred).",
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Completed — all encoding scrubs deployed and verified. Paper router deployed."
+    },
+    "deploy": {
+      "name": "deploy",
+      "type": "deploy-artifact",
+      "status": "complete",
+      "description": "Deploy-ready directories for Cloudflare Pages (6 sites). UTF-8 normalized.",
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Deployment artifacts complete - encoding scrubbed deploy dirs."
+    },
+    "deploy-fix": {
+      "name": "deploy-fix",
+      "type": "deploy-artifact",
+      "status": "complete",
+      "description": "deep.qwav.tech paper router fix deployment.",
+      "archived_date": "2026-05-30T16:19:57.112639+00:00",
+      "archive_reason": "Deployment artifact complete - paper router fix deployed."
+    }
+  },
+  "legal_documents": {
+    "canonical_license": "G:\\My Drive\\QWAV\\legal\\QNFO-ULA-v2.0.md",
+    "licensing_policy": "G:\\My Drive\\QWAV\\legal\\LICENSING-POLICY.md",
+    "research_memo": "G:\\My Drive\\QWAV\\legal\\LICENSING-RESEARCH-MEMO.md",
+    "legal_supplement": "G:\\My Drive\\QWAV\\legal\\LEGAL-RESEARCH-SUPPLEMENT.md",
+    "strategic_framework": "G:\\My Drive\\QWAV\\legal\\STRATEGIC-FRAMEWORK.md"
+  },
+  "updated_by": "Program Agent v3.6 — Sprint 2026-05-30 Portfolio Cleanup",
+  "policies": {
+    "research_integrity": {
+      "title": "Research Integrity & Communications Policy",
+      "policy_number": "QNFO-POL-COM-001",
+      "effective_date": "2026-05-30",
+      "local_path": "G:/My Drive/QWAV/POLICY-RESEARCH-INTEGRITY.md",
+      "status": "binding"
+    }
+  },
+  "git_infrastructure": {
+    "hosting": "Cloudflare R2",
+    "canonical_bundle": "qnfo/code/QWAV.bundle",
+    "workflow": "git commit -> git bundle create -> wrangler r2 object put",
+    "github_status": "DEPRECATED â€” remote removed permanently",
+    "migration_date": "2026-05-30"
+  },
+  "audit_trails": [
+    "qnfo/audit/conversations/2026-05-30-research-integrity-mandate.md"
+  ],
+  "css_centralization": {
+    "status": "complete",
+    "design_system_cdn": "https://qnfo-design-system.pages.dev/css/qnfo-design-system.css",
+    "files_fixed": 69,
+    "source_dirs_fixed": [
+      "qlof-primer",
+      "quantum-laws-of-form",
+      "deploy/verb-lexicon",
+      "deploy/cocyle",
+      "deploy/ultrametric-ai-poc"
+    ],
+    "deployments": {
+      "qnfo-design-system": "2522ef8e",
+      "qlof-primer": "ea763eb9"
+    },
+    "architecture": "ALL pages reference ONLY design system CDN. 0 local CSS files. 1 file to update."
+  },
+  "skills": {
+    "kaizen-autonomous-update": {
+      "name": "kaizen-autonomous-update",
+      "description": "Autonomous system-wide Kaizen improvement protocol",
+      "version": "1.0",
+      "path": "skills/kaizen-autonomous-update/SKILL.md",
+      "created": "2026-05-30"
+    }
+  },
+  "templates": {
+    "KAIZEN-AUTONOMOUS-UPDATE": {
+      "name": "KAIZEN-AUTONOMOUS-UPDATE",
+      "description": "Autonomous system-wide update protocol template",
+      "version": "1.0",
+      "path": "templates/KAIZEN-AUTONOMOUS-UPDATE.md",
+      "created": "2026-05-30"
+    }
+  },
+  "prompts": {
+    "DEFAULT.md": {
+      "version": "3.7",
+      "updated": "2026-05-30"
+    },
+    "META-PROMPT-DEEPSEEK.md": {
+      "version": "4.9",
+      "updated": "2026-05-30"
+    },
+    "QWAV-DEFAULT.md": {
+      "version": "3.7",
+      "updated": "2026-05-30"
+    }
+  },
+  "ecosystem_components": {
+    "prompts": {
+      "name": "prompts",
+      "type": "system-factory",
+      "status": "active",
+      "description": "System prompt factory - DEFAULT.md v3.8, META-PROMPT-DEEPSEEK.md v4.9, QWAV-DEFAULT.md v3.7",
+      "source_dir": "G:/My Drive/prompts",
+      "last_kaizen_update": "2026-05-30T17:19:23.914024+00:00",
+      "templates": 17,
+      "skills": 9,
+      "agents": 3,
+      "subagents": 3
+    }
+  },
+  "kaizen_updates": [
+    {
+      "timestamp": "2026-05-30T17:19:23.914024+00:00",
+      "type": "autonomous-update",
+      "components_updated": [
+        "DEFAULT.md v3.8 (Web Research Protocol, File Lifecycle, Publication Language Gate)",
+        "QWAV-DEFAULT.md v3.7 (fixed inheritance table cross-references)",
+        "KAIZEN-AUTONOMOUS-UPDATE template v1.1",
+        "9 skills versioned with Tools Required and read-based loading notes"
+      ],
+      "improvements_applied": 4,
+      "git_commit": "26cc4a7"
+    }
+  ]
+}
