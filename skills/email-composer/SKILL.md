@@ -17,6 +17,22 @@ For reading/searching email, use the Python scripts in `G:\My Drive\projects\ema
 
 ---
 
+
+
+## Tools Required
+
+This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.md agent, the full tool suite (read, write, edit, exec, process, brave_web_search, YoBrowser, subagent_orchestrator) is available.
+
+## QNFO Custom Skill Note
+
+This is a QNFO custom skill deployed via `tools/deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+
+```
+read('G:\My Drive\prompts\skills\email-composer\SKILL.md')
+```
+
+
+
 ## Email Operations
 
 ### Read Inbox
@@ -101,3 +117,7 @@ Set `confirm_send: false` in the EMAIL-AGENT-TEMPLATE parameters. The script wil
 ---
 
 *email-composer skill v2.0 — Load on-demand via skill_view(). Email scripts moved to projects/email-agent/.*
+
+---
+
+*email-composer v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\email-composer\\SKILL.md'). Not accessible via skill_view().*

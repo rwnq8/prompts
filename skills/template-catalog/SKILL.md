@@ -52,6 +52,22 @@ version: "1.0"
 
 ---
 
+
+
+## Tools Required
+
+This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.md agent, the full tool suite (read, write, edit, exec, process, brave_web_search, YoBrowser, subagent_orchestrator) is available.
+
+## QNFO Custom Skill Note
+
+This is a QNFO custom skill deployed via `tools/deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+
+```
+read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')
+```
+
+
+
 ## How to Use Templates
 
 ```python
@@ -114,3 +130,7 @@ PDF-BUILDER-TEMPLATE → ZENODO-PUBLISH → CLOUDFLARE-DEPLOYMENT → SOCIAL-ORC
 ---
 
 *template-catalog skill v1.0 — Load on-demand via skill_view() for template discovery*
+
+---
+
+*template-catalog v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\template-catalog\\SKILL.md'). Not accessible via skill_view().*

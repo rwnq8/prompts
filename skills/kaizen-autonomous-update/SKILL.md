@@ -88,3 +88,7 @@ read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md')
 ---
 
 *kaizen-autonomous-update v1.0 — Autonomous system-wide Kaizen improvement protocol. 7-phase execution. Template-driven.*
+
+---
+
+*kaizen-autonomous-update v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md'). Not accessible via skill_view().*

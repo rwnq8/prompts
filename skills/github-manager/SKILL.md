@@ -25,6 +25,22 @@ gh auth status
 
 ---
 
+
+
+## Tools Required
+
+This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.md agent, the full tool suite (read, write, edit, exec, process, brave_web_search, YoBrowser, subagent_orchestrator) is available.
+
+## QNFO Custom Skill Note
+
+This is a QNFO custom skill deployed via `tools/deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+
+```
+read('G:\My Drive\prompts\skills\github-manager\SKILL.md')
+```
+
+
+
 ## Repository Management
 
 ```bash
@@ -138,3 +154,7 @@ If QNFO org is flagged/blocked:
 ---
 
 *github-manager skill v1.0 — Load on-demand via skill_view(). GitHub is FALLBACK for PM operations.*
+
+---
+
+*github-manager v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\github-manager\\SKILL.md'). Not accessible via skill_view().*

@@ -18,6 +18,22 @@ The `--remote` flag is deprecated (remote is default in v4+). For directory enum
 
 ---
 
+
+
+## Tools Required
+
+This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.md agent, the full tool suite (read, write, edit, exec, process, brave_web_search, YoBrowser, subagent_orchestrator) is available.
+
+## QNFO Custom Skill Note
+
+This is a QNFO custom skill deployed via `tools/deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+
+```
+read('G:\My Drive\prompts\skills\cloudflare-deployer\SKILL.md')
+```
+
+
+
 ## Authentication
 
 **⚠️ MANDATORY:** Load the API token from the persistent file BEFORE any Cloudflare operations. The `wrangler` OAuth token has zone:read only — CANNOT do DNS writes or redirect management.
@@ -177,3 +193,7 @@ npx wrangler r2 object get qnfo/audit/state/qwav.json
 ---
 
 *cloudflare-deployer skill v1.0 — Load on-demand via skill_view(). Compatible with wrangler v4.95+*
+
+---
+
+*cloudflare-deployer v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\cloudflare-deployer\\SKILL.md'). Not accessible via skill_view().*
