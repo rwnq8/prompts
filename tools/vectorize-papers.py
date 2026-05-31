@@ -5,7 +5,7 @@ Uses Cloudflare Workers AI (bge-small-en-v1.5, 768d) for embeddings.
 v1.0 — 2026-05-31
 
 Usage:
-  python vectorize-papers.py --dir "G:\My Drive\QWAV\papers" --index qwav-research
+  python vectorize-papers.py --dir "G:/My Drive/QWAV/papers" --index qwav-research
   python vectorize-papers.py --file paper.html --index qwav-research --title "Paper Title"
   python vectorize-papers.py --rebuild-index --index qwav-research  # Rebuild full index
 """

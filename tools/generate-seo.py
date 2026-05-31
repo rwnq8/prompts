@@ -5,7 +5,7 @@ Generates sitemap.xml, robots.txt, and llms.txt for discoverability.
 v1.0 — 2026-05-31
 
 Usage:
-  python generate-seo.py --domain deep.qwav.tech --dir "G:\My Drive\QWAV" --base-url "https://deep.qwav.tech"
+  python generate-seo.py --domain deep.qwav.tech --dir "G:/My Drive/QWAV" --base-url "https://deep.qwav.tech"
   python generate-seo.py --domain laws.qnfo.org --dir "G:\My Drive\projects\qlof\deploy"
 """
 
