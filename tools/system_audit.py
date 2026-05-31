@@ -342,7 +342,7 @@ try:
             shell=True, capture_output=True, timeout=20
         )
         if di_result2.returncode == 0 and _os.path.exists(tmp):
-            with open(tmp, 'r') as f:
+            with open(tmp, 'r', encoding='utf-8') as f:
                 di = _json.load(f)
             projects = len(di.get('projects', {}))
             publications = len(di.get('publications', {}))
@@ -418,7 +418,7 @@ if os.path.exists(kaizen_path):
     # Check if it's been run recently
     audit_file = os.path.join(prompts_dir, "audit", "kaizen", "last_run.json")
     if os.path.exists(audit_file):
-        with open(audit_file, "r") as f:
+        with open(audit_file, "r", encoding="utf-8") as f:
             last_run = _json.load(f)
         last_time = last_run.get("timestamp", "unknown")
         print(f"  K2. Last Kaizen run: {last_time} PASS")

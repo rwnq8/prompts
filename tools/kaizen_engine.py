@@ -394,7 +394,7 @@ if os.path.exists(kaizen_path):
     # Check if it's been run recently
     audit_file = os.path.join(prompts_dir, "audit", "kaizen", "last_run.json")
     if os.path.exists(audit_file):
-        with open(audit_file, "r") as f:
+        with open(audit_file, "r", encoding="utf-8") as f:
             last_run = json.load(f)
         last_time = last_run.get("timestamp", "unknown")
         print(f"  K2. Last Kaizen run: {last_time} PASS")
@@ -631,7 +631,7 @@ def main():
     
     # Update last run record
     last_run = {"timestamp": datetime.now().isoformat(), "actions": actions_taken}
-    with open(report_dir / "last_run.json", "w") as f:
+    with open(report_dir / "last_run.json", "w", encoding="utf-8") as f:
         json.dump(last_run, f, indent=2)
     
     print(f"\n[COMPLETE] Report saved: {report_path}")
