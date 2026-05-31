@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.7 — Cloudflare-Native)
+# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.8 — Cloudflare-Native)
 
 > **This prompt EXTENDS DEFAULT.md.** DEFAULT.md contains all base rules, protocols,
 > and standards. This prompt adds ONLY program/portfolio-level capabilities.
@@ -620,6 +620,9 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | **Run Kaizen improvement analysis** | `python tools/kaizen_engine.py --audit` |
 | **Apply Kaizen improvements** | `python tools/kaizen_engine.py --audit --apply` |
 | **Full auto Kaizen cycle** | `python tools/kaizen_engine.py --auto` |
+| Manage GitHub Issues/PRs/Wiki | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
+| Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
+| Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
 
 ### Template Invocation (Program-Level)
 For structured output formats, use `fill_prompt_template`:
@@ -691,6 +694,7 @@ the per-project improvement from DEFAULT.md.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.8** | 2026-05-31 | **Architecture Refresh:** Added bling-usability-audit, github-manager, kaizen-autonomous-update to skill triggers. Skill catalog now complete (9/9). |
 | **v3.7** | 2026-05-30 | **Kaizen Autonomous Update:** Research Integrity Mandate scrubbed of self-referential language ("BINDING", "MANDATE"). Added kaizen-autonomous-update skill reference. Inherits DEFAULT.md v3.7 improvements. |
 | **v3.6** | 2026-05-29 | **Template wiring:** Added Template Invocation subsection to SKILL INVOCATION TRIGGERS with all 6 active templates wired (CLOSEOUT-CHECKLIST, DEFINITION-OF-DONE, HANDOFF, PROJECT-CHARTER, PROJECT-INITIATION, SOCIAL-ORCHESTRATOR-TEMPLATE). Completes PART F template integration audit. |
 | **v3.7** | 2026-05-30 | **Kaizen Autonomous Update:** Fixed version consistency (header matched to v3.7). Updated Inheritance table with correct DEFAULT.md v3.8 section references. Cross-reference audit: all referenced DEFAULT.md sections now map to actual sections. |

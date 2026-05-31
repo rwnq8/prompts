@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.8)
+# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.9)
 
 ## 0.0 RESEARCH INTEGRITY MANDATE (POLICY QNFO-POL-COM-001)
 
@@ -348,6 +348,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 | Publish a document | `read('G:\My Drive\prompts\skills\publication-publisher\SKILL.md')` |
 | Close out a project | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
 | Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
+| Manage GitHub Issues/PRs/Wiki | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
@@ -633,6 +634,7 @@ At every session close-out, AFTER standard close-out steps:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.9** | 2026-05-31 | **Architecture Refresh:** Added github-manager skill. Skill catalog now complete (9/9). |
 | **v3.8** | 2026-05-30 | **Kaizen Autonomous Update:** Added Web Research Protocol (§8.1) with Source Trust Hierarchy, web search failure handling, and cross-reference requirements. Added File Lifecycle Classification (§8.5) with PERMANENT/EPHEMERAL/EXTERNAL categories and deletion gate. Added Publication Language Gate (§7.1) to Publication Standards — mandatory scan for internal project language, internal metadata, and style violations before declaring publication-ready. |
 | **v3.7** | 2026-05-30 | **Kaizen Autonomous Update:** Added `kaizen-autonomous-update` skill and `KAIZEN-AUTONOMOUS-UPDATE` template. Research Integrity Mandate scrubbed of self-referential language ("BINDING", "Override priority"). Template count corrected (17→19). Skill invocation table updated. |
 | **v3.6** | 2026-05-30 | **Research Integrity Mandate:** Added §0.0 Research Integrity Mandate (POLICY QNFO-POL-COM-001) with core rules, prohibited language patterns, and scope. |
