@@ -49,7 +49,7 @@
 
 ## Prompt Templates (call via `fill_prompt_template`)
 
-### Active Templates (18 total — across templates/, email/, scholar/)
+### Active Templates (18 total — in `templates/`)
 | Template Name | Purpose |
 |:--------------|:--------|
 | EMAIL-AGENT TEMPLATE v1.2 | Draft emails from project outputs |
