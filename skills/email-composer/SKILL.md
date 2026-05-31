@@ -1,9 +1,9 @@
 ---
 name: email-composer
 description: Outlook email composition, sending, reading, and management via COM automation. Use when the agent needs to send, read, search, or manage emails through Outlook.
-version: 2.0
+version: "2.1"
 ---
-# EMAIL COMPOSER SKILL — v2.0
+# EMAIL COMPOSER SKILL — v2.1
 
 > **On-demand skill.** Load via `skill_view('email-composer')` when email operations are needed.
 > Source: `EMAIL-AGENT-v1.3.md` (template) + email-composer skill
@@ -104,6 +104,26 @@ Set `confirm_send: false` in the EMAIL-AGENT-TEMPLATE parameters. The script wil
 | `Access denied` | Another process locking Outlook | Wait 5s, retry |
 | `Recipient not found` | Invalid email address | Verify address format |
 | `Attachment not found` | File path wrong | `Test-Path` the file first |
+
+---
+
+## Embedded Scripts
+
+> **SELF-CONTAINED:** Email scripts live in `G:\My Drive\projects\email-agent\`. Before executing, verify they exist.
+
+| Script | Canonical Path | Purpose |
+|:-------|:---------------|:--------|
+| `email_inbox.py` | `G:\My Drive\projects\email-agent\email_inbox.py` | Read inbox |
+| `email_search.py` | `G:\My Drive\projects\email-agent\email_search.py` | Search email |
+| `email_send.py` | `G:\My Drive\projects\email-agent\email_send.py` | Send email |
+| `email_reply.py` | `G:\My Drive\projects\email-agent\email_reply.py` | Reply to email |
+| `email_archive.py` | `G:\My Drive\projects\email-agent\email_archive.py` | Archive email |
+
+### Bootstrap Protocol
+```bash
+Test-Path "G:\My Drive\projects\email-agent\<script>.py"
+```
+If MISSING: these are project-level scripts. Check the `email-agent` project in `G:\My Drive\projects\email-agent\`. Scripts are version-controlled in that project's git repo.
 
 ---
 

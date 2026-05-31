@@ -1,10 +1,10 @@
 ---
 name: cloudflare-deployer
 description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Sandboxes. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
-version: "1.0"
+version: "1.1"
 ---
 
-# CLOUDFLARE DEPLOYER SKILL — v1.0
+# CLOUDFLARE DEPLOYER SKILL — v1.1
 
 > **On-demand skill.** Load via `skill_view('cloudflare-deployer')` for all Cloudflare operations.
 > Source: `templates/CLOUDFLARE-DEPLOYMENT.md` v2.1 + QWAV-DEFAULT.md §0.6.5-0.6.7
@@ -192,8 +192,37 @@ npx wrangler r2 object get qnfo/audit/state/qwav.json
 
 ---
 
-*cloudflare-deployer skill v1.0 — Load on-demand via skill_view(). Compatible with wrangler v4.95+*
+
+## Embedded Scripts
+
+> **SELF-CONTAINED:** This skill depends on the scripts listed below. Before executing any script, verify it exists at its canonical path.
+
+| Script | Canonical Path | Purpose |
+|:-------|:---------------|:--------|
+| `vectorize-papers.py` | `tools\\vectorize-papers.py` | Index papers in Cloudflare Vectorize for semantic search |
+| `build_pdf.py` | `tools\\build_pdf.py` | Markdown/HTML -> PDF (shared with publication-publisher) |
+
+### Bootstrap Protocol
+
+Before using any script, verify it exists:
+```bash
+Test-Path "G:\My Drive\prompts\tools\<script>.py"
+```
+
+**If script is MISSING:** Scripts are version-controlled in the prompts repo.
+1. `git log --oneline -- G:/My Drive/prompts/tools/<script>.py`
+2. The canonical source for all tools is `G:\My Drive\prompts\tools\`
+
+**Shared scripts:** `build_pdf.py` is primarily maintained in the `publication-publisher` skill.
+If missing, check that skill's Embedded Scripts section for recovery guidance.
+
+### Dependencies
+- `vectorize-papers.py`: requires Cloudflare API token (`%USERPROFILE%\.cloudflare\api-token`) and Workers AI access
+- `build_pdf.py`: requires `reportlab` and optionally `markdown` packages
+
+
+*cloudflare-deployer skill v1.1 — Load on-demand via skill_view(). Compatible with wrangler v4.95+*
 
 ---
 
-*cloudflare-deployer v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\cloudflare-deployer\\SKILL.md'). Not accessible via skill_view().*
+*cloudflare-deployer v1.1 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\cloudflare-deployer\\SKILL.md'). Not accessible via skill_view().*

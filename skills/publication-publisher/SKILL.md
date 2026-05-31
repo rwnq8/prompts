@@ -1,10 +1,10 @@
 ---
 name: publication-publisher
 description: End-to-end publication workflow — formatting, PDF building, Zenodo upload, Cloudflare deployment, and social media orchestration. Use when publishing papers, reports, or other documents.
-version: "1.0"
+version: "1.1"
 ---
 
-# PUBLICATION PUBLISHER SKILL — v1.0
+# PUBLICATION PUBLISHER SKILL — v1.1
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
 > Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `PDF-BUILDER-TEMPLATE.md`
@@ -108,6 +108,41 @@ NOT: `paper.pdf`, `final.pdf`, `output.pdf`
 
 ---
 
+
+## Embedded Scripts
+
+> **SELF-CONTAINED:** This skill depends on the scripts listed below. Before executing any script, verify it exists at its canonical path. If missing, see the bootstrap note below for recovery.
+
+| Script | Canonical Path | Purpose |
+|:-------|:---------------|:--------|
+| `build_pdf.py` | `tools\\build_pdf.py` | Markdown/HTML -> PDF via reportlab |
+| `zenodo_publish.py` | `tools\\zenodo_publish.py` | Zenodo DOI registration via REST API |
+| `generate-seo.py` | `tools\\generate-seo.py` | sitemap.xml, robots.txt, llms.txt generator |
+
+### Bootstrap Protocol
+
+**Before using any script, verify it exists:**
+```bash
+Test-Path "G:\My Drive\prompts\tools\<script>.py"
+```
+
+**If script is MISSING:** Scripts are version-controlled in the prompts repo at `G:\My Drive\prompts\tools\`.
+1. Check: `git log --oneline -- G:/My Drive/prompts/tools/<script>.py`
+2. Check: are you on the correct branch? `git branch --show-current`
+3. The canonical source for all tools is the `prompts` repo `tools/` directory.
+
+**Last resort:** If all scripts are missing and unrecoverable from git, flag as `[BLOCKED: missing tools]`.
+DO NOT attempt publication without these scripts.
+
+### Dependencies
+- `build_pdf.py`: requires `reportlab` and optionally `markdown` packages
+- `zenodo_publish.py`: requires `%USERPROFILE%\.zenodo_token` (Zenodo API token with deposit:actions, deposit:write)
+- `generate-seo.py`: standard library only, no external dependencies
+
+### Cross-Reference
+- `build_pdf.py` is also referenced by `cloudflare-deployer` skill
+- These scripts are embedded in the `publication-publisher` skill as their primary documentation home
+
 ## Reference Files
 
 - Publication standards: DEFAULT.md §11
@@ -118,8 +153,8 @@ NOT: `paper.pdf`, `final.pdf`, `output.pdf`
 
 ---
 
-*publication-publisher skill v1.0 — Load on-demand via skill_view()*
+*publication-publisher skill v1.1 — Load on-demand via skill_view()*
 
 ---
 
-*publication-publisher v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
+*publication-publisher v1.1 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
