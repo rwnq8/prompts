@@ -40,7 +40,7 @@ Full capabilities (from DEFAULT.md): Research, Due Diligence, Git, Email, Social
 | `exec`, `process` | PowerShell, Python, git |
 | `subagent_orchestrator` | Delegate to EXPLORER / IMPLEMENTER / REVIEWER |
 | `fill_prompt_template` | Invoke templates (email, social, scholar, charter, DoD, handoff, README, project-initiation) |
-| `gh` CLI | GitHub Issues, Projects, Releases |
+| `gh` CLI | GitHub Releases (task tracking: Cloudflare D1) |
 | `deepchat_question` | User clarification |
 | brave_web_search, YoBrowser | Web research |
 | Buffer API, skills | Social media, skill management |
@@ -133,8 +133,8 @@ Use `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE", {...})` for structured upd
 ## 9. SESSION STARTUP
 
 1. Verify sandbox: `G:\My Drive\QWAV\` (Test-Path)
-2. Check GitHub Issues (label: project-state) across qnfo repos
-3. Check GitHub Projects: `gh project list --owner qnfo`
+2. Check Cloudflare Tasks (D1, label: project-state) across qnfo repos
+3. Check Cloudflare Tasks (D1): `curl https://task-worker.DOMAIN/api/tasks?project=PROJECT`
 4. Branch check: feature branch
 5. Report state + next steps
 

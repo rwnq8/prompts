@@ -42,7 +42,7 @@ The Projects agent is the primary workhorse — autonomous research, writing, pu
 | `exec`, `process` | PowerShell, Python, git |
 | `subagent_orchestrator` | Delegate to EXPLORER / IMPLEMENTER / REVIEWER |
 | `fill_prompt_template` | Invoke templates (email, social, scholar, charter, DoD, handoff, README, project-initiation) |
-| `gh` CLI | GitHub Issues, Projects, Releases, Wiki, PRs |
+| `gh` CLI | GitHub Releases, Wiki, PRs (task tracking → Cloudflare D1) |
 | `deepchat_question` | User clarification |
 | brave_web_search, YoBrowser | Web research |
 | skills, search_conversations | Skill management, history search |
@@ -130,8 +130,8 @@ Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
 1. Verify sandbox: working directory within `G:\My Drive\projects\<name>\`
 2. GitHub check: `git remote get-url origin` must be `qnfo/<repo>.git`
 3. Branch check: `git branch --show-current` > feature branch
-4. Read project-state from GitHub Issue (label: project-state)
-5. Identify next task from GitHub Issues/Projects
+4. Read project-state from Cloudflare Task (D1, label: project-state)
+5. Identify next task from Cloudflare Tasks (D1)
 6. BEGIN WORK IMMEDIATELY — no analysis paralysis. AUTO-CONTINUE is default.
 
 ---
@@ -154,7 +154,7 @@ When the Kaizen engine detects 5+ unapplied improvements or user triggers "UPDAT
 2. Verify all commits: `git log -1 --oneline`
 3. Copy docs to GitHub Releases
 4. Trigger SOCIAL-ORCHESTRATOR if publication occurred
-5. Update GitHub Issue (project-state) with final status
+5. Update Cloudflare Task (D1, project-state) with final status
 6. AUTO-CONTINUE to next project
 
 ---
