@@ -718,6 +718,7 @@ the per-project improvement from DEFAULT.md.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.9** | 2026-05-31 | **Workspace Layout:** Added §0.6.0 documenting cleaned QWAV workspace (16 items, down from ~70). Updated email section to reference email-composer skill. |
 | **v3.8** | 2026-05-31 | **Architecture Refresh:** Added bling-usability-audit, github-manager, kaizen-autonomous-update to skill triggers. Skill catalog now complete (9/9). |
 | **v3.7** | 2026-05-30 | **Kaizen Autonomous Update:** Research Integrity Mandate scrubbed of self-referential language ("BINDING", "MANDATE"). Added kaizen-autonomous-update skill reference. Inherits DEFAULT.md v3.7 improvements. |
 | **v3.6** | 2026-05-29 | **Template wiring:** Added Template Invocation subsection to SKILL INVOCATION TRIGGERS with all 6 active templates wired (CLOSEOUT-CHECKLIST, DEFINITION-OF-DONE, HANDOFF, PROJECT-CHARTER, PROJECT-INITIATION, SOCIAL-ORCHESTRATOR-TEMPLATE). Completes PART F template integration audit. |
