@@ -277,6 +277,8 @@ This policy (see `POLICY-RESEARCH-INTEGRITY.md`). Every word published under QNF
 
 ### Rule 12: Pre-Execution Unicode Safety Scan (Windows cp1252)
 
+**SCOPE: This rule applies ONLY to Python source code files (`.py`). It does NOT apply to content files (`.md`, `.txt`, `.tex`, `.html`, research notes, publications, or any non-code document). Content files SHOULD use proper Unicode typography (em dashes, curly quotes, etc.).**
+
 Before FIRST execution of any Python file that produces console output:
 1. Run a Python scan for ALL non-ASCII characters in the file
 2. If any are found, replace with ASCII-safe alternatives:
@@ -290,6 +292,8 @@ Before FIRST execution of any Python file that produces console output:
 4. Only then execute the file
 
 This prevents the N-iteration fix cycle where each crash reveals one character at a time.
+
+**NEVER apply this rule to content/research/markdown files.** Replacing em dashes, curly quotes, or other typographic characters with ASCII equivalents degrades document quality. If display issues occur with content files, fix the display pipeline (set `PYTHONUTF8=1` environment variable) — do NOT destroy typography.
 
 ### Rule 13: Never Inline Python Through PowerShell (HARD BLOCK)
 
@@ -759,7 +763,7 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 | Run `tools/system_audit.py` when user says "SYSTEM HEALTH CHECK" | Ignore systemic drift between prompts and live system |
 | Reference [Cross-Project Learnings](R2 `qnfo/audit/learnings/`) (L1-L66) | Repeat mistakes catalogued in CPL |
 | Never inline Python through PowerShell (Rule 13) | Use `python -c "..."` from PowerShell |
-| Scan for non-ASCII before Python execution (Rule 12) | Let Unicode crashes iterate one character at a time |
+| Scan for non-ASCII in `.py` files only (Rule 12) — content files use Unicode typography | Let Unicode crashes iterate one character at a time |
 | Verify every claim with filesystem/git/re-execution before delivering response | Deliver responses with unverifiable claims |
 | Require Cloudflare-native project management (R2 state/backlog, Discovery Index) from initialization in all project-agent prompts | Allow "local project" or "local-only" workflows without Cloudflare integration |
 | **Run Kaizen Engine** (`tools/kaizen_engine.py --audit`) at session start to learn from conversation patterns and R2 audit trails | Ship prompts without analyzing conversation histories for improvement |

@@ -201,11 +201,16 @@ When EXECUTE MODE is active, after every tool invocation that returns data (read
 - Scan output for bare Unicode math before delivery.
 
 ### Rule 12: Pre-Execution Unicode Safety Scan (Windows cp1252)
+
+**SCOPE: This rule applies ONLY to Python source code files (`.py`). It does NOT apply to content files (`.md`, `.txt`, `.tex`, `.html`, research notes, publications, or any non-code document). Content files SHOULD use proper Unicode typography (em dashes, curly quotes, etc.).**
+
 Before FIRST execution of any Python file that produces console output:
 1. Run a Python scan for ALL non-ASCII characters in the file
 2. Replace box-drawing, subscripts, special symbols with ASCII-safe alternatives
 3. Re-scan after replacement to confirm zero non-ASCII remain
 4. Only then execute the file
+
+**NEVER apply this rule to content/research/markdown files.** Replacing em dashes, curly quotes, or other typographic characters with ASCII equivalents degrades document quality. If display issues occur with content files, fix the display pipeline (set `PYTHONUTF8=1` environment variable) — do NOT destroy typography.
 
 ### Rule 13: Never Inline Python Through PowerShell (HARD BLOCK)
 PowerShell intercepts <, >, $, {, }, etc. BEFORE Python receives the string.
