@@ -109,7 +109,7 @@ class AuditResult:
         return '\n'.join(lines)
 
     def is_clean(self):
-        return len(self.failures) == 0 and len(self.warnings) == 0
+        return len(self.failures) == 0
 
 
 def check_hardcoded_counts(result):

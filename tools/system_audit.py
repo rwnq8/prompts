@@ -410,6 +410,38 @@ if os.path.exists(consistency_script):
 else:
     print(f"  H_RESULT: Consistency audit script not found at {consistency_script}")
 
+# PART J: CONTENT FILE UNICODE INTEGRITY (ASCII-sanitization detection)
+print("\nPART J: CONTENT FILE UNICODE INTEGRITY (ASCII-sanitization detection)")
+projects_root = os.path.join(prompts_dir, "..", "projects")
+if os.path.exists(projects_root):
+    flagged = []
+    for root, dirs, files in os.walk(projects_root):
+        dirs[:] = [d for d in dirs if d != '.git']
+        for f in files:
+            if f.endswith('.md'):
+                fpath = os.path.join(root, f)
+                try:
+                    with open(fpath, 'rb') as fh:
+                        data = fh.read()
+                    non_ascii = sum(1 for b in data if b > 127)
+                    text = data.decode('utf-8', errors='replace')
+                    em_patterns = text.count(' --- ')
+                    if non_ascii == 0 and em_patterns > 3:
+                        relpath = os.path.relpath(fpath, projects_root)
+                        flagged.append((relpath, em_patterns))
+                except Exception:
+                    pass
+    if flagged:
+        print(f"  J1. WARNING: {len(flagged)} file(s) may have been ASCII-sanitized:")
+        for relpath, count in flagged:
+            print(f"      {relpath}: {count} ' --- ' patterns, 0 non-ASCII bytes")
+        print(f"  J_RESULT: Content file Unicode integrity WARN")
+    else:
+        print(f"  J1. All content files have expected Unicode: PASS")
+        print(f"  J_RESULT: Content file Unicode integrity PASS")
+else:
+    print(f"  J1. Projects directory not found: SKIP")
+
 # PART K: KAIZEN ENGINE HEALTH
 print("\nPART K: KAIZEN ENGINE HEALTH")
 kaizen_path = os.path.join(prompts_dir, "tools", "kaizen_engine.py")
