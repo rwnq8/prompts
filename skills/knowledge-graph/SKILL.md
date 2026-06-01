@@ -3,7 +3,7 @@ name: knowledge-graph
 description: QNFO Knowledge Graph querying for due diligence, impact analysis, and cross-system discovery. Use when agents need to understand project dependencies, trace audit trails, or answer "what depends on X?" questions.
 ---
 
-# QNFO Knowledge Graph — Agent Skill v1.0
+# QNFO Knowledge Graph — Agent Skill v1.0.1
 
 > **SELF-CONTAINED:** This skill provides access to the QNFO ecosystem graph database.
 > All queries go through the deployed Cloudflare Worker API. No local installation required.
@@ -242,9 +242,11 @@ Test-Path "G:\My Drive\projects\qnfo-knowledge-graph\ingest_session.py"
 
 | Scenario | Response |
 |:---------|:---------|
-| **API unreachable** | Graph API at `graph-api.q08.workers.dev` may be cold-starting. Retry once after 2s. If still down: mark query results as `[GRAPH-UNAVAILABLE]`, proceed with local filesystem discovery. |
-| **Node not found** | `/nodes/X` returns 404 or empty. The entity may not exist in the graph yet. Flag as `[GRAPH-MISSING: node X not yet in graph]`. Do NOT fabricate. |
-| **Impact returns empty** | No dependents found. This could mean either (a) truly no dependents, or (b) the graph isn't fully populated. Flag: `[GRAPH-IMPACT-EMPTY: verify with filesystem]`. |
+| **API unreachable** | Graph API at `graph-api.q08.workers.dev` may be cold-starting (~90ms avg, no cold start penalty observed). Retry once after 2s. If still down: mark query results as `[GRAPH-UNAVAILABLE]`, proceed with local filesystem discovery. |
+| **Node not found** | `/nodes/X` and `/impact/X` return HTTP 200 with `{"error": "Node 'X' not found"}` (NOT 404). Check for `error` key in response. Flag as `[GRAPH-MISSING: node X not yet in graph]`. Do NOT fabricate. |
+| **Impact returns error** | API returns `{"error": "..."}` for unknown nodes. Code MUST check for `error` key BEFORE accessing `totalDependents`. Pattern: `if 'error' in impact: handle; elif impact.get('totalDependents',0) > 0: ...` |
+| **Pagination truncation** | `/nodes` endpoint hard-limits at 100 results. Currently 25 of 125 nodes are invisible. For complete enumeration, use `/nodes?label=X` to filter by type, or POST `/query` with custom SQL. |
+| **Empty impact (no dependents)** | No dependents found. Could mean (a) truly no dependents, or (b) graph isn't fully populated. Flag: `[GRAPH-IMPACT-EMPTY: verify with filesystem]`. |
 | **Rate limited** | The Worker has generous limits. If rate-limited, wait 5s and retry. |
 | **Stale data** | The graph may lag behind reality (Phase 2 sync pipeline not yet live). Always cross-reference with `_discovery_index.json` and local filesystem. Graph results are advisory, not authoritative. |
 | **Query syntax error** | POST /query returns error. Verify SQL syntax against the D1 schema above. Test with a simpler query first. |
@@ -260,4 +262,5 @@ Before acting on graph results:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| v1.0.1 | 2026-06-01 | **Edge Case Audit:** Corrected Failure Handling — API returns HTTP 200 with `error` key for missing nodes (not 404). Added Pagination Truncation entry (100-node limit). Added Impact Returns Error entry. Verified against live API (125 nodes, 132 edges, ~95ms avg latency). |
 | v1.0 | 2026-06-01 | Initial skill. Graph API integration, query recipes, due diligence workflow. |
