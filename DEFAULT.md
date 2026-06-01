@@ -261,12 +261,31 @@ Before FIRST execution of any Python file that produces console output:
 **NEVER apply this rule to content/research/markdown files.** Replacing em dashes, curly quotes, or other typographic characters with ASCII equivalents degrades document quality. If display issues occur with content files, fix the display pipeline (set `PYTHONUTF8=1` environment variable) — do NOT destroy typography.
 
 ### Rule 13: Never Inline Python Through PowerShell (HARD BLOCK)
-PowerShell intercepts <, >, $, {, }, etc. BEFORE Python receives the string.
-HARD BLOCK: Never use python -c "...". Instead:
+
+PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested quotes BEFORE Python receives the string. This corrupts every inline `python -c "..."` command.
+
+**HARD BLOCK: Never use `python -c "..."`. EVER. Not even as a "quick try."**
+
+The pattern `python -c "..."` through PowerShell has a 100% failure rate. Even simple commands that appear to work have hidden corruption. The agent MUST default to script-file-first from the first attempt.
+
+**WRONG (never do this):**
+```
+python -c "import json; ..."    # Will fail. Always.
+```
+
+**RIGHT (always do this):**
+```
+write temp_script.py -> python temp_script.py -> verify -> delete temp_script.py
+```
+
+Steps:
 1. Write Python scripts to temporary files first
-2. Execute the script file: python script.py
+2. Execute the script file: `python script.py`
 3. Verify output with Test-Path + Get-Content
 4. Delete temporary script when workflow complete
+
+PowerShell is for git commands and simple file operations ONLY.
+All text processing goes through Python script files.
 
 ### Rule 14: No Claim Without Execution Evidence (ANTI-PHANTOM RULE) (v2.0)
 
@@ -346,6 +365,12 @@ npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_
 ```
 
 The Discovery Index (`qnfo/discovery/index.json` on R2) is the SINGLE entry point for discovering ALL QNFO ecosystem assets — projects, publications, decisions, templates, skills, archived work, and infrastructure. It maps every artifact to its canonical Cloudflare home.
+
+**Index Integrity Gate (MANDATORY):** After pulling the index, validate it before use:
+1. Count projects: `python -c "import json; d=json.load(open('_discovery_index.json','r',encoding='utf-8')); print(f'Projects: {len(d.get(\"projects\",{}))}')"` via script file
+2. If project count < 5: index is CORRUPTED. Rebuild from filesystem enumeration + R2 and upload. Flag session as `[DISCOVERY-CORRUPTED-REBUILT]`.
+3. If `\ufffd` (replacement character) found anywhere in the index: index is CORRUPTED. Same rebuild protocol.
+4. Never write to the Discovery Index without first pulling the latest version AND creating a timestamped backup: `wrangler r2 object put qnfo/discovery/index-backup-YYYY-MM-DD.json --file=_discovery_index.json --remote`
 
 ### 3.2 Due Diligence Workflow
 
@@ -495,6 +520,12 @@ Execute a Python scan for ALL of the following categories. ANY hit = BLOCKING. D
 - Straight quotes in body text (outside code blocks)
 - Bare Unicode math characters outside $...$ / $$...$$
 - Generation artifacts: bracket-delimited markers
+
+**PDF RENDERING VERIFICATION (MANDATORY for publication PDFs):**
+- After building PDF, extract text and scan for Unicode replacement characters (`\ufffd`) — ANY hit is BLOCKING
+- Verify em dashes (`—`, U+2014), curly quotes (`""`, U+201C/D), and all special characters render correctly
+- Use: `python -c "import fitz; doc=fitz.open('output.pdf'); [print(p.get_text()) for p in doc]"` via script file
+- If any character renders as `□`, `?`, or `\ufffd`: PDF is NOT publication-ready. Fix font encoding BEFORE proceeding.
 
 **PHYSICS WRITING STANDARDS (v1.0 — "No Bullshit" Physics Style):**
 
@@ -796,6 +827,7 @@ When the user says "WHAT'S NEXT?", "PROCEED", "EXECUTE NEXT PROJECT", or similar
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.12** | 2026-06-01 | **Prompt Improvement Review (5-Conversation Audit):** Added Discovery Index Integrity Gate (§3.1) — validate index after pull, detect corruption, backup before writes. Added PDF Rendering Verification (§7.1) — scan for `\ufffd` replacement characters, verify em dashes/curly quotes render correctly. Strengthened Rule 13 (Never Inline Python) — added WRONG/RIGHT examples, "100% failure rate" language, "not even as a quick try" enforcement. Added Writer/Validator Separation Gate (§0.9.2) — charter writer must not be the same agent instance that builds and declares deliverable ready. Updated publication-publisher skill (v1.1→v1.2) with PDF rendering verification, Zenodo duplicate prevention, and expanded pre-publication checklist. |
 | **v3.11** | 2026-06-01 | **Physics Writing Standards ("No Bullshit" Style):** Expanded §0.0 Research Integrity Mandate with Banned Words (operationally defined), Certainty Calibration (6 labels), Falsifiability Requirement, Postdiction Prevention, Philosophy Boundary, and Attribution Standards (named sources, map/territory, own confusion). Expanded §7.1 Publication Language Gate with 18-point Physics Writing Standards checklist (one claim per sentence, analogy breakdown, active voice, equation grammar, number uncertainty, 50-word summary, "pretty but empty" scan). New template: PHYSICS-STYLE. Template count: 19→20. |
 | **v3.10** | 2026-05-31 | **EXECUTE MODE Hardening (Anti-Planning-Spiral):** Added §0.9.1 Response Budget (Tool-First Rule, Response Budget, Discovery Capsule, Ambiguity Resolution, Mid-Response Self-Check). Added §0.9.2 Read-vs-Execute Gate (Read-Count Gauge, Planning Language Detection, Execution Gap Timer). Added EXECUTE MODE OVERRIDE to Due Diligence Protocol (§3). Added §9.11 Task Execution Audit (was dangling reference). Added §9.11.1 Mid-Session Execution Checkpoint. Added §9.12 WHAT'S NEXT? PROCEED handler. Fixes failure mode where EXECUTE trigger produced 15-page analysis without execution. |
 | **v3.9** | 2026-05-31 | **Architecture Refresh:** Added github-manager skill. Skill catalog now complete (9/9). |

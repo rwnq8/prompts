@@ -1,10 +1,10 @@
 ---
 name: publication-publisher
 description: End-to-end publication workflow — formatting, PDF building, Zenodo upload, Cloudflare deployment, and social media orchestration. Use when publishing papers, reports, or other documents.
-version: "1.1"
+version: "1.2"
 ---
 
-# PUBLICATION PUBLISHER SKILL — v1.1
+# PUBLICATION PUBLISHER SKILL — v1.2
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
 > Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `PDF-BUILDER-TEMPLATE.md`
@@ -52,7 +52,10 @@ All publication documents use curly/smart quotes (Unicode: \u201c \u201d \u2018 
 - [ ] REVIEWER subagent passed fabrication audit
 - [ ] All file references verified (`Test-Path`)
 - [ ] Git log confirms all changes committed
-- [ ] PDF generated and verified
+- [ ] PDF generated
+- [ ] **PDF rendering verified — no `\ufffd` characters, em dashes/curly quotes render correctly**
+- [ ] **Zenodo duplicate check passed — no existing record for this publication (or updating existing)**
+- [ ] Cloudflare Pages deployed and URL verified
 
 ---
 
@@ -63,11 +66,42 @@ Use `fill_prompt_template("PDF-BUILDER-TEMPLATE", {source, output, ...})` to gen
 python "G:\My Drive\prompts\tools\build_pdf.py"
 ```
 
+### PDF Rendering Verification (MANDATORY)
+After building PDF, extract text and verify ALL Unicode characters render correctly:
+```bash
+python -c "
+import fitz
+doc = fitz.open('output.pdf')
+text = ''.join(page.get_text() for page in doc)
+# Check for replacement character (corrupted Unicode)
+if '\ufffd' in text:
+    print('[BLOCKED] PDF contains Unicode replacement characters! Fix font encoding.')
+    print('First occurrence:', text[max(0,text.index('\ufffd')-20):text.index('\ufffd')+20])
+else:
+    print('[OK] No replacement characters found.')
+# Check key typographic characters
+for char, name in [('\u2014','em dash'), ('\u201c','left curly quote'), ('\u201d','right curly quote')]:
+    count = text.count(char)
+    print(f'[{chr(0x2713) if count>0 else chr(0x2717)}] {name}: {count} found')
+"
+```
+If ANY character fails: PDF is NOT publication-ready. Fix font encoding in `build_pdf.py` BEFORE proceeding.
+
 ---
 
 ## Step 3: Zenodo Upload
 
-Use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
+**Zenodo Duplicate Prevention (MANDATORY — execute BEFORE creating any record):**
+
+1. Check for existing Zenodo record by searching for the publication title/DOI:
+```bash
+python "G:\My Drive\prompts\tools\zenodo_publish.py" --search "<publication_title>"
+```
+2. If existing record found → UPDATE it (use `--update <record_id>`) instead of creating new.
+3. Never create a new Zenodo record for a publication that already has one. This creates DUPLICATE records.
+4. If unsure whether a record exists: search first. Create only when search returns zero results.
+
+After duplicate check passes, use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
 ```bash
 python "G:\My Drive\prompts\tools\zenodo_publish.py"
 ```

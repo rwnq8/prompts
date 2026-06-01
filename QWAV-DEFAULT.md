@@ -558,6 +558,15 @@ This is the critical coordination mechanism between program and project agents.
 
 #### Handoff FROM Program TO Project (Initiation)
 
+**WRITER/VALIDATOR SEPARATION GATE (MANDATORY — v5.4):**
+The agent that writes the project charter, handoff specification, or QA checklist MUST NOT be the same agent instance that builds the deliverable and declares it ready. This prevents self-review bias — the most common source of undiscovered defects.
+
+1. **Writer Agent** creates the charter, handoff spec, and QA checklist
+2. **REVIEWER subagent** validates the charter/spec for completeness and clarity
+3. **Builder Agent** (separate instance/session) executes the work using the charter
+4. **REVIEWER subagent** validates the deliverable against the QA checklist
+5. **Writer Agent** (original) does NOT declare the deliverable "done" — that is the REVIEWER's role
+
 **Program Agent initiates:**
 1. Complete Project Initiation Protocol (§0.9.1) — Cloudflare Foundation (C0-C5) then Local Scaffolding (L1-L7)
 2. Create handoff document via `fill_prompt_template("HANDOFF")`:
