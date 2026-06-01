@@ -181,6 +181,7 @@ When you need on-demand workflow knowledge, load QNFO custom skills via `read()`
 | Manage GitHub Issues/PRs/Wiki | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Run BLING usability audit | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
+| Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
 
 **Built-in DeepChat skills** (algorithmic-art, code-review, frontend-design, etc.) are accessed via `skill_view('<name>')`.
 
