@@ -93,13 +93,17 @@ If ANY character fails: PDF is NOT publication-ready. Fix font encoding in `buil
 
 **Zenodo Duplicate Prevention (MANDATORY — execute BEFORE creating any record):**
 
-1. Check for existing Zenodo record by searching for the publication title/DOI:
+1. Check for existing Zenodo record by searching the Discovery Index for a prior DOI for this publication title:
 ```bash
-python "G:\My Drive\prompts\tools\zenodo_publish.py" --search "<publication_title>"
+python -c "import json; d=json.load(open('_discovery_index.json','r',encoding='utf-8')); pubs=[p for p in d.get('publications',[]) if '<publication_title>' in p.get('title','')]; print(json.dumps(pubs, indent=2))" (via script file)
 ```
-2. If existing record found → UPDATE it (use `--update <record_id>`) instead of creating new.
-3. Never create a new Zenodo record for a publication that already has one. This creates DUPLICATE records.
-4. If unsure whether a record exists: search first. Create only when search returns zero results.
+2. If existing DOI found → use `--doi <existing_doi>` flag to create a NEW VERSION (not a duplicate record):
+```bash
+python "G:\My Drive\prompts\tools\zenodo_publish.py" --doi "<existing_doi>" --title "..." --author "..." --file "..."
+```
+3. If Zenodo API search needed: use `brave_web_search` for `site:zenodo.org "<publication_title>"` to find existing records.
+4. Never create a new Zenodo record (`zenodo_publish.py` without `--doi`) for a publication that already has one. This creates DUPLICATE records.
+5. If unsure whether a record exists: search first. Create only when search returns zero results.
 
 After duplicate check passes, use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
 ```bash
