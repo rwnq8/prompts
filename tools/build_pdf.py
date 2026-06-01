@@ -148,14 +148,14 @@ def html_to_flowables(html_text, styles):
     flowables = []
     
     # Split on block-level elements
-    blocks = re.split(r'(</?h[1-4]>|</?p>|</?pre>|</?blockquote>|<hr\s*/?>)', html_text)
+    blocks = re.split(r'(</?h[1-4][^>]*>|</?p>|</?pre>|</?blockquote>|<hr\s*/?>)', html_text)
     
     current_tag = None
     buffer_text = ""
     
     for block in blocks:
-        if re.match(r'<h([1-4])>', block):
-            current_tag = f'h{re.match(r"<h([1-4])>", block).group(1)}'
+        if re.match(r'<h([1-4])(?:\s[^>]*)?>', block):
+            current_tag = f'h{re.match(r"<h([1-4])(?:\s[^>]*)?>", block).group(1)}'
             buffer_text = ""
         elif re.match(r'</h[1-4]>', block):
             if buffer_text.strip():
