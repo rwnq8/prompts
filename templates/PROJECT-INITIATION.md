@@ -5,11 +5,11 @@ version: "1.0"
 
 # Project Initiation Gate — [IDEA NAME]
 
-> **Purpose:** Moscow classification + size gate BEFORE GitHub repo creation. Per CPL L43 (not every idea needs a repo) and CPL L47 (documentation must not outweigh the deliverable).
-> **When to use:** Before ANY `gh repo create` or `git init` for a new project. If this gate says BLOCK or BACKLOG-ONLY, do NOT create a GitHub repo or local directory.
-> **⚠️ GITHUB-NATIVE v2.0:** All project management is GitHub-native from step zero (QWAV-DEFAULT.md §0.9.1 v3.0). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8).
+> **Purpose:** Moscow classification + size gate BEFORE project creation. Per CPL L43 (not every idea needs a project) and CPL L47 (documentation must not outweigh the deliverable).
+> **When to use:** Before ANY `git init` or directory creation for a new project. If this gate says BLOCK or BACKLOG-ONLY, do NOT create a local directory or R2 state.
+> **⚠️ CLOUDFLARE-NATIVE v3.10:** All project management is Cloudflare-native from step zero (QWAV-DEFAULT.md §0.9.1). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8). Project state lives in R2 (`qnfo/audit/state/`), tasks in R2 (`qnfo/audit/backlog/`), decisions in R2 (`qnfo/audit/decisions/DECISION-LOG.md`). Git is version control ONLY.
 > 
-> **⚠️ ERROR HANDLING:** All `gh` commands in this template inherit the retry strategy and failure handling from QWAV-DEFAULT.md §0.9.1 "Failure Handling & Retry Strategy." Every gh command retries up to 3x with exponential backoff. Authentication failures are blocking — escalate, do not retry. Empty results are expected for new projects — do not treat as errors. (QWAV-DEFAULT.md §0.9.1 v3.0). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8).
+> **⚠️ ERROR HANDLING:** All `wrangler` commands in this template inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 "Failure Handling & Retry Strategy." Authentication failures are blocking — escalate, do not retry.
 
 ---
 
@@ -29,10 +29,10 @@ Answer this question: **"What happens to the program if this project does NOT ex
 
 | Classification | Meaning | Action |
 |:---------------|:--------|:-------|
-| **🔴 M — MUST HAVE** | Program fails without it. Core deliverable of active sprint. | PROCEED → GitHub Foundation (QWAV §0.9.1 Phase A) → Charter (GitHub Issue) |
-| **🟡 S — SHOULD HAVE** | Important. Program can succeed temporarily without it, but gap is significant. | PROCEED → GitHub Foundation (QWAV §0.9.1 Phase A) → Charter (GitHub Issue) |
-| **🟢 C — COULD HAVE** | Nice to have. Adds value, not essential. Would be nice if resources permit. | BACKLOG ONLY — create GitHub Issue (label: `backlog`) in qnfo/program repo, do NOT create project repo |
-| **⚪ W — WON'T HAVE** | Not now. Maybe never. Interesting idea but no current program alignment. | BLOCK — record in GitHub Discussions only, do NOT create repo, directory, or Issue |
+| **🔴 M — MUST HAVE** | Program fails without it. Core deliverable of active sprint. | PROCEED → Cloudflare Foundation (QWAV §0.9.1 Phase A) → R2 state + backlog |
+| **🟡 S — SHOULD HAVE** | Important. Program can succeed temporarily without it, but gap is significant. | PROCEED → Cloudflare Foundation (QWAV §0.9.1 Phase A) → R2 state + backlog |
+| **🟢 C — COULD HAVE** | Nice to have. Adds value, not essential. Would be nice if resources permit. | BACKLOG ONLY — create R2 backlog object (`qnfo/audit/backlog/<name>.json`), do NOT create project directory |
+| **⚪ W — WON'T HAVE** | Not now. Maybe never. Interesting idea but no current program alignment. | BLOCK — record in decision log only, do NOT create directory or R2 state |
 
 **Classification:** [M / S / C / W]
 
@@ -52,27 +52,25 @@ Skip this section if classified C or W.
 
 **Size Classification:** [LARGE / SMALL]
 
-**GitHub-Native Artifacts (NO LOCAL PM FILES):**
+**Cloudflare-Native Artifacts (NO LOCAL PM FILES):**
 
 | Artifact | Location | Command |
 |:---------|:---------|:--------|
-| Project State | GitHub Issue (label: `project-state`) | `gh issue create --repo qnfo/<name> --label "project-state"` |
-| Task Tracking | GitHub Issues + Project board | `gh issue create` + `gh project item-create` |
-| Sprint Board | GitHub Project (kanban) | `gh project create --owner qnfo` |
-| Charter | GitHub Issue (label: `charter`) | `gh issue create --repo qnfo/<name> --label "charter"` |
-| Definition of Done | GitHub Issue (label: `dod`) | `gh issue create --repo qnfo/<name> --label "dod"` |
-| Risk Register | GitHub Issue per risk (label: `risk`) | `gh issue create --repo qnfo/<name> --label "risk"` |
-| Changelog | GitHub Releases | `gh release create` |
-| Learnings | GitHub Wiki | `OWNER/REPO.wiki.git` |
-| Decisions | GitHub Discussions | `gh api graphql` for discussions |
+| Project State | R2 object (`qnfo/audit/state/<name>.json`) | `npx wrangler r2 object put qnfo/audit/state/<name>.json --file=<local> --remote` |
+| Task Tracking | R2 object (`qnfo/audit/backlog/<name>.json`) | `npx wrangler r2 object put qnfo/audit/backlog/<name>.json --file=<local> --remote` |
+| Discovery Index | R2 object (`qnfo/discovery/index.json`) | `npx wrangler r2 object get qnfo/discovery/index.json --remote` → edit → `put` |
+| Charter | Local PROJECT-CHARTER.md in project directory | `write` tool |
+| Definition of Done | Section in R2 state file or PROJECT-CHARTER.md | Documented in charter |
+| Decision Log | R2 object (`qnfo/audit/decisions/DECISION-LOG.md`) | Append to local copy → upload to R2 |
+| Code Archive | R2 object (`qnfo/code/<name>.bundle`) | `git bundle create` → `npx wrangler r2 object put` |
+| Releases | R2 object (`qnfo/releases/`) + Cloudflare Pages | `npx wrangler r2 object put` → `npx wrangler pages deploy` |
 
 | If LARGE | If SMALL |
 |:---------|:---------|
-| Full GitHub suite: Issues, Project board, Wiki, Discussions, Releases | Core GitHub: Issues, Project board, Releases |
-| GitHub Issue labels: `project-state`, `charter`, `dod`, `risk`, `handoff`, `task`, `bug`, `blocked` | GitHub Issue labels: `project-state`, `task`, `dod`, `handoff` |
-| + GitHub Discussions for architectural decisions | + GitHub Issues for decisions (use `decision` label) |
+| Full R2 suite: state, backlog, code archive, releases, decision log entries | Core R2: state, backlog, decision log |
+| R2 state labels: `active`, `delegated`, `blocked`, `complete`, `archived` | R2 state labels: `active`, `complete`, `archived` |
 
-**⚠️ PERMANENTLY DEPRECATED — DO NOT CREATE:** SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, PROJECT STATE.md, PROJECT-INITIATION.md (in project repo), CHARTER.md (in project repo), DEFINITION-OF-DONE.md (in project repo), RISK-REGISTER.md (in project repo). All replaced by GitHub-native equivalents above.
+**⚠️ PERMANENTLY DEPRECATED — DO NOT CREATE:** SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, PROJECT STATE.md. All replaced by Cloudflare-native R2 equivalents above.
 
 ---
 
@@ -80,31 +78,31 @@ Skip this section if classified C or W.
 
 Based on the gates above:
 
-- [ ] **PROCEED** — M/S classification. Run QWAV Project Initiation Protocol §0.9.1: Phase A (GitHub Foundation G0-G5) → Phase B (Local Scaffolding L1-L7). All project management lives in GitHub.
-- [ ] **BACKLOG ONLY** — C classification. Create GitHub Issue (label: `backlog`) in qnfo/program repo. Do NOT create project repo or local directory.
-- [ ] **BLOCK** — W classification. Record in GitHub Discussions only. Do NOT create repo, directory, or Issue.
+- [ ] **PROCEED** — M/S classification. Run QWAV Project Initiation Protocol §0.9.1: Phase A (Cloudflare Foundation C0-C5) → Phase B (Local Scaffolding L1-L7). All project management lives in R2.
+- [ ] **BACKLOG ONLY** — C classification. Create R2 backlog object (`qnfo/audit/backlog/<name>.json`). Do NOT create project directory.
+- [ ] **BLOCK** — W classification. Record in decision log only. Do NOT create directory or R2 state.
 
 ---
 
 ## 5. IF PROCEED — Pre-Flight Checklist
 
-Before running QWAV §0.9.1 Phase A (GitHub Foundation):
+Before running QWAV §0.9.1 Phase A (Cloudflare Foundation):
 
 - [ ] Moscow classification documented above
 - [ ] Size gate documented above
-- [ ] GitHub-native artifact set selected (FULL or CORE)
+- [ ] Cloudflare-native artifact set selected (FULL or CORE)
 - [ ] Human sign-off obtained (for M/S projects affecting shared resources)
-- [ ] Prior work checked via §0.1.4 Discovery (Archive search, CPL lessons, releases)
-- [ ] `gh auth status` confirmed with `repo, workflow, read:org, gist` scopes
+- [ ] Prior work checked via §0.8 Discovery (Discovery Index, R2 decision log, CPL lessons)
+- [ ] `wrangler whoami` confirmed — Cloudflare authenticated
 
 ---
 
 ## 6. SIGN-OFF
 
-- [ ] Moscow classification reviewed — not every idea needs a repo
-- [ ] If M/S: proceed to `gh repo create qnfo/<name>` (QWAV §0.9.1 Phase A)
-- [ ] If C: GitHub Issue (label: `backlog`) created in qnfo/program
-- [ ] If W: idea captured in GitHub Discussions, no repo/Issue/directory created
+- [ ] Moscow classification reviewed — not every idea needs a project
+- [ ] If M/S: proceed to Cloudflare Foundation (QWAV §0.9.1 Phase A C0-C5) — create R2 state + backlog
+- [ ] If C: R2 backlog object (`qnfo/audit/backlog/<name>.json`) created
+- [ ] If W: idea captured in decision log only, no directory/R2 state created
 
 ---
-*Generated from PROJECT-INITIATION-TEMPLATE.md v2.0 — GitHub-Native*
+*Generated from PROJECT-INITIATION-TEMPLATE.md v3.0 — Cloudflare-Native*

@@ -5,10 +5,10 @@ version: "1.1"
 
 # Handoff: {{type}}
 
-> **⚠️ GITHUB-NATIVE v2.0:** Handoffs are tracked as GitHub Issues (label: `handoff`) in the project repo. After filling this template, create the Issue with `gh issue create --repo qnfo/<repo-name> --label "handoff" --title "Handoff: {{type}}" --body "<filled-template>"`. The Issue number becomes the handoff reference.
+> **⚠️ CLOUDFLARE-NATIVE v3.10:** Handoffs are tracked as R2 objects (`qnfo/audit/handoffs/`) and registered in the Discovery Index. After filling this template, upload to R2: `npx wrangler r2 object put qnfo/audit/handoffs/<filename>.md --file=<local> --remote`. Handoffs are also referenced from project state files at `qnfo/audit/state/<project>.json`.
 
 **Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]
-**GitHub Issue:** `qnfo/[repo-name]#[issue-number]` (create with `gh issue create --label "handoff"`)
+**R2 Handoff:** `qnfo/audit/handoffs/<filename>.md`
 **Date:** [YYYY-MM-DD]
 **Issuing Authority:** [Who is delegating]
 **Accepting Authority:** [Who is receiving]

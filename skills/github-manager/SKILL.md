@@ -1,6 +1,6 @@
 ---
 name: github-manager
-description: GitHub repository management â€” Issues, Projects, Releases, Wiki, and PR operations via gh CLI. Use when the agent needs to manage GitHub-native resources, as FALLBACK when Cloudflare R2 is unavailable for PM operations.
+description: DEPRECATED — ARCHIVED (2026-06-01). GitHub fully deprecated per ADR-001. All PM is Cloudflare-native (R2, D1, Workers, Pages). This skill retained for historical reference only. Do NOT use for new operations.
 version: "1.0"
 ---
 

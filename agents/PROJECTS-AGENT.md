@@ -12,7 +12,7 @@
 | **System Prompt** | `DEFAULT.md` — paste ENTIRE contents into DeepChat Settings > Agents > Projects > System Prompt |
 | **Write Sandbox** | `G:\My Drive\projects\<name>\` — one project subdirectory per session |
 | **Read Scope** | ALL directories |
-| **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\<name>\`, `GitHub Releases\` |
+| **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\<name>\`, `R2 releases (qnfo/releases/) + Cloudflare Pages` |
 
 ---
 
@@ -42,7 +42,7 @@ The Projects agent is the primary workhorse — autonomous research, writing, pu
 | `exec`, `process` | PowerShell, Python, git |
 | `subagent_orchestrator` | Delegate to EXPLORER / IMPLEMENTER / REVIEWER |
 | `fill_prompt_template` | Invoke templates (email, social, scholar, charter, DoD, handoff, README, project-initiation) |
-| `gh` CLI | GitHub Releases, Wiki, PRs (task tracking → Cloudflare D1) |
+| `wrangler` CLI | R2 state, backlogs, releases (GitHub fully deprecated per ADR-001) |
 | `deepchat_question` | User clarification |
 | brave_web_search, YoBrowser | Web research |
 | skills, search_conversations | Skill management, history search |
@@ -92,8 +92,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 | Specifications are vague | IMPLEMENTER will fabricate | EXPLORER first to clarify |
 
 ### Expanded Reference
-For anti-patterns, chaining patterns, and failure recovery per subagent, see:
-https://github.com/rwnq8/prompts/wiki/Architecture (Delegation to Other Agents section)
+For anti-patterns, chaining patterns, and failure recovery per subagent, see agent-specific instruction files in G:\My Drive\prompts\agents\ and the decision log (qnfo/audit/decisions/DECISION-LOG.md).
 
 ---
 
@@ -121,7 +120,7 @@ https://github.com/rwnq8/prompts/wiki/Architecture (Delegation to Other Agents s
 | L18 | write tool success != file exists | Filesystem verification |
 | L40 | Fall back to Python exec for batch ops | After 4+ successful writes, verify aggressively |
 
-Full list: https://github.com/rwnq8/prompts/wiki/Cross-Project-Learnings
+Full list: Cross-Project Learnings maintained in R2 audit trail (qnfo/audit/decisions/DECISION-LOG.md) and local agent files.
 
 ---
 
@@ -150,11 +149,11 @@ When the Kaizen engine detects 5+ unapplied improvements or user triggers "UPDAT
 
 ## 9. SESSION CLOSE-OUT (Auto-Execute)
 
-1. Close-out checklist (DEFAULT.md SS12): archive, PDF, GitHub Release
+1. Close-out checklist (DEFAULT.md SS12): archive, PDF, R2 release
 2. Verify all commits: `git log -1 --oneline`
-3. Copy docs to GitHub Releases
+3. Upload releases to R2 (qnfo/releases/) + Cloudflare Pages
 4. Trigger SOCIAL-ORCHESTRATOR if publication occurred
-5. Update Cloudflare Task (D1, project-state) with final status
+5. Update R2 state (qnfo/audit/state/<project>.json) with final status
 6. AUTO-CONTINUE to next project
 
 ---

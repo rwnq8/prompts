@@ -5,13 +5,13 @@ version: "1.0"
 
 # [PROJECT NAME] — Project Charter
 
-> **⚠️ GITHUB-NATIVE v2.0:** This charter IS a GitHub Issue (label: `charter`) in `qnfo/[repo-name]`. The filled template becomes the Issue body. See QWAV-DEFAULT.md §0.9.1 Phase A.
+> **⚠️ CLOUDFLARE-NATIVE v3.10:** This charter lives as PROJECT-CHARTER.md in the project's local directory and is referenced from the R2 state file (`qnfo/audit/state/<name>.json`). The charter is also registered in the Discovery Index (`qnfo/discovery/index.json`).
 
 **Date:** [YYYY-MM-DD]
 **Status:** [Proposed | Active | Suspended | Complete]
 **Program:** [QWAV | Ultrametricity | Prompts]
-**GitHub Repo:** `https://github.com/qnfo/[repo-name]`
-**Charter Issue:** `gh issue view --repo qnfo/[repo-name] [issue-number]`
+**R2 State:** `qnfo/audit/state/[project-name].json`
+**Charter File:** `G:/My Drive/projects/[project-name]/PROJECT-CHARTER.md`
 
 ## Scope
 
@@ -47,7 +47,7 @@ version: "1.0"
 
 | # | Deliverable | Type | DoD Reference |
 |:--|:------------|:-----|:--------------|
-| 1 | [Description] | [Code | Document | Publication | Analysis] | GitHub Issue (label: `dod`) — `gh issue view --repo qnfo/[repo-name] [issue-number]` |
+| 1 | [Description] | [Code | Document | Publication | Analysis] | R2 state file (`qnfo/audit/state/<name>.json`) — section: `definition_of_done` |
 
 ## Prior Work (from §0.1.4 Discovery)
 
