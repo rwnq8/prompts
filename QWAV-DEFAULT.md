@@ -696,7 +696,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | **Run Kaizen improvement analysis** | `python tools/kaizen_engine.py --audit` |
 | **Apply Kaizen improvements** | `python tools/kaizen_engine.py --audit --apply` |
 | **Full auto Kaizen cycle** | `python tools/kaizen_engine.py --auto` |
-| Manage GitHub Issues/PRs/Wiki | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
+| Manage GitHub Issues/PRs/Wiki (DEPRECATED — GitHub fully deprecated per ADR-001) | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
 | Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
@@ -773,7 +773,7 @@ the per-project improvement from DEFAULT.md.
 |:--------|:-----|:--------|
 | **v3.10** | 2026-06-01 | **Physics Writing Standards:** Expanded §0.5 Research Integrity Mandate with Banned Words, Certainty Calibration, Falsifiability Requirement, Postdiction Prevention, Philosophy Boundary, and Attribution Standards. Inherits DEFAULT.md v3.11 improvements. |
 | **v3.9** | 2026-05-31 | **Workspace Layout:** Added §0.6.0 documenting cleaned QWAV workspace (16 items, down from ~70). Updated email section to reference email-composer skill. |
-| **v3.8** | 2026-05-31 | **Architecture Refresh:** Added bling-usability-audit, github-manager, kaizen-autonomous-update to skill triggers. Skill catalog now complete (9/9). |
+| **v3.11** | 2026-06-01 | **GitHub Fully Deprecated:** github-manager skill marked DEPRECATED. All wiki references removed from agent files (PROJECTS, PROMPTS, QWAV). Wiki confirmed inaccessible (401). GitHub repos empty. Full Cloudflare-native PM. |
 | **v3.7** | 2026-05-30 | **Kaizen Autonomous Update:** Research Integrity Mandate scrubbed of self-referential language ("BINDING", "MANDATE"). Added kaizen-autonomous-update skill reference. Inherits DEFAULT.md v3.7 improvements. |
 | **v3.6** | 2026-05-29 | **Template wiring:** Added Template Invocation subsection to SKILL INVOCATION TRIGGERS with all 6 active templates wired (CLOSEOUT-CHECKLIST, DEFINITION-OF-DONE, HANDOFF, PROJECT-CHARTER, PROJECT-INITIATION, SOCIAL-ORCHESTRATOR-TEMPLATE). Completes PART F template integration audit. |
 | **v3.7** | 2026-05-30 | **Kaizen Autonomous Update:** Fixed version consistency (header matched to v3.7). Updated Inheritance table with correct DEFAULT.md v3.8 section references. Cross-reference audit: all referenced DEFAULT.md sections now map to actual sections. |
