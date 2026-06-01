@@ -1,0 +1,181 @@
+{
+  "ecosystem": "QNFO/QWAV -- Git on Cloudflare R2",
+  "updated": "2026-06-01T20:10:00Z",
+  "projects": {
+    "pdf-builder": {
+      "name": "pdf-builder",
+      "description": "PDF Builder -- Markdown-to-PDF Pipeline",
+      "source_dir": "G:\\My Drive\\projects\\pdf-builder",
+      "status": "active"
+    },
+    "email-agent": {
+      "name": "email-agent",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\email-agent",
+      "status": "active"
+    },
+    "research-pipeline": {
+      "name": "research-pipeline",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\research-pipeline",
+      "status": "active"
+    },
+    "knowing-patterns-css": {
+      "name": "knowing-patterns-css",
+      "description": "��k\u0000n\u0000o\u0000w\u0000i\u0000n\u0000g\u0000-\u0000p\u0000a\u0000t\u0000t\u0000e\u0000r\u0000n\u0000s\u0000 \u0000C\u0000S\u0000S\u0000 \u0000M\u0000i\u0000g\u0000r\u0000a\u0000t\u0000i\u0000o\u0000n\u0000 \u0000-\u0000 \u0000P\u00002\u0000",
+      "source_dir": "G:\\My Drive\\projects\\knowing-patterns-css",
+      "status": "active"
+    },
+    "discovery-momentum-assets": {
+      "name": "discovery-momentum-assets",
+      "description": "��D\u0000i\u0000s\u0000c\u0000o\u0000v\u0000e\u0000r\u0000y\u0000 \u0000M\u0000o\u0000m\u0000e\u0000n\u0000t\u0000u\u0000m\u0000 \u0000A\u0000s\u0000s\u0000e\u0000t\u0000s\u0000 \u0000-\u0000 \u0000P\u00003\u0000",
+      "source_dir": "G:\\My Drive\\projects\\discovery-momentum-assets",
+      "status": "active"
+    },
+    "concept-graph": {
+      "name": "concept-graph",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\concept-graph",
+      "status": "active"
+    },
+    "analytics-infrastructure": {
+      "name": "analytics-infrastructure",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\analytics-infrastructure",
+      "status": "active"
+    },
+    "knowing-patterns-refactor": {
+      "name": "knowing-patterns-refactor",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\knowing-patterns-refactor",
+      "status": "active"
+    },
+    "quantum-ecosystem-audit": {
+      "name": "quantum-ecosystem-audit",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\quantum-ecosystem-audit",
+      "status": "active"
+    },
+    "audit": {
+      "name": "audit",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\audit",
+      "status": "active"
+    },
+    "yogananda-scientific-claims": {
+      "name": "yogananda-scientific-claims",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\yogananda-scientific-claims",
+      "status": "active"
+    },
+    "retrospective-prophecy-astrology": {
+      "name": "retrospective-prophecy-astrology",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\retrospective-prophecy-astrology",
+      "status": "active"
+    },
+    "search-worker": {
+      "name": "search-worker",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\search-worker",
+      "status": "active"
+    },
+    "no-bullshit-physics-writing": {
+      "name": "no-bullshit-physics-writing",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\no-bullshit-physics-writing",
+      "status": "published",
+      "topics": [
+        "physics-writing",
+        "science-communication"
+      ],
+      "last_active": "2026-06-01",
+      "doi": "10.5281/zenodo.20497225"
+    },
+    "releases": {
+      "name": "releases",
+      "description": "",
+      "source_dir": "G:\\My Drive\\projects\\releases",
+      "status": "active"
+    },
+    "living-paper": {
+      "name": "living-paper",
+      "description": "Interactive web platform transforming arXiv preprints into explorable, verifiable, cross-connected knowledge documents",
+      "source_dir": "G:/My Drive/projects/living-paper",
+      "status": "active",
+      "deployment": {
+        "url": "https://living-paper.qnfo.org",
+        "pages_url": "https://living-paper.qnfo.pages.dev",
+        "pages_project": "qnfo",
+        "branch": "living-paper",
+        "phase": "frontend-mvp"
+      },
+      "domain": "qnfo.org",
+      "ecosystem": "QNFO"
+    }
+  },
+  "publications": {},
+  "archive": {},
+  "policies": {
+    "research_integrity": {
+      "title": "Research Integrity & Communications Policy",
+      "policy_number": "QNFO-POL-COM-001",
+      "effective_date": "2026-05-30",
+      "local_path": "G:/My Drive/QWAV/POLICY-RESEARCH-INTEGRITY.md",
+      "status": "binding"
+    }
+  },
+  "audit": {
+    "closeout_2026-06-01_no-bullshit-physics": {
+      "date": "2026-06-01",
+      "project": "no-bullshit-physics-writing",
+      "description": "Comprehensive QA/QC remediation: Unicode fix, PDF rebuild, pipeline hardening, Zenodo audit, Cloudflare Pages audit, edge case audit (38/38 tests)",
+      "commits": {
+        "prompts": 8,
+        "project": 5
+      },
+      "canonical_doi": "10.5281/zenodo.20497225",
+      "status": "COMPLETE — 3 manual actions remain"
+    },
+    "last_session": {
+      "conversation_id": "NOR33UKYGny_n7H7hfOBB",
+      "date": "2026-06-01",
+      "type": "qa-qc-remediation",
+      "commits": 13,
+      "branch": "feature/living-paper-init",
+      "status": "complete",
+      "system_audit": "12/12 PASS"
+    },
+    "last_updated": "2026-06-01T19:53:08.071726Z"
+  },
+  "audit_log": [
+    {
+      "timestamp": "2026-06-01T20:32:55.618666Z",
+      "event": "prompt-improvement-review",
+      "description": "6 systemic prompt improvements applied (F1-F6): Index Integrity Gate, PDF Rendering Verification, Zenodo Duplicate Prevention, Writer/Validator Separation, Strengthened Rule 13, Architecture Compliance Gate",
+      "files_changed": [
+        "DEFAULT.md v3.11->v3.13",
+        "QWAV-DEFAULT.md",
+        "skills/publication-publisher/SKILL.md v1.1->v1.2"
+      ],
+      "session": "2026-06-01-prompt-improvements"
+    }
+  ],
+  "last_audit": "2026-06-01T20:32:55.618666Z",
+  "skills": {
+    "knowledge-graph": {
+      "name": "knowledge-graph",
+      "version": "1.0",
+      "description": "QNFO Knowledge Graph querying for due diligence, impact analysis, and cross-system discovery",
+      "path": "skills/knowledge-graph/SKILL.md",
+      "api_endpoint": "https://graph-api.q08.workers.dev",
+      "created": "2026-06-01",
+      "status": "active"
+    }
+  },
+  "_metadata": {
+    "last_updated": "2026-06-01T20:57:00Z",
+    "updated_by": "META-PROMPT (v5.3)",
+    "total_skills": 1
+  }
+}

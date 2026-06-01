@@ -699,6 +699,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Manage GitHub Issues/PRs/Wiki | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
+| Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
 
 ### Template Invocation (Program-Level)
 For structured output formats, use `fill_prompt_template`:
