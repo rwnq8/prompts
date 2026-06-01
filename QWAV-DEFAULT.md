@@ -520,6 +520,7 @@ Only projects that pass the Moscow M/S gate proceed to Phase A.
 
 | Step | Action | Command | Verification |
 |:-----|:-------|:--------|:-------------|
+| **C-1** | **ARCHITECTURE COMPLIANCE GATE** | Validate that ALL proposed infrastructure uses Cloudflare-native services ONLY (D1, R2, Workers, Pages, KV, Vectorize, Queues, Durable Objects, DDoS, DNS). **PROHIBITED:** any external cloud service (Neo4j AuraDB, AWS, GCP, Azure, Supabase, etc.). Embedded/local DBs (Kùzu, SQLite) = development only. | If any non-Cloudflare service proposed: `[BLOCKED: Architecture Compliance — Cloudflare-native required]`. Redesign using Cloudflare services only. |
 | **C0** | **Verify wrangler auth** | `wrangler whoami` | Must show authenticated Cloudflare account. If auth fails: `[BLOCKED: Cloudflare auth required]` |
 | **C1** | **Create R2 state object** | Write JSON state to temp file, then: `wrangler r2 object put qnfo/audit/state/<project>.json --file=<temp> --remote` | `wrangler r2 object get qnfo/audit/state/<project>.json --remote` — returns valid JSON |
 | **C2** | **Create R2 backlog object** | Write JSON backlog to temp file, then: `wrangler r2 object put qnfo/audit/backlog/<project>.json --file=<temp> --remote` | `wrangler r2 object get qnfo/audit/backlog/<project>.json --remote` — returns valid JSON |
