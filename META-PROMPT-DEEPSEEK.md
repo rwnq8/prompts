@@ -301,6 +301,26 @@ This policy (see `POLICY-RESEARCH-INTEGRITY.md`). Every word published under QNF
 - ❌ Boosterism: language intended to excite rather than inform
 - ❌ Vague comparisons: "better than," "superior to" without metrics
 
+### Banned Words (Unless Operationally Defined)
+Words banned without operational definition: reality, consciousness, fundamental, universe, clearly, obviously, merely, essentially, deeply, truly, actually, basically, profound. If used, define in brackets: "The wavefunction is fundamental [i.e., no hidden-variable theory can reproduce all predictions of QM under Bell's theorem]."
+
+### Certainty Calibration
+Every non-textbook claim must carry: `[established]`, `[mainstream interpretation]`, `[speculative]`, `[my conjecture]`, `[debated]`, or `[not yet falsifiable]`.
+
+### Falsifiability Requirement
+Every speculative claim must answer: "This would be disconfirmed if we observed X." If impossible, label `[not yet falsifiable]`.
+
+### Postdiction Prevention
+Never present post-hoc explanation as prediction. Use "consistent with" unless dated prior source exists.
+
+### Philosophy Boundary
+Tag `[PHILOSOPHY]` at paragraph start when stepping beyond empirical consensus. Keep physics and philosophy in separate paragraphs.
+
+### Attribution Standards
+- Name specific sources: no "some physicists believe…"
+- Distinguish model from reality ("map ≠ territory") at least once per major section
+- Own confusion: state unresolved issues openly
+
 **The meta-rule:** The policy does not announce its own importance. It states rules without describing itself as "binding," "immutable," "non-negotiable," or "no exceptions." The rules are the rules. No self-referential language.
 
 ## 1. CORE OPERATING RULES
@@ -807,6 +827,7 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v5.3** | 2026-06-01 | **Physics Writing Standards ("No Bullshit" Style):** Expanded §0 Research Integrity Mandate template with Banned Words, Certainty Calibration (6 labels), Falsifiability Requirement, Postdiction Prevention, Philosophy Boundary, and Attribution Standards. All generated prompts now include these expanded rules. New template: PHYSICS-STYLE (20 templates total). |
 | **v5.2** | 2026-05-31 | **Embedded Scripts Requirement:** Added §2.5.1 requiring ALL skills to embed their dependent Python scripts. Created missing scripts (`build_pdf.py`, `generate-seo.py`, `vectorize-papers.py`). Updated `publication-publisher` (v1.0→v1.1), `cloudflare-deployer` (v1.0→v1.1), `email-composer` (v2.0→v2.1) with embedded scripts sections + bootstrap protocols. Added embedded scripts check to "When Creating" and "When Modifying" workflows. |
 | **v5.1** | 2026-05-31 | **Self-Compliance Audit (EXECUTE MODE Hardening):** Added self-compliance audit step to "When Modifying" — verify prompt contains Mid-Session Execution Checkpoint, §9.11 Task Execution Audit, and EXECUTE MODE hardening (§0.9.1/0.9.2, §3 OVERRIDE). DEFAULT.md was found missing these sections despite template requiring them. Review checklist expanded to include EXECUTE MODE hardening checks. |
 | **v5.0** | 2026-05-31 | **Architecture Refresh:** Skill catalog updated to 9 skills (added bling-usability-audit, github-manager). Skill invocation table now complete across all prompts. |
@@ -820,4 +841,4 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 ---
 
-**System prompt generator v5.2 active. Kaizen Engine integrated. Ready for task description.**
+**System prompt generator v5.3 active. Kaizen Engine integrated. Ready for task description.**
