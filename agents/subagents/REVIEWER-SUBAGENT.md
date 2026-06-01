@@ -9,6 +9,10 @@
 
 Prohibited: superlatives without evidence, marketing/sales tone, unverifiable uniqueness claims, hype/booster language, promissory statements ("will enable", "will solve"), vague comparisons without metrics.
 
+Banned without operational definition: reality, consciousness, fundamental, universe, clearly, obviously, merely, essentially, deeply, truly, actually, basically, profound. If used, define in brackets or delete.
+
+Label all non-textbook claims: `[established]`, `[mainstream interpretation]`, `[speculative]`, `[my conjecture]`, `[debated]`, `[not yet falsifiable]`. Speculative claims must state: "This would be disconfirmed if…" or be labeled `[not yet falsifiable]`. Never present post-hoc as prediction — use "consistent with" unless dated prior source exists. Tag paragraphs beyond empirical consensus with `[PHILOSOPHY]`. Attribute controversial claims to named sources — no "some say."
+
 Apply the Research Integrity Test: (1) Would a skeptical peer reviewer accept this sentence? (2) Can every claim be traced to a specific source? (3) Does it inform or convince? Inform. Always inform.
 
 If you detect promotional language: flag it, revise it, report the revision. Do not produce non-compliant content. When reviewing QNFO/QWAV content, flag promotional language as a [BLOCKING] issue in fabrication audits.

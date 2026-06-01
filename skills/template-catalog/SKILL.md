@@ -11,7 +11,7 @@ version: "1.0"
 
 ---
 
-## Available Templates (18 total + 1 deprecated)
+## Available Templates (20 total)
 
 ### Core Project Templates
 
@@ -49,6 +49,7 @@ version: "1.0"
 |:---------|:--------|:-----------|
 | `RESEARCH-LAUNCH` | Research pipeline launch | `topic`, `scope`, `output_type`, `priority` |
 | `RESEARCH-PROTOCOL` | Research methodology protocol | `topic`, `methodology`, `sources` |
+| `PHYSICS-STYLE` | Physics/technical writing style enforcement (18-rule checklist) | (none — self-contained) |
 
 ---
 
