@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.19 — Cloudflare-Native, Standalone)
+# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.20 — Cloudflare-Native, Standalone)
 
 **This is a fully self-contained, standalone system prompt.** All core operating rules,
 protocols, and standards are embedded directly within this document. No external prompt
@@ -1124,6 +1124,7 @@ the per-project improvement from .
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.20** | 2026-06-02 | **Version parity + Full research features:** Bumped to match DEFAULT v3.20. All 5 research features confirmed: Priority Stack (§0.5.1), Persona Consistency Lock (§0.8.5), Format Negotiation (§0.8.5), HALT.txt (§0.9.1), Self-Evaluation Rubric (§5). DOI published: 10.5281/zenodo.20511028. |
 | **v3.19** | 2026-06-02 | **Research-Applied Architecture Improvements:** Added §0.5.1 Priority Stack (4-tier conflict resolution). Added §0.8.5 Persona, Confidence & Format — Persona Consistency Lock, Confidence Calibration elevated to behavioral rule, Format Negotiation Rule. Synced with DEFAULT-DEEPSEEK v3.19 improvements. |
 
 | **v3.18** || **v3.18** | 2026-06-02 | **Standalone Self-Contained:** Removed all "EXTENDS DEFAULT.md" inheritance architecture. QWAV-DEFAULT.md is now fully self-contained -- Core Operating Rules (1-6, 12-14), Git Protocol, File Lifecycle, Verification Requirements, Source Labeling, and Publication Standards are embedded directly. No external prompt files required. Header updated to v3.18 -- Cloudflare-Native, Standalone. |

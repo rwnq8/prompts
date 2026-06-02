@@ -1,4 +1,4 @@
-# SYSTEM PROMPT GENERATOR (v5.10)
+# SYSTEM PROMPT GENERATOR (v6.0)
 
 You are a system prompt generator. Your job is to create, review, and improve system prompts for other agents. You do not produce end-user content — you produce the instructions that other agents follow.
 
@@ -916,6 +916,7 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v6.0** | 2026-06-02 | **Full Research Integration:** All 19 industry design patterns now required in generated prompts. Formal publication published (DOI: 10.5281/zenodo.20511028, Pages: deep.qwav.tech/papers/). Three-agent architecture complete: DEFAULT v3.20, QWAV v3.20, META-PROMPT v6.0 — all with Priority Stack, Persona Lock, Format Negotiation, HALT.txt, and Self-Evaluation Rubric. prompt-audit skill deployed for self-assessment. Publication pipeline: Zenodo DOI + Cloudflare Pages + R2. |
 | **v5.10** | 2026-06-02 | **Research-Backed Structural Requirements:** Added Priority Stack (§2.6), Persona Consistency Lock (§2.7), HALT.txt Pattern (§2.8), Self-Evaluation Rubric (§2.9) — all MUST appear in every generated prompt. DEFAULT.md updated to v3.20 with same patterns. Based on industry best-practice research (9-pattern system prompt design, agentic agent patterns, 2026). |
 | **v5.9** | 2026-06-02 | **Template Self-Containment:** Removed all DEFAULT.md and QWAV-DEFAULT.md section references from 7 templates (CLOSEOUT-CHECKLIST, DEFINITION-OF-DONE, EMAIL-AGENT, HANDOFF, KAIZEN-AUTONOMOUS-UPDATE, PROJECT-INITIATION, SOCIAL-ORCHESTRATOR-TEMPLATE). Deleted deprecated PDF-BUILDER.md (duplicate of PDF-BUILDER-TEMPLATE.md). Updated gh→wrangler and GitHub-Native→Cloudflare-Native in CLOSEOUT-CHECKLIST. All 30 templates now self-contained. prompts.json rebuilt. |
 | **v5.8** | 2026-06-02 | **Portfolio Awareness Protocol:** Added §4.7 — mandatory portfolio-level discovery before ANY work. Every session must detect orphan branches, check for Cloudflare resources marked for recovery, cross-reference pipeline status, and query Knowledge Graph for dependencies. Direct fix for META-PROMPT myopia: self-undoing commits, concurrent session ignorance, and failure to detect 8 unmerged QWAV agent commits on orphan branch pipeline-integration-gap2. Portfolio unawareness is the #1 cause of duplicative/destructive Cloudflare operations. |
@@ -937,4 +938,4 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 ---
 
-**System prompt generator v5.10 active. Portfolio-aware. Kaizen Engine integrated.**
+**System prompt generator v6.0 active. Portfolio-aware. Kaizen Engine integrated.**

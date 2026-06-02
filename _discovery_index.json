@@ -186,7 +186,9 @@
         "evaluation",
         "failure-modes"
       ],
-      "r2_path": "qnfo/releases/llm-system-prompts-agentic-agents-best-practices-2026.md"
+      "r2_path": "qnfo/releases/llm-system-prompts-agentic-agents-best-practices-2026",
+      "doi": "10.5281/zenodo.20511028",
+      "pages_url": "https://deep.qwav.tech/papers/llm-system-prompts-agentic-agents-best-practices-2026/"
     }
   },
   "archive": {},
@@ -313,7 +315,8 @@
       "path": "G:\\My Drive\\prompts\\skills\\prompt-audit\\SKILL.md",
       "description": "Self-audit skill evaluating prompts against 19 industry patterns with anti-pattern detection and scoring rubric",
       "status": "active",
-      "date": "2026-06-02"
+      "date": "2026-06-02",
+      "deployed": true
     }
   },
   "_metadata": {
