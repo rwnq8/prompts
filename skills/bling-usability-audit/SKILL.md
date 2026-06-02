@@ -50,7 +50,7 @@ read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')
 Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
 **Canonical source: Cloudflare R2 (`qnfo/tools/`). Local copies at `G:\My Drive\prompts\tools\` are convenience copies only — R2 is the single source of truth.**
 
-| Script | Canonical (R2) | Local Convenience Copy | Purpose |
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
 |:-------|:---------------|:----------------------|:--------|
 | `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys skill files to DeepChat runtime |
 

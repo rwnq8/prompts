@@ -42,19 +42,19 @@ read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')
 ## 2.5.1 Embedded Scripts
 
 Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
-**Canonical source: Cloudflare R2 (`qnfo/tools/`). Local copies at `G:\My Drive\prompts\tools\` are convenience copies only — R2 is the single source of truth.**
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools are pulled to local disk on demand for execution only — this is an ephemeral cache, not permanent storage. Delete and re-pull from R2 any time.**
 
-| Script | Canonical (R2) | Local Convenience Copy | Purpose |
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
 |:-------|:---------------|:----------------------|:--------|
-| `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys skill files to DeepChat runtime |
-| `system_audit.py` | `qnfo/tools/system_audit.py` | `G:\My Drive\prompts\tools\system_audit.py` | Cross-file consistency and version drift audit |
+| `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\tools\deploy.py` (cache) | Deploys skill files to DeepChat runtime |
+| `system_audit.py` | `qnfo/tools/system_audit.py` | `G:\My Drive\tools\system_audit.py` (cache) | Cross-file consistency and version drift audit |
 
-### Script Recovery Protocol
-If a script is missing from local disk:
-1. Pull canonical from R2: `npx wrangler r2 object get qnfo/tools --remote --file=<local_path>`
-2. Verify integrity: `Test-Path <local_path>`
-3. If R2 copy also missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
-4. Do NOT attempt to use this skill if its canonical scripts cannot be recovered.
+### Execution Protocol (Ephemeral)
+Tools execute locally (Python requires filesystem access) but do NOT persist:
+1. **Pull:** `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`
+2. **Execute:** `python _<name>.py`
+3. **Discard:** `Remove-Item _<name>.py`
+4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
 
 
 ## Session Close-Out Protocol (MANDATORY)
