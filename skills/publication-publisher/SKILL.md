@@ -1,10 +1,10 @@
 ---
 name: publication-publisher
 description: End-to-end publication workflow — formatting, PDF building, Zenodo upload, Cloudflare deployment, and social media orchestration. Use when publishing papers, reports, or other documents.
-version: "1.2"
+version: "1.3"
 ---
 
-# PUBLICATION PUBLISHER SKILL — v1.2
+# PUBLICATION PUBLISHER SKILL — v1.3
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
 > Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `PDF-BUILDER-TEMPLATE.md`
@@ -27,7 +27,7 @@ This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.m
 
 ## QNFO Custom Skill Note
 
-This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `_deploy.py` (pulled from R2: `qnfo/tools/deploy.py`). It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 ```
 read('G:\My Drive\prompts\skills\publication-publisher\SKILL.md')
@@ -63,7 +63,9 @@ All publication documents use curly/smart quotes (Unicode: \u201c \u201d \u2018 
 
 Use `fill_prompt_template("PDF-BUILDER-TEMPLATE", {source, output, ...})` to generate PDF configuration, then:
 ```bash
-python "G:\My Drive\prompts\tools\build_pdf.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/build_pdf.py --remote --file=_build_pdf.py
+python _build_pdf.py
+# Discard: Remove-Item _build_pdf.py
 ```
 
 ### PDF Rendering Verification (MANDATORY)
@@ -99,7 +101,9 @@ python -c "import json; d=json.load(open('_discovery_index.json','r',encoding='u
 ```
 2. If existing DOI found → use `--doi <existing_doi>` flag to create a NEW VERSION (not a duplicate record):
 ```bash
-python "G:\My Drive\prompts\tools\zenodo_publish.py" --doi "<existing_doi>" --title "..." --author "..." --file "..."
+# Pull from R2: npx wrangler r2 object get qnfo/tools/zenodo_publish.py --remote --file=_zenodo_publish.py
+python _zenodo_publish.py --doi "<existing_doi>"
+# Discard: Remove-Item _zenodo_publish.py --title "..." --author "..." --file "..."
 ```
 3. If Zenodo API search needed: use `brave_web_search` for `site:zenodo.org "<publication_title>"` to find existing records.
 4. Never create a new Zenodo record (`zenodo_publish.py` without `--doi`) for a publication that already has one. This creates DUPLICATE records.
@@ -107,7 +111,7 @@ python "G:\My Drive\prompts\tools\zenodo_publish.py" --doi "<existing_doi>" --ti
 
 After duplicate check passes, use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
 ```bash
-python "G:\My Drive\prompts\tools\zenodo_publish.py"
+python "_zenodo_publish.py (pull from R2: `qnfo/tools/zenodo_publish.py`)"
 ```
 
 ---
@@ -129,7 +133,9 @@ npx wrangler pages deploy <dir> --project-name qwav --branch main
 npx wrangler r2 object put qnfo/releases/<file>.pdf --file=<path>
 
 # Generate SEO files
-python "G:\My Drive\prompts\tools\generate-seo.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/generate-seo.py --remote --file=_generate-seo.py
+python _generate-seo.py
+# Discard: Remove-Item _generate-seo.py
 ```
 
 ---
@@ -158,21 +164,22 @@ NOT: `paper.pdf`, `final.pdf`, `output.pdf`
 
 > **SELF-CONTAINED:** This skill depends on the scripts listed below. Before executing any script, verify it exists at its canonical path. If missing, see the bootstrap note below for recovery.
 
-| Script | Canonical Path | Purpose |
-|:-------|:---------------|:--------|
-| `build_pdf.py` | `tools\\build_pdf.py` | Markdown/HTML -> PDF via reportlab |
-| `zenodo_publish.py` | `tools\\zenodo_publish.py` | Zenodo DOI registration via REST API |
-| `generate-seo.py` | `tools\\generate-seo.py` | sitemap.xml, robots.txt, llms.txt generator |
+| Script | R2 Canonical | Execution Cache | Purpose |
+|:-------|:-------------|:----------------|:--------|
+| `build_pdf.py` | `qnfo/tools/build_pdf.py` | `_build_pdf.py` (ephemeral) | Markdown/HTML -> PDF via reportlab |
+| `zenodo_publish.py` | `qnfo/tools/zenodo_publish.py` | `_zenodo_publish.py` (ephemeral) | Zenodo DOI registration via REST API |
+| `generate-seo.py` | `qnfo/tools/generate-seo.py` | `_generate-seo.py` (ephemeral) | sitemap.xml, robots.txt, llms.txt generator |
 
 ### Bootstrap Protocol
 
 **Before using any script, verify it exists:**
 ```bash
-Test-Path "G:\My Drive\prompts\tools\<script>.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py
+# Verify pull: Test-Path _<script>.py
 ```
 
-**If script is MISSING:** Scripts are version-controlled in the prompts repo at `G:\My Drive\prompts\tools\`.
-1. Check: `git log --oneline -- G:/My Drive/tools/<script>.py`
+**If script is MISSING:** Scripts are canonical on Cloudflare R2 (`qnfo/tools/`). Pull from R2: `npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py`.
+1. Re-pull from R2: `npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py`
 2. Check: are you on the correct branch? `git branch --show-current`
 3. The canonical source for all tools is the `prompts` repo `tools/` directory.
 
@@ -198,8 +205,8 @@ DO NOT attempt publication without these scripts.
 
 ---
 
-*publication-publisher skill v1.2 — Load on-demand via skill_view()*
+*publication-publisher skill v1.3 — Load on-demand via skill_view()*
 
 ---
 
-*publication-publisher v1.2 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
+*publication-publisher v1.3 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
