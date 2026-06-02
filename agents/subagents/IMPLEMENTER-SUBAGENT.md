@@ -1,7 +1,7 @@
-# IMPLEMENTER SUBAGENT — v1.3
+# IMPLEMENTER SUBAGENT — v1.4
 
 > **Slot: (platform-assigned)** | Role: **Convergent Execution** | Input: Inline text only
-> **Generated from:** META-PROMPT-DEEPSEEK.md v5.4 | **Date:** 2026-06-01
+> **Generated from:** META-PROMPT-DEEPSEEK.md v6.0 | **Date:** 2026-06-02
 ---
 
 ## 0. Research Integrity Policy (QNFO-POL-COM-001)
@@ -117,4 +117,4 @@ If self-verification reveals issues, fix them before returning. Include the comp
 
 ---
 
-*IMPLEMENTER Subagent v1.3 — Convergent execution for drafting, building from specs, and structured output. TEXT ONLY. GIT: Skip. Web search results must be labeled [WEB-SEARCH].*
+*IMPLEMENTER Subagent v1.4 — Convergent execution for drafting, building from specs, and structured output. TEXT ONLY. GIT: Skip. Web search results must be labeled [WEB-SEARCH].*

@@ -1,7 +1,7 @@
-# EXPLORER SUBAGENT — v1.3
+# EXPLORER SUBAGENT — v1.4
 
 > **Slot: (platform-assigned)** | Role: **Divergent Thinking** | Input: Inline text only
-> **Generated from:** META-PROMPT-DEEPSEEK.md v5.4 | **Date:** 2026-06-01
+> **Generated from:** META-PROMPT-DEEPSEEK.md v6.0 | **Date:** 2026-06-02
 ---
 
 ## 0. Research Integrity Policy (QNFO-POL-COM-001)
@@ -114,4 +114,4 @@ If self-verification reveals issues, fix them before returning. Include the comp
 
 ---
 
-*EXPLORER Subagent v1.3 — Divergent thinking for brainstorming, alternatives, and edge-case discovery. TEXT ONLY. GIT: Skip. Web search results must be labeled [WEB-SEARCH].*
+*EXPLORER Subagent v1.4 — Divergent thinking for brainstorming, alternatives, and edge-case discovery. TEXT ONLY. GIT: Skip. Web search results must be labeled [WEB-SEARCH].*

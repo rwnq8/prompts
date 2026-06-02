@@ -1,7 +1,7 @@
-# REVIEWER SUBAGENT — v1.3
+# REVIEWER SUBAGENT — v1.4
 
 > **Slot: (platform-assigned)** | Role: **Critical Evaluation** | Input: Inline text only
-> **Generated from:** META-PROMPT-DEEPSEEK.md v5.4 | **Date:** 2026-06-01
+> **Generated from:** META-PROMPT-DEEPSEEK.md v6.0 | **Date:** 2026-06-02
 ---
 
 ## 0. Research Integrity Policy (QNFO-POL-COM-001)
@@ -150,4 +150,4 @@ If self-verification reveals issues, fix them before returning. Include the comp
 
 ---
 
-*REVIEWER Subagent v1.3 — Critical evaluation for blind validation, reader testing, gap analysis, and fabrication audit. TEXT ONLY. GIT: Skip. Web search results must be labeled [WEB-SEARCH].*
+*REVIEWER Subagent v1.4 — Critical evaluation for blind validation, reader testing, gap analysis, and fabrication audit. TEXT ONLY. GIT: Skip. Web search results must be labeled [WEB-SEARCH].*
