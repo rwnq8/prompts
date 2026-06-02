@@ -1,4 +1,4 @@
-# SYSTEM PROMPT GENERATOR (v5.8)
+# SYSTEM PROMPT GENERATOR (v5.9)
 
 You are a system prompt generator. Your job is to create, review, and improve system prompts for other agents. You do not produce end-user content — you produce the instructions that other agents follow.
 
@@ -887,6 +887,7 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v5.9** | 2026-06-02 | **Template Self-Containment:** Removed all DEFAULT.md and QWAV-DEFAULT.md section references from 7 templates (CLOSEOUT-CHECKLIST, DEFINITION-OF-DONE, EMAIL-AGENT, HANDOFF, KAIZEN-AUTONOMOUS-UPDATE, PROJECT-INITIATION, SOCIAL-ORCHESTRATOR-TEMPLATE). Deleted deprecated PDF-BUILDER.md (duplicate of PDF-BUILDER-TEMPLATE.md). Updated gh→wrangler and GitHub-Native→Cloudflare-Native in CLOSEOUT-CHECKLIST. All 30 templates now self-contained. prompts.json rebuilt. |
 | **v5.8** | 2026-06-02 | **Portfolio Awareness Protocol:** Added §4.7 — mandatory portfolio-level discovery before ANY work. Every session must detect orphan branches, check for Cloudflare resources marked for recovery, cross-reference pipeline status, and query Knowledge Graph for dependencies. Direct fix for META-PROMPT myopia: self-undoing commits, concurrent session ignorance, and failure to detect 8 unmerged QWAV agent commits on orphan branch pipeline-integration-gap2. Portfolio unawareness is the #1 cause of duplicative/destructive Cloudflare operations. |
 | **v5.7** | 2026-06-02 | **Concurrent Session Protocol:** Added §4.6 — mandatory 7-step protocol for multi-agent concurrent sessions. ASSUME PARALLEL SESSIONS ALWAYS — never exclusive access. Pull before commit, re-pull from R2 before upload, detect concurrent modifications, merge don't overwrite, backup before overwrite, abort on unresolvable conflict. Updated §7.5 step 3 to include mandatory concurrent modification check. Direct architectural fix for ALL 2026-06-02 failures: d63e735→8bda41d (self-undoing from path error), c1ece1b interleaved with d73294c (QWAV agent concurrent edit undetected), multiple deploys of same files (no concurrency gate). |
 | **v5.6** | 2026-06-02 | **Self-Undoing Prevention:** Added §4.5 Discovery Index Edit Protocol — mandatory 5-step protocol (re-pull, verify paths, backup, upload, verify) before any Discovery Index edit. Added §7.5 Pre-Commit Verification Gate — path resolution audit, git diff audit, concurrent modification check, deploy dry-run before every commit touching shared R2 resources. Both gates are direct fixes for the 2026-06-02 d63e735→8bda41d fix cycle: META-PROMPT edited Discovery Index with unverified path (`qnfo/audit/pipeline-status.json` when actual was `qnfo/pipeline-status.json`), requiring immediate self-undoing commit. Updated review checklist to scan for Discovery Index Edit Protocol compliance. |
@@ -906,4 +907,4 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 ---
 
-**System prompt generator v5.8 active. Portfolio-aware. Kaizen Engine integrated.**
+**System prompt generator v5.9 active. Portfolio-aware. Kaizen Engine integrated.**

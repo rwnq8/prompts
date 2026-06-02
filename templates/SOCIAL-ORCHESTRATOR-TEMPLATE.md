@@ -33,7 +33,7 @@
 
 ## 2. WHAT THIS AGENT DOES
 
-Read a publication file. Generate social media posts. The calling agent must verify the publication has passed reader testing (DEFAULT.md §11.5), synthesis audit (§11.6), and Zenodo DOI registration (§11.8) before invoking this template.
+Read a publication file. Generate social media posts. The calling agent must verify the publication has passed reader testing, synthesis audit, and Zenodo DOI registration before invoking this template.
 
 **PRE-PUBLISH GATE (verified by calling agent before invoking this template):**
 - [x] Publication passed §11.5 Reader Testing Protocol (2-round minimum)

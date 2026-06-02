@@ -7,9 +7,9 @@ version: "1.0"
 
 > **Purpose:** Moscow classification + size gate BEFORE project creation. Per CPL L43 (not every idea needs a project) and CPL L47 (documentation must not outweigh the deliverable).
 > **When to use:** Before ANY `git init` or directory creation for a new project. If this gate says BLOCK or BACKLOG-ONLY, do NOT create a local directory or R2 state.
-> **⚠️ CLOUDFLARE-NATIVE v3.10:** All project management is Cloudflare-native from step zero (QWAV-DEFAULT.md §0.9.1). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8). Project state lives in R2 (`qnfo/audit/state/`), tasks in R2 (`qnfo/audit/backlog/`), decisions in R2 (`qnfo/audit/decisions/DECISION-LOG.md`). Git is version control ONLY.
+> **⚠️ CLOUDFLARE-NATIVE v3.10:** All project management is Cloudflare-native from step zero (Project Initiation Protocol (§0.9.1)). Do NOT create SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (see File Deprecation Map — Cloudflare R2 replaces all PM files). Project state lives in R2 (`qnfo/audit/state/`), tasks in R2 (`qnfo/audit/backlog/`), decisions in R2 (`qnfo/audit/decisions/DECISION-LOG.md`). Git is version control ONLY.
 > 
-> **⚠️ ERROR HANDLING:** All `wrangler` commands in this template inherit the retry strategy from QWAV-DEFAULT.md §0.9.1 "Failure Handling & Retry Strategy." Authentication failures are blocking — escalate, do not retry.
+> **⚠️ ERROR HANDLING:** All `wrangler` commands in this template inherit the retry strategy from Project Initiation Protocol (§0.9.1) "Failure Handling & Retry Strategy." Authentication failures are blocking — escalate, do not retry.
 
 ---
 

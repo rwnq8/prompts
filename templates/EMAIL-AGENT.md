@@ -1,6 +1,6 @@
 # EMAIL-AGENT TEMPLATE v1.4
 # Template for drafting emails from project outputs and inline context
-# Pre-send gate: parent agent must verify content against Pre-Send Checklist (DEFAULT.md §E.5.1)
+# Pre-send gate: parent agent must verify content against Pre-Send Validation Checklist (§E.5.1)
 # Fill with: recipient, subject, context, bodyDraft, attachmentPath, doiLink
 #
 # USAGE: This template is invoked via fill_prompt_template by a PARENT agent.

@@ -7,7 +7,7 @@ version: "1.2"
 
 > **⚠️ CLOUDFLARE-NATIVE v3.15:** Handoffs are tracked as R2 objects (`qnfo/audit/handoffs/`) and registered in the Discovery Index. After filling this template, upload to R2: `npx wrangler r2 object put qnfo/audit/handoffs/<filename>.md --file=<local> --remote`. Handoffs are also referenced from project state files at `qnfo/audit/state/<project>.json`.
 
-> **⚠️ STALENESS WARNING (v1.2):** This handoff is a static snapshot. Tasks listed may have been completed since this document was authored. **All handoffs older than 24 hours carry this warning automatically.** Incoming agents MUST verify every task against live Cloudflare infrastructure (R2 object counts, Vectorize index metadata, D1 row counts, Worker deployments) before execution. See DEFAULT.md §3.2 step 1.6 (Infrastructure State Verification Gate). **Trust live infrastructure over handoff documents.**
+> **⚠️ STALENESS WARNING (v1.2):** This handoff is a static snapshot. Tasks listed may have been completed since this document was authored. **All handoffs older than 24 hours carry this warning automatically.** Incoming agents MUST verify every task against live Cloudflare infrastructure (R2 object counts, Vectorize index metadata, D1 row counts, Worker deployments) before execution. See Infrastructure State Verification Gate (§3.2 step 1.6). **Trust live infrastructure over handoff documents.**
 
 **Type:** [Program→Project | Project→Task | Session→Session | Project→Project Dependency]
 **R2 Handoff:** `qnfo/audit/handoffs/<filename>.md`
@@ -77,7 +77,7 @@ Before this handoff is considered complete:
 - [ ] TASK: <description> `[STALE-SOURCE: needs verification — listed in CONSOLIDATION-MASTER.md from 2026-06-01]`
 ```
 
-**Tasks without a `verified_against` label are automatically `[STALE-SOURCE]` and MUST be verified against live infrastructure before execution. See DEFAULT.md §3.2 step 1.6 and `qnfo/pipeline-status.json` for verification sources.**
+**Tasks without a `verified_against` label are automatically `[STALE-SOURCE]` and MUST be verified against live infrastructure before execution. See Infrastructure State Verification Gate (§3.2 step 1.6) and `qnfo/pipeline-status.json` for verification sources.**
 
 ## Escalation
 

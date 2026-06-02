@@ -31,7 +31,7 @@ python _kaizen_system_audit.py
 The Phase 0.4 comprehensive audit checks ALL of:
 - **Version consistency** across all prompts, agents, subagents, skills, templates
 - **Required section presence** in every system prompt (Rules 1-6, 12-14, Research Integrity, Web Research Protocol, File Lifecycle, Publication Language Gate, Git Protocol, Cloudflare-Native, Discovery Index Step 0, Kaizen)
-- **Cross-reference integrity** — QWAV-DEFAULT.md references to DEFAULT.md sections, agent config references to system prompts
+- **Cross-reference integrity** — QWAV-DEFAULT.md section completeness (must be fully self-contained), agent config references to system prompts
 - **Skill completeness** — version header, tool documentation, read-based loading patterns, trigger conditions
 - **Template staleness** — referenced vs. unreferenced templates, duplicate detection
 - **Guardrail completeness** — all essential guardrails present in all prompts
@@ -43,7 +43,7 @@ The Phase 0.4 comprehensive audit checks ALL of:
 |:-------|:-------------|:----------------|
 | **DEFAULT.md** | Rule completeness, Web Research Protocol, File Lifecycle, Publication Language Gate, Git Protocol, Cloudflare-Native, Discovery Index Step 0, Kaizen §9.5 | CRITICAL |
 | **META-PROMPT-DEEPSEEK.md** | Template requirements, skill references, subagent slot IDs, wiki references (→ R2), version self-consistency | HIGH |
-| **QWAV-DEFAULT.md** | Inheritance from DEFAULT.md, domain-specific rules, cross-reference integrity, Research Integrity presence | CRITICAL |
+| **QWAV-DEFAULT.md** | Self-containment verification (all rules embedded directly), domain-specific rules, cross-reference integrity, Research Integrity presence | CRITICAL |
 
 **Update rules (HARD):**
 - Version bump: MINOR for new content/sections, PATCH for fixes/typos
@@ -51,7 +51,7 @@ The Phase 0.4 comprehensive audit checks ALL of:
 - Never remove content without documenting rationale
 - Filesystem verify after every write: `Test-Path <file>` + `Get-Content <file> -First 5`
 - Git verify after every commit: `git log -1 --oneline`
-- **One prompt at a time**: Update DEFAULT.md → verify → commit → then QWAV-DEFAULT.md → verify → commit
+- **One prompt at a time**: Update prompts → verify self-containment → commit (each prompt is self-contained, order-independent)
 
 ### Phase 2: Template Audit & Cleanup
 

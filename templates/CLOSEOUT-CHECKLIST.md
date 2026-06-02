@@ -10,9 +10,9 @@ version: "5.0"
 >
 > **SCOPE:** Universal — applies to ALL session types (project work, prompt engineering, system maintenance, research).
 >
-> **GitHub-Native:** All project management is GitHub-native. Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (DEFAULT.md §0.6.8).
+> **Cloudflare-Native:** All project management is Cloudflare-native (R2, D1, Workers). Do NOT create or update SPRINT.md, BACKLOG.md, CHANGELOG.md, LEARNINGS.md, DECISIONS.md, or PROJECT STATE.md — these files are PERMANENTLY DEPRECATED (see File Deprecation Map — Cloudflare R2 replaces all PM files).
 >
-> **ERROR HANDLING:** All `gh` commands inherit QWAV-DEFAULT.md §0.9.1 retry strategy (3x with backoff). If a gh command fails after retries: mark `[!]` with rationale and continue. Do NOT block closeout on a single gh command failure — all items are independently verifiable.
+> **ERROR HANDLING:** All `wrangler` commands use standard retry strategy (3x with exponential backoff, 2s/4s/8s). If a wrangler command fails after retries: mark `[!]` with rationale and continue. Do NOT block closeout on a single wrangler command failure — all items are independently verifiable.
 
 **Date:** [YYYY-MM-DD]
 **Session Type:** [PROJECT / PROMPT-ENGINEERING / SYSTEM-MAINTENANCE / RESEARCH]
@@ -99,7 +99,7 @@ Every item must be verified and marked `[x]` before the session ends. `[!]` = bl
 
 - [ ] **All temp files deleted:** `Remove-Item` all `_*.py`, `_*.txt`, and other temporary artifacts
 - [ ] **Working tree clean:** `git status --porcelain` returns empty (re-verified after cleanup)
-- [ ] **QWAV-DEFAULT.md unstaged:** If QWAV-DEFAULT.md or DEFAULT.md was inadvertently modified (line endings, stash artifacts), restore with `git checkout`
+- [ ] **QWAV-DEFAULT.md unstaged:** If QWAV-DEFAULT.md or DEFAULT.md was inadvertently modified (check `git diff --name-only`) (line endings, stash artifacts), restore with `git checkout`
 - [ ] **Only main branch exists:** `git branch` shows `* main` as the only local branch
 - [ ] **Stash empty:** `git stash list` shows no items from this session
 
@@ -127,7 +127,7 @@ Tests: 10/10 passing
 ---
 
 **For sessions that produced a GitHub Release:**
-- [ ] **PDF generated:** `gh run list --repo qnfo/<name> --workflow=pdf-release.yml --limit 1` confirms success OR `build_pdf.py` executed (DEFAULT.md Persistent Preference 12)
+- [ ] **PDF generated:** `gh run list --repo qnfo/<name> --workflow=pdf-release.yml --limit 1` confirms success OR `build_pdf.py` executed (Persistent Preference — PDF attached to releases)
 - [ ] **PDF in release:** `gh release view <tag> --repo qnfo/<name> --json assets` confirms PDF attached
 - [ ] **GATE: If PDF is missing from release assets, close-out is BLOCKED.** Retroactively upload before completing.
 

@@ -60,7 +60,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] Reader testing: 2 rounds minimum, no truncation gaps (§3.1)
 - [ ] Curly quotes, YAML, author block per §11
 - [ ] `[DOI-PENDING]` replaced with actual DOI
-- [ ] PDF generated and uploaded to GitHub Release as asset (DEFAULT.md Persistent Preference 12)
+- [ ] PDF generated and uploaded to GitHub Release as asset (Persistent Preference — PDF attached to releases)
 - [ ] Release created via `gh release create` with both Markdown source and PDF attached
 - [ ] PDF presence verified with `gh release view --json assets`
 - [ ] Copy to `GitHub Releases (via gh release create)\YYYY\MM\` verified with Test-Path
