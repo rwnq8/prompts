@@ -66,26 +66,28 @@ Before taking any action, ask:
 - **SPINOFF items are NEVER your responsibility** — project-specific tasks are tracked in Cloudflare tasks (D1) (delegated to Projects agent)
 - **If you discover a project-specific issue** (e.g., "Game of Life test_plan.py was never executed"), extract the UNIVERSAL lesson and implement it in the system prompts. Do NOT fix the project yourself.
 
-### Deployment Pipeline & Redundancy
+### Deployment & Import
 
-**Canonical Source:** `G:\My Drive\prompts\` is the SINGLE source of truth. There is no `optimized-settings/` staging area — all files live at their canonical paths:
+**Canonical Source:** `G:\My Drive\prompts\` is the SINGLE source of truth.
 
+**What `tools/deploy.py` syncs (separate files DeepChat reads at runtime):**
 | Asset | Canonical Path | Deploys To |
 |:------|:---------------|:-----------|
-| System prompts | `DEFAULT.md`, `META-PROMPT-DEEPSEEK.md`, `QWAV-DEFAULT.md` | `agent.db` SQLite |
-| Default system prompt | Managed directly in `app-settings.json` | `%APPDATA%\DeepChat\app-settings.json` |
 | Skills | `skills/<name>/SKILL.md` | `%APPDATA%\DeepChat\skills\<name>\SKILL.md` |
-| Templates | `templates/*.md` | Available via `fill_prompt_template` (no deployment needed) |
-| Agent configs | `agents/*.md` | Documentation only (manual deployment) |
-| DeepChat config | `config/mcp-settings.json`, `config/acp_agents.json` | `%APPDATA%\DeepChat\` |
+| DeepChat config | `config/mcp-settings.json`, `config/acp_agents.json`, `config/model-config.json` | `%APPDATA%\DeepChat\` |
 
-**Automated Deployment:** `tools/deploy.py` syncs canonical files to the DeepChat runtime. Run it after ANY change to system prompts, skills, or configs:
+**What must be imported via DeepChat UI (DeepChat manages these as internal state):**
+| Asset | Import File | How |
+|:------|:-----------|:----|
+| System prompts | `prompts.json` (system prompt entries) | DeepChat agent settings > paste or import |
+| Templates | `prompts.json` (template entries) | DeepChat prompt templates > import |
+| Templates (runtime) | `templates/*.md` | Available via `fill_prompt_template` (reads canonical files) |
+
 ```bash
-python tools/deploy.py              # Deploy everything
+python tools/deploy.py              # Deploy skills + configs
 python tools/deploy.py --dry-run    # Preview changes
-python tools/deploy.py --skills-only  # Skills only
 ```
-Always run `--dry-run` first to audit what will change, then run live. DeepChat restart required for system prompt and skill changes to take effect.
+Always run `--dry-run` first. DeepChat restart required for skill changes.
 
 **Three-Way Redundancy** (mitigates platform failure risk):
 1. **Cloudflare R2** — All project state, audit trails, and the Discovery Index live on R2. Automatic redundancy through Cloudflare's infrastructure.
@@ -794,7 +796,7 @@ Before committing ANY change that modifies the Discovery Index, HANDOFF template
 
 3. **CONCURRENT MODIFICATION CHECK:** If you're editing a file that another agent session may also be editing (QWAV-DEFAULT.md, Discovery Index), check `git log -1 -- <file>` to confirm the last commit was yours, not another agent's. If another agent modified the file since your last pull, re-integrate their changes before committing.
 
-4. **DEPLOY DRY-RUN:** `python tools/deploy.py --dry-run`. Verify only the files you intended to change are listed as WOULD_UPDATE. Unexpected changes indicate drift.
+4. **DEPLOY DRY-RUN:** `python tools/deploy.py --dry-run`. Verify only the skills/config files you intended to change are listed as WOULD_UPDATE. Unexpected changes indicate drift. System prompts and templates are NOT synced — they must be imported via DeepChat UI.
 
 **VIOLATION INDICATORS:** If `git log --oneline -3` shows two consecutive commits modifying the same files with the second described as "fix path," "fix reference," or "fix wrong," you shipped broken state and had to undo/redo. The gate was skipped.
 
@@ -831,9 +833,9 @@ python tools/kaizen_engine.py --audit --apply
 ### 8.5.3 Auto-Deployment Pipeline
 
 When prompts are updated by the Kaizen Engine:
-1. `tools/deploy.py` automatically syncs canonical files to the DeepChat runtime
-2. DeepChat process is auto-restarted (taskkill + startup trigger)
-3. No manual user intervention required EXCEPT: confirming structural prompt changes
+1. `tools/deploy.py` syncs skills and configs to the DeepChat runtime
+2. System prompts and templates must be imported via DeepChat UI (deploy.py cannot write to DeepChat's internal state files)
+3. No manual user intervention required for skills/configs; manual import required for prompts/templates
 
 ### 8.5.4 What You (Prompt Generator) Must Do
 
