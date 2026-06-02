@@ -1,13 +1,22 @@
-"""fix_prompts_json.py — Convert the bare-array prompts.json to DeepChat-importable format.
+"""fix_prompts_json.py — Convert prompts.json between wrapped and bare-array formats.
 
-DeepChat import expects: {"prompts": [{"id":..., "name":..., "content":..., "enabled":..., ...}]}
-rebuild_prompts_json.py produces a bare array: [{"id":..., "name":..., "content":..., ...}]
+TWO FORMATS — used for different purposes:
+  WRAPPED: {"prompts": [{"id":..., "name":..., "content":..., ...}]}
+    → CANONICAL source of truth. Matches DeepChat internal custom_prompts.json.
+  BARE ARRAY: [{"id":..., "name":..., "content":..., ...}]
+    → DEEPCHAT IMPORT FORMAT. The Prompt Templates import dialog expects a
+      bare array at the top level and rejects wrapped with "not an array".
 
 This script:
-1. Reads the bare-array prompts.json from rebuild_prompts_json.py
-2. Wraps it in {"prompts": [...]} for DeepChat import compatibility
-3. Adds required fields: enabled, createdAt, updatedAt, description (if missing)
-4. Writes back to prompts.json
+1. Detects format (wrapped dict vs bare list)
+2. Converts to wrapped if bare (for canonical storage)
+3. Converts to bare if wrapped (for import)
+4. Adds required fields: enabled, createdAt, updatedAt, description (if missing)
+5. Deduplicates by name
+6. Writes back to prompts.json AND prompts_bare.json
+
+Canonical source: G:\My Drive\prompts\tools\fix_prompts_json.py
+v1.2 — 2026-06-02: Dual output, import-path documentation
 """
 import json, time, sys
 

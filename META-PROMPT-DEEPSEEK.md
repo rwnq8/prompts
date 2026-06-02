@@ -80,8 +80,10 @@ Before taking any action, ask:
 | Asset | Import File | How |
 |:------|:-----------|:----|
 | System prompts | `prompts.json` (system prompt entries) | DeepChat agent settings > paste or import |
-| Templates | `prompts.json` (template entries) | DeepChat prompt templates > import |
+| Templates | `prompts_bare.json` (bare array `[...]`) | DeepChat prompt templates > import |
 | Templates (runtime) | `templates/*.md` | Available via `fill_prompt_template` (reads canonical files) |
+
+**Format Note:** DeepChat's Prompt Templates import expects a **bare array** `[{...}, {...}]` at the top level — NOT the wrapped `{"prompts": [...]}` format used for internal `custom_prompts.json` storage. Use `prompts_bare.json` for import. The canonical source `prompts.json` remains in wrapped format as the single source of truth that `rebuild_prompts_json.py` produces alongside the bare import file.
 
 ```bash
 python tools/deploy.py              # Deploy skills + configs

@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 r"""rebuild_prompts_json.py -- Scan template source directories and rebuild prompts.json.
 
-Produces DeepChat-importable format: {"prompts": [{...}, ...]}
+Produces TWO files:
+  1. prompts.json — Wrapped format ({"prompts": [...]}) — CANONICAL, matches
+     DeepChat's internal custom_prompts.json storage.
+  2. prompts_bare.json — Bare array ([...]) — IMPORT FORMAT. DeepChat's
+     Prompt Templates import dialog rejects {"prompts": [...]} with
+     "Invalid format: not an array" and expects a bare array at top level.
+
 Source directories: templates/, projects/research-pipeline/, agents/
-Output: prompts.json (wrapped format, deduplicated by name)
+Deduplicated by name with required DeepChat fields.
 
 Canonical source: G:\My Drive\prompts\tools\rebuild_prompts_json.py
-v1.1 — 2026-06-02: Wrapped format + deduplication + required DeepChat fields
+v1.2 — 2026-06-02: Dual output (wrapped canonical + bare import). DeepChat
+  import requires bare array format; wrapped is internal storage only.
 """
 import os
 import json
@@ -72,7 +79,7 @@ def rebuild():
             })
             print(f"  [{len(entries)}] {name} <- {os.path.relpath(md_file, PROMPTS_DIR)}")
 
-    # Write as DeepChat-importable wrapped format
+    # Write as wrapped format (canonical, matches DeepChat internal storage)
     output_data = {"prompts": entries}
     with open(OUTPUT, 'w', encoding='utf-8') as fh:
         json.dump(output_data, fh, indent=2, ensure_ascii=False)
@@ -84,7 +91,19 @@ def rebuild():
         print("ERROR: Output validation failed - not wrapped format!")
         return 0
 
-    print(f"\nRebuilt {OUTPUT} with {len(entries)} unique entries from {len(scan_dirs)} directories.")
+    # Also write bare array format for DeepChat import dialog
+    BARE_OUTPUT = os.path.join(PROMPTS_DIR, 'prompts_bare.json')
+    with open(BARE_OUTPUT, 'w', encoding='utf-8') as fh:
+        json.dump(entries, fh, indent=2, ensure_ascii=False)
+
+    # Verify bare file
+    with open(BARE_OUTPUT, 'r', encoding='utf-8') as fh:
+        verify_bare = json.load(fh)
+    if not isinstance(verify_bare, list):
+        print("ERROR: Bare output validation failed - not a list!")
+        return 0
+
+    print(f"\nRebuilt {OUTPUT} (wrapped) and {BARE_OUTPUT} (bare import) with {len(entries)} unique entries from {len(scan_dirs)} directories.")
     return len(entries)
 
 
