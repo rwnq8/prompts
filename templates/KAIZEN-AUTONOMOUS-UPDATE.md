@@ -1,3 +1,8 @@
+---
+template: KAIZEN-AUTONOMOUS-UPDATE
+version: 1.1
+---
+
 # KAIZEN-AUTONOMOUS-UPDATE TEMPLATE v1.1
 
 > **Purpose:** Autonomous system-wide Kaizen update protocol — triggers Kaizen engine, applies improvements across ALL components, deploys, and commits.

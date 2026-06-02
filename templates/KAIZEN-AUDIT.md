@@ -1,3 +1,8 @@
+---
+template: KAIZEN-AUDIT
+version: 1.0
+---
+
 # KAIZEN-AUDIT TEMPLATE v1.0
 
 > **Purpose:** Structured improvement audit report for continuous self-enhancement

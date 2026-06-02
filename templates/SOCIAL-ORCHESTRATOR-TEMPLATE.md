@@ -1,3 +1,8 @@
+---
+template: SOCIAL-ORCHESTRATOR-TEMPLATE
+version: 1.1
+---
+
 # SOCIAL-ORCHESTRATOR TEMPLATE v1.1
 # Template for generating social media content from publications
 # Fill with: publicationTitle, publicationAuthors, publicationAbstract, publicationDOI, publicationFindings, publicationPath

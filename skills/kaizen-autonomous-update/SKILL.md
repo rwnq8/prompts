@@ -96,3 +96,18 @@ read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md')
 ---
 
 *kaizen-autonomous-update v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md'). Not accessible via skill_view().*
+
+## 2.5.1 Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below. If any script is missing from disk, flag as `[SKILL-GAP]` and do not proceed.
+
+| Script | Canonical Path | Purpose |
+|:-------|:---------------|:--------|
+| `kaizen_engine.py` | `G:\My Drive\prompts\tools\kaizen_engine.py` | Kaizen engine — audit, apply, deploy |
+| `deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys changes to DeepChat runtime |
+| `system_audit.py` | `G:\My Drive\prompts\tools\system_audit.py` | Cross-file consistency audit |
+
+### Script Creation Protocol
+1. Verify script exists: `Test-Path <canonical_path>`
+2. If missing: flag `[SKILL-GAP: script <name>.py missing, cannot bootstrap]`
+3. Do NOT attempt to use this skill if its scripts cannot be verified.

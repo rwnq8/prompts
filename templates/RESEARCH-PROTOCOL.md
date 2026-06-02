@@ -1,3 +1,8 @@
+---
+template: RESEARCH-PROTOCOL
+version: 1.0
+---
+
 # RESEARCH-PROTOCOL: Deep-Dive Paper Research Methodology (v1.0)
 
 > **Purpose:** Shared research protocol template applicable to any research domain/subject. Defines the standard six-phase deep-dive methodology for retrieving, reading, verifying, and synthesizing published papers (arXiv, journals, conference proceedings). All STAGE prompts (1-4) reference this protocol.

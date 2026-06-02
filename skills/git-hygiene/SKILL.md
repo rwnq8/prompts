@@ -37,6 +37,19 @@ read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')
 
 
 
+## 2.5.1 Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below. If any script is missing from disk, flag as `[SKILL-GAP]` and do not proceed.
+
+| Script | Canonical Path | Purpose |
+|:-------|:---------------|:--------|
+| `deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys skill files to DeepChat runtime |
+
+### Script Creation Protocol
+1. Verify script exists: `Test-Path <canonical_path>`
+2. If missing: flag `[SKILL-GAP: script <name>.py missing, cannot bootstrap]`
+3. Do NOT attempt to use this skill if its scripts cannot be verified.
+
 ## Common Recovery Scenarios
 
 ### Detached HEAD

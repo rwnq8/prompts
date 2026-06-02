@@ -1,3 +1,8 @@
+---
+template: EMAIL-AGENT
+version: 1.4
+---
+
 # EMAIL-AGENT TEMPLATE v1.4
 # Template for drafting emails from project outputs and inline context
 # Pre-send gate: parent agent must verify content against Pre-Send Validation Checklist (§E.5.1)

@@ -1,3 +1,8 @@
+---
+template: DISCOVERY-PROTOCOL
+version: 1.0
+---
+
 # DISCOVERY-PROTOCOL TEMPLATE — v1.0
 
 > **Purpose:** Unified information discovery for LLM due diligence during project execution.
