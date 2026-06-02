@@ -114,6 +114,13 @@ python "G:\My Drive\prompts\tools\zenodo_publish.py"
 
 ## Step 4: Cloudflare Deploy
 
+> **HARD RULE:** NEVER create a new Cloudflare Pages project for an existing publication resource. All QNFO publications deploy under the single `qwav` umbrella project via subdirectory routing (e.g., `/papers/<slug>/`). Creating additional Pages projects for the same resource clutters the dashboard, wastes quota, and creates maintenance burden.
+
+### Pre-Deploy Checklist
+- [ ] Verify the target deployment uses `--project-name qwav` (NEVER a new project)
+- [ ] Verify the publication deploys to a subdirectory path: `/papers/<kebab-case-title>/`
+- [ ] Verify no duplicate R2 artifact already exists at `qnfo/releases/<file>.pdf`
+
 ```bash
 # Deploy to Cloudflare Pages
 npx wrangler pages deploy <dir> --project-name qwav --branch main

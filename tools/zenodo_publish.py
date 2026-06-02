@@ -73,6 +73,48 @@ def main():
     base_url = "https://sandbox.zenodo.org/api" if args.sandbox else "https://zenodo.org/api"
     env_label = "SANDBOX" if args.sandbox else "PRODUCTION"
 
+    # --- DOI DUPLICATE CHECK (QC gate) ---
+    # Prevent agents from creating duplicate records when --doi is not specified.
+    # If a record with the same title already exists, BLOCK and require --doi.
+    if not args.doi and not args.sandbox:
+        print("[QC] Checking for existing records with same title...")
+        query = f'title:"{args.title}"'
+        from urllib.parse import quote
+        search_url = f"{base_url}/records?q={quote(query)}&size=5&sort=mostrecent"
+        try:
+            search_result = api_request(search_url, token)
+            hits = search_result.get("hits", {}).get("hits", [])
+            existing_dois = []
+            for hit in hits:
+                doi = hit.get("doi", "")
+                hit_title = hit.get("metadata", {}).get("title", "") if "metadata" in hit else hit.get("title", "")
+                if doi and hit_title:
+                    existing_dois.append((doi, hit_title))
+            if existing_dois:
+                print(f"[BLOCKED] Found {len(existing_dois)} existing record(s) with similar title:")
+                for doi, t in existing_dois:
+                    print(f'  {doi} — "{t}"')
+                print()
+                print("[ACTION REQUIRED] To create a new version of an existing record, use:")
+                print(f"  --doi {existing_dois[0][0]}")
+                print()
+                print("Zenodo does not allow replacing files on published records.")
+                print("New versions create a linked DOI — this is Zenodo's intended versioning workflow.")
+                print("If you want to REPLACE the file (not version): edit metadata on the existing")
+                print("record via Zenodo web interface. File replacement is not supported via API.")
+                if args.yes:
+                    print()
+                    print("[FATAL] Non-interactive mode (--yes) — cannot proceed without --doi.")
+                    sys.exit(1)
+                else:
+                    response = input("Proceed anyway with new standalone record? [y/N]: ")
+                    if response.lower() != 'y':
+                        print("Aborted.")
+                        sys.exit(0)
+        except Exception as e:
+            print(f"[WARNING] Could not check for existing records: {e}")
+            print("[WARNING] Proceeding — manual verification recommended.")
+
     print(f"\n{'='*60}")
     print(f"  ZENODO DOI REGISTRATION — {env_label}")
     print(f"{'='*60}")
