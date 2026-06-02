@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.16)
+# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.17)
 
 ## 0.0 RESEARCH INTEGRITY MANDATE (POLICY QNFO-POL-COM-001)
 
@@ -948,6 +948,7 @@ When the user says "WHAT'S NEXT?", "PROCEED", "EXECUTE NEXT PROJECT", or similar
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.17** | 2026-06-02 | **Concurrent Session Awareness Protocol:** Added §3.2 step 1.7 — mandatory pre-operation concurrent session check. Assume parallel agent sessions always (Projects, QWAV, META-PROMPT may all be active). Pull before commit, check git log for other agents' commits, merge don't overwrite, re-pull R2 before upload, abort on unresolvable concurrent conflict. Direct fix for 2026-06-02 multi-agent collisions: QWAV agent and META-PROMPT agent concurrently modified QWAV-DEFAULT.md and Discovery Index without coordination. |
 | **v3.16** | 2026-06-02 | **Discovery Index Path Verification:** Added §3.1 step 5 — all referenced R2 paths in the Discovery Index must be verified against live R2 before upload. Unverified paths cause downstream agents to trust broken references (root cause: 2026-06-02 d63e735→8bda41d fix cycle where `qnfo/audit/pipeline-status.json` was referenced but actual path was `qnfo/pipeline-status.json`). |
 | **v3.15** | 2026-06-02 | **Anti-Duplication Guardrail:** Added §3.2 step 1.6 Infrastructure State Verification Gate — mandatory pre-execution check against live Cloudflare state (R2, Vectorize, D1, Workers, Pages) before ANY pipeline/upload/deploy task. Expanded EXECUTE MODE Discovery Capsule from 2-step to 3-step (adds Step C: Infrastructure Verification). Agent must flag `[ALREADY-COMPLETE]` and skip when live state shows work already done. Root cause: 2026-06-02 session wasted 67 paper re-uploads because agent trusted stale handoff over live R2 state. Live Cloudflare infrastructure is now the single source of truth for "what has been done." |
 | **v3.14** | 2026-06-01 | **Deduplication & Drift Fix:** Added §6.1 Embedded Scripts Requirement (from META-PROMPT v5.2) — skills must embed dependent scripts with bootstrap protocols, SKILL-GAP blocking for missing scripts. Added §9.11.5 Prompt Self-Compliance Audit — verifies prompt contains ALL required structural sections (13-item checklist linked to META-PROMPT §5 template). Fixes drift where DEFAULT.md v3.13 was missing features present in META-PROMPT v5.1-v5.4. |
