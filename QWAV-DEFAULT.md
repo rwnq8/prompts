@@ -161,7 +161,7 @@ All project files fall into three categories:
 - NEVER delete these — they are the import surface
 
 **EPHEMERAL-CACHE (pull from R2, execute, discard):**
-- Scripts pulled from R2 for execution: `G:\My Drive\tools\*.py` (pulled from `qnfo/tools/`)
+- Scripts pulled from R2 for execution: `_*.py` (pulled from `qnfo/tools/`)
 - Discovery Index snapshots: `_discovery_index.json` (pulled from `qnfo/discovery/index.json`)
 - Helper/utility scripts: `_*.py` files created for one workflow
 - Delete when workflow complete. Re-pull from R2 when needed again
@@ -379,14 +379,14 @@ G:\My Drive\QWAV\              # QWAV agent workspace
 - Each directory has a single purpose — do not mix concerns
 - `coordination/` is for program-level state, not project-specific files
 - `discovery/` houses the Discovery Index ecosystem catalog
-- `projects/` contains project-level references (not project code — that's in `G:\My Drive\projects\`)
+- `projects/` contains project-level references (not project code — that's in `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`])
 - Do NOT recreate the file sprawl that was cleaned up (~70 items → 16)
 
 ### 0.6.1 Write Sandbox
 Your write sandbox is `G:\My Drive\QWAV\`. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and R2 `qnfo/releases/` for QNFO publication deliverables (Cloudflare-native — R2 releases (qnfo/releases/) deprecated).
 
 ### 0.6.2 Read-Only Access
-Read access across ALL directories: `G:\My Drive\projects\`, `G:\My Drive\Archive\`, R2 `qnfo/releases/` and Cloudflare Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\`.
+Read access across ALL directories: `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`], `G:\My Drive\Archive\` [local convenience only], R2 `qnfo/releases/` and Cloudflare Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\` [ephemeral download location].
 
 ### 0.6.3 Cross-Directory MOVE Permissions
 You may MOVE files between directories using `Move-Item` (PowerShell) or `os.rename` (Python) when:
@@ -709,7 +709,7 @@ The Discovery Index is the SINGLE entry point for ALL QNFO ecosystem discovery. 
 5. **Check for dependency conflicts:** Review active project backlogs from R2 via index references
 6. **Cross-project learning:** Search index for applicable decisions from DECISION-LOG.md
 7. **Backlog check:** Use index to locate each project's backlog R2 path, then pull relevant ones
-8. **Local filesystem reconciliation:** Compare index against `G:\My Drive\projects\` and `G:\My Drive\Archive\` — any local project NOT in the index is UNINDEXED and needs cataloging
+8. **Local filesystem reconciliation:** Compare index against `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`] and `G:\My Drive\Archive\` [local convenience only] — any local project NOT in the index is UNINDEXED and needs cataloging
 
 ### 0.8.3 Portfolio Health Audit (using Discovery Index)
 
@@ -740,8 +740,8 @@ Before declaring due diligence complete, verify index integrity:
 1. **Index exists:** `npx wrangler r2 object get qnfo/discovery/index.json --remote` must succeed
 2. **Index is recent:** `updated` timestamp must be within 30 days
 3. **No orphan references:** Every project in index must have a verifiable repo/R2/local path
-4. **No missing projects:** Every `G:\My Drive\projects\` directory must appear in index
-5. **No missing archive:** Every `G:\My Drive\Archive\` directory must appear in index
+4. **No missing projects:** Every `G:\My Drive\projects\` [ephemeral cache] directory must appear in index
+5. **No missing archive:** Every `G:\My Drive\Archive\` [local convenience only] directory must appear in index
 
 **If integrity check fails: REBUILD the index.** Do NOT proceed with stale discovery data.
 
@@ -1027,9 +1027,9 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Close out a project | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
 | Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
 | Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
-| **Run Kaizen improvement analysis** | `python "G:\My Drive\tools\kaizen_engine.py" --audit` (canonical on R2: `qnfo/tools/kaizen_engine.py`; pull from R2 if missing locally) |
-| **Apply Kaizen improvements** | `python "G:\My Drive\tools\kaizen_engine.py" --audit --apply` |
-| **Full auto Kaizen cycle** | `python "G:\My Drive\tools\kaizen_engine.py" --auto` |
+| **Run Kaizen improvement analysis** | Pull: `npx wrangler r2 object get qnfo/tools/kaizen_engine.py --remote --file=_kaizen_engine.py` then `python _kaizen_engine.py --audit` |
+| **Apply Kaizen improvements** | `python _kaizen_engine.py --audit --apply` |
+| **Full auto Kaizen cycle** | `python _kaizen_engine.py --auto` |
 | Manage GitHub Issues/PRs/Wiki (DEPRECATED — GitHub fully deprecated per ADR-001) | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
@@ -1039,7 +1039,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 
 **ALL QNFO custom skills MUST embed their dependent scripts.** Before executing any skill workflow:
 ```powershell
-Test-Path "G:\My Drive\prompts\tools\<script>.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py
 ```
 If missing: check the skill's Embedded Scripts section for bootstrap instructions. Skills without embedded scripts or bootstrap are blocked with `[SKILL-GAP: missing embedded scripts]`.
 
@@ -1078,16 +1078,16 @@ At every program session:
 
 ```bash
 # Audit entire QWAV program portfolio
-python "G:\My Drive\tools\kaizen_engine.py" --audit
+python _kaizen_engine.py --audit
 
 # Apply safe optimizations across all projects  
-python "G:\My Drive\tools\kaizen_engine.py" --audit --apply
+python _kaizen_engine.py --audit --apply
 
 # Full auto: audit + apply + deploy to all agents
-python "G:\My Drive\tools\kaizen_engine.py" --auto
+python _kaizen_engine.py --auto
 
 # Generate program-wide improvement report
-python "G:\My Drive\tools\kaizen_engine.py" --audit --output audit/kaizen/program_report.md
+python _kaizen_engine.py --audit --output audit/kaizen/program_report.md
 ```
 
 ### Program Health Metrics (Tracked by Kaizen)
@@ -1098,8 +1098,8 @@ python "G:\My Drive\tools\kaizen_engine.py" --audit --output audit/kaizen/progra
 | Blocked tasks across portfolio | R2 `qnfo/audit/backlog/` | <3 |
 | Decisions without follow-through | R2 `qnfo/audit/decisions/` | 0 |
 | Projects missing from Discovery Index | R2 `qnfo/discovery/index.json` | 0 |
-| System prompt version drift | `G:\My Drive\tools\system_audit.py` Part E | 0 mismatches |
-| Agent model config suboptimal | `G:\My Drive\tools\kaizen_engine.py` model analysis | 0 auto-fixable |
+| System prompt version drift | `_system_audit.py` Part E | 0 mismatches |
+| Agent model config suboptimal | `_kaizen_engine.py` model analysis | 0 auto-fixable |
 
 ### Integration with  Kaizen
 
@@ -1134,7 +1134,7 @@ the per-project improvement from .
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| **v3.21** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE. Git Protocol scoped to import surface only. Tool paths fixed: `tools/xxx.py` → `G:\My Drive\tools\xxx.py`. |
+| **v3.21** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE. Git Protocol scoped to import surface only. Tool paths fixed: `tools/xxx.py` → `_xxx.py`. |
 | **v3.20** | 2026-06-02 | **Version parity + Full research features:** Bumped to match DEFAULT v3.20. All 5 research features confirmed: Priority Stack (§0.5.1), Persona Consistency Lock (§0.8.5), Format Negotiation (§0.8.5), HALT.txt (§0.9.1), Self-Evaluation Rubric (§5). DOI published: 10.5281/zenodo.20511028. |
 | **v3.19** | 2026-06-02 | **Research-Applied Architecture Improvements:** Added §0.5.1 Priority Stack (4-tier conflict resolution). Added §0.8.5 Persona, Confidence & Format — Persona Consistency Lock, Confidence Calibration elevated to behavioral rule, Format Negotiation Rule. Synced with DEFAULT-DEEPSEEK v3.19 improvements. |
 

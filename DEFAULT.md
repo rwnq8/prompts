@@ -109,7 +109,7 @@ Any of these signals mean RESEARCH INTAKE:
 When triggered:
 1. **Ask ONE clarifying question** (if needed): scope, output type, priority. Do NOT ask about pipelines, templates, git, or file structure.
 2. **Launch the research pipeline automatically:**
-   - Create project at `G:\My Drive\projects\<kebab-case-topic>\`
+   - Create project at `G:\My Drive\projects\<kebab-case-topic>\` [ephemeral cache; R2 canonical: `qnfo/projects/<topic>/`]
    - Initialize git (feature branch — git is source control ONLY; all PM is Cloudflare-native)
    - Execute STAGE-1: Paper discovery via `brave_web_search` + YoBrowser
    - Execute STAGE-2: Deep reading, cross-referencing, quantitative verification
@@ -550,7 +550,7 @@ except Exception as e:
 ### 3.3 Discovery Index Fallback
 
 If `qnfo/discovery/index.json` does not exist or is corrupt:
-1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/`, `qnfo/archive/`), local projects (`G:\My Drive\projects\`), Archive (`G:\My Drive\Archive\`)
+1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/`, `qnfo/archive/`), local projects (`G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`]), Archive (`G:\My Drive\Archive\` [local convenience only])
 2. Build fresh index and upload to `qnfo/discovery/index.json`
 3. Flag session as `[DISCOVERY-REBUILT]` — this is a system recovery action
 
@@ -618,7 +618,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 
 ## 6. SKILL INVOCATION PROTOCOL (v3.0 — Read-Based Loading)
 
-**IMPORTANT:** QNFO custom skills are deployed to `G:\My Drive\prompts\skills\<name>\SKILL.md` via `G:\My Drive\tools\deploy.py`. They are NOT accessible via `skill_view()` — which only indexes DeepChat's built-in skill registry. Use `read()` with the full filesystem path to load custom skills.
+**IMPORTANT:** QNFO custom skills are deployed to `G:\My Drive\prompts\skills\<name>\SKILL.md` via `_deploy.py`. They are NOT accessible via `skill_view()` — which only indexes DeepChat's built-in skill registry. Use `read()` with the full filesystem path to load custom skills.
 
 | When You Need To... | Load This Skill |
 |:--------------------|:----------------|
@@ -649,17 +649,19 @@ EXPECTED OUTPUT: [format, structure, scope]
 3. **Cross-reference** when scripts are shared across skills
 
 **Before executing any skill workflow:**
-```powershell
-# Verify ALL scripts referenced by the skill exist
-Test-Path "G:\My Drive\prompts\tools\<script>.py"
-# If MISSING: check the skill's Embedded Scripts section for bootstrap instructions
-# Flag as [SKILL-GAP: script <name>.py missing, cannot bootstrap]
+```bash
+# Pull ALL scripts referenced by the skill from R2
+npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py
+# Verify pull succeeded
+Test-Path _<script>.py
+# If pull FAILED: check the skill's Embedded Scripts section for bootstrap instructions
+# Flag as [SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]
 ```
 
 **Pattern:**
-| Script | Canonical Path | Purpose |
-|:-------|:---------------|:--------|
-| `script.py` | `G:\My Drive\prompts\tools\script.py` | Description |
+| Script | Canonical (R2) | Execution Cache | Purpose |
+|:-------|:---------------|:----------------|:--------|
+| `script.py` | `qnfo/tools/script.py` | `_script.py` (ephemeral) | Description |
 
 Skills that reference external scripts without embedded bootstrap instructions are blocked with `[SKILL-GAP: missing embedded scripts]`. Do NOT attempt to use a skill whose scripts cannot be verified or recreated.
 
@@ -842,7 +844,7 @@ All project files fall into three categories:
 - NEVER delete these — they are the import surface
 
 **EPHEMERAL-CACHE (pull from R2, execute, discard):**
-- Scripts pulled from R2 for execution: `G:\My Drive\tools\*.py` (pulled from `qnfo/tools/`)
+- Scripts pulled from R2 for execution: `_*.py` (pulled from `qnfo/tools/`)
 - Discovery Index snapshots: `_discovery_index.json` (pulled from `qnfo/discovery/index.json`)
 - Helper/utility scripts: `_*.py` files created for one workflow
 - Delete when workflow complete. Re-pull from R2 when needed again
@@ -860,9 +862,9 @@ All project files fall into three categories:
 
 ### 9.5.1 Kaizen Engine
 
-**Thin-Client Execution:** Tools are canonical on Cloudflare R2 (`qnfo/tools/`). Local files at `G:\My Drive\tools\` are ephemeral caches. If a tool is missing, pull from R2: `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file="G:\My Drive\tools\<name>.py"`
+**Thin-Client Execution:** Tools are canonical on Cloudflare R2 (`qnfo/tools/`). Execute as ephemeral `_<name>.py` files in the working directory — never persist locally. Pull from R2 when needed: `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`. Discard after use: `Remove-Item _<name>.py`.
 
-The Kaizen Engine (`G:\My Drive\tools\kaizen_engine.py`) runs automatically at session startup and provides:
+The Kaizen Engine (`_kaizen_engine.py`) runs automatically at session startup and provides:
 - **Conversation Pattern Analysis** — learns from past sessions, detects recurring errors
 - **System Health Monitoring** — integrates with system_audit.py
 - **Model Configuration Optimization** — adjusts temperature, maxTokens, contextLength automatically
@@ -874,7 +876,7 @@ The Kaizen Engine (`G:\My Drive\tools\kaizen_engine.py`) runs automatically at s
 When improvements are identified:
 1. **Safe changes** (model configs, audit checks) are auto-applied
 2. **Structural changes** (prompt edits, skill updates) are flagged for review
-3. `G:\My Drive\tools\deploy.py` auto-runs to sync changes to the DeepChat runtime
+3. `_deploy.py` auto-runs to sync changes to the DeepChat runtime
 4. DeepChat process is restarted (taskkill + auto-restart)
 
 ### 9.5.3 What Gets Improved
@@ -890,9 +892,11 @@ When improvements are identified:
 ### 9.5.4 Kaizen Run Modes
 
 ```bash
-python "G:\My Drive\tools\kaizen_engine.py" --audit           # Analyze only, output report
-python "G:\My Drive\tools\kaizen_engine.py" --audit --apply   # Analyze and apply safe changes
-python "G:\My Drive\tools\kaizen_engine.py" --auto            # Full auto: audit + apply + deploy + restart
+# Pull from R2 first: npx wrangler r2 object get qnfo/tools/kaizen_engine.py --remote --file=_kaizen_engine.py
+python _kaizen_engine.py --audit           # Analyze only, output report
+python _kaizen_engine.py --audit --apply   # Analyze and apply safe changes
+python _kaizen_engine.py --auto            # Full auto: audit + apply + deploy + restart
+# Discard when done: Remove-Item _kaizen_engine.py
 ```
 
 ### 9.5.5 Learning Sources
@@ -904,12 +908,12 @@ python "G:\My Drive\tools\kaizen_engine.py" --auto            # Full auto: audit
 | Cloudflare R2 `qnfo/audit/` | Project states, backlogs, decision logs |
 | Cloudflare R2 `qnfo/discovery/index.json` | Ecosystem asset changes |
 | `conversation-search-server` MCP | Live conversation pattern search |
-| `G:\My Drive\tools\system_audit.py` | Cross-file consistency, version drift |
+| `_system_audit.py` | Cross-file consistency, version drift |
 
 ### 9.5.6 Kaizen Close-Out (MANDATORY)
 
 At every session close-out, AFTER standard close-out steps:
-1. Run `python "G:\My Drive\tools\kaizen_engine.py" --audit` to generate improvement report
+1. Run `python _kaizen_engine.py --audit` to generate improvement report
 2. Upload report to R2: `wrangler r2 object put qnfo/audit/kaizen/<timestamp>.md --file=<report> --remote`
 3. If auto-applicable improvements found: auto-apply and deploy
 4. Update Discovery Index with new Kaizen report entry
@@ -932,7 +936,7 @@ At every session close-out, AFTER standard close-out steps:
 
 ### Startup
 0. **Pull Discovery Index** (MANDATORY): `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json` — discover ALL ecosystem assets before beginning work
-0.5 **Run Kaizen Engine** (AUTOMATED — every session): `python "G:\My Drive\tools\kaizen_engine.py" --audit` — analyze conversation patterns, system health, and R2 audit trails for improvement opportunities. If `--apply` or `--auto` flag set: apply safe model config changes and deploy automatically. See G:\My Drive\tools\kaizen_engine.py and templates/KAIZEN-AUDIT.md for full protocol.
+0.5 **Run Kaizen Engine** (AUTOMATED — every session): Pull from R2 (`npx wrangler r2 object get qnfo/tools/kaizen_engine.py --remote --file=_kaizen_engine.py`) then `python _kaizen_engine.py --audit` — analyze conversation patterns, system health, and R2 audit trails for improvement opportunities. If `--apply` or `--auto` flag set: apply safe model config changes and deploy automatically. Discard `_kaizen_engine.py` when done. See `qnfo/tools/kaizen_engine.py` (R2) and templates/KAIZEN-AUDIT.md for full protocol.
 0.7 **Load Cloudflare API Token (MANDATORY — before ANY Cloudflare operations):** `$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()` — this token has FULL account access (zone:write, DNS:edit, redirect rules, Pages, Workers, R2). The `wrangler` CLI uses OAuth tokens with LIMITED scopes (zone:read only). NEVER attempt DNS writes, redirects, or zone management with the wrangler OAuth token. ALWAYS load the API token from this persistent file before any Cloudflare API calls. If the file is missing: `[BLOCKED: Cloudflare API token file not found at C:\Users\LENOVO\.cloudflare\api-token]`. Verify token works: `python -c "import urllib.request,json; r=urllib.request.Request('https://api.cloudflare.com/client/v4/user/tokens/verify',headers={'Authorization':'Bearer '+open(r'C:\Users\LENOVO\.cloudflare\api-token').read().strip()}); print(json.loads(urllib.request.urlopen(r).read())['success'])"`
 1. Verify sandbox: working directory within project directory
 2. Git check: verify local git repo exists (git is version control ONLY. Cloudflare R2 = canonical remote.)
@@ -964,7 +968,7 @@ At every session close-out, AFTER standard close-out steps:
 1. All commits verified: git log -1 --oneline
 2. Load closeout-manager skill: `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')`
 3. **Project Handoff Initialization** (MANDATORY — Projects Directory):
-   a. Scan ALL projects in `G:\My Drive\projects\` for HANDOFF.md
+   a. Scan ALL projects in `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`] for HANDOFF.md
    b. For current session's project: update HANDOFF.md with date, agent, work done, state, next steps, blockers
    c. For any project missing HANDOFF.md: create via `fill_prompt_template("HANDOFF", {...})`
    d. Verify all handoffs > 100 bytes: `(Get-Item <path>).Length -gt 100`
@@ -994,7 +998,7 @@ At every session close-out, AFTER standard close-out steps:
    j. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md
 
 5. Run `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<session>"})` — verify ALL phases A-I pass
-6. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\
+6. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\ [local convenience only]
 7. R2 `qnfo/releases/` artifact upload (Cloudflare-native)
 8. Present clean closeout summary — do NOT ask for confirmation, just deliver it
 
@@ -1097,7 +1101,7 @@ When the user says "WHAT'S NEXT?", "PROCEED", "EXECUTE NEXT PROJECT", or similar
 |:--------|:-----|:--------|
 | **v3.19** | 2026-06-02 | **Research-Applied Architecture Improvements:** Added §0.5 Priority Stack (explicit 4-tier priority resolution for rule conflicts). Added §0.8 Persona, Confidence & Format — Persona Consistency Lock (§0.8.1, Pattern 6), Confidence Calibration elevated to top-level behavioral rule (§0.8.2), Format Negotiation Rule for context-aware output (§0.8.3, Pattern 7). Added §9.11.2 Self-Evaluation Loop with numeric rubric (5-criterion, 4-tier decision rules) — prevents LLM positive-self-evaluation bias. Direct application of research findings from pecollective.com (9 Patterns, Feb 2026), paxrel.com (10 Agent Prompt Patterns, Mar 2026), and Anthropic prompting best practices (Claude Opus 4.8). |
 
-| **v3.21** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE. Cloudflare R2 is the computer — local disk is the terminal. Git Protocol scoped to import surface only. Discovery Index emphasized as ONLY discovery mechanism (no local filesystem browsing). Tool paths fixed: `tools/xxx.py` → `G:\My Drive\tools\xxx.py`. |
+| **v3.21** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE. Cloudflare R2 is the computer — local disk is the terminal. Git Protocol scoped to import surface only. Discovery Index emphasized as ONLY discovery mechanism (no local filesystem browsing). Tool paths fixed: `tools/xxx.py` → `_xxx.py`. |
 | **v3.18** || **v3.20** | 2026-06-02 | **Research-Driven Improvements:** Added Priority Stack (§0.5) for deterministic rule conflict resolution. Added Format Negotiation rule (Rule 7), Persona Consistency Lock (Rule 8), HALT.txt unrecoverable error pattern, and Self-Evaluation numeric rubric (§7.0). All based on industry best-practice research (9-pattern system prompt design guide, 2026). |
 | **v3.19** | 2026-06-02 | Version bump for prior changes |
 | **v3.18** | 2026-06-02 | **Portfolio Awareness Protocol:** Added §3.2 step 1.8 — mandatory pre-work portfolio audit. Before ANY work (even EXECUTE MODE): detect orphan git branches with unmerged work, check Cloudflare resources marked for recovery (qwav-scan, consistency-engine), verify pipeline completion against live portfolio state, query Knowledge Graph for dependency awareness, report portfolio gaps. Direct fix for ALL 2026-06-02 destructive/duplicative operations: 67 paper re-uploads (lacked awareness papers already in R2), qwav-scan near-destruction (no recovery warning check), self-undoing commits (no orphan branch detection). Expanded EXECUTE MODE Discovery Capsule to 4-step (adds Step D: Portfolio Awareness Check). |
