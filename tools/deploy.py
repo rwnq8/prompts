@@ -245,7 +245,12 @@ def deploy_configs(dry_run=False):
 # =====================================================================
 
 def deploy_default_system_prompt(dry_run=False):
-    """Verify app-settings.json default_system_prompt status."""
+    """Update app-settings.json with current DEFAULT.md AND template catalog.
+    
+    DeepChat reads TWO things from app-settings.json that the deploy pipeline
+    must keep current: defaultSystemPrompt (from DEFAULT.md) and promptTemplates
+    (synced from custom_prompts.json which deploy_templates() maintains).
+    """
     results = {}
 
     if not APP_SETTINGS.exists():
@@ -255,18 +260,69 @@ def deploy_default_system_prompt(dry_run=False):
     with open(APP_SETTINGS, "r", encoding="utf-8") as f:
         settings = json.load(f)
 
-    dsp = settings.get("default_system_prompt", "")
-    if not dsp:
-        results["default_system_prompt"] = "MISSING"
+    # 1. Update defaultSystemPrompt from DEFAULT.md
+    default_md = CANONICAL_ROOT / "DEFAULT.md"
+    if default_md.exists():
+        canonical = read_file(default_md)
+        if canonical:
+            current = settings.get("defaultSystemPrompt", "")
+            if hash_content(canonical) != hash_content(current):
+                if dry_run:
+                    results["default_system_prompt"] = "WOULD_UPDATE ({} -> {} chars)".format(
+                        len(current), len(canonical)
+                    )
+                else:
+                    settings["defaultSystemPrompt"] = canonical
+                    results["default_system_prompt"] = "UPDATED ({} -> {} chars)".format(
+                        len(current), len(canonical)
+                    )
+            else:
+                results["default_system_prompt"] = "PRESENT ({} chars)".format(len(current))
     else:
-        results["default_system_prompt"] = "PRESENT ({} chars)".format(len(dsp))
+        results["default_system_prompt"] = "ERROR: DEFAULT.md not found"
+
+    # 2. Sync promptTemplates from custom_prompts.json
+    if CUSTOM_PROMPTS.exists():
+        with open(CUSTOM_PROMPTS, "r", encoding="utf-8") as f:
+            cp = json.load(f)
+        cp_templates = cp.get("prompts", [])
+        current_templates = settings.get("promptTemplates", [])
+        current_by_name = {t["name"]: t for t in current_templates}
+        changed = 0
+        for tmpl in cp_templates:
+            name = tmpl.get("name", "")
+            content = tmpl.get("content", "")
+            if name in current_by_name:
+                if hash_content(content) != hash_content(current_by_name[name].get("content", "")):
+                    current_by_name[name]["content"] = content
+                    changed += 1
+            else:
+                new_id = str(int(time.time() * 1000))
+                current_templates.append({
+                    "id": new_id, "name": name,
+                    "description": tmpl.get("description", ""),
+                    "content": content,
+                    "parameters": tmpl.get("parameters", []),
+                    "files": tmpl.get("files", []),
+                    "enabled": True, "source": "local",
+                    "createdAt": new_id, "updatedAt": new_id,
+                })
+                changed += 1
+        settings["promptTemplates"] = current_templates
+        if changed > 0:
+            status = "WOULD_UPDATE" if dry_run else "UPDATED"
+            results["promptTemplates"] = "{} ({} templates, {} changed)".format(
+                status, len(current_templates), changed
+            )
+        else:
+            results["promptTemplates"] = "UNCHANGED ({} templates)".format(len(current_templates))
+
+    # 3. Write back if not dry run (preserves ALL other DeepChat settings)
+    if not dry_run:
+        with open(APP_SETTINGS, "w", encoding="utf-8") as f:
+            json.dump(settings, f, indent=2, ensure_ascii=False)
 
     return results
-
-
-# =====================================================================
-# MAIN
-# =====================================================================
 
 def deploy_templates(dry_run=False):
     """Sync canonical templates/ to custom_prompts.json.
