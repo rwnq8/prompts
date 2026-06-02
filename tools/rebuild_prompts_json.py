@@ -12,8 +12,8 @@ Source directories: templates/, projects/research-pipeline/, agents/
 Deduplicated by name with required DeepChat fields.
 
 Canonical source: G:\My Drive\prompts\tools\rebuild_prompts_json.py
-v1.2 — 2026-06-02: Dual output (wrapped canonical + bare import). DeepChat
-  import requires bare array format; wrapped is internal storage only.
+v1.3 — 2026-06-02: Fixed timestamp types — createdAt/updatedAt must be int,
+  not string. DeepChat import validates number type for these fields.
 """
 import os
 import json
@@ -41,7 +41,7 @@ def rebuild():
     if os.path.exists(RESEARCH_PIPELINE):
         scan_dirs.append(RESEARCH_PIPELINE)
 
-    now = str(int(time.time() * 1000))
+    now = int(time.time() * 1000)
 
     for scan_dir in scan_dirs:
         if not os.path.exists(scan_dir):

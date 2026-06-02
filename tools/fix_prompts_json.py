@@ -16,7 +16,7 @@ This script:
 6. Writes back to prompts.json AND prompts_bare.json
 
 Canonical source: G:\My Drive\prompts\tools\fix_prompts_json.py
-v1.2 — 2026-06-02: Dual output, import-path documentation
+v1.3 — 2026-06-02: Fixed timestamp type bug — now = int() not str()
 """
 import json, time, sys
 
@@ -40,7 +40,7 @@ else:
 # Ensure all required fields and deduplicate by name
 seen = {}
 unique_entries = []
-now = str(int(time.time() * 1000))
+now = int(time.time() * 1000)
 
 for entry in entries:
     name = entry.get('name', '')
