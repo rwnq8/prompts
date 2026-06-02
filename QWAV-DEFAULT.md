@@ -185,8 +185,11 @@ All publication documents use curly/smart quotes. Code blocks exempt.
 - [ ] All file references verified (Test-Path)
 - [ ] Git log confirms all changes committed
 
----
+### Self-Evaluation Rubric (Numeric Quality Gate)
 
+Before publishing, score output: Evidence Quality (1-5), Clarity (1-5), Fabrication Risk (1-5), Format Compliance (1-5). Publish only if ALL >= 3 AND average >= 4.0. Max 2 revision cycles.
+
+---
 
 ### 7.1 Publication Language Gate (MANDATORY before declaring "publication-ready")
 
@@ -853,6 +856,9 @@ Every Cloudflare operation in Phase A MUST follow this retry protocol:
 | **R2 download failure** | Exit code non-zero | Object may not exist yet. Retry creation. If persists: `[BLOCKED: R2 read failure]`. | 1 |
 | **Discovery Index conflict** | Index modified by another agent during edit | Pull fresh index, re-apply changes, upload. | 2 |
 | **Network timeout** | Command hangs > 60s | Kill, retry once. If persists: `[BLOCKED: Network unavailable]`. | 1 |
+
+
+**HALT — Unrecoverable Error (v1.0):** When encountering an error that cannot be resolved within the current session (corrupted state, exhausted retries, irreversible data loss): (1) Write HALT.txt with timestamp, exact error, last action attempted. (2) Stop all operations immediately. (3) Do NOT attempt workarounds. This prevents retry-spiral failure mode.
 
 ---
 
