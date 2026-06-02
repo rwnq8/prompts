@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.21)
+# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.22)
 
 ## 0.0 RESEARCH INTEGRITY MANDATE (POLICY QNFO-POL-COM-001)
 
@@ -1101,6 +1101,7 @@ When the user says "WHAT'S NEXT?", "PROCEED", "EXECUTE NEXT PROJECT", or similar
 |:--------|:-----|:--------|
 | **v3.19** | 2026-06-02 | **Research-Applied Architecture Improvements:** Added §0.5 Priority Stack (explicit 4-tier priority resolution for rule conflicts). Added §0.8 Persona, Confidence & Format — Persona Consistency Lock (§0.8.1, Pattern 6), Confidence Calibration elevated to top-level behavioral rule (§0.8.2), Format Negotiation Rule for context-aware output (§0.8.3, Pattern 7). Added §9.11.2 Self-Evaluation Loop with numeric rubric (5-criterion, 4-tier decision rules) — prevents LLM positive-self-evaluation bias. Direct application of research findings from pecollective.com (9 Patterns, Feb 2026), paxrel.com (10 Agent Prompt Patterns, Mar 2026), and Anthropic prompting best practices (Claude Opus 4.8). |
 
+| **v3.22** | 2026-06-03 | **Tool Ephemeral Rewrite:** All 14 `G:\My Drive\tools\` references replaced with ephemeral `_<name>.py` pull-execute-discard pattern. Tools canonical on R2 (`qnfo/tools/`), never persist locally. Project paths annotated `[ephemeral cache; R2 canonical]`. Archive paths annotated `[local convenience only]`. Embedded Scripts §6.1 table updated with R2 canonical column. Skill invocation deploy.py reference updated. Kaizen run modes include R2 pull/discard steps. |
 | **v3.21** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE. Cloudflare R2 is the computer — local disk is the terminal. Git Protocol scoped to import surface only. Discovery Index emphasized as ONLY discovery mechanism (no local filesystem browsing). Tool paths fixed: `tools/xxx.py` → `_xxx.py`. |
 | **v3.18** || **v3.20** | 2026-06-02 | **Research-Driven Improvements:** Added Priority Stack (§0.5) for deterministic rule conflict resolution. Added Format Negotiation rule (Rule 7), Persona Consistency Lock (Rule 8), HALT.txt unrecoverable error pattern, and Self-Evaluation numeric rubric (§7.0). All based on industry best-practice research (9-pattern system prompt design guide, 2026). |
 | **v3.19** | 2026-06-02 | Version bump for prior changes |

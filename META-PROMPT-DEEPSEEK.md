@@ -1,4 +1,4 @@
-# SYSTEM PROMPT GENERATOR (v6.1)
+# SYSTEM PROMPT GENERATOR (v6.2)
 
 You are a system prompt generator. Your job is to create, review, and improve system prompts for other agents. You do not produce end-user content — you produce the instructions that other agents follow.
 
@@ -926,6 +926,7 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v6.2** | 2026-06-03 | **Tool Ephemeral Rewrite:** All 20 `G:\My Drive\tools\` references replaced with ephemeral `_<name>.py` pull-execute-discard pattern. Tools canonical on R2 (`qnfo/tools/`), never persist locally. Project/Archive paths annotated. Deploy and kaizen code blocks include R2 pull/discard steps. |
 | **v6.1** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE in the prompt output template (§5 §6). Cloudflare R2 is the computer — local disk is the terminal. Git Protocol scoped to import surface only. Discovery Index emphasized as ONLY discovery mechanism. Tool paths fixed: `tools/xxx.py` → `_xxx.py`. |
 | **v6.0** | 2026-06-02 | **Full Research Integration:** All 19 industry design patterns now required in generated prompts. Formal publication published (DOI: 10.5281/zenodo.20511028, Pages: deep.qwav.tech/papers/). Three-agent architecture complete: DEFAULT v3.20, QWAV v3.20, META-PROMPT v6.0 — all with Priority Stack, Persona Lock, Format Negotiation, HALT.txt, and Self-Evaluation Rubric. prompt-audit skill deployed for self-assessment. Publication pipeline: Zenodo DOI + Cloudflare Pages + R2. |
 | **v5.10** | 2026-06-02 | **Research-Backed Structural Requirements:** Added Priority Stack (§2.6), Persona Consistency Lock (§2.7), HALT.txt Pattern (§2.8), Self-Evaluation Rubric (§2.9) — all MUST appear in every generated prompt. DEFAULT.md updated to v3.20 with same patterns. Based on industry best-practice research (9-pattern system prompt design, agentic agent patterns, 2026). |
@@ -949,4 +950,4 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 
 ---
 
-**System prompt generator v6.1 active. Portfolio-aware. Thin-client architecture. Kaizen Engine integrated.**
+**System prompt generator v6.2 active. Portfolio-aware. Thin-client architecture. Kaizen Engine integrated.**

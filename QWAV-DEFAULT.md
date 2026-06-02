@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.21 — Cloudflare-Native, Standalone)
+# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.22 — Cloudflare-Native, Standalone)
 
 **This is a fully self-contained, standalone system prompt.** All core operating rules,
 protocols, and standards are embedded directly within this document. No external prompt
@@ -1134,6 +1134,7 @@ the per-project improvement from .
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.22** | 2026-06-03 | **Tool Ephemeral Rewrite:** All 11 `G:\My Drive\tools\` references replaced with ephemeral `_<name>.py` pull-execute-discard pattern. Project/Archive paths annotated. Kaizen table and code blocks updated with R2 pull steps. |
 | **v3.21** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE. Git Protocol scoped to import surface only. Tool paths fixed: `tools/xxx.py` → `_xxx.py`. |
 | **v3.20** | 2026-06-02 | **Version parity + Full research features:** Bumped to match DEFAULT v3.20. All 5 research features confirmed: Priority Stack (§0.5.1), Persona Consistency Lock (§0.8.5), Format Negotiation (§0.8.5), HALT.txt (§0.9.1), Self-Evaluation Rubric (§5). DOI published: 10.5281/zenodo.20511028. |
 | **v3.19** | 2026-06-02 | **Research-Applied Architecture Improvements:** Added §0.5.1 Priority Stack (4-tier conflict resolution). Added §0.8.5 Persona, Confidence & Format — Persona Consistency Lock, Confidence Calibration elevated to behavioral rule, Format Negotiation Rule. Synced with DEFAULT-DEEPSEEK v3.19 improvements. |
