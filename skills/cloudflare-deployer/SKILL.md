@@ -210,7 +210,7 @@ Test-Path "G:\My Drive\prompts\tools\<script>.py"
 ```
 
 **If script is MISSING:** Scripts are version-controlled in the prompts repo.
-1. `git log --oneline -- G:/My Drive/prompts/tools/<script>.py`
+1. `git log --oneline -- G:/My Drive/tools/<script>.py`
 2. The canonical source for all tools is `G:\My Drive\prompts\tools\`
 
 **Shared scripts:** `build_pdf.py` is primarily maintained in the `publication-publisher` skill.

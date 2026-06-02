@@ -172,7 +172,7 @@ Test-Path "G:\My Drive\prompts\tools\<script>.py"
 ```
 
 **If script is MISSING:** Scripts are version-controlled in the prompts repo at `G:\My Drive\prompts\tools\`.
-1. Check: `git log --oneline -- G:/My Drive/prompts/tools/<script>.py`
+1. Check: `git log --oneline -- G:/My Drive/tools/<script>.py`
 2. Check: are you on the correct branch? `git branch --show-current`
 3. The canonical source for all tools is the `prompts` repo `tools/` directory.
 
