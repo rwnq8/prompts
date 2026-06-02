@@ -853,6 +853,8 @@ Every system prompt you generate MUST include a **Kaizen Self-Improvement** sect
 
 ### 8.5.2 Kaizen Engine Integration
 
+**Thin-Client Execution:** Tools are canonical on Cloudflare R2 (`qnfo/tools/`). Local files at `G:\My Drive\tools\` are ephemeral caches — pull from R2 on demand, execute, discard. If a tool is missing locally: `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file="G:\My Drive\tools\<name>.py"`
+
 The Kaizen Engine (`G:\My Drive\tools\kaizen_engine.py`) is the central improvement mechanism. Every generated prompt must reference it:
 
 ```bash

@@ -860,6 +860,8 @@ All project files fall into three categories:
 
 ### 9.5.1 Kaizen Engine
 
+**Thin-Client Execution:** Tools are canonical on Cloudflare R2 (`qnfo/tools/`). Local files at `G:\My Drive\tools\` are ephemeral caches. If a tool is missing, pull from R2: `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file="G:\My Drive\tools\<name>.py"`
+
 The Kaizen Engine (`G:\My Drive\tools\kaizen_engine.py`) runs automatically at session startup and provides:
 - **Conversation Pattern Analysis** — learns from past sessions, detects recurring errors
 - **System Health Monitoring** — integrates with system_audit.py

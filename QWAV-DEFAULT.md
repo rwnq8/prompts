@@ -1027,7 +1027,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Close out a project | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
 | Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
 | Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
-| **Run Kaizen improvement analysis** | `python "G:\My Drive\tools\kaizen_engine.py" --audit` |
+| **Run Kaizen improvement analysis** | `python "G:\My Drive\tools\kaizen_engine.py" --audit` (canonical on R2: `qnfo/tools/kaizen_engine.py`; pull from R2 if missing locally) |
 | **Apply Kaizen improvements** | `python "G:\My Drive\tools\kaizen_engine.py" --audit --apply` |
 | **Full auto Kaizen cycle** | `python "G:\My Drive\tools\kaizen_engine.py" --auto` |
 | Manage GitHub Issues/PRs/Wiki (DEPRECATED — GitHub fully deprecated per ADR-001) | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
