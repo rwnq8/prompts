@@ -77,7 +77,7 @@ Before this handoff is considered complete:
 - [ ] TASK: <description> `[STALE-SOURCE: needs verification — listed in CONSOLIDATION-MASTER.md from 2026-06-01]`
 ```
 
-**Tasks without a `verified_against` label are automatically `[STALE-SOURCE]` and MUST be verified against live infrastructure before execution. See DEFAULT.md §3.2 step 1.6 and `qnfo/audit/pipeline-status.json` for verification sources.**
+**Tasks without a `verified_against` label are automatically `[STALE-SOURCE]` and MUST be verified against live infrastructure before execution. See DEFAULT.md §3.2 step 1.6 and `qnfo/pipeline-status.json` for verification sources.**
 
 ## Escalation
 

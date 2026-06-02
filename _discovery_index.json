@@ -724,7 +724,7 @@
   ],
   "pipeline_status": {
     "description": "Pipeline completion records - canonical source for what work has been done",
-    "r2_path": "qnfo/audit/pipeline-status.json",
+    "r2_path": "qnfo/pipeline-status.json",
     "schema_version": "1.0",
     "updated": "2026-06-02T10:32:15Z",
     "entries": {
