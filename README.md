@@ -28,7 +28,7 @@
 | `agents/subagents/*.md` | Subagent descriptions (paste the short block) + execution specs (LLM reference) |
 
 ### Ongoing (occasional)
-- Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `tools/system_audit.py`
+- Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `G:\My Drive\tools\system_audit.py`
 - Check `ARCHITECTURE.md` for how the system is designed
 - Check GitHub Discussions (#32+) for Architecture Decision Records
 

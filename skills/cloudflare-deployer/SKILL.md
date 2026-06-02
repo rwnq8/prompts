@@ -26,7 +26,7 @@ This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.m
 
 ## QNFO Custom Skill Note
 
-This is a QNFO custom skill deployed via `tools/deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 ```
 read('G:\My Drive\prompts\skills\cloudflare-deployer\SKILL.md')
@@ -187,8 +187,8 @@ npx wrangler r2 object get qnfo/audit/state/qwav.json
 
 - Full deployment template: `templates/CLOUDFLARE-DEPLOYMENT.md`
 - Cloudflare audit: `G:\My Drive\QWAV\SESSION-HANDOFF-2026-05-28.md`
-- SEO generator: `tools/generate-seo.py`
-- Vectorize: `tools/vectorize-papers.py`
+- SEO generator: `G:\My Drive\tools\generate-seo.py`
+- Vectorize: `G:\My Drive\tools\vectorize-papers.py`
 
 ---
 

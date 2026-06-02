@@ -1017,9 +1017,9 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Close out a project | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
 | Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
 | Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
-| **Run Kaizen improvement analysis** | `python tools/kaizen_engine.py --audit` |
-| **Apply Kaizen improvements** | `python tools/kaizen_engine.py --audit --apply` |
-| **Full auto Kaizen cycle** | `python tools/kaizen_engine.py --auto` |
+| **Run Kaizen improvement analysis** | `python "G:\My Drive\tools\kaizen_engine.py" --audit` |
+| **Apply Kaizen improvements** | `python "G:\My Drive\tools\kaizen_engine.py" --audit --apply` |
+| **Full auto Kaizen cycle** | `python "G:\My Drive\tools\kaizen_engine.py" --auto` |
 | Manage GitHub Issues/PRs/Wiki (DEPRECATED — GitHub fully deprecated per ADR-001) | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
@@ -1068,16 +1068,16 @@ At every program session:
 
 ```bash
 # Audit entire QWAV program portfolio
-python tools/kaizen_engine.py --audit
+python "G:\My Drive\tools\kaizen_engine.py" --audit
 
 # Apply safe optimizations across all projects  
-python tools/kaizen_engine.py --audit --apply
+python "G:\My Drive\tools\kaizen_engine.py" --audit --apply
 
 # Full auto: audit + apply + deploy to all agents
-python tools/kaizen_engine.py --auto
+python "G:\My Drive\tools\kaizen_engine.py" --auto
 
 # Generate program-wide improvement report
-python tools/kaizen_engine.py --audit --output audit/kaizen/program_report.md
+python "G:\My Drive\tools\kaizen_engine.py" --audit --output audit/kaizen/program_report.md
 ```
 
 ### Program Health Metrics (Tracked by Kaizen)
@@ -1088,8 +1088,8 @@ python tools/kaizen_engine.py --audit --output audit/kaizen/program_report.md
 | Blocked tasks across portfolio | R2 `qnfo/audit/backlog/` | <3 |
 | Decisions without follow-through | R2 `qnfo/audit/decisions/` | 0 |
 | Projects missing from Discovery Index | R2 `qnfo/discovery/index.json` | 0 |
-| System prompt version drift | `tools/system_audit.py` Part E | 0 mismatches |
-| Agent model config suboptimal | `tools/kaizen_engine.py` model analysis | 0 auto-fixable |
+| System prompt version drift | `G:\My Drive\tools\system_audit.py` Part E | 0 mismatches |
+| Agent model config suboptimal | `G:\My Drive\tools\kaizen_engine.py` model analysis | 0 auto-fixable |
 
 ### Integration with  Kaizen
 

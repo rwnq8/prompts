@@ -612,7 +612,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 
 ## 6. SKILL INVOCATION PROTOCOL (v3.0 — Read-Based Loading)
 
-**IMPORTANT:** QNFO custom skills are deployed to `G:\My Drive\prompts\skills\<name>\SKILL.md` via `tools/deploy.py`. They are NOT accessible via `skill_view()` — which only indexes DeepChat's built-in skill registry. Use `read()` with the full filesystem path to load custom skills.
+**IMPORTANT:** QNFO custom skills are deployed to `G:\My Drive\prompts\skills\<name>\SKILL.md` via `G:\My Drive\tools\deploy.py`. They are NOT accessible via `skill_view()` — which only indexes DeepChat's built-in skill registry. Use `read()` with the full filesystem path to load custom skills.
 
 | When You Need To... | Load This Skill |
 |:--------------------|:----------------|
@@ -848,7 +848,7 @@ All project files fall into three categories with different lifecycle rules:
 
 ### 9.5.1 Kaizen Engine
 
-The Kaizen Engine (`tools/kaizen_engine.py`) runs automatically at session startup and provides:
+The Kaizen Engine (`G:\My Drive\tools\kaizen_engine.py`) runs automatically at session startup and provides:
 - **Conversation Pattern Analysis** — learns from past sessions, detects recurring errors
 - **System Health Monitoring** — integrates with system_audit.py
 - **Model Configuration Optimization** — adjusts temperature, maxTokens, contextLength automatically
@@ -860,7 +860,7 @@ The Kaizen Engine (`tools/kaizen_engine.py`) runs automatically at session start
 When improvements are identified:
 1. **Safe changes** (model configs, audit checks) are auto-applied
 2. **Structural changes** (prompt edits, skill updates) are flagged for review
-3. `tools/deploy.py` auto-runs to sync changes to the DeepChat runtime
+3. `G:\My Drive\tools\deploy.py` auto-runs to sync changes to the DeepChat runtime
 4. DeepChat process is restarted (taskkill + auto-restart)
 
 ### 9.5.3 What Gets Improved
@@ -876,9 +876,9 @@ When improvements are identified:
 ### 9.5.4 Kaizen Run Modes
 
 ```bash
-python tools/kaizen_engine.py --audit           # Analyze only, output report
-python tools/kaizen_engine.py --audit --apply   # Analyze and apply safe changes
-python tools/kaizen_engine.py --auto            # Full auto: audit + apply + deploy + restart
+python "G:\My Drive\tools\kaizen_engine.py" --audit           # Analyze only, output report
+python "G:\My Drive\tools\kaizen_engine.py" --audit --apply   # Analyze and apply safe changes
+python "G:\My Drive\tools\kaizen_engine.py" --auto            # Full auto: audit + apply + deploy + restart
 ```
 
 ### 9.5.5 Learning Sources
@@ -890,12 +890,12 @@ python tools/kaizen_engine.py --auto            # Full auto: audit + apply + dep
 | Cloudflare R2 `qnfo/audit/` | Project states, backlogs, decision logs |
 | Cloudflare R2 `qnfo/discovery/index.json` | Ecosystem asset changes |
 | `conversation-search-server` MCP | Live conversation pattern search |
-| `tools/system_audit.py` | Cross-file consistency, version drift |
+| `G:\My Drive\tools\system_audit.py` | Cross-file consistency, version drift |
 
 ### 9.5.6 Kaizen Close-Out (MANDATORY)
 
 At every session close-out, AFTER standard close-out steps:
-1. Run `python tools/kaizen_engine.py --audit` to generate improvement report
+1. Run `python "G:\My Drive\tools\kaizen_engine.py" --audit` to generate improvement report
 2. Upload report to R2: `wrangler r2 object put qnfo/audit/kaizen/<timestamp>.md --file=<report> --remote`
 3. If auto-applicable improvements found: auto-apply and deploy
 4. Update Discovery Index with new Kaizen report entry
@@ -918,7 +918,7 @@ At every session close-out, AFTER standard close-out steps:
 
 ### Startup
 0. **Pull Discovery Index** (MANDATORY): `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json` — discover ALL ecosystem assets before beginning work
-0.5 **Run Kaizen Engine** (AUTOMATED — every session): `python tools/kaizen_engine.py --audit` — analyze conversation patterns, system health, and R2 audit trails for improvement opportunities. If `--apply` or `--auto` flag set: apply safe model config changes and deploy automatically. See tools/kaizen_engine.py and templates/KAIZEN-AUDIT.md for full protocol.
+0.5 **Run Kaizen Engine** (AUTOMATED — every session): `python "G:\My Drive\tools\kaizen_engine.py" --audit` — analyze conversation patterns, system health, and R2 audit trails for improvement opportunities. If `--apply` or `--auto` flag set: apply safe model config changes and deploy automatically. See G:\My Drive\tools\kaizen_engine.py and templates/KAIZEN-AUDIT.md for full protocol.
 0.7 **Load Cloudflare API Token (MANDATORY — before ANY Cloudflare operations):** `$env:CLOUDFLARE_API_TOKEN = (Get-Content "C:\Users\LENOVO\.cloudflare\api-token" -Raw).Trim()` — this token has FULL account access (zone:write, DNS:edit, redirect rules, Pages, Workers, R2). The `wrangler` CLI uses OAuth tokens with LIMITED scopes (zone:read only). NEVER attempt DNS writes, redirects, or zone management with the wrangler OAuth token. ALWAYS load the API token from this persistent file before any Cloudflare API calls. If the file is missing: `[BLOCKED: Cloudflare API token file not found at C:\Users\LENOVO\.cloudflare\api-token]`. Verify token works: `python -c "import urllib.request,json; r=urllib.request.Request('https://api.cloudflare.com/client/v4/user/tokens/verify',headers={'Authorization':'Bearer '+open(r'C:\Users\LENOVO\.cloudflare\api-token').read().strip()}); print(json.loads(urllib.request.urlopen(r).read())['success'])"`
 1. Verify sandbox: working directory within project directory
 2. Git check: verify local git repo exists (git is version control ONLY. Cloudflare R2 = canonical remote.)

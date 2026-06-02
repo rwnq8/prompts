@@ -24,7 +24,7 @@ git branch --show-current
 npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
 
 # 0.2 Run Kaizen Engine audit
-python tools/kaizen_engine.py --audit
+python "G:\My Drive\tools\kaizen_engine.py" --audit
 
 # 0.3 Run system consistency audit
 python tools/system_consistency_audit.py
@@ -123,19 +123,19 @@ Subagent prompts are embedded in DeepChat's `subagent_orchestrator` tool descrip
 | IMPLEMENTER | `agents/subagents/IMPLEMENTER-SUBAGENT.md` | Fabrication patterns, DoD criteria changes |
 | REVIEWER | `agents/subagents/REVIEWER-SUBAGENT.md` | Review type additions, severity criteria changes |
 
-**Note:** The canonical `.md` files are the SOURCE. After editing, run `tools/deploy.py` to sync to DeepChat runtime.
+**Note:** The canonical `.md` files are the SOURCE. After editing, run `G:\My Drive\tools\deploy.py` to sync to DeepChat runtime.
 
 ### Phase 6: Deploy & Commit
 
 ```bash
 # 6.1 Dry-run deploy to preview changes
-python tools/deploy.py --dry-run
+python "G:\My Drive\tools\deploy.py" --dry-run
 
 # 6.2 Deploy all changes
-python tools/deploy.py
+python "G:\My Drive\tools\deploy.py"
 
 # 6.3 Verify deployment (check all canonical paths synced)
-python tools/deploy.py --dry-run
+python "G:\My Drive\tools\deploy.py" --dry-run
 # Should show "All files up to date"
 
 # 6.4 Git add ALL changed files
@@ -153,7 +153,7 @@ git log -1 --oneline
 
 ```bash
 # 7.1 Run Kaizen engine with --apply to record improvements
-python tools/kaizen_engine.py --audit --apply
+python "G:\My Drive\tools\kaizen_engine.py" --audit --apply
 
 # 7.2 Upload Kaizen report to R2 audit trail
 npx wrangler r2 object put qnfo/audit/kaizen/kaizen_update_{{date}}_{{time}}.md --file=audit/kaizen/kaizen_report_*.md --remote
@@ -234,7 +234,7 @@ Remove-Item _audit_filesystem.py, _kaizen_system_audit.py, _discovery_index.json
 ## SAFETY GATES
 
 1. **Read-before-write:** Always read current file content before editing — never edit from memory
-2. **Dry-run first:** Preview all changes with `tools/deploy.py --dry-run` before live deploy
+2. **Dry-run first:** Preview all changes with `G:\My Drive\tools\deploy.py --dry-run` before live deploy
 3. **One-component-at-a-time:** Update → filesystem verify → git commit → next component
 4. **Never delete PERMANENT files:** Only EPHEMERAL files may be removed (see File Lifecycle §6)
 5. **Version all changes:** Every prompt/template/skill edit = version bump + VERSION HISTORY entry
