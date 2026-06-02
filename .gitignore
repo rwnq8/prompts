@@ -38,3 +38,5 @@ optimized-settings/
 # Google Drive artifacts (moved/renamed directories with broken permissions)
 scholar/
 discovery/
+
+releases/
