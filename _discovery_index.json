@@ -1,6 +1,6 @@
 {
   "ecosystem": "QNFO/QWAV -- Git on Cloudflare R2",
-  "updated": "2026-06-02T10:32:15Z",
+  "updated": "2026-06-02T01:05:00Z",
   "projects": {
     "pdf-builder": {
       "name": "pdf-builder",
@@ -721,31 +721,5 @@
       },
       "systemic_fix": "Cloudflare resource registry created. All resources now tracked with protection levels. Unregistered resources CANNOT be deleted."
     }
-  ],
-  "pipeline_status": {
-    "description": "Pipeline completion records - canonical source for what work has been done",
-    "r2_path": "qnfo/pipeline-status.json",
-    "schema_version": "1.0",
-    "updated": "2026-06-02T10:32:15Z",
-    "entries": {
-      "h1-paper-upload": {
-        "status": "unknown",
-        "note": "First pipeline run date unknown. Verify via R2 object count: wrangler r2 object get qnfo/papers/<sample> --remote"
-      },
-      "paper-vectorization": {
-        "status": "confirmed_complete",
-        "vectorize_index": "qwav-research",
-        "dimensions": 768,
-        "metric": "cosine",
-        "created": "2026-05-27T13:52:44Z",
-        "note": "Verify vector count via API Worker stats endpoint or wrangler vectorize get qwav-research"
-      },
-      "d1-seeding": {
-        "status": "pending",
-        "database": "living-paper",
-        "note": "D1 has schema but 0 rows. Needs metadata from R2 papers."
-      }
-    },
-    "verification_protocol": "See DEFAULT.md §3.2 step 1.6 - Infrastructure State Verification Gate. Before executing any pipeline task, query this file AND live infrastructure. Trust live state over recorded status."
-  }
+  ]
 }
