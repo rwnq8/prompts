@@ -99,15 +99,18 @@ read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md')
 
 ## 2.5.1 Embedded Scripts
 
-Per DEFAULT.md §6.1, this skill's dependent scripts are documented below. If any script is missing from disk, flag as `[SKILL-GAP]` and do not proceed.
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Local copies at `G:\My Drive\prompts\tools\` are convenience copies only — R2 is the single source of truth.**
 
-| Script | Canonical Path | Purpose |
-|:-------|:---------------|:--------|
-| `kaizen_engine.py` | `G:\My Drive\prompts\tools\kaizen_engine.py` | Kaizen engine — audit, apply, deploy |
-| `deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys changes to DeepChat runtime |
-| `system_audit.py` | `G:\My Drive\prompts\tools\system_audit.py` | Cross-file consistency audit |
+| Script | Canonical (R2) | Local Convenience Copy | Purpose |
+|:-------|:---------------|:----------------------|:--------|
+| `kaizen_engine.py` | `qnfo/tools/kaizen_engine.py` | `G:\My Drive\prompts\tools\kaizen_engine.py` | Kaizen engine — audit, apply, deploy |
+| `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys changes to DeepChat runtime |
+| `system_audit.py` | `qnfo/tools/system_audit.py` | `G:\My Drive\prompts\tools\system_audit.py` | Cross-file consistency audit |
 
-### Script Creation Protocol
-1. Verify script exists: `Test-Path <canonical_path>`
-2. If missing: flag `[SKILL-GAP: script <name>.py missing, cannot bootstrap]`
-3. Do NOT attempt to use this skill if its scripts cannot be verified.
+### Script Recovery Protocol
+If a script is missing from local disk:
+1. Pull canonical from R2: `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=<local_path>`
+2. Verify integrity: `Test-Path <local_path>`
+3. If R2 copy also missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+4. Do NOT attempt to use this skill if its canonical scripts cannot be recovered.
