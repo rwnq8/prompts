@@ -154,9 +154,41 @@
       "edges": 20,
       "last_seeded": "2026-06-02",
       "seed_status": "clean"
+    },
+    "prompt-engineering-best-practices": {
+      "name": "prompt-engineering-best-practices",
+      "description": "Research synthesis: LLM system prompts, agentic agents, templates and skills best practices 2026",
+      "source_dir": "G:\\My Drive\\projects\\prompt-engineering-best-practices",
+      "status": "published",
+      "last_active": "2026-06-02",
+      "topics": [
+        "prompt-engineering",
+        "agent-architecture",
+        "system-prompts",
+        "skills",
+        "templates"
+      ]
     }
   },
-  "publications": {},
+  "publications": {
+    "llm-system-prompts-agentic-agents-2026": {
+      "title": "LLM System Prompts, Agentic Agents, Templates and Skills: Best Practices 2026",
+      "file": "llm-system-prompts-agentic-agents-best-practices-2026.md",
+      "project": "prompt-engineering-best-practices",
+      "date": "2026-06-02",
+      "license": "CC BY 4.0",
+      "topics": [
+        "prompt-engineering",
+        "agent-architecture",
+        "system-prompts",
+        "skills",
+        "templates",
+        "evaluation",
+        "failure-modes"
+      ],
+      "r2_path": "qnfo/releases/llm-system-prompts-agentic-agents-best-practices-2026.md"
+    }
+  },
   "archive": {},
   "policies": {
     "research_integrity": {
@@ -274,6 +306,14 @@
       "version": "\"1.0\"",
       "description": "DEPRECATED  ARCHIVED (2026-06-01). GitHub fully deprecated per ADR-001. All PM is Cloudflare-native (R2, D1, Workers, Pages). This skill retained for historical reference only. Do NOT use for new ope",
       "status": "deprecated"
+    },
+    "prompt-audit": {
+      "name": "prompt-audit",
+      "version": "1.0",
+      "path": "G:\\My Drive\\prompts\\skills\\prompt-audit\\SKILL.md",
+      "description": "Self-audit skill evaluating prompts against 19 industry patterns with anti-pattern detection and scoring rubric",
+      "status": "active",
+      "date": "2026-06-02"
     }
   },
   "_metadata": {
