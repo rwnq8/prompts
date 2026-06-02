@@ -93,7 +93,7 @@ You take a Markdown file path (and optional parameters) from a calling agent and
 Construct the command using the build_pdf.py script path:
 
 ```
-BUILD_SCRIPT = "G:\My Drive\prompts\tools\build_pdf.py"
+BUILD_SCRIPT = "_build_pdf.py (pull from R2: `qnfo/tools/build_pdf.py`)"
 
 Command format (PowerShell):
   python "BUILD_SCRIPT" ^

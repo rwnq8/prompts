@@ -137,7 +137,7 @@ Full list: Cross-Project Learnings maintained in R2 audit trail (qnfo/audit/deci
 
 ## 8. KAIZEN CONTINUOUS IMPROVEMENT
 
-The Kaizen Engine (`G:\My Drive\tools\kaizen_engine.py`) runs at session startup. For autonomous system-wide updates, load:
+The Kaizen Engine (`_kaizen_engine.py`, pulled from R2: `qnfo/tools/kaizen_engine.py`) runs at session startup. For autonomous system-wide updates, load:
 ```
 read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')
 ```

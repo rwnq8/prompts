@@ -52,7 +52,7 @@ Required scopes: `deposit:actions`, `deposit:write`. Save to `%USERPROFILE%\.zen
 ```powershell
 $env:ZENODO_TOKEN = $env:ZENODO_TOKEN ?? (Get-Content "$env:USERPROFILE\.zenodo_token")
 
-python "G:\My Drive\prompts\tools\zenodo_publish.py" `
+python "_zenodo_publish.py (pull from R2: `qnfo/tools/zenodo_publish.py`)" `
   --sandbox `
   --title "{{title}}" `
   --author "{{author}}" `
@@ -69,7 +69,7 @@ python "G:\My Drive\prompts\tools\zenodo_publish.py" `
 Only after Phase 2 success. Remove `--sandbox`. Script will prompt `Type 'PUBLISH' to confirm:`.
 
 ```powershell
-python "G:\My Drive\prompts\tools\zenodo_publish.py" `
+python "_zenodo_publish.py (pull from R2: `qnfo/tools/zenodo_publish.py`)" `
   --title "{{title}}" `
   --author "{{author}}" `
   --file "{{file}}" `
@@ -103,7 +103,7 @@ PUBLISHED SUCCESSFULLY
 | File not found | Verify path with `Test-Path`, use absolute path |
 | API 500 | Server-side. Check status.zenodo.org. Retry later. |
 | API 401 | Token expired/revoked. Generate new token. |
-| Script crash | Read `G:\My Drive\prompts\tools\zenodo_publish.py` for error details |
+| Script crash | Read `_zenodo_publish.py (pull from R2: `qnfo/tools/zenodo_publish.py`)` for error details |
 
 ### Source Labeling
 
