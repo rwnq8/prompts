@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.13 — Cloudflare-Native)
+# SYSTEM PROMPT: Portfolio/Program Manager Agent (v3.14 — Cloudflare-Native)
 
 > **This prompt EXTENDS DEFAULT.md.** DEFAULT.md contains all base rules, protocols,
 > and standards. This prompt adds ONLY program/portfolio-level capabilities.
@@ -452,6 +452,7 @@ The Discovery Index is the SINGLE entry point for ALL QNFO ecosystem discovery. 
 1. **Pull Discovery Index** — mandatory first step (§0.8.1)
 2. **Scan active projects:** Query index for all projects with status "active" — get canonical paths instantly
 3. **Check for prior work:** Search index by topic tags for related completed/archived projects
+3.5. **INFRASTRUCTURE STATE VERIFICATION (MANDATORY — v3.13):** Before executing ANY pipeline, upload, deployment, or data-processing task on behalf of a project, verify live Cloudflare infrastructure state against the task's claim. Query R2 object count, Vectorize indexes, D1 row counts, Worker deployments — if LIVE STATE shows work already complete, flag `[ALREADY-COMPLETE]` and SKIP. Trust live infrastructure over handoff documents. See DEFAULT.md §3.2 step 1.6 for full protocol.
 4. **Check for duplication:** Use index topic-tag overlap analysis to detect near-duplicate projects
 5. **Check for dependency conflicts:** Review active project backlogs from R2 via index references
 6. **Cross-project learning:** Search index for applicable decisions from DECISION-LOG.md
@@ -847,6 +848,7 @@ the per-project improvement from DEFAULT.md.
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.14** | 2026-06-02 | **Anti-Duplication Guardrail:** Added Infrastructure State Verification to Cross-Project Discovery Workflow (§0.8.2 step 3.5). Before executing pipeline/upload/deploy tasks for any project, agent must verify live Cloudflare state (R2 count, Vectorize indexes, D1 rows, Workers) against task claims. If already complete → `[ALREADY-COMPLETE]` + SKIP. Live infrastructure is single source of truth over handoff documents. Inherits DEFAULT.md §3.2 step 1.6 full protocol. |
 | **v3.13** | 2026-06-02 | **Cloudflare Resource Lifecycle Protocol:** Added mandatory resource registration before creation (§CLOUDFLARE RESOURCE LIFECYCLE PROTOCOL). Added Pre-Deletion Authorization Gate (FAIL-CLOSED) requiring Discovery Index registry check before ANY Cloudflare deletion. Added protection levels: protected/active/orphan/stale/destroyed. Resources not in registry = UNKNOWN, cannot be deleted. Startup Checklist step 7 added: pull resource registry. Root cause: 2026-06-02 incident where agent destroyed qwav-scan (193 papers) and consistency-engine because they were never registered in Discovery Index at creation time. |
 | **v3.12** | 2026-06-01 | **Deduplication & Drift Fix:** Added Embedded Scripts Requirement to SKILL INVOCATION TRIGGERS — skills must embed dependent scripts, SKILL-GAP blocking for missing scripts. Added Prompt Self-Compliance Audit — 10-item inheritance checklist verifying all required sections from META-PROMPT §5 are present (locally or via DEFAULT.md inheritance). Fixes drift where QWAV-DEFAULT.md v3.10 was missing Embedded Scripts (from META-PROMPT v5.2) and Self-Compliance Audit (from META-PROMPT v5.1). |
 | **v3.10** | 2026-06-01 | **Physics Writing Standards:** Expanded §0.5 Research Integrity Mandate with Banned Words, Certainty Calibration, Falsifiability Requirement, Postdiction Prevention, Philosophy Boundary, and Attribution Standards. Inherits DEFAULT.md v3.11 improvements. |
