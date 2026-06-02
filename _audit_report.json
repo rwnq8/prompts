@@ -1,0 +1,269 @@
+{
+  "audit_time": "2026-06-02T10:52:57.715831",
+  "total_checks": 161,
+  "blocking": 0,
+  "warnings": 52,
+  "passes": 109,
+  "issues": [
+    {
+      "severity": "WARN",
+      "category": "QWAV-DEFAULT.md rules",
+      "detail": "Rule 6 may be missing or incomplete"
+    },
+    {
+      "severity": "WARN",
+      "category": "META-PROMPT-DEEPSEEK.md deprecated",
+      "detail": "'MCP/skills web search' reference: web_search` (general web search), `brave_local_search` (local/place search), AND..."
+    },
+    {
+      "severity": "WARN",
+      "category": "META-PROMPT-DEEPSEEK.md deprecated",
+      "detail": "'MCP/skills web search' reference: skills-based web search..."
+    },
+    {
+      "severity": "WARN",
+      "category": "META-PROMPT-DEEPSEEK.md deprecated",
+      "detail": "'MCP/skills web search' reference: MCP/skills web search (remove them \u2014 YoBrowser + brave_web_search are available)..."
+    },
+    {
+      "severity": "WARN",
+      "category": "META-PROMPT-DEEPSEEK.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: BACKLOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "META-PROMPT-DEEPSEEK.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: SPRINT.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "META-PROMPT-DEEPSEEK.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: CHANGELOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "README.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: CHANGELOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "QWAV-DEFAULT.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: PROJECT STATE.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "QWAV-DEFAULT.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: SPRINT.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "QWAV-DEFAULT.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: BACKLOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "_decision_log.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: github.com/rwnq8/prompts/wiki/Cross-Project-Learnings, not as a local file. Syst..."
+    },
+    {
+      "severity": "WARN",
+      "category": "_decision_log.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: github.com/rwnq8/prompts/wiki..."
+    },
+    {
+      "severity": "WARN",
+      "category": "_decision_log.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: github.com/rwnq8/prompts/wiki..."
+    },
+    {
+      "severity": "WARN",
+      "category": "_decision_log.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: LEARNINGS.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "CLOSEOUT-CHECKLIST.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: gh pr..."
+    },
+    {
+      "severity": "WARN",
+      "category": "CLOSEOUT-CHECKLIST.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: gh pr..."
+    },
+    {
+      "severity": "WARN",
+      "category": "CLOSEOUT-CHECKLIST.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: SPRINT.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "CLOSEOUT-CHECKLIST.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: BACKLOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "CLOSEOUT-CHECKLIST.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: CHANGELOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "PROJECT-INITIATION.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: SPRINT.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "PROJECT-INITIATION.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: BACKLOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "PROJECT-INITIATION.md deprecated",
+      "detail": "'PM files (BACKLOG.md etc.)' reference: CHANGELOG.md..."
+    },
+    {
+      "severity": "WARN",
+      "category": "SKILL.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: gh issue..."
+    },
+    {
+      "severity": "WARN",
+      "category": "SKILL.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: gh issue..."
+    },
+    {
+      "severity": "WARN",
+      "category": "SKILL.md deprecated",
+      "detail": "'GitHub Issues/Projects/Wiki' reference: gh issue..."
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:bling-usability-audit",
+      "detail": "No Embedded Scripts section (\u00a72.5.1 requirement)"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:bling-usability-audit",
+      "detail": "No bootstrap protocol for missing scripts"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:closeout-manager",
+      "detail": "No Embedded Scripts section (\u00a72.5.1 requirement)"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:closeout-manager",
+      "detail": "No bootstrap protocol for missing scripts"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:git-hygiene",
+      "detail": "No Embedded Scripts section (\u00a72.5.1 requirement)"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:git-hygiene",
+      "detail": "No bootstrap protocol for missing scripts"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:github-manager",
+      "detail": "No Embedded Scripts section (\u00a72.5.1 requirement)"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:github-manager",
+      "detail": "No bootstrap protocol for missing scripts"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:kaizen-autonomous-update",
+      "detail": "No Embedded Scripts section (\u00a72.5.1 requirement)"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:kaizen-autonomous-update",
+      "detail": "No bootstrap protocol for missing scripts"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:template-catalog",
+      "detail": "No Embedded Scripts section (\u00a72.5.1 requirement)"
+    },
+    {
+      "severity": "WARN",
+      "category": "skill:template-catalog",
+      "detail": "No bootstrap protocol for missing scripts"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:DISCOVERY-PROTOCOL",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:EMAIL-AGENT",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:KAIZEN-AUDIT",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:KAIZEN-AUTONOMOUS-UPDATE",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:PDF-BUILDER-TEMPLATE",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:PDF-BUILDER",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:RESEARCH-PROTOCOL",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:SOCIAL-ORCHESTRATOR-TEMPLATE",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "template:ZENODO-PUBLISH",
+      "detail": "No frontmatter found"
+    },
+    {
+      "severity": "WARN",
+      "category": "deployment",
+      "detail": "Unexpected pending update: -> Prompts: WOULD_UPDATE (65736 -> 65736 chars)"
+    },
+    {
+      "severity": "WARN",
+      "category": "deployment",
+      "detail": "Unexpected pending update: -> email-composer: WOULD_UPDATE"
+    },
+    {
+      "severity": "WARN",
+      "category": "deployment",
+      "detail": "Unexpected pending update: -> template-catalog: WOULD_UPDATE"
+    },
+    {
+      "severity": "WARN",
+      "category": "deployment",
+      "detail": "Unexpected pending update: -> DEFINITION-OF-DONE: WOULD_UPDATE"
+    },
+    {
+      "severity": "WARN",
+      "category": "deployment",
+      "detail": "Unexpected pending update: -> KAIZEN-AUTONOMOUS-UPDATE: WOULD_UPDATE"
+    }
+  ]
+}

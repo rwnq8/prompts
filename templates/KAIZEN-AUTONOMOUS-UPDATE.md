@@ -70,7 +70,7 @@ python _kaizen_system_audit.py
 | Unversioned templates | Add semantic version header to each template |
 
 **Staleness detection method:** The comprehensive audit checks every template against:
-- `fill_prompt_template("NAME")` references in all system prompts
+- `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE")` references in all system prompts
 - Direct `templates/NAME.md` references in skill files
 - `template-catalog` skill entries
 - If NONE of these reference it → STALE

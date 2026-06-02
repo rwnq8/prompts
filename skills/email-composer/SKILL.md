@@ -12,7 +12,7 @@ version: "2.1"
 
 ## Quick Start
 
-For sending email, use `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {...})` with all required parameters.
+For sending email, use `fill_prompt_template("EMAIL-AGENT", {...})` with all required parameters.
 For reading/searching email, use the Python scripts in `G:\My Drive\projects\email-agent\`.
 
 ---
@@ -46,7 +46,7 @@ python "G:\My Drive\projects\email-agent\email_search.py" --query "quantum compu
 ```
 
 ### Send Email
-Use `fill_prompt_template("EMAIL-AGENT-TEMPLATE", {to, subject, body, cc, bcc, attachments})` then execute the generated script:
+Use `fill_prompt_template("EMAIL-AGENT", {to, subject, body, cc, bcc, attachments})` then execute the generated script:
 ```powershell
 python "G:\My Drive\projects\email-agent\email_send.py"
 ```
@@ -92,7 +92,7 @@ python "G:\My Drive\projects\email-agent\email_search.py" --query "<contact-name
 ```
 
 ### Drafting Without Sending
-Set `confirm_send: false` in the EMAIL-AGENT-TEMPLATE parameters. The script will save to Drafts.
+Set `confirm_send: false` in the EMAIL-AGENT template parameters. The script will save to Drafts.
 
 ---
 

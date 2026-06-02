@@ -73,7 +73,7 @@ read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')
 
 ```python
 # Get template parameters
-fill_prompt_template("get_prompt_template_parameters", {templateName: "HANDOFF"})
+get_prompt_template_parameters(templateName="HANDOFF")
 
 # Fill a template
 fill_prompt_template("HANDOFF", {

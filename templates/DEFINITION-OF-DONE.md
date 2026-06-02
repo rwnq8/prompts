@@ -37,7 +37,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] ALL test files for this module executed — verified by re-execution (NOT by checking file existence)
 - [ ] Test suite output: {{count}} passed, [0] failed, {{k}} skipped
 - [ ] Edge cases covered: empty input, boundary values, error conditions
-- [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
+- [ ] Test evidence saved to project directory as `_test_evidence.md`
 - [ ] If any tests failed: root cause documented, fix applied, re-executed to zero failures
 - [ ] Regression check: re-ran ALL related test files after fix — no new failures
 - [ ] UNIVERSAL GATES above satisfied
@@ -82,7 +82,7 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] ALL analysis scripts re-executed — verified output matches claimed results
 - [ ] Reproducibility confirmed: same input → same output (seed-controlled)
 - [ ] Limit/boundary checks performed and documented
-- [ ] Test evidence saved via `fill_prompt_template("TEST-EVIDENCE-TEMPLATE")`
+- [ ] Test evidence saved to project directory as `_test_evidence.md`
 - [ ] Discrepancies between claimed and re-executed results documented with rationale
 - [ ] UNIVERSAL GATES above satisfied
 
