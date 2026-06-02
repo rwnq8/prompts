@@ -68,7 +68,7 @@ This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.m
 
 
 
-This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `_deploy.py` (pulled from R2: `qnfo/tools/deploy.py`). It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 
 
@@ -87,11 +87,11 @@ read('G:\My Drive\prompts\skills\github-manager\SKILL.md')
 ## 2.5.1 Embedded Scripts
 
 Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
-**Canonical source: Cloudflare R2 (`qnfo/tools/`). Local copies at `G:\My Drive\prompts\tools\` are convenience copies only — R2 is the single source of truth.**
+**Canonical source: Cloudflare R2 (qnfo/tools/). Tools execute as ephemeral _<name>.py files — pull from R2, execute, discard. Never persist locally.**
 
 | Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
 |:-------|:---------------|:----------------------|:--------|
-| `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys skill files to DeepChat runtime |
+| `deploy.py` | `qnfo/tools/deploy.py` | `_deploy.py (ephemeral)` | Deploys skill files to DeepChat runtime |
 
 ### Script Recovery Protocol
 If a script is missing from local disk:

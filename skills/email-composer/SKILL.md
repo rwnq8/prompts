@@ -25,7 +25,7 @@ This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.m
 
 ## QNFO Custom Skill Note
 
-This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `_deploy.py` (R2: `qnfo/tools/deploy.py`). It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 ```
 read('G:\My Drive\prompts\skills\email-composer\SKILL.md')
@@ -111,8 +111,8 @@ Set `confirm_send: false` in the EMAIL-AGENT template parameters. The script wil
 
 > **SELF-CONTAINED:** Email scripts live in `G:\My Drive\projects\email-agent\`. Before executing, verify they exist.
 
-| Script | Canonical Path | Purpose |
-|:-------|:---------------|:--------|
+| Script | R2 Canonical | Execution Cache | Purpose |
+|:-------|:-------------|:----------------|:--------|
 | `email_inbox.py` | `G:\My Drive\projects\email-agent\email_inbox.py` | Read inbox |
 | `email_search.py` | `G:\My Drive\projects\email-agent\email_search.py` | Search email |
 | `email_send.py` | `G:\My Drive\projects\email-agent\email_send.py` | Send email |

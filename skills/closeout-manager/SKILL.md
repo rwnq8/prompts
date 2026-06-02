@@ -31,7 +31,7 @@ This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.m
 
 ## QNFO Custom Skill Note
 
-This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `_deploy.py` (R2: `qnfo/tools/deploy.py`). It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 ```
 read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')
@@ -46,8 +46,8 @@ Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
 
 | Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
 |:-------|:---------------|:----------------------|:--------|
-| `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\tools\deploy.py` (cache) | Deploys skill files to DeepChat runtime |
-| `system_audit.py` | `qnfo/tools/system_audit.py` | `G:\My Drive\tools\system_audit.py` (cache) | Cross-file consistency and version drift audit |
+| `deploy.py` | `qnfo/tools/deploy.py` | `_deploy.py` (R2: `qnfo/tools/deploy.py`) (cache) | Deploys skill files to DeepChat runtime |
+| `system_audit.py` | `qnfo/tools/system_audit.py` | `_system_audit.py` (R2: `qnfo/tools/system_audit.py`) (cache) | Cross-file consistency and version drift audit |
 
 ### Execution Protocol (Ephemeral)
 Tools execute locally (Python requires filesystem access) but do NOT persist:

@@ -26,7 +26,7 @@ This skill is designed for use with QNFO agent tools. When loaded by a DEFAULT.m
 
 ## QNFO Custom Skill Note
 
-This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `_deploy.py` (R2: `qnfo/tools/deploy.py`). It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 ```
 read('G:\My Drive\prompts\skills\cloudflare-deployer\SKILL.md')
@@ -139,7 +139,9 @@ npx wrangler sandbox stop <name>
 
 For paper vectorization, use:
 ```bash
-python "G:\My Drive\prompts\tools\vectorize-papers.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/vectorize-papers.py --remote --file=_vectorize-papers.py
+python _vectorize-papers.py
+# Discard: Remove-Item _vectorize-papers.py
 ```
 
 ---
@@ -162,7 +164,9 @@ python "G:\My Drive\prompts\tools\vectorize-papers.py"
 ### Deploy a Publication
 ```bash
 # 1. Build PDF
-python "G:\My Drive\prompts\tools\build_pdf.py" --input <file>
+# Pull from R2: npx wrangler r2 object get qnfo/tools/build_pdf.py --remote --file=_build_pdf.py
+python _build_pdf.py
+# Discard: Remove-Item _build_pdf.py --input <file>
 
 # 2. Deploy to Pages
 npx wrangler pages deploy <dir> --project-name qwav --branch main
@@ -171,7 +175,9 @@ npx wrangler pages deploy <dir> --project-name qwav --branch main
 npx wrangler r2 object put qnfo/releases/<file>.pdf --file=<path>
 
 # 4. Generate SEO
-python "G:\My Drive\prompts\tools\generate-seo.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/generate-seo.py --remote --file=_generate-seo.py
+python _generate-seo.py
+# Discard: Remove-Item _generate-seo.py
 ```
 
 ### Check Infrastructure Health
@@ -187,8 +193,8 @@ npx wrangler r2 object get qnfo/audit/state/qwav.json
 
 - Full deployment template: `templates/CLOUDFLARE-DEPLOYMENT.md`
 - Cloudflare audit: `G:\My Drive\QWAV\SESSION-HANDOFF-2026-05-28.md`
-- SEO generator: `G:\My Drive\tools\generate-seo.py`
-- Vectorize: `G:\My Drive\tools\vectorize-papers.py`
+- SEO generator: `_generate-seo.py` (R2: `qnfo/tools/generate-seo.py`)
+- Vectorize: `_vectorize-papers.py` (R2: `qnfo/tools/vectorize-papers.py`)
 
 ---
 
@@ -197,21 +203,22 @@ npx wrangler r2 object get qnfo/audit/state/qwav.json
 
 > **SELF-CONTAINED:** This skill depends on the scripts listed below. Before executing any script, verify it exists at its canonical path.
 
-| Script | Canonical Path | Purpose |
-|:-------|:---------------|:--------|
-| `vectorize-papers.py` | `tools\\vectorize-papers.py` | Index papers in Cloudflare Vectorize for semantic search |
-| `build_pdf.py` | `tools\\build_pdf.py` | Markdown/HTML -> PDF (shared with publication-publisher) |
+| Script | R2 Canonical | Execution Cache | Purpose |
+|:-------|:-------------|:----------------|:--------|
+| `vectorize-papers.py` | `qnfo/tools/\vectorize-papers.py` | Index papers in Cloudflare Vectorize for semantic search |
+| `build_pdf.py` | `qnfo/tools/\build_pdf.py` | Markdown/HTML -> PDF (shared with publication-publisher) |
 
 ### Bootstrap Protocol
 
 Before using any script, verify it exists:
 ```bash
-Test-Path "G:\My Drive\prompts\tools\<script>.py"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py
+# Verify: Test-Path _<script>.py
 ```
 
 **If script is MISSING:** Scripts are version-controlled in the prompts repo.
 1. `git log --oneline -- G:/My Drive/tools/<script>.py`
-2. The canonical source for all tools is `G:\My Drive\prompts\tools\`
+2. The canonical source for all tools is R2 (`qnfo/tools/`). Pull from R2: `npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py`.
 
 **Shared scripts:** `build_pdf.py` is primarily maintained in the `publication-publisher` skill.
 If missing, check that skill's Embedded Scripts section for recovery guidance.

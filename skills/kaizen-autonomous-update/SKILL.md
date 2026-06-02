@@ -83,7 +83,7 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 
 ## QNFO Custom Skill Note
 
-This is a QNFO custom skill deployed via `G:\My Drive\tools\deploy.py`. It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
+This is a QNFO custom skill deployed via `_deploy.py` (R2: `qnfo/tools/deploy.py`). It is NOT accessible via `skill_view()` (which only indexes DeepChat's built-in registry). Load it with:
 
 ```
 read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md')
@@ -100,13 +100,13 @@ read('G:\\My Drive\\prompts\\skills\\kaizen-autonomous-update\\SKILL.md')
 ## 2.5.1 Embedded Scripts
 
 Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
-**Canonical source: Cloudflare R2 (`qnfo/tools/`). Local copies at `G:\My Drive\prompts\tools\` are convenience copies only — R2 is the single source of truth.**
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools execute as ephemeral `_<name>.py` files — pull from R2, execute, discard. Never persist locally.**
 
 | Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
 |:-------|:---------------|:----------------------|:--------|
-| `kaizen_engine.py` | `qnfo/tools/kaizen_engine.py` | `G:\My Drive\prompts\tools\kaizen_engine.py` | Kaizen engine — audit, apply, deploy |
-| `deploy.py` | `qnfo/tools/deploy.py` | `G:\My Drive\prompts\tools\deploy.py` | Deploys changes to DeepChat runtime |
-| `system_audit.py` | `qnfo/tools/system_audit.py` | `G:\My Drive\prompts\tools\system_audit.py` | Cross-file consistency audit |
+| `kaizen_engine.py` | `qnfo/tools/kaizen_engine.py` | `qnfo/tools/kaizen_engine.py` | `_kaizen_engine.py` (ephemeral) | Kaizen engine — audit, apply, deploy |
+| `deploy.py` | `qnfo/tools/deploy.py` | `qnfo/tools/deploy.py` | `_deploy.py` (ephemeral) | Deploys changes to DeepChat runtime |
+| `system_audit.py` | `qnfo/tools/system_audit.py` | `qnfo/tools/system_audit.py` | `_system_audit.py` (ephemeral) | Cross-file consistency audit |
 
 ### Execution Protocol (Ephemeral)
 Tools execute locally (Python requires filesystem access) but do NOT persist:
