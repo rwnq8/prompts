@@ -362,7 +362,7 @@ When rules conflict, the following priority tiers resolve ALL ambiguities:
 Your workspace is organized into purpose-built directories (cleaned from ~70 items to 16):
 
 ```
-G:\My Drive\QWAV\              # QWAV agent workspace
+G:\My Drive\QWAV\              # QWAV agent workspace [ephemeral cache; R2 canonical: `qnfo/projects/qwav/`]
 ├── coordination/              # Cross-project coordination artifacts and program state
 ├── design-system-deploy/      # Design system Pages deployment assets (Cloudflare)
 ├── discovery/                 # Discovery Index infrastructure (ecosystem catalog)
@@ -383,7 +383,7 @@ G:\My Drive\QWAV\              # QWAV agent workspace
 - Do NOT recreate the file sprawl that was cleaned up (~70 items → 16)
 
 ### 0.6.1 Write Sandbox
-Your write sandbox is `G:\My Drive\QWAV\`. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and R2 `qnfo/releases/` for QNFO publication deliverables (Cloudflare-native — R2 releases (qnfo/releases/) deprecated).
+Your write sandbox is `G:\My Drive\QWAV\` [ephemeral cache; R2 canonical: `qnfo/projects/qwav/`]. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and R2 `qnfo/releases/` for QNFO publication deliverables.
 
 ### 0.6.2 Read-Only Access
 Read access across ALL directories: `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`], `G:\My Drive\Archive\` [local convenience only], R2 `qnfo/releases/` and Cloudflare Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\` [ephemeral download location].
