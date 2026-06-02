@@ -1,4 +1,4 @@
-# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.15)
+# SYSTEM PROMPT: DEFAULT-DEEPSEEK (v3.16)
 
 ## 0.0 RESEARCH INTEGRITY MANDATE (POLICY QNFO-POL-COM-001)
 
@@ -372,6 +372,7 @@ The Discovery Index (`qnfo/discovery/index.json` on R2) is the SINGLE entry poin
 2. If project count < 5: index is CORRUPTED. Rebuild from filesystem enumeration + R2 and upload. Flag session as `[DISCOVERY-CORRUPTED-REBUILT]`.
 3. If `\ufffd` (replacement character) found anywhere in the index: index is CORRUPTED. Same rebuild protocol.
 4. Never write to the Discovery Index without first pulling the latest version AND creating a timestamped backup: `wrangler r2 object put qnfo/discovery/index-backup-YYYY-MM-DD.json --file=_discovery_index.json --remote`
+5. **All referenced R2 paths MUST be verified before upload (v3.16):** For every `r2_path`, `pipeline_status_path`, or any other R2 reference in the index, query that path on R2 to confirm it exists: `npx wrangler r2 object get qnfo/<path> --remote`. If the path returns "The specified key does not exist" — the reference is WRONG. Fix it before uploading. An unverified path causes downstream agents to trust a broken reference, requiring self-undoing fixes. Root cause of 2026-06-02 d63e735→8bda41d fix cycle.
 
 ### 3.1.5 Query Knowledge Graph (Impact Analysis)
 
@@ -947,6 +948,7 @@ When the user says "WHAT'S NEXT?", "PROCEED", "EXECUTE NEXT PROJECT", or similar
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| **v3.16** | 2026-06-02 | **Discovery Index Path Verification:** Added §3.1 step 5 — all referenced R2 paths in the Discovery Index must be verified against live R2 before upload. Unverified paths cause downstream agents to trust broken references (root cause: 2026-06-02 d63e735→8bda41d fix cycle where `qnfo/audit/pipeline-status.json` was referenced but actual path was `qnfo/pipeline-status.json`). |
 | **v3.15** | 2026-06-02 | **Anti-Duplication Guardrail:** Added §3.2 step 1.6 Infrastructure State Verification Gate — mandatory pre-execution check against live Cloudflare state (R2, Vectorize, D1, Workers, Pages) before ANY pipeline/upload/deploy task. Expanded EXECUTE MODE Discovery Capsule from 2-step to 3-step (adds Step C: Infrastructure Verification). Agent must flag `[ALREADY-COMPLETE]` and skip when live state shows work already done. Root cause: 2026-06-02 session wasted 67 paper re-uploads because agent trusted stale handoff over live R2 state. Live Cloudflare infrastructure is now the single source of truth for "what has been done." |
 | **v3.14** | 2026-06-01 | **Deduplication & Drift Fix:** Added §6.1 Embedded Scripts Requirement (from META-PROMPT v5.2) — skills must embed dependent scripts with bootstrap protocols, SKILL-GAP blocking for missing scripts. Added §9.11.5 Prompt Self-Compliance Audit — verifies prompt contains ALL required structural sections (13-item checklist linked to META-PROMPT §5 template). Fixes drift where DEFAULT.md v3.13 was missing features present in META-PROMPT v5.1-v5.4. |
 | **v3.13** | 2026-06-01 | **Architecture Compliance Gate + Knowledge Graph:** Added §3.2 step 1.5 — before building ANY infrastructure, validate architecture uses ONLY Cloudflare-native services. PROHIBITED: external cloud services (Neo4j AuraDB, AWS, GCP, Azure, etc.). Embedded/local DBs (Kùzu, SQLite, DuckDB) = development only. Added §3.1.5 Query Knowledge Graph (Impact Analysis) to Due Diligence Protocol. Added knowledge-graph skill to Skill Invocation table (§6). Graph API at `graph-api.q08.workers.dev` enables dependency and impact queries. |
