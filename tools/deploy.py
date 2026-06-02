@@ -44,7 +44,7 @@ DEEPCHAT_DIR = APPDATA / "DeepChat"
 DEEPCHAT_SKILLS = DEEPCHAT_DIR / "skills"
 AGENT_DB = DEEPCHAT_DIR / "app_db" / "agent.db"
 APP_SETTINGS = DEEPCHAT_DIR / "app-settings.json"
-CUSTOM_PROMPTS = DEEPCHAT_DIR / "custom_prompts.json"
+# CUSTOM_PROMPTS removed — templates managed by DeepChat UI, not deploy pipeline
 
 # --- Agent -> System Prompt Mapping -----------------------------------
 AGENT_PROMPT_MAP = {
@@ -245,11 +245,13 @@ def deploy_configs(dry_run=False):
 # =====================================================================
 
 def deploy_default_system_prompt(dry_run=False):
-    """Update app-settings.json with current DEFAULT.md AND template catalog.
-    
-    DeepChat reads TWO things from app-settings.json that the deploy pipeline
-    must keep current: defaultSystemPrompt (from DEFAULT.md) and promptTemplates
-    (synced from custom_prompts.json which deploy_templates() maintains).
+    """Update app-settings.json defaultSystemPrompt from DEFAULT.md.
+
+    DeepChat uses defaultSystemPrompt for its built-in "Custom" agent.
+    This function ONLY updates defaultSystemPrompt — it does NOT touch
+    promptTemplates or any other DeepChat-managed settings.
+    Template management is handled entirely by DeepChat's own UI plus the
+    prompts.json import/export file.
     """
     results = {}
 
@@ -260,7 +262,7 @@ def deploy_default_system_prompt(dry_run=False):
     with open(APP_SETTINGS, "r", encoding="utf-8") as f:
         settings = json.load(f)
 
-    # 1. Update defaultSystemPrompt from DEFAULT.md
+    # Update defaultSystemPrompt from DEFAULT.md (ONLY — no template sync)
     default_md = CANONICAL_ROOT / "DEFAULT.md"
     if default_md.exists():
         canonical = read_file(default_md)
@@ -273,6 +275,9 @@ def deploy_default_system_prompt(dry_run=False):
                     )
                 else:
                     settings["defaultSystemPrompt"] = canonical
+                    # Write back preserving ALL other settings (no template touch)
+                    with open(APP_SETTINGS, "w", encoding="utf-8") as f:
+                        json.dump(settings, f, indent=2, ensure_ascii=False)
                     results["default_system_prompt"] = "UPDATED ({} -> {} chars)".format(
                         len(current), len(canonical)
                     )
@@ -281,125 +286,7 @@ def deploy_default_system_prompt(dry_run=False):
     else:
         results["default_system_prompt"] = "ERROR: DEFAULT.md not found"
 
-    # 2. Sync promptTemplates from custom_prompts.json
-    if CUSTOM_PROMPTS.exists():
-        with open(CUSTOM_PROMPTS, "r", encoding="utf-8") as f:
-            cp = json.load(f)
-        cp_templates = cp.get("prompts", [])
-        current_templates = settings.get("promptTemplates", [])
-        current_by_name = {t["name"]: t for t in current_templates}
-        changed = 0
-        for tmpl in cp_templates:
-            name = tmpl.get("name", "")
-            content = tmpl.get("content", "")
-            if name in current_by_name:
-                if hash_content(content) != hash_content(current_by_name[name].get("content", "")):
-                    current_by_name[name]["content"] = content
-                    changed += 1
-            else:
-                new_id = str(int(time.time() * 1000))
-                current_templates.append({
-                    "id": new_id, "name": name,
-                    "description": tmpl.get("description", ""),
-                    "content": content,
-                    "parameters": tmpl.get("parameters", []),
-                    "files": tmpl.get("files", []),
-                    "enabled": True, "source": "local",
-                    "createdAt": new_id, "updatedAt": new_id,
-                })
-                changed += 1
-        settings["promptTemplates"] = current_templates
-        if changed > 0:
-            status = "WOULD_UPDATE" if dry_run else "UPDATED"
-            results["promptTemplates"] = "{} ({} templates, {} changed)".format(
-                status, len(current_templates), changed
-            )
-        else:
-            results["promptTemplates"] = "UNCHANGED ({} templates)".format(len(current_templates))
-
-    # 3. Write back if not dry run (preserves ALL other DeepChat settings)
-    if not dry_run:
-        with open(APP_SETTINGS, "w", encoding="utf-8") as f:
-            json.dump(settings, f, indent=2, ensure_ascii=False)
-
     return results
-
-def deploy_templates(dry_run=False):
-    """Sync canonical templates/ to custom_prompts.json.
-
-    Canonical .md files in templates/ are the source of truth. This function:
-    1. Reads all .md files from CANONICAL_ROOT/templates/
-    2. Reads deployed custom_prompts.json
-    3. Adds any missing canonical templates; updates content if drifted
-    4. Does NOT remove deployed-only templates (they may be UI-created)
-    """
-    results = {}
-    templates_dir = CANONICAL_ROOT / "templates"
-
-    if not templates_dir.exists():
-        results["error"] = "Canonical templates directory not found"
-        return results
-
-    # Read deployed custom_prompts.json
-    if not CUSTOM_PROMPTS.exists():
-        results["error"] = "custom_prompts.json not found"
-        return results
-
-    with open(CUSTOM_PROMPTS, "r", encoding="utf-8") as f:
-        cp = json.load(f)
-
-    prompts = cp.get("prompts", [])
-    prompts_by_name = {p["name"]: p for p in prompts}
-
-    # Scan canonical templates
-    for md_file in sorted(templates_dir.glob("*.md")):
-        template_name = md_file.stem  # filename without .md
-        canonical_content = read_file(md_file)
-
-        if canonical_content is None:
-            continue
-
-        if template_name in prompts_by_name:
-            deployed_entry = prompts_by_name[template_name]
-            deployed_content = deployed_entry.get("content", "")
-            if hash_content(canonical_content) == hash_content(deployed_content):
-                results[template_name] = "UNCHANGED"
-                continue
-            if dry_run:
-                results[template_name] = "WOULD_UPDATE"
-                continue
-            deployed_entry["content"] = canonical_content
-            deployed_entry["updatedAt"] = str(int(time.time() * 1000))
-            results[template_name] = "UPDATED"
-        else:
-            if dry_run:
-                results[template_name] = "WOULD_INSTALL"
-                continue
-            new_id = str(int(time.time() * 1000))
-            new_entry = {
-                "id": new_id,
-                "name": template_name,
-                "description": "",
-                "content": canonical_content,
-                "parameters": [],
-                "files": [],
-                "enabled": True,
-                "source": "local",
-                "createdAt": new_id,
-                "updatedAt": new_id,
-            }
-            prompts.append(new_entry)
-            results[template_name] = "INSTALLED"
-
-    # Write back if not dry run
-    if not dry_run:
-        cp["prompts"] = prompts
-        with open(CUSTOM_PROMPTS, "w", encoding="utf-8") as f:
-            json.dump(cp, f, indent=2, ensure_ascii=False)
-
-    return results
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Deploy canonical prompts to DeepChat runtime"
@@ -419,10 +306,6 @@ def main():
     )
     parser.add_argument(
         "--config-only", action="store_true", help="Deploy only config files"
-    )
-    parser.add_argument(
-        "--templates-only", action="store_true",
-        help="Deploy only templates to custom_prompts.json"
     )
     parser.add_argument(
         "--kaizen", action="store_true",
@@ -446,7 +329,7 @@ def main():
         else:
             print(f"Kaizen engine not found at {kaizen_path}")
 
-    run_all = not (args.prompts_only or args.skills_only or args.config_only or args.templates_only)
+    run_all = not (args.prompts_only or args.skills_only or args.config_only)
     dry = args.dry_run
 
     print("=" * 60)
@@ -483,16 +366,8 @@ def main():
             flag = "->" if "UPDATE" in status or "INSTALL" in status else "  "
             print("  {} {}: {}".format(flag, cfg, status))
 
-    if run_all or args.templates_only:
-        print("\n--- Templates (custom_prompts.json) ---")
-        results = deploy_templates(dry_run=dry)
-        for tmpl in sorted(results.keys()):
-            status = results[tmpl]
-            flag = "->" if "UPDATE" in status or "INSTALL" in status else "  "
-            print("  {} {}: {}".format(flag, tmpl, status))
-
     if run_all:
-        print("\n--- Default System Prompt (app-settings.json) ---")
+        print("\n--- Default System Prompt (app-settings.json, defaultSystemPrompt only) ---")
         results = deploy_default_system_prompt(dry_run=dry)
         for key in sorted(results.keys()):
             print("    {}: {}".format(key, results[key]))
