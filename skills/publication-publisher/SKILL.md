@@ -102,8 +102,8 @@ python -c "import json; d=json.load(open('_discovery_index.json','r',encoding='u
 2. If existing DOI found → use `--doi <existing_doi>` flag to create a NEW VERSION (not a duplicate record):
 ```bash
 # Pull from R2: npx wrangler r2 object get qnfo/tools/zenodo_publish.py --remote --file=_zenodo_publish.py
-python _zenodo_publish.py --doi "<existing_doi>"
-# Discard: Remove-Item _zenodo_publish.py --title "..." --author "..." --file "..."
+python _zenodo_publish.py --doi "<existing_doi>" --title "..." --author "..." --file "..."
+# Discard: Remove-Item _zenodo_publish.py
 ```
 3. If Zenodo API search needed: use `brave_web_search` for `site:zenodo.org "<publication_title>"` to find existing records.
 4. Never create a new Zenodo record (`zenodo_publish.py` without `--doi`) for a publication that already has one. This creates DUPLICATE records.
@@ -111,7 +111,9 @@ python _zenodo_publish.py --doi "<existing_doi>"
 
 After duplicate check passes, use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
 ```bash
-python "_zenodo_publish.py (pull from R2: `qnfo/tools/zenodo_publish.py`)"
+# Pull from R2: npx wrangler r2 object get qnfo/tools/zenodo_publish.py --remote --file=_zenodo_publish.py
+python _zenodo_publish.py
+# Discard: Remove-Item _zenodo_publish.py
 ```
 
 ---

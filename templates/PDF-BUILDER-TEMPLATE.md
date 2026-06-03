@@ -1,10 +1,10 @@
 ---
 template: PDF-BUILDER-TEMPLATE
-version: 1.0
+version: 1.1
 date: 2026-06-03
 ---
 
-# PDF-BUILDER TEMPLATE v1.0
+# PDF-BUILDER TEMPLATE v1.1
 # Template for generating PDFs from Markdown files via build_pdf.py
 # Fill with: markdownPath, outputPdfPath, cssPath, title, noMath, htmlOnly
 #
@@ -118,7 +118,9 @@ Present to the parent agent:
 [Concise summary of what will be built]
 
 PowerShell command:
-  python "G:\My Drive\prompts\pdf\build_pdf.py" --input "..."
+  # Pull from R2: npx wrangler r2 object get qnfo/tools/build_pdf.py --remote --file=_build_pdf.py
+  python _build_pdf.py --input "..."
+  # Discard: Remove-Item _build_pdf.py
 
 ### What This Will Do
 - Read: [input file]
@@ -192,4 +194,4 @@ All output must be labeled `[LLM-INFERRED]` since you cannot verify filesystem s
 
 ---
 
-*PDF-BUILDER-TEMPLATE v1.0 -- Subagent template for Markdown-to-PDF pipeline commands.*
+*PDF-BUILDER-TEMPLATE v1.1 -- Subagent template for Markdown-to-PDF pipeline commands.*
