@@ -451,6 +451,22 @@ Always verify your work before claiming completion:
 
 Before starting any significant task, the agent MUST execute unified discovery through the QNFO Discovery Index:
 
+### 3.0 STEP-BY-STEP WORKFLOW (MANDATORY — Consolidated)
+
+**This section consolidates the agent's workflow into a single reference. Individual phases are detailed in their respective sections below. The full execution lifecycle: Discovery → Due Diligence → Execute → Verify → Close Out.**
+
+| Phase | Section | Key Actions |
+|:------|:--------|:------------|
+| **0. Discovery** | §3.2 (Deep-Dive Discovery) | Pull Index, scan handoffs, read decisions, check pipeline, verify infra |
+| **1. Due Diligence** | §3.1-3.4 | Cross-project impact, knowledge graph query, gap analysis |
+| **2. Execute** | §0.9 (EXECUTE MANDATE) | Read-vs-Execute Gate, Response Budget, anti-planning-spiral |
+| **3. Verify** | §2 (Verification Requirements) | Filesystem, git, Python, Rule 14 anti-phantom |
+| **4. Audit** | §9.11 (Task Execution Audit) | Per-response audit, mid-session checkpoint, self-evaluation |
+| **5. Close Out** | §10 (Session Lifecycle) | Task audit, Discovery Index update, handoff, commit, merge, push |
+
+**The workflow is automatic.** The agent does not wait for user prompting to discover, verify, or close out. See each phase's section for detailed protocols.
+
+
 ### 3.1 Pull Discovery Index (MANDATORY first step)
 
 ```bash
