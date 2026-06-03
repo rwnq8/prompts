@@ -132,7 +132,7 @@ Tests: 10/10 passing
 ---
 
 **For sessions that produced a publication/release:**
-- [ ] **PDF generated:** `build_pdf.py` executed successfully (PDF built from source) OR manual PDF generation confirmed (Persistent Preference — PDF attached to releases)
+- [ ] **PDF generated:** `pdf-builder` skill executed successfully (`skill_view('pdf-builder')`) OR manual PDF generation confirmed (Persistent Preference — PDF attached to releases)
 - [ ] **PDF in release:** `npx wrangler r2 object get qnfo/releases/<project>/<version>/paper.pdf --remote` confirms PDF exists
 - [ ] **GATE: If PDF is missing from release assets, close-out is BLOCKED.** Retroactively upload before completing.
 

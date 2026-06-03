@@ -205,14 +205,15 @@ When you need on-demand workflow knowledge, load QNFO custom skills via `read()`
 **Pattern:**
 ```markdown
 ## Embedded Scripts
-> **SELF-CONTAINED:** Before executing any script, verify it exists at its canonical path.
-| Script | Canonical Path | Purpose |
-|:-------|:---------------|:--------|
-| `script.py` | `G:\My Drive\prompts\tools\script.py` | Description |
+> **SELF-CONTAINED:** Scripts are canonical on R2 (`qnfo/tools/`). Pull ephemerally before use.
+| Script | R2 Canonical | Execution Cache | Purpose |
+|:-------|:-------------|:----------------|:--------|
+| `script.py` | `qnfo/tools/script.py` | `_script.py` (ephemeral) | Description |
 
 ### Bootstrap Protocol
-Test-Path "G:\My Drive\prompts\tools\script.py"
-# If MISSING: canonical source is G:\My Drive\prompts\tools\ (git version-controlled)
+# Pull from R2: npx wrangler r2 object get qnfo/tools/script.py --remote --file=_script.py
+# Verify pull: Test-Path _script.py
+# If MISSING: re-pull from R2. Canonical source is `qnfo/tools/`.
 ```
 
 **Applies to ALL generated prompts referencing external scripts.** When generating a prompt:

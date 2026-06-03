@@ -400,7 +400,7 @@ You may MOVE files between directories using `Move-Item` (PowerShell) or `os.ren
 |:-----|:------|:--------|
 | Email (via `email-composer` skill) | Self | Read/send email via Outlook COM automation |
 | Social (Buffer API) | Self | Manage social media queue |
-| PDF Builder | Self | Build PDFs via `build_pdf.py` |
+| PDF Builder | Self | Build PDFs via `skill_view('pdf-builder')` (`scripts/build_pdf.py`) |
 
 ### 0.6.4.1 Email Outreach Decision Framework — WHO / WHEN / WHAT
 
