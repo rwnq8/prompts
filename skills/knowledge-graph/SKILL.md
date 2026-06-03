@@ -1,18 +1,19 @@
 ---
 name: knowledge-graph
-description: QNFO Knowledge Graph querying for due diligence, impact analysis, and cross-system discovery. Use when agents need to understand project dependencies, trace audit trails, or answer "what depends on X?" questions.
+description: QNFO Knowledge Graph querying for due diligence, impact analysis, and cross-system discovery. Use when agents need to understand project dependencies, trace audit trails, or answer "what depends on X?" questions. Now with POST /sync for live graph updates.
 ---
 
-# QNFO Knowledge Graph — Agent Skill v1.0.1
+# QNFO Knowledge Graph — Agent Skill v1.1
 
 > **SELF-CONTAINED:** This skill provides access to the QNFO ecosystem graph database.
 > All queries go through the deployed Cloudflare Worker API. No local installation required.
 
 ## Overview
 
-The QNFO Knowledge Graph is a Neo4j-backed graph database connecting every entity in the QNFO ecosystem: projects, papers, Cloudflare resources, agent sessions, decisions, templates, skills, and more. It enables impact analysis, complete audit trails, and cross-system discovery that are impossible with flat files alone.
+The QNFO Knowledge Graph is a D1-backed graph database (Cloudflare-native, zero external services) connecting every entity in the QNFO ecosystem: projects, papers, Cloudflare resources, agent sessions, decisions, templates, skills, and more. It enables impact analysis, complete audit trails, and cross-system discovery that are impossible with flat files alone.
 
-**Deployed API:** `https://graph-api.q08.workers.dev` (Cloudflare Worker backed by D1)
+**Deployed API:** `https://graph-api.q08.workers.dev` (Cloudflare Worker, D1 qnfo-graph)
+**Current State:** 183 nodes, 282 edges, 8 API endpoints (as of 2026-06-03)
 
 ## When to Use This Skill
 
@@ -117,6 +118,52 @@ Returns:
   "maxDepth": 1
 }
 ```
+
+### POST /sync
+**Phase 2 — Live Graph Updates.** Bulk upsert or delete nodes and edges. Use this to seed new entities after session close-out or ecosystem changes.
+
+```python
+import urllib.request, json
+
+# Bulk upsert (idempotent — safe to re-run)
+body = json.dumps({
+    "action": "bulk",
+    "nodes": [
+        {"id": "project-new-project", "label": "Project", "name": "new-project",
+         "properties": {"status": "active", "phase": "1", "priority": "HIGH"}},
+        {"id": "decision-adr-020", "label": "Decision", "name": "ADR-020: Something",
+         "properties": {"decision_id": "ADR-020", "date": "2026-06-03", "status": "accepted"}}
+    ],
+    "edges": [
+        {"id": "edge-001", "source_id": "project-new-project", "target_id": "decision-adr-020",
+         "relationship_type": "AFFECTED_BY", "properties": {}}
+    ]
+}).encode()
+
+r = urllib.request.Request("https://graph-api.q08.workers.dev/sync",
+    data=body, method="POST",
+    headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"})
+result = json.loads(urllib.request.urlopen(r, timeout=15).read())
+# Returns: {action, upserted_nodes, upserted_edges, deleted_nodes, deleted_edges, errors, total_changes}
+```
+
+**Delete a node or edge:**
+```python
+body = json.dumps({
+    "action": "delete",
+    "nodes": [{"id": "decision-test-001", "_delete": True}],
+    "edges": [{"id": "edge-001", "_delete": True}]
+}).encode()
+```
+
+**Reseed the entire graph** (pull latest Discovery Index + Decision Log from R2, push to /sync):
+```bash
+cd G:\My Drive\projects\qnfo-knowledge-graph
+npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote --file=_decision_log.md
+python seed_live_d1.py
+```
+This script parses the Discovery Index and Decision Log, creates node/edge payloads, and POSTs to /sync for live D1 updates. No manual SQL needed.
 
 ## Query Recipes (Common Patterns)
 
@@ -228,12 +275,17 @@ OWNS, PRODUCED, DEPLOYED_TO, USES_TEMPLATE, USES_SKILL, MADE_DECISION, COMMITTED
 
 | Script | Canonical Path | Purpose |
 |:-------|:---------------|:--------|
-| `seed_graph.py` | `G:\My Drive\projects\qnfo-knowledge-graph\seed_graph.py` | Generate seed Cypher from discovery index |
-| `ingest_session.py` | `G:\My Drive\projects\qnfo-knowledge-graph\ingest_session.py` | Parse DeepChat exports into graph nodes |
+| `seed_live_d1.py` | `G:\My Drive\projects\qnfo-knowledge-graph\seed_live_d1.py` | **Primary seeder:** pulls Discovery Index + Decision Log from R2, generates nodes/edges, POSTs to /sync for live D1 updates. Phase 2 pipeline. |
+| `seed_graph.py` | `G:\My Drive\projects\qnfo-knowledge-graph\seed_graph.py` | Generate seed Cypher from discovery index (legacy — prefer seed_live_d1.py) |
+| `ingest_session.py` | `G:\My Drive\projects\qnfo-knowledge-graph\ingest_session.py` | Parse DeepChat exports into AgentSession + MENTIONS nodes |
 
 ### Bootstrap Protocol
 ```powershell
-Test-Path "G:\My Drive\projects\qnfo-knowledge-graph\seed_graph.py"
+# Pull seed scripts from R2
+npx wrangler r2 object get qnfo/tools/seed_live_d1.py --remote --file=_seed_live_d1.py
+
+# Or use the local copy
+Test-Path "G:\My Drive\projects\qnfo-knowledge-graph\seed_live_d1.py"
 Test-Path "G:\My Drive\projects\qnfo-knowledge-graph\ingest_session.py"
 # If MISSING: check git repo — these are version-controlled in the qnfo-knowledge-graph project
 ```
@@ -245,10 +297,10 @@ Test-Path "G:\My Drive\projects\qnfo-knowledge-graph\ingest_session.py"
 | **API unreachable** | Graph API at `graph-api.q08.workers.dev` may be cold-starting (~90ms avg, no cold start penalty observed). Retry once after 2s. If still down: mark query results as `[GRAPH-UNAVAILABLE]`, proceed with local filesystem discovery. |
 | **Node not found** | `/nodes/X` and `/impact/X` return HTTP 200 with `{"error": "Node 'X' not found"}` (NOT 404). Check for `error` key in response. Flag as `[GRAPH-MISSING: node X not yet in graph]`. Do NOT fabricate. |
 | **Impact returns error** | API returns `{"error": "..."}` for unknown nodes. Code MUST check for `error` key BEFORE accessing `totalDependents`. Pattern: `if 'error' in impact: handle; elif impact.get('totalDependents',0) > 0: ...` |
-| **Pagination truncation** | `/nodes` endpoint hard-limits at 100 results. Currently 25 of 125 nodes are invisible. For complete enumeration, use `/nodes?label=X` to filter by type, or POST `/query` with custom SQL. |
+| **Pagination truncation** | `/nodes` endpoint hard-limits at 100 results. Currently ~83 of 183 nodes are invisible. For complete enumeration, use `/nodes?label=X` to filter by type, or POST `/query` with custom SQL. |
 | **Empty impact (no dependents)** | No dependents found. Could mean (a) truly no dependents, or (b) graph isn't fully populated. Flag: `[GRAPH-IMPACT-EMPTY: verify with filesystem]`. |
 | **Rate limited** | The Worker has generous limits. If rate-limited, wait 5s and retry. |
-| **Stale data** | The graph may lag behind reality (Phase 2 sync pipeline not yet live). Always cross-reference with `_discovery_index.json` and local filesystem. Graph results are advisory, not authoritative. |
+| **Stale data** | The graph may lag behind reality (sync gap between ecosystem changes and reseed). Always cross-reference with `_discovery_index.json` and local filesystem for critical decisions. Trigger a reseed if the graph is >24h stale: `POST /sync` with latest data. |
 | **Query syntax error** | POST /query returns error. Verify SQL syntax against the D1 schema above. Test with a simpler query first. |
 
 ## Verification Gate
@@ -262,5 +314,6 @@ Before acting on graph results:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| v1.1 | 2026-06-03 | **Phase 2/3 Integration:** Added POST /sync endpoint documentation (bulk upsert/delete). Added reseed protocol (seed_live_d1.py → POST /sync pipeline). Updated graph stats (183 nodes, 282 edges, 8 endpoints). Added seed_live_d1.py to embedded scripts. Updated stale data handling (sync pipeline now live). Architecture corrected: D1-native, not Neo4j-backed. |
 | v1.0.1 | 2026-06-01 | **Edge Case Audit:** Corrected Failure Handling — API returns HTTP 200 with `error` key for missing nodes (not 404). Added Pagination Truncation entry (100-node limit). Added Impact Returns Error entry. Verified against live API (125 nodes, 132 edges, ~95ms avg latency). |
 | v1.0 | 2026-06-01 | Initial skill. Graph API integration, query recipes, due diligence workflow. |
