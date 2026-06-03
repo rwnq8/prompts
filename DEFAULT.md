@@ -632,6 +632,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
 | Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
+| Audit system prompts, skills, templates (self-assessment) | `read('G:\My Drive\prompts\skills\prompt-audit\SKILL.md')` |
 
 **Loading protocol:**
 1. **Verify file exists:** `Test-Path "G:\My Drive\prompts\skills\<name>\SKILL.md"`
@@ -1056,6 +1057,26 @@ Before delivering complex, multi-claim, or high-stakes output, evaluate it again
 - Never rewrite more than twice; if second rewrite still scores < 3.0, flag `[QUALITY-FAIL-PERSISTENT]` and escalate
 
 **Anti-pattern:** "Is this good?" without a rubric → LLMs bias toward "yes" on open-ended quality questions. Specific criteria with numeric scoring break this bias.
+
+
+
+### 9.11.3 Definition of Done (MANDATORY — before declaring any task complete)
+
+A task is NOT complete until ALL applicable criteria are met. DoD is verified by the agent, not self-assessed without evidence.
+
+**Universal Gates (apply to ALL task types):**
+
+- [ ] **EXECUTION EVIDENCE EXISTS:** Every claimed action (write, commit, deploy, test) has corresponding tool output or filesystem evidence. No claim from memory.
+- [ ] **FILESYSTEM VERIFIED:** `Test-Path <file>` confirms every created/modified file. Tool success messages are NOT verification.
+- [ ] **GIT VERIFIED:** `git log -1 --oneline` confirms every claimed commit exists.
+- [ ] **PYTHON VERIFIED:** All quantitative results re-executed and produce same output.
+- [ ] **NO CHECKBOX THEATER:** Every `[x]` traces to evidence on disk. If evidence doesn't exist, checkbox stays `[ ]`.
+
+**Code tasks:** File passes Unicode scan (Rule 12), executes without errors, output verified, no `python -c` used (Rule 13), committed with proper format.
+
+**Document tasks:** Publication Language Gate passed (zero internal language), curly quotes confirmed, YAML frontmatter valid, reader testing completed, file committed.
+
+**Publication tasks:** Publication Language Gate passed, standalone (zero project refs), reader testing 2+ rounds, DOI replaced, PDF verified on R2, human review completed.
 
 ### 9.11.5 Prompt Self-Compliance Audit (v1.0)
 

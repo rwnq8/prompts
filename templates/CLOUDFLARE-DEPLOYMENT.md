@@ -1,6 +1,7 @@
 ---
 template: CLOUDFLARE-DEPLOYMENT
 version: "2.1"
+date: 2026-06-03
 parameters:
   - name: action
     type: string

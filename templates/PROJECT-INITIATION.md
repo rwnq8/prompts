@@ -1,6 +1,7 @@
 ---
 template: PROJECT-INITIATION
 version: "1.0"
+date: 2026-06-03
 ---
 
 # Project Initiation Gate — [IDEA NAME]

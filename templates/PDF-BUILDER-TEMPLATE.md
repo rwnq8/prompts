@@ -1,6 +1,7 @@
 ---
 template: PDF-BUILDER-TEMPLATE
 version: 1.0
+date: 2026-06-03
 ---
 
 # PDF-BUILDER TEMPLATE v1.0

@@ -1,6 +1,7 @@
 ---
 template: RESEARCH-PROTOCOL
 version: 1.0
+date: 2026-06-03
 ---
 
 # RESEARCH-PROTOCOL: Deep-Dive Paper Research Methodology (v1.0)

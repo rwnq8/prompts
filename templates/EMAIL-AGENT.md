@@ -1,6 +1,7 @@
 ---
 template: EMAIL-AGENT
 version: 1.4
+date: 2026-06-03
 ---
 
 # EMAIL-AGENT TEMPLATE v1.4

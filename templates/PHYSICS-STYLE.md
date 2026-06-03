@@ -1,6 +1,7 @@
 ---
 template: PHYSICS-STYLE
 version: 1.0
+date: 2026-06-03
 ---
 
 # Physics Writing Style — "No Bullshit" (v1.0)

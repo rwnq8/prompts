@@ -1,6 +1,7 @@
 ---
 template: DEFINITION-OF-DONE
 version: "2.0"
+date: 2026-06-03
 ---
 
 # Definition of Done — [PROJECT NAME]
@@ -60,10 +61,10 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] Reader testing: 2 rounds minimum, no truncation gaps (§3.1)
 - [ ] Curly quotes, YAML, author block per §11
 - [ ] `[DOI-PENDING]` replaced with actual DOI
-- [ ] PDF generated and uploaded to GitHub Release as asset (Persistent Preference — PDF attached to releases)
-- [ ] Release created via `gh release create` with both Markdown source and PDF attached
-- [ ] PDF presence verified with `gh release view --json assets`
-- [ ] Copy to `GitHub Releases (via gh release create)\YYYY\MM\` verified with Test-Path
+- [ ] PDF uploaded to R2: `npx wrangler r2 object put qnfo/releases/<project>/<version>/paper.pdf --file=<path> --remote`
+- [ ] Release registered in Discovery Index with version, DOI, R2 path, and publication date
+- [ ] PDF presence verified with `npx wrangler r2 object get qnfo/releases/<project>/<version>/paper.pdf --remote`
+- [ ] Markdown source also uploaded to R2 same path for archival completeness
 - [ ] Human review (G4) completed
 - [ ] File committed
 - [ ] UNIVERSAL GATES above satisfied
@@ -97,10 +98,10 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] **Analytics verified active:** For deployed sites, confirm analytics data is flowing — either Cloudflare zone analytics returning non-zero requests OR GA4 Real-Time showing test visit. No analytics confirmation = site is live but blind.
 - [ ] All assets load from live URL (zero 404s on JS/CSS/images — verify with browser network tab)
 - [ ] `<title>`, `<meta description>`, and Open Graph tags present in `<head>`
-- [ ] `.nojekyll` file present at root (GitHub Pages requirement)
+- [ ] Cloudflare Pages deployment verified: `npx wrangler pages deployment list --project <name>` shows active deployment
 - [ ] Test suite executed with zero failures — verified by re-execution, NOT by checking file existence
-- [ ] GitHub Wiki updated with any issues found during testing (`OWNER/REPO.wiki.git`)
-- [ ] All P1 GitHub Issues triaged (close completed, migrate to next sprint, or explicitly defer with rationale in Issue comment)
+- [ ] Issues/learnings logged to D1 `qnfo-audit` or R2 `qnfo/audit/learnings/` for cross-project reference
+- [ ] All P1 tasks in Cloudflare D1 backlog triaged (close completed, migrate to next cycle, or explicitly defer with rationale)
 - [ ] File committed with format: `ACTION:[CREATE|EDIT] FILE: path RATIONALE:reason`
 - [ ] `git log -1 --oneline` confirms commit exists
 - [ ] UNIVERSAL GATES above satisfied
@@ -121,8 +122,8 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
   - [ ] If NO analytics provider confirmed: `[BLOCKED: analytics-not-verified]`
 - [ ] `cf-ray` header confirmed present (proxied traffic flowing)
 - [ ] DNS CNAME record verified with `dig` or `curl -sI`
-- [ ] Deployment evidence posted to GitHub Issue (deployment URL, analytics status, verification output)
-- [ ] Original source (GitHub Pages / prior host) still functional (dual-running until cutover)
+- [ ] Deployment evidence logged to R2 state: deployment URL, analytics status, verification output
+- [ ] Original source (prior host if migrating) still functional (dual-running until Cloudflare cutover verified)
 - [ ] Free tier thresholds checked: no cost risk from deployment
 - [ ] Test visit from at least 2 geographic locations (generate traffic via browser + curl)
 - [ ] UNIVERSAL GATES above satisfied

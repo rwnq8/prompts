@@ -1,6 +1,7 @@
 ---
 template: RESEARCH-LAUNCH
 version: 1.0
+date: 2026-06-03
 description: "Research project launcher — single entry point for all research. Takes a research idea and generates the complete project initialization prompt for the Projects agent. Hides ALL pipeline complexity (STAGE-1 through STAGE-4)."
 ---
 

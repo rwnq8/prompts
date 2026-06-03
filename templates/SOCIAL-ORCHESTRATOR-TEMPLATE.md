@@ -1,6 +1,7 @@
 ---
 template: SOCIAL-ORCHESTRATOR-TEMPLATE
 version: 1.1
+date: 2026-06-03
 ---
 
 # SOCIAL-ORCHESTRATOR TEMPLATE v1.1

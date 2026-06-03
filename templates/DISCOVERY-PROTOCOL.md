@@ -1,6 +1,7 @@
 ---
 template: DISCOVERY-PROTOCOL
 version: 1.0
+date: 2026-06-03
 ---
 
 # DISCOVERY-PROTOCOL TEMPLATE — v1.0

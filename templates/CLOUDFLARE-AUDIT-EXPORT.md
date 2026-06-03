@@ -1,6 +1,7 @@
 ---
 template: CLOUDFLARE-AUDIT-EXPORT
 version: "1.0"
+date: 2026-06-03
 parameters:
   - name: session_date
     type: string

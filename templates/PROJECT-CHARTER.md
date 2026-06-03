@@ -1,6 +1,7 @@
 ---
 template: PROJECT-CHARTER
 version: "1.0"
+date: 2026-06-03
 ---
 
 # [PROJECT NAME] — Project Charter

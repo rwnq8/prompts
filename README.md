@@ -30,7 +30,7 @@
 ### Ongoing (occasional)
 - Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `_system_audit.py` (pull from R2: `qnfo/tools/system_audit.py`)
 - Check `ARCHITECTURE.md` for how the system is designed
-- Check GitHub Discussions (#32+) for Architecture Decision Records
+- Check R2 `qnfo/audit/decisions/DECISION-LOG.md` for Architecture Decision Records (pull via wrangler)
 
 ### Everything Else
 **You never need to open, edit, or worry about any other file in this directory.** If an agent creates files you didn't ask for, tell it to explain or delete them.
@@ -85,7 +85,7 @@
 prompts\
 ├── README.md                     ← YOU ARE HERE (human reference)
 ├── ARCHITECTURE.md               ← System taxonomy + agent config (LLM + human reference)
-├── CHANGELOG.md                  ← DEPRECATED — use GitHub Releases + Discussions
+├── CHANGELOG.md                  ← DEPRECATED — use Cloudflare R2 releases (qnfo/releases/)
 │
 ├── META-PROMPT-DEEPSEEK.md       ← THE FACTORY: generates all system prompts
 ├── DEFAULT.md                    ← System prompt for Projects agent
@@ -93,7 +93,7 @@ prompts\
 │
 ├── tools\                         ← Utility scripts (system_audit.py)
 │
-├── .github\                       ← GitHub-native infrastructure
+├── [REMOVED]                     ← .github/ deleted — Cloudflare-native infrastructure only
 │   ├── workflows\                 ← CI/CD (pdf-release, zenodo-publish, etc.)
 │   └── ISSUE_TEMPLATE\            ← Issue templates (project-state, handoff, task, bug, audit)
 │
@@ -111,7 +111,7 @@ prompts\
 ├── scholar\                       ← Scholar pipeline (4 stages)
 ├── pdf\                           ← PDF builder workflow
 ├── prompts.json                   ← Auto-generated template cache
-└── audit-reports\                 ← DEPRECATED — use GitHub Issues (label: audit)
+└── audit-reports\                 ← DEPRECATED — use Cloudflare D1 `qnfo-audit` + R2 audit trails
 ```
 
 ## File Ownership

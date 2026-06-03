@@ -1,6 +1,7 @@
 ---
 template: BLING-USABILITY-AUDIT
 version: "1.1"
+date: 2026-06-03
 description: Structured usability audit for UI changes — combines functional BLIND testing with visual BLING (polish/aesthetics) review AND Discovery Momentum (graph visibility & traversability). Answers the four core questions: what's working, what's not, what needs fixing, what can be improved.
 ---
 

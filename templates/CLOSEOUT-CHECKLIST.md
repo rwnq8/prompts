@@ -1,6 +1,7 @@
 ---
 template: CLOSEOUT-CHECKLIST
 version: "5.0"
+date: 2026-06-03
 ---
 # SESSION CLOSEOUT OPERATING PROCEDURE — [PROJECT/TOPIC]
 
@@ -64,10 +65,10 @@ Every item must be verified and marked `[x]` before the session ends. `[!]` = bl
 
 ## PHASE D: REMOTE SYNC & BRANCH MANAGEMENT `[CODE-EXECUTED]`
 
-- [ ] **Remote sync confirmed:** All local commits are on `origin/main` (or `origin/feature/name` if PR pending)
-- [ ] **Verify with gh CLI:** `gh api repos/rwnq8/prompts/commits/main -q '.sha[0:7]'` matches local HEAD (or local HEAD is ahead by a PR)
-- [ ] **PR created and merged** (if using feature branch): `gh pr view --repo [owner/repo] [number] --json state` returns `"MERGED"`
-- [ ] **Feature branch deleted after merge:** `gh pr view` shows `--delete-branch` was used, or branch manually deleted
+- [ ] **Remote sync confirmed:** All local commits are on `origin/main` (or `origin/feature/name` if merge pending)
+- [ ] **Verify remote matches local:** `git log origin/main --oneline -1` matches `git log -1 --oneline` (or local HEAD is ahead awaiting merge)
+- [ ] **Feature branch merged to main:** `git branch --merged main` includes the feature branch; `git log main..feature/name` returns empty (no unique commits)
+- [ ] **Feature branch deleted after merge:** `git branch` shows no local `feature/name` branch; remote deleted with `git push origin --delete feature/name`
 - [ ] **No orphan branches:** `git branch -a` shows no feature branches that should have been deleted after merge
 
 **For project sessions:**
@@ -80,15 +81,15 @@ Every item must be verified and marked `[x]` before the session ends. `[!]` = bl
 
 ## PHASE E: TRACKING & DOCUMENTATION `[CODE-EXECUTED]`
 
-- [ ] **GitHub Issue tracking:** All work tracked via GitHub Issues with appropriate labels. Issue closed or updated with final status.
+- [ ] **Cloudflare D1 task tracking:** All work tracked via Cloudflare D1 `qnfo-audit` with appropriate tags. Tasks closed or updated with final status in backlog.
 - [ ] **Project board updated:** Items moved to appropriate column (Done/Closed)
 - [ ] **Wiki updated:** If methodology, learnings, or documentation was produced — Wiki pages created/updated
-- [ ] **Labels created:** Any new labels needed for tracking were created (`gh label create`)
+- [ ] **Labels created:** Any new labels needed for tracking were created (Cloudflare D1 tags or R2 metadata)
 - [ ] **Project-state Issue updated:** Final status recorded on the project-state Issue with branch, commit, and summary
 - [ ] **No stale documentation:** All referenced files, URLs, and paths are current and accessible
 
 **For prompt engineering sessions:**
-- [ ] **Wiki pages verified:** `gh api repos/rwnq8/prompts/wiki` (or browser load) confirms pages exist with correct content
+- [ ] **Wiki pages verified:** R2 `qnfo/audit/` or D1 `qnfo-audit` entries confirmed present with correct content
 - [ ] **New labels documented:** Any new GitHub labels created are noted in the project-state Issue
 
 **Blockers:** Unclosed Issues, unupdated Wiki, undocumented changes.
@@ -126,9 +127,9 @@ Tests: 10/10 passing
 
 ---
 
-**For sessions that produced a GitHub Release:**
-- [ ] **PDF generated:** `gh run list --repo qnfo/<name> --workflow=pdf-release.yml --limit 1` confirms success OR `build_pdf.py` executed (Persistent Preference — PDF attached to releases)
-- [ ] **PDF in release:** `gh release view <tag> --repo qnfo/<name> --json assets` confirms PDF attached
+**For sessions that produced a publication/release:**
+- [ ] **PDF generated:** `build_pdf.py` executed successfully (PDF built from source) OR manual PDF generation confirmed (Persistent Preference — PDF attached to releases)
+- [ ] **PDF in release:** `npx wrangler r2 object get qnfo/releases/<project>/<version>/paper.pdf --remote` confirms PDF exists
 - [ ] **GATE: If PDF is missing from release assets, close-out is BLOCKED.** Retroactively upload before completing.
 
 ---

@@ -1,6 +1,7 @@
 ---
 template: HANDOFF
 version: "1.2"
+date: 2026-06-03
 ---
 
 # Handoff: {{type}}

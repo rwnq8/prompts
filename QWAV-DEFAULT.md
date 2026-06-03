@@ -1130,6 +1130,73 @@ the per-project improvement from .
 
 ---
 
+## 9. EDGE CASES AND RECOVERY
+
+When encountering an unrecoverable error: write HALT.txt with timestamp, exact error message, last action attempted, and what was being attempted. Stop all operations immediately. Do not attempt workarounds that could compound the damage.
+
+- **Missing Discovery Index:** If `npx wrangler r2 object get qnfo/discovery/index.json --remote` fails: attempt rebuild from R2 enumeration + local filesystem enumeration. If rebuild also fails, flag session as `[DISCOVERY-UNAVAILABLE]` and operate in degraded mode with explicit caveats on all decisions.
+- **Cloudflare API failure:** If `wrangler` commands fail with authentication or network errors: retry up to 3 times with exponential backoff (2s/4s/8s). After 3 failures, escalate and mark task as `[BLOCKED: Cloudflare API]`. Never proceed with assumed state.
+- **R2 object not found:** If a referenced R2 path returns "key does not exist": (a) verify path spelling, (b) check Discovery Index for alternative paths, (c) search R2 with known prefixes. If truly missing, mark as `[R2-MISSING]` and log to audit trail.
+- **D1 database unavailable:** If `wrangler d1 execute` fails: check Cloudflare dashboard for database status. If database was deleted, check pipeline_status.json for recovery procedures. Mark affected tasks as `[BLOCKED: D1 unavailable]`.
+- **Cross-project state conflict:** If another agent may have modified the same resource (Discovery Index, R2 state, D1 records): always re-pull from R2 before writing. If conflict detected (resource modified since last pull), merge changes — never overwrite without review.
+- **Handoff staleness:** If a handoff document is >24 hours old: re-verify ALL tasks against live Cloudflare infrastructure (D1 row counts, R2 objects, Worker deployments) before executing. Trust live state over handoff documents.
+- **Worker deployment failure:** If `wrangler deploy` fails: check `wrangler tail` for logs, verify bundle size under limits, check for syntax errors. After 3 failed deploys, mark as `[BLOCKED: Worker deploy]` and document failure reason.
+- **Buffer API rate limit:** If Buffer social media API returns 429: wait for Retry-After header duration, retry once. If still rate-limited, mark posts as `[DEFERRED: rate-limit]` and log to R2 state.
+- **Git merge conflict on main:** If `git merge` produces conflicts: abort merge (`git merge --abort`), preserve feature branch intact, document conflict in handoff with specific conflicting files. Never force-resolve conflicts without human review.
+- **Token/credential expiration:** If `wrangler whoami` fails or returns expired: report immediately. Do not attempt to work around with stale credentials. Mark session as `[BLOCKED: credentials]`.
+
+
+## 10. STEP-BY-STEP WORKFLOW
+
+### Step 0: Discovery Index Pull (MANDATORY — FIRST action)
+
+```bash
+npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+```
+The Discovery Index is the single entry point for discovering ALL QNFO ecosystem assets. Do NOT proceed to any project-specific work until discovery is complete.
+
+### Step 0.5: Infrastructure State Verification Gate (ANTI-DUPLICATION GUARDRAIL)
+
+Before executing ANY pipeline, upload, deployment, or data-processing task:
+1. Query live Cloudflare infrastructure state for the relevant service
+2. Compare task claim against live state — if already complete, SKIP with `[ALREADY-COMPLETE]`
+3. TRUST LIVE INFRASTRUCTURE OVER HANDOFFS
+
+### Step 1: Portfolio Health Audit
+
+1. Pull latest Discovery Index and pipeline_status.json from R2
+2. Cross-reference all Cloudflare resources (D1, R2, Workers, Pages, Vectorize) against the index
+3. Flag discrepancies: `[MISSING-FROM-INDEX]`, `[STALE-INDEX-ENTRY]`, `[ORPHAN-RESOURCE]`
+4. Report portfolio health status before any project work
+
+### Step 2: Due Diligence
+
+For any project decision, query the Knowledge Graph (`skills/knowledge-graph/SKILL.md`) for:
+- Cross-project dependencies
+- Prior decisions affecting the target resource
+- Impact analysis of proposed changes
+
+### Step 3: Project Initiation or Handoff Receipt
+
+- **New projects:** Follow Project Initiation Protocol (§0.9.1) — create R2 state, R2 backlog, register in Discovery Index
+- **Existing projects:** Pull project state from R2, verify against live infrastructure
+- **Handoffs:** Pull from R2, verify ALL tasks against live state, note staleness
+
+### Step 4: Execution & Monitoring
+
+- Execute tasks in priority order
+- After each major action: update R2 state, verify with live infrastructure
+- Track all changes in session audit trail
+
+### Step 5: Close-Out
+
+1. Run Task Execution Audit — verify all claimed actions
+2. Update Discovery Index with any new/removed resources
+3. Export session audit trail to R2 `qnfo/audit/conversations/`
+4. Update handoff statuses
+5. Commit, merge, push all changes
+
+
 ## VERSION HISTORY
 
 | Version | Date | Changes |
