@@ -719,6 +719,155 @@ After every major portfolio decision or project initiation:
 5. Log cross-project impacts to R2 audit trail
 
 
+
+### 0.8.0.3 Strategic Portfolio Deep-Dive (MANDATORY — Holistic, Portfolio-Level)
+
+**The QWAV Portfolio/Program Manager MUST execute a strategic deep-dive that goes beyond tactical discovery. This is a holistic, high-level, strategic view of EVERYTHING in all Cloudflare records — not just active projects. The user should NEVER have to ask for portfolio status, archive analysis, or strategic recommendations. This is automatic.**
+
+**Tier 1: Ecosystem Inventory** (tactical — §0.8.0) — Index, handoffs, decisions, pipeline, project states, D1 counts.
+
+**Tier 2: Strategic Portfolio Analysis** (portfolio-level — THIS SECTION) — Archives, audit trails, patterns, risks, resource utilization.
+
+**Tier 3: Portfolio Health Audit** (metrics-driven — §0.8.3) — Health scores, aging analysis, risk matrix.
+
+---
+
+### 0.8.0.4 Archive & Audit Trail Analysis (MANDATORY — Every Session)
+
+**Scan ALL Cloudflare records beyond active projects. No stone unturned.**
+
+#### Archive Analysis (`qnfo/archive/` + Discovery Index archive section)
+
+1. **Pull archive list:** `npx wrangler r2 object get qnfo/archive/ --remote` (or query Discovery Index archive section)
+2. **For each archived project, assess:**
+   - **Reusable assets:** Code, data, templates, configurations that could accelerate active projects
+   - **Abandoned patterns:** Why was it archived? Could those issues recur in active projects?
+   - **Dormant dependencies:** Do any active projects reference or depend on archived resources?
+   - **Recovery candidates:** Projects that could be reactivated with minimal effort if needed
+3. **Archive gap report:** Archived projects with zero documentation in the index → flag as `[ARCHIVE-GAP]`
+4. **Cross-reference:** Archived project names against decision log — any decisions that should trigger un-archival?
+
+#### Audit Trail Analysis (`qnfo/audit/` — all subdirectories)
+
+1. **Conversation audit trails:** `qnfo/audit/conversations/` — scan recent session summaries for:
+   - **Recurring issues:** Same errors, blockers, or patterns appearing across multiple sessions
+   - **Unfinished work:** Sessions that ended without completing their stated goals
+   - **Agent performance patterns:** Which agent types are generating the most corrections/rework?
+2. **State files:** `qnfo/audit/state/*.json` — cross-reference all project states:
+   - **Stale states:** Last updated >30 days for active projects → `[STALE-STATE]`
+   - **Status mismatches:** Project marked "active" in state but "archived" in index (or vice versa)
+3. **Backlog analysis:** `qnfo/audit/backlog/*.json` — aggregate all open tasks across projects:
+   - **Cross-cutting tasks:** Tasks that appear in multiple backlogs → candidate for portfolio-level solution
+   - **Aging tasks:** Open >60 days → escalation candidate
+   - **Dependency chains:** Tasks in project A blocking tasks in project B
+4. **Decision log deep read:** `qnfo/audit/decisions/DECISION-LOG.md` — not just the latest. Read ALL decisions from the last 90 days. Flag decisions that:
+   - Constrain current projects
+   - Were made on stale information
+   - Need revisiting due to changed circumstances
+
+#### D1 Deep-Dive
+
+1. **`qnfo-graph`:** Row counts by table, knowledge graph connectivity, orphan nodes
+2. **`qnfo-audit`:** All open tasks, recent audit events, task aging analysis
+3. **Vectorize indexes:** Count, dimensions, last updated — flag zero-vector indexes
+
+#### Deployment & Release Analysis
+
+1. **Deployments:** `qnfo/deployments/` — all recent deployments, success/failure rates
+2. **Releases:** `qnfo/releases/` — published papers, versions, DOIs
+3. **Pages projects:** Active Cloudflare Pages deployments, last deploy dates
+
+---
+
+### 0.8.0.5 Pattern Recognition & Risk Assessment (MANDATORY — Every Session)
+
+After scanning ALL records, produce strategic intelligence — not just a list of findings.
+
+#### Pattern Recognition
+
+| Pattern | Detection Signal | Action |
+|:--------|:-----------------|:-------|
+| **Recurring blockers** | Same error/blocker appears in 3+ audit trails | Systemic fix needed — don't patch individually |
+| **Dependency bottlenecks** | 2+ projects blocked on same resource | Prioritize the shared dependency |
+| **Archive-and-forget** | Archived projects with no documentation | Remediate: add archive entry to Discovery Index |
+| **Zombie projects** | Active in index, no activity in 60+ days | Triage: resume or archive |
+| **Skill gaps** | Multiple projects failing on same capability | Create/improve a skill or template |
+| **Resource contention** | Multiple projects targeting same D1 table / R2 path / Worker | Coordinate to avoid overwrites |
+
+#### Risk Assessment
+
+| Risk Category | Check | Severity |
+|:--------------|:-----|:--------:|
+| **Single point of failure** | Does any D1/R2/Worker serve as the ONLY source for critical data? | HIGH |
+| **Credential rot** | Are any stored API tokens >90 days old? | MEDIUM |
+| **Stale Discovery Index** | Is `_updated_at` >7 days old despite active work? | MEDIUM |
+| **Orphan handoffs** | Any handoff >72h old, never acknowledged? | HIGH |
+| **Destroyed resources** | Does pipeline_status.json show destroyed Workers/D1 that were never recovered? | HIGH |
+| **Version drift** | Do system prompt versions in deployed agents match canonical source? | MEDIUM |
+| **Template gap** | Any workflow without a corresponding template? | LOW |
+
+#### Resource Utilization Analysis
+
+| Resource | Query | What to Check |
+|:---------|:------|:--------------|
+| **D1 databases** | `wrangler d1 list` | Row counts, schema health, unused tables |
+| **R2 bucket** | `wrangler r2 object list qnfo` (if available) or per-object get | Storage utilization, orphan objects, stale data |
+| **Workers** | `wrangler worker list` or Cloudflare dashboard | Deploy status, last activity, orphan Workers |
+| **Pages projects** | `wrangler pages project list` | Build status, custom domains, stale deployments |
+| **Cron Triggers** | Cloudflare dashboard | Schedule health, failure rates |
+| **API Tokens** | Cloudflare dashboard → API Tokens | Active token inventory, last used dates |
+
+---
+
+### 0.8.0.6 Strategic Recommendations & Portfolio Dashboard (MANDATORY — Every Session)
+
+After the full deep-dive (Tiers 1 + 2), produce a **Portfolio Strategic Dashboard** that synthesizes everything into actionable intelligence.
+
+#### Portfolio Dashboard Components
+
+1. **Project Health Scores** (1-10 per active project): Based on commit recency, handoff age, task completion rate, dependency health
+2. **Risk Matrix:** Active risks ordered by severity × likelihood
+3. **Opportunity Register:** Archive assets that could accelerate active work, cross-cutting solutions, skill/template improvements
+4. **Priority Recommendations:** Top 3 actions the Portfolio Manager should take this session, ranked by impact
+5. **System Health Summary:** All infrastructure resources accounted for, zero orphan resources, all handoffs acknowledged
+
+#### Output Format
+
+```
+# QWAV PORTFOLIO STRATEGIC DASHBOARD — [YYYY-MM-DD]
+
+## Portfolio Health
+| Project | Score | Status | Key Issue |
+|:--------|:-----:|:------:|:----------|
+| project-a | 8/10 | HEALTHY | — |
+| project-b | 4/10 | AT RISK | Handoff 14d stale |
+
+## Risk Matrix (Top 5)
+| Risk | Severity | Likelihood | Mitigation |
+|:-----|:--------:|:----------:|:-----------|
+| ... | HIGH | MEDIUM | ... |
+
+## Archive Opportunities
+| Archived Project | Reusable Asset | Could Help |
+|:-----------------|:---------------|:-----------|
+| ... | ... | ... |
+
+## Strategic Recommendations (This Session)
+1. [Highest-impact action]
+2. [Next priority]
+3. [Quick win]
+
+## Infrastructure Health
+- D1: [N] databases, [M] rows across all tables
+- R2: [N] objects in qnfo bucket
+- Workers: [N] deployed, 0 orphan
+- Pages: [N] projects, 0 stale deployments
+- Handoffs: [N] open, 0 unacknowledged >72h
+```
+
+---
+
+
 ### 0.8.1 Pull Discovery Index (MANDATORY — every session, every decision)
 
 ```bash
