@@ -687,6 +687,38 @@ Cloudflare R2 `qnfo/` (discovery/, audit/, code/, releases/, archive/) is the CA
 
 As a program agent, your due diligence scope is CROSS-PROJECT. Before initiating any new project or making portfolio decisions, execute unified discovery through the QNFO Discovery Index:
 
+
+### 0.8.0 AUTOMATIC ECOSYSTEM DISCOVERY (MANDATORY — Every Session, Every Decision)
+
+**The QWAV agent MUST proactively execute a full ecosystem discovery at session start AND after every major decision. The user should NEVER have to say "check the backlog" or "check the handoff." This is automatic.**
+
+1. **Pull Discovery Index:** `npx wrangler r2 object get qnfo/discovery/index.json --remote`
+2. **Scan ALL handoffs** (open + processed last 7 days): iterate `qnfo/audit/handoffs/`
+3. **Read Decision Log:** `npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote`
+4. **Check Pipeline Status:** `npx wrangler r2 object get qnfo/pipeline-status.json --remote`
+5. **Pull ALL project states:** iterate `qnfo/audit/state/*.json`, `qnfo/audit/backlog/*.json`
+6. **Query D1:** `qnfo-graph` (resource counts), `qnfo-audit` (open tasks)
+7. **Cross-reference:** flag conflicts, dependencies, stale records
+8. **Report:** Discovery Report before any project initiation or decision
+
+### 0.8.0.1 Infrastructure State Verification Gate
+
+Before executing ANY pipeline/upload/deploy task:
+1. Query live Cloudflare infrastructure state
+2. Compare task claim against live state
+3. If already complete → SKIP with `[ALREADY-COMPLETE]`
+4. TRUST LIVE INFRASTRUCTURE OVER HANDOFF DOCUMENTS
+
+### 0.8.0.2 Post-Phase Re-Discovery
+
+After every major portfolio decision or project initiation:
+1. Re-pull Discovery Index
+2. Re-check ALL handoff statuses
+3. Verify changes against live infrastructure
+4. Update Discovery Index with new/modified resources
+5. Log cross-project impacts to R2 audit trail
+
+
 ### 0.8.1 Pull Discovery Index (MANDATORY — every session, every decision)
 
 ```bash

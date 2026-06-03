@@ -16,12 +16,12 @@
 | **QWAV agent → System Prompt** | Entire contents of `QWAV-DEFAULT.md` |
 | **Prompts agent → System Prompt** | Entire contents of `META-PROMPT-DEEPSEEK.md` |
 | **Each Subagent → Description** | Short block from `agents/subagents/EXPLORER-SUBAGENT.md` (etc.) |
-| **Agent names, tools, slot IDs** | See `ARCHITECTURE.md` §1 for the exact values |
+| **Agent names, tools, slot IDs** | See Discovery Index (`qnfo/discovery/index.json` on R2) for current slot IDs |
 
 ### Reference files (read, don't paste)
 | File | Purpose |
 |:-----|:--------|
-| `ARCHITECTURE.md` (v1.4) | System design, agent taxonomy, slot IDs, sandboxing model |
+| *[REMOVED]* | Agent taxonomy, slot IDs → Discovery Index (`qnfo/discovery/index.json`). System design → META-PROMPT-DEEPSEEK.md §5. |
 | `agents/PROJECTS-AGENT.md` | Detailed Projects agent execution spec (LLM reads this, you don't need to) |
 | `agents/PROMPTS-AGENT.md` | Detailed Prompts agent execution spec |
 | `agents/QWAV-AGENT.md` | Detailed QWAV agent execution spec |
@@ -29,7 +29,7 @@
 
 ### Ongoing (occasional)
 - Type **"SYSTEM HEALTH CHECK"** in any agent chat to run `_system_audit.py` (pull from R2: `qnfo/tools/system_audit.py`)
-- Check `ARCHITECTURE.md` for how the system is designed
+- System design is documented in META-PROMPT-DEEPSEEK.md §5 (Prompt Output Template) and the Discovery Index (`qnfo/discovery/index.json` on R2)
 - Check R2 `qnfo/audit/decisions/DECISION-LOG.md` for Architecture Decision Records (pull via wrangler)
 
 ### Everything Else
@@ -84,14 +84,12 @@
 ```
 prompts\
 ├── README.md                     ← YOU ARE HERE (human reference)
-├── ARCHITECTURE.md               ← System taxonomy + agent config (LLM + human reference)
 ├── CHANGELOG.md                  ← DEPRECATED — use Cloudflare R2 releases (qnfo/releases/)
 │
 ├── META-PROMPT-DEEPSEEK.md       ← THE FACTORY: generates all system prompts
 ├── DEFAULT.md                    ← System prompt for Projects agent
 ├── QWAV-DEFAULT.md               ← System prompt for QWAV agent
 │
-├── tools\                         ← Utility scripts (system_audit.py)
 │
 ├── [REMOVED]                     ← .github/ deleted — Cloudflare-native infrastructure only
 │   ├── workflows\                 ← CI/CD (pdf-release, zenodo-publish, etc.)
@@ -108,19 +106,17 @@ prompts\
 │
 ├── templates\                     ← Prompt templates
 ├── email\                         ← Email agent workflow
-├── scholar\                       ← Scholar pipeline (4 stages)
-├── pdf\                           ← PDF builder workflow
-├── prompts.json                   ← Auto-generated template cache
-└── audit-reports\                 ← DEPRECATED — use Cloudflare D1 `qnfo-audit` + R2 audit trails
+├── prompts.json                   ← Auto-generated (gitignored — regenerate via rebuild_prompts_json.py from R2)
+└── audit-reports\                 ← DEPRECATED — use Cloudflare D1 `qnfo-audit` + R2 audit trails. All audit on R2.
 ```
 
 ## File Ownership
 
 | Audience | Files |
 |:---------|:------|
-| **HUMAN** (you) | `README.md`, `ARCHITECTURE.md` |
+| **HUMAN** (you) | `README.md`, Discovery Index (R2), META-PROMPT-DEEPSEEK.md |
 | **HUMAN — paste into DeepChat** | `DEFAULT.md`, `QWAV-DEFAULT.md`, `META-PROMPT-DEEPSEEK.md`, subagent descriptions from `agents/subagents/` |
-| **HUMAN — reference only** | `ARCHITECTURE.md` (system design, agent taxonomy, slot IDs) |
+| **HUMAN — reference only** | Discovery Index (`qnfo/discovery/index.json` on R2) — system design, agent taxonomy, slot IDs |
 | **LLM** (agents) | Everything else |
 
 **If you're ever confused about a file:** ask any agent "Why does this file exist? Is it for me or for you?"

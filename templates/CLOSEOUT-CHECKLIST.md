@@ -82,6 +82,10 @@ Every item must be verified and marked `[x]` before the session ends. `[!]` = bl
 ## PHASE E: TRACKING & DOCUMENTATION `[CODE-EXECUTED]`
 
 - [ ] **Cloudflare D1 task tracking:** All work tracked via Cloudflare D1 `qnfo-audit` with appropriate tags. Tasks closed or updated with final status in backlog.
+- [ ] **Cross-project discovery executed:** Discovery Index re-pulled, ALL open handoffs checked for conflicts with this session's changes
+- [ ] **Downstream impacts documented:** Any project that depends on resources modified this session has been noted in R2 audit trail
+- [ ] **Discovery Index updated:** Any new/removed/modified resources registered, handoff statuses updated, project states current
+- [ ] **No orphan records:** All handoffs this session created or updated are properly registered and cross-referenced
 - [ ] **Project board updated:** Items moved to appropriate column (Done/Closed)
 - [ ] **Wiki updated:** If methodology, learnings, or documentation was produced — Wiki pages created/updated
 - [ ] **Labels created:** Any new labels needed for tracking were created (Cloudflare D1 tags or R2 metadata)

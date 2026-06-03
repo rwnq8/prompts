@@ -42,7 +42,7 @@ parameters:
   - name: related_issues
     type: string
     required: false
-    description: "GitHub Issues referenced in this session"
+    description: "Cloudflare D1 tasks and R2 audit records referenced in this session"
   - name: r2_bucket
     type: string
     required: false

@@ -510,6 +510,59 @@ except Exception as e:
 
 **Skill:** Load `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` for full API reference and query recipes.
 
+## 3.2 DUE DILIGENCE DISCOVERY PROTOCOL (v3.0 — Automatic Deep-Dive)
+
+**MANDATORY at session start AND after every major phase/task completion. The agent automatically discovers ALL ecosystem records without user prompting. The user should NEVER have to say "check the backlog" or "check the handoff."**
+
+### 3.2.1 Ecosystem Inventory (Session Start)
+
+Before ANY project work, execute ALL of these automatically:
+
+1. **Pull Discovery Index:** `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json`
+2. **Scan ALL handoffs** (open + processed last 7 days): `npx wrangler r2 object get qnfo/audit/handoffs/<name>.md --remote`
+3. **Read Decision Log:** `npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote`
+4. **Check Pipeline Status:** `npx wrangler r2 object get qnfo/pipeline-status.json --remote`
+5. **Pull ALL active project states:** iterate `qnfo/audit/state/*.json`
+6. **Query D1 backlogs:** check `qnfo-audit` for open tasks, `qnfo-graph` for resource counts
+7. **Cross-reference:** flag conflicts, dependencies, stale records, missing resources
+8. **Report:** produce a Discovery Report documenting ALL findings before proceeding
+
+### 3.2.2 Infrastructure State Verification (ANTI-DUPLICATION)
+
+Before executing ANY pipeline/upload/deploy/data task:
+1. Query live Cloudflare state (D1 row counts, R2 objects, Worker deployments)
+2. Compare task claim against live state — if already complete: SKIP with `[ALREADY-COMPLETE]`
+3. TRUST LIVE INFRASTRUCTURE OVER HANDOFF DOCUMENTS
+
+### 3.2.3 Post-Phase Discovery (After EVERY Phase/Task)
+
+After completing any major phase or task:
+1. Re-pull Discovery Index — detect changes by other agents
+2. Re-check handoff statuses — any new handoffs?
+3. Verify your changes against live infrastructure
+4. Log cross-project impacts to R2 audit trail
+5. Update Discovery Index if you created/removed/modified resources
+
+### 3.2.4 Gap Analysis (MANDATORY)
+
+After discovery, explicitly document:
+- **Missing:** Resources referenced but not found
+- **Stale:** Handoffs >24h old, index entries not matching live state
+- **Conflicting:** Multiple handoffs touching same resources
+- **Dependent:** Other projects that must complete first
+- **Blocked:** Missing credentials, destroyed resources, unknown state
+
+### 3.2.5 Cross-Project Impact Assessment
+
+For EVERY proposed change, assess:
+- **Upstream:** What must exist before this can proceed?
+- **Downstream:** What will break or need updating after this change?
+- **Shared resources:** Is anyone else using this D1 table / R2 path / Worker?
+
+Use `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` for automated dependency tracing.
+
+---
+
 ### 3.2 Due Diligence Workflow
 
 1. **Pull Discovery Index** — mandatory first step (see §3.1)
@@ -629,6 +682,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 | Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
 | Manage GitHub Issues/PRs/Wiki (DEPRECATED — GitHub fully deprecated per ADR-001) | `read('G:\My Drive\prompts\skills\github-manager\SKILL.md')` |
 | Find the right template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
+| Execute ecosystem discovery (session start + post-phase) | `fill_prompt_template("DEEP-DIVE-DISCOVERY", {...})` |
 | Run BLING usability audit (UI testing) | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
 | Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |

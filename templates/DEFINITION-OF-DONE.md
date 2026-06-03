@@ -19,6 +19,12 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 
 - [ ] **NO CHECKBOX THEATER** — If you mark `[x]` but didn't execute the verification, you are falsifying the DoD. Leave `[ ]` and document the gap honestly. Every `[x]` must trace to evidence on disk.
 
+- [ ] **ECOSYSTEM DISCOVERY COMPLETED** — Discovery Index pulled, ALL open handoffs scanned, Decision Log reviewed for relevant decisions, pipeline status checked, active project states cross-referenced. No stone unturned.
+- [ ] **CROSS-PROJECT DEPENDENCIES DOCUMENTED** — Upstream dependencies identified, downstream impacts assessed, shared resources flagged. Knowledge Graph queried for automated dependency tracing.
+- [ ] **INFRASTRUCTURE STATE VERIFIED** — Live Cloudflare state (D1 row counts, R2 objects, Worker deployments) matches claims. No duplication detected.
+- [ ] **NO CONFLICTING WORK DETECTED** — Checked against ALL open handoffs. No other agent working on same resources.
+- [ ] **GAP ANALYSIS COMPLETE** — Missing/stale/conflicting/dependent/blocked items documented and escalated if needed.
+- [ ] **DISCOVERY INDEX UPDATED** — Any new/removed/modified resources registered in `qnfo/discovery/index.json`.
 ⚠️ **ANTI-PATTERN (CPL L41/L45):** Marking all checkboxes `[x]` with "ALL criteria met. Project is DONE" when no test files exist and no tests were executed. This is checkbox theater. If evidence doesn't exist on disk, the checkbox stays empty.
 
 ---

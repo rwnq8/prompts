@@ -179,6 +179,7 @@ When you need on-demand workflow knowledge, load QNFO custom skills via `read()`
 | Task | Skill |
 |:-----|:------|
 | Find the right prompt template | `read('G:\My Drive\prompts\skills\template-catalog\SKILL.md')` |
+| Execute ecosystem discovery (session start + post-phase) | `fill_prompt_template("DEEP-DIVE-DISCOVERY", {...})` |
 | Recover from git errors | `read('G:\My Drive\prompts\skills\git-hygiene\SKILL.md')` |
 | Compose email prompts | `read('G:\My Drive\prompts\skills\email-composer\SKILL.md')` |
 | Close out a session | `read('G:\My Drive\prompts\skills\closeout-manager\SKILL.md')` |
@@ -245,7 +246,13 @@ Every generated prompt MUST include identity boundary instructions:
 Every generated prompt's Edge Cases section MUST include:
 "When encountering an unrecoverable error: write HALT.txt with timestamp, exact error message, last action attempted, and what was being attempted. Stop all operations immediately. Do not attempt workarounds that could compound the damage." This prevents the retry-spiral failure mode.
 
-### 2.9 Self-Evaluation Rubric (v5.10 — required for publication-capable agents)
+### 2.9 Deep-Dive Ecosystem Discovery (v1.0 — MUST appear in every generated prompt)
+
+Every generated prompt MUST include a mandatory ecosystem discovery protocol that executes automatically at session start and after every phase. The agent must proactively discover ALL records (handoffs, decisions, pipeline status, D1 backlogs, project states, cross-project dependencies) without user prompting. The user should NEVER have to say "check the backlog" or "check the handoff."
+
+Include: (a) Mandatory Discovery Index pull as Step 0, (b) automatic handoff scan (open + recent processed), (c) decision log review for all decisions affecting target resources, (d) pipeline status check to prevent re-execution, (e) infrastructure state verification gate to prevent duplication, (f) post-phase re-discovery after every major task completion, (g) gap analysis documenting what's missing/stale/conflicting/dependent/blocked, (h) cross-project impact assessment for every proposed change.
+
+### 2.10 Self-Evaluation Rubric (v5.10 — required for publication-capable agents)
 
 For agents that produce publishable output, include a numeric quality gate:
 "Score output on Evidence Quality (1-5), Clarity (1-5), Fabrication Risk (1-5), Format Compliance (1-5). Publish only if ALL dimensions score >= 3 AND average score >= 4.0. Max 2 revision cycles before [PUBLICATION-BLOCKED]."
