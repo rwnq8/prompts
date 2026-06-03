@@ -2,9 +2,16 @@
 template: PDF-BUILDER-TEMPLATE
 version: 1.1
 date: 2026-06-03
+status: DEPRECATED
+replaced_by: skills/pdf-builder (skill_view('pdf-builder'))
 ---
 
-# PDF-BUILDER TEMPLATE v1.1
+> **⚠️ DEPRECATED (2026-06-03):** This template has been replaced by the `pdf-builder` bundled skill.
+> Use `skill_view('pdf-builder')` instead of `fill_prompt_template("PDF-BUILDER-TEMPLATE")`.
+> The skill bundles `build_pdf.py` directly in `scripts/` and supports math rendering.
+> This template is retained for reference only — do not use for new work.
+
+# PDF-BUILDER TEMPLATE v1.1 (DEPRECATED)
 # Template for generating PDFs from Markdown files via build_pdf.py
 # Fill with: markdownPath, outputPdfPath, cssPath, title, noMath, htmlOnly
 #

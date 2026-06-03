@@ -61,12 +61,12 @@ All publication documents use curly/smart quotes (Unicode: \u201c \u201d \u2018 
 
 ## Step 2: Build PDF
 
-Use `fill_prompt_template("PDF-BUILDER-TEMPLATE", {source, output, ...})` to generate PDF configuration, then:
-```bash
-# Pull from R2: npx wrangler r2 object get qnfo/tools/build_pdf.py --remote --file=_build_pdf.py
-python _build_pdf.py
-# Discard: Remove-Item _build_pdf.py
-```
+Use `skill_view('pdf-builder')` to load the skill, then follow its workflow:
+1. Verify prerequisites: `python -c "import reportlab, matplotlib; print('OK')"`
+2. Build: `python "G:\My Drive\prompts\skills\pdf-builder\scripts\build_pdf.py" --input "paper.md" --output "paper.pdf"`
+3. Verify rendering (MANDATORY): See skill's Step 4 for the fitz verification script.
+
+For math-free drafts, add `--no-math` for lighter/faster builds.
 
 ### PDF Rendering Verification (MANDATORY)
 After building PDF, extract text and verify ALL Unicode characters render correctly:
@@ -168,9 +168,10 @@ NOT: `paper.pdf`, `final.pdf`, `output.pdf`
 
 | Script | R2 Canonical | Execution Cache | Purpose |
 |:-------|:-------------|:----------------|:--------|
-| `build_pdf.py` | `qnfo/tools/build_pdf.py` | `_build_pdf.py` (ephemeral) | Markdown/HTML -> PDF via reportlab |
 | `zenodo_publish.py` | `qnfo/tools/zenodo_publish.py` | `_zenodo_publish.py` (ephemeral) | Zenodo DOI registration via REST API |
 | `generate-seo.py` | `qnfo/tools/generate-seo.py` | `_generate-seo.py` (ephemeral) | sitemap.xml, robots.txt, llms.txt generator |
+
+> **Note:** `build_pdf.py` is now bundled in the `pdf-builder` skill (`skills/pdf-builder/scripts/build_pdf.py`). Use `skill_view('pdf-builder')` for PDF generation. R2 backup at `qnfo/tools/build_pdf.py`.
 
 ### Bootstrap Protocol
 
@@ -194,13 +195,13 @@ DO NOT attempt publication without these scripts.
 - `generate-seo.py`: standard library only, no external dependencies
 
 ### Cross-Reference
-- `build_pdf.py` is also referenced by `cloudflare-deployer` skill
+- `build_pdf.py` is now bundled in the `pdf-builder` skill (`skill_view('pdf-builder')`)
 - These scripts are embedded in the `publication-publisher` skill as their primary documentation home
 
 ## Reference Files
 
 - Publication standards: DEFAULT.md §11
-- PDF builder: `templates/PDF-BUILDER-TEMPLATE.md`
+- PDF builder: `skill_view('pdf-builder')` (bundled skill with `scripts/build_pdf.py`)
 - Zenodo: `templates/ZENODO-PUBLISH.md`
 - Social orchestrator: `templates/SOCIAL-ORCHESTRATOR-TEMPLATE.md`
 - Cloudflare deploy: `templates/CLOUDFLARE-DEPLOYMENT.md`
