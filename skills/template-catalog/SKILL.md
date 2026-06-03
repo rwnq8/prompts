@@ -29,7 +29,7 @@ version: "1.0"
 | Template | Use For | Parameters |
 |:---------|:--------|:-----------|
 | `ZENODO-PUBLISH` | Zenodo upload | `title`, `authors`, `description`, `keywords`, `file_path` |
-| `PDF-BUILDER-TEMPLATE` | PDF generation | `source`, `output`, `template_style`, `include_toc` |
+| `PDF-BUILDER-TEMPLATE` (⚠️ DEPRECATED) | PDF gen → use skill_view("pdf-builder") | `source`, `output`, `template_style`, `include_toc` |
 | `SOCIAL-ORCHESTRATOR-TEMPLATE` | Social media posts | `publication_title`, `url`, `abstract`, `channels` |
 
 ### Operations Templates
@@ -137,7 +137,7 @@ PROJECT-INITIATION → PROJECT-CHARTER → DEFINITION-OF-DONE → README → HAN
 
 ### Publication
 ```
-PDF-BUILDER-TEMPLATE → ZENODO-PUBLISH → CLOUDFLARE-DEPLOYMENT → SOCIAL-ORCHESTRATOR-TEMPLATE
+pdf-builder (skill) → ZENODO-PUBLISH → CLOUDFLARE-DEPLOYMENT → SOCIAL-ORCHESTRATOR-TEMPLATE
 ```
 
 ### Session Lifecycle

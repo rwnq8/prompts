@@ -7,7 +7,7 @@ version: "1.3"
 # PUBLICATION PUBLISHER SKILL — v1.3
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
-> Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `PDF-BUILDER-TEMPLATE.md`
+> Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `pdf-builder` skill
 
 ---
 
