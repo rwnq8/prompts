@@ -1,4 +1,4 @@
-# Math Rendering Reference — pdf-builder v1.0
+# Math Rendering Reference — pdf-builder v1.2
 
 ## Rendering Engine
 
@@ -91,6 +91,9 @@ and provides troubleshooting guidance.
 
 | Feature | Alternative |
 |:--------|:------------|
+| `\bmod` | Not supported — use `\ \mathrm{mod}\ ` (spaces required) |
+| `\operatorname{...}` | Not supported — use `\mathrm{...}` |
+| `\\text{...}` (double backslash) | Causes parse error — use `\text{...}` (single backslash) |
 | `\begin{align}...\end{align}` | Use separate `$$...$$` blocks per line |
 | `\begin{cases}...\end{cases}` | Use `\left\{ \begin{array}...` (mathtext syntax) |
 | `\begin{matrix}...\end{matrix}` | Use `\begin{array}...` instead |
@@ -102,6 +105,11 @@ and provides troubleshooting guidance.
 | `\label{...}` / `\ref{...}` | Not supported |
 | `\ce{...}` (chemical) | Not supported |
 | `\si{...}` (SI units) | Not supported |
+
+**IMPORTANT — `\bmod`, `\operatorname`, and double-backslash `\\text` are the
+most common failure points.** These appear in standard LaTeX math and will silently
+fail in mathtext, producing garbled output. Always pre-scan source files before
+using pdf-builder.
 
 ### Rendering Edge Cases
 
@@ -183,9 +191,10 @@ The visual output is correct — this is a text extraction artifact, not a rende
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| v1.2 | 2026-06-04 | Added `\bmod`, `\operatorname`, `\\text` (double backslash) to unsupported commands. |
 | v1.1 | 2026-06-03 | Math rendering via matplotlib mathtext (inline + display). --no-math flag with Unicode fallback. 28 expressions tested. |
 | v1.0 | 2026-05-31 | Initial release. Markdown→PDF via reportlab. No math rendering. |
 
 ---
 
-*math-rendering.md v1.0 — Reference for pdf-builder skill*
+*math-rendering.md v1.2 — Reference for pdf-builder skill*
