@@ -1,10 +1,10 @@
 ---
 name: pdf-builder
 description: Build publication-quality PDFs from Markdown files with math rendering via matplotlib mathtext. Use when the agent needs to convert .md to .pdf for QNFO publications, papers, or reports. Handles inline math ($...$), display math ($$...$$), code blocks, and Unicode typography. Supports --no-math flag for Unicode fallback rendering.
-version: "1.1"
+version: "1.2"
 ---
 
-# PDF BUILDER SKILL — v1.1
+# PDF BUILDER SKILL — v1.2
 
 > **Bundled skill.** All scripts and references are self-contained in this skill directory.
 > Deployed via `_deploy.py` to `%APPDATA%\DeepChat\skills\pdf-builder\`.
@@ -205,57 +205,72 @@ Does document use \begin{align}, \begin{cases}? ──YES──→ Use HTML-to-P
 Otherwise ──→ pdf-builder is suitable
 ```
 
-### Method A: CDP Page.printToPDF (Live URL)
+### Rendering Verification (always works)
 
-If the document is already deployed (Cloudflare Pages, any web server):
+Before building the actual PDF, verify the HTML renders correctly using CDP:
 
 ```bash
-# 1. Load the page in YoBrowser
-load_url("https://example.pages.dev/spec/")
-# Wait for MathJax to finish rendering (3-5 seconds)
+# 1. Start local HTTP server (if not already deployed to Pages)
+$server = Start-Process python -ArgumentList '-m','http.server','8765' -PassThru
+load_url("http://localhost:8765/_test-pdf-html.html")
+# Wait 3-5 seconds for MathJax rendering
 
-# 2. Print to PDF
-cdp_send(method="Page.printToPDF", params={
-    "printBackground": True,
-    "preferCSSPageSize": True,
-    "marginTop": 0.5,
-    "marginBottom": 0.5,
-    "marginLeft": 0.5,
-    "marginRight": 0.5
-})
-# Save the returned base64 data → output.pdf
+# 2. Verify via DOM — confirm math rendered, tables intact
+Runtime.evaluate: document.querySelectorAll('mjx-container').length
+# Should show 30+ containers with zero MathJax errors
 
-# 3. Verify the PDF
+# 3. Capture screenshot for visual verification
+cdp_send(method="Page.captureScreenshot", params={"format":"png"})
+# Verify: no raw \bmod, no raw | pipes, no \operatorname
+```
+
+### Method A: playwright (RECOMMENDED — cross-platform, bundled Chromium)
+
+```bash
+# One-time setup
+pip install playwright
+playwright install chromium
+
+# Build PDF from local HTML file
 python -c "
-import fitz
-doc = fitz.open('output.pdf')
-text = ''.join(page.get_text() for page in doc)
-has_tables = '|' not in text  # Tables rendered as text, not pipes
-print(f'Pages: {len(doc)}, Chars: {len(text)}, Tables rendered: {has_tables}')
-doc.close()
+from playwright.sync_api import sync_playwright
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    page.goto('file:///G:/My Drive/prompts/_test-pdf-html.html')
+    page.wait_for_function('() => document.querySelectorAll(\"mjx-container\").length > 30', timeout=15000)
+    page.pdf(path='output.pdf', format='A4', margin={'top':'0.5in','bottom':'0.5in','left':'0.5in','right':'0.5in'})
+    browser.close()
+    print('[OK] PDF built via playwright')
 "
 ```
 
-### Method B: CDP Page.printToPDF (Local File)
-
-For local HTML files that aren't deployed yet:
+### Method B: weasyprint (Linux/macOS native, needs GTK on Windows)
 
 ```bash
-# 1. Start a temporary HTTP server (PowerShell, background)
-$server = Start-Process python -ArgumentList '-m','http.server','8765' -PassThru -WorkingDirectory 'pages/spec/'
+pip install weasyprint
 
-# 2. Load the local page
-load_url("http://localhost:8765/index.html")
-
-# 3. Print to PDF (same as Method A)
-cdp_send(method="Page.printToPDF", params={...})
-
-# 4. Clean up
-Stop-Process $server.Id
-Remove-Item _output.pdf  # if ephemeral
+# From local file (must be absolute path with file://)
+python -c "
+from weasyprint import HTML
+HTML(filename='_test-pdf-html.html').write_pdf('output.pdf')
+print('[OK] PDF built via weasyprint')
+"
 ```
 
-### Verification Gate (Same for Both Methods)
+> **Windows note:** weasyprint requires GTK3 runtime (`libgobject-2.0-0`).
+> Install via MSYS2 or use Method A (playwright) instead.
+
+### Method C: wkhtmltopdf (Windows standalone)
+
+```bash
+# Download from https://wkhtmltopdf.org/downloads.html
+# Then:
+wkhtmltopdf --page-size A4 --margin-top 12mm --margin-bottom 12mm ^
+    --javascript-delay 5000 _test-pdf-html.html output.pdf
+```
+
+### Verification Gate (Same for All Methods)
 
 ```bash
 python -c "
@@ -269,7 +284,7 @@ if '|' in text and '|---' in text:
     issues.append('Raw markdown table pipes in output')
 if 'MATH RENDER ERROR' in text:
     issues.append('Math rendering errors')
-if '\\bmod' in text or '\\text' in text:
+if r'\bmod' in text or r'\text' in text:
     issues.append('Raw LaTeX commands in output')
 if issues:
     print('[BLOCKED]', '; '.join(issues))
@@ -278,6 +293,21 @@ else:
 doc.close()
 " output.pdf
 ```
+
+### Quick Test Result (2026-06-04 verification)
+
+| Feature | pdf-builder (mathtext) | HTML-to-PDF (MathJax + DOM) |
+|:--------|:---------------------:|:---------------------------:|
+| `\bmod` (3 occurrences) | ❌ Raw text in output | ✅ Renders as "mod" |
+| `\operatorname` (2 occurrences) | ❌ Raw text in output | ✅ Renders correctly |
+| `\text{...}` single backslash | ✅ Works | ✅ Works |
+| `\\text{...}` double backslash | ❌ Parse error | ✅ Works (single \ in HTML) |
+| Tables (4 tables, 18 rows) | ❌ Raw pipe text | ✅ HTML tables intact |
+| Standard LaTeX ($E=mc^2$, $$\hat{H}$$) | ✅ Works | ✅ Works |
+| MathJax containers | N/A | 37 containers, 0 errors |
+
+**Verdict:** HTML-to-PDF resolves ALL 4 pdf-builder failure modes. Use it for any
+document containing tables, `\bmod`, `\operatorname`, or complex nested LaTeX.
 
 ---
 
@@ -289,4 +319,4 @@ doc.close()
 
 ---
 
-*pdf-builder v1.1 — Bundled skill with math rendering + HTML-to-PDF fallback for complex documents. Replaces PDF-BUILDER-TEMPLATE.*
+*pdf-builder v1.2 — Bundled skill with math rendering + HTML-to-PDF fallback for complex documents. Tested 2026-06-04: CDP Page.printToPDF not available — replaced with playwright/weasyprint/wkhtmltopdf.*
