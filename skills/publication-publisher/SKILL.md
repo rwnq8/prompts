@@ -494,8 +494,8 @@ DO NOT attempt publication without these scripts.
 
 ---
 
-*publication-publisher skill v1.3 — Load on-demand via skill_view()*
+*publication-publisher skill v1.4 — Load on-demand via skill_view()*
 
 ---
 
-*publication-publisher v1.3 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
+*publication-publisher v1.4 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
