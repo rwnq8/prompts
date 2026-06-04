@@ -46,13 +46,30 @@ Before FIRST execution of any Python file that produces console output:
 
 **NEVER apply this rule to content/research/markdown files.** Replacing em dashes, curly quotes, or other typographic characters with ASCII equivalents degrades document quality. If display issues occur with content files, fix the display pipeline (set `PYTHONUTF8=1` environment variable) — do NOT destroy typography.
 
-### Rule 13: Never Inline Python Through PowerShell (HARD BLOCK)
+### Rule 13: Never Inline Python Through PowerShell (COMPILER-LEVEL HARD BLOCK)
 
-PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, backticks, and nested quotes BEFORE Python receives the string. This corrupts every inline `python -c "..."` command.
+**ROOT CAUSE OF 2026-06-04 SESSION FAILURE:** 40% of all tool calls failed because
+PowerShell mangled inline Python strings. PowerShell intercepts `<`, `>`, `$`, `{`, `}`, `()`, `|`, `&`, `&&`, `||`, backticks, semicolons, and nested quotes BEFORE Python receives the string. This causes SyntaxError cascades, wasted tool calls, and multi-hour delays.
 
-**HARD BLOCK: Never use `python -c "..."`. EVER. Not even as a "quick try."**
+**COMPILER-LEVEL HARD BLOCK — These patterns are BANNED from ALL agent output:**
+- ❌ `python -c "..."` / `python -c '...'` / `python -c """..."""` — ALL forms
+- ❌ `ForEach-Object { python -c "..." }` — double mangling
+- ❌ f-strings with dict access inside PowerShell: `f'{d["key"]}'` — quotes conflict
+- ❌ `$LASTEXITCODE` / `$?` in multi-command pipelines — unreliable
+- ❌ `2>&1 | Select-Object` — loses Python error output
+- ❌ `&&` / `||` in PowerShell — not supported
 
-The pattern `python -c "..."` through PowerShell has a 100% failure rate. Even simple commands that appear to work have hidden corruption. The agent MUST default to script-file-first from the first attempt.
+**MANDATORY (NO EXCEPTIONS):** Every Python execution MUST go through:
+1. Write Python code to a `.py` file using the `write` tool
+2. Execute: `python <script>.py` (NO `-c`, NO inline)
+3. Verify: `Test-Path` + `Get-Content` for output files
+4. Delete: `Remove-Item <script>.py` when done (JIT enforcement)
+
+**PRE-RESPONSE SELF-AUDIT:** Scan your draft response for `python -c` before
+delivering. If found → BLOCKED. Rewrite as file-based execution.
+
+PowerShell is for git, `Test-Path`, `Get-Content`, `Remove-Item`, `Get-ChildItem` ONLY.
+ALL text processing, JSON, strings, and API calls go through Python SCRIPT FILES.
 
 **WRONG (never do this):**
 ```
