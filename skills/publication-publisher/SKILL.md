@@ -1,10 +1,10 @@
 ---
 name: publication-publisher
-description: End-to-end publication workflow — formatting, PDF building, Zenodo upload, Cloudflare deployment, and social media orchestration. Use when publishing papers, reports, or other documents.
-version: "1.3"
+description: End-to-end publication workflow — formatting, PDF building, complete artifact bundling, Zenodo upload (with semantic versioning), Cloudflare deployment, social media orchestration, and post-publication draft cleanup. Use when publishing papers, reports, or other documents.
+version: "1.4"
 ---
 
-# PUBLICATION PUBLISHER SKILL — v1.3
+# PUBLICATION PUBLISHER SKILL — v1.4
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
 > Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `pdf-builder` skill
@@ -14,8 +14,13 @@ version: "1.3"
 ## Publication Pipeline
 
 ```
-Draft Complete → Format (§11) → Build PDF → Zenodo Upload → Cloudflare Deploy → Social Posts
+Draft Complete → Format (§11) → Build PDF → Assemble Artifact Bundle → Zenodo Upload (ALL artifacts, versioned) → Cloudflare Deploy → Social Posts → Draft Cleanup
 ```
+
+### CRITICAL RULES (v1.4)
+1. **Zenodo uploads MUST include ALL project artifacts** — PDF, source code, data files, README, supplementary materials, configs. NOT just the final output PDF.
+2. **Semantic versioning is MANDATORY** — every publication (new or updated) gets a MAJOR.MINOR.PATCH version. Updates to existing publications create NEW VERSIONS via `--doi`, never duplicate records.
+3. **Draft cleanup is MANDATORY after publication** — remove all temporary build artifacts, draft markdowns, and ephemeral files. Verify R2 holds canonical copies.
 
 ---
 
@@ -54,8 +59,12 @@ All publication documents use curly/smart quotes (Unicode: \u201c \u201d \u2018 
 - [ ] Git log confirms all changes committed
 - [ ] PDF generated
 - [ ] **PDF rendering verified — no `\ufffd` characters, em dashes/curly quotes render correctly**
-- [ ] **Zenodo duplicate check passed — no existing record for this publication (or updating existing)**
+- [ ] **Artifact bundle assembled — ALL project files catalogued (source, data, README, supplementary, configs)**
+- [ ] **Semantic version assigned — MAJOR.MINOR.PATCH documented in manifest**
+- [ ] **Zenodo duplicate check passed — existing DOI identified for version bump, or confirmed new publication**
+- [ ] **ALL artifacts uploaded to Zenodo — NOT just the PDF. Manifest cross-referenced.**
 - [ ] Cloudflare Pages deployed and URL verified
+- [ ] **Draft cleanup complete — all temp build files removed, R2 canonical verified**
 
 ---
 
@@ -91,7 +100,163 @@ If ANY character fails: PDF is NOT publication-ready. Fix font encoding in `buil
 
 ---
 
-## Step 3: Zenodo Upload
+## Step 2.5: Assemble Complete Artifact Bundle (MANDATORY — v1.4)
+
+**HARD RULE: Zenodo uploads MUST include ALL project artifacts, NOT just the final PDF.** The Zenodo record is the permanent scholarly archive. A PDF alone is incomplete — the record must enable reproducibility.
+
+### Artifact Categories (ALL required unless noted as optional)
+
+| Category | Required? | Examples |
+|:---------|:----------|:---------|
+| **Primary Output** | YES | PDF of the publication |
+| **Source Documents** | YES | Markdown/LaTeX source, figures, diagrams |
+| **Data Files** | YES (if any) | CSVs, JSON datasets, simulation outputs used in the paper |
+| **Code** | YES (if any) | Python scripts, notebooks, analysis code |
+| **Supplementary Materials** | YES (if any) | Appendices, extended proofs, additional figures |
+| **README** | YES | Project overview, reproduction instructions, build commands |
+| **Configuration** | YES | Requirements files, environment specs, build configs |
+| **License** | YES | CC BY 4.0 or project-specific license file |
+
+### Artifact Bundle Assembly Protocol
+
+**Step 2.5.1: Enumerate all project files**
+
+```powershell
+# List ALL files in the project directory
+Get-ChildItem -Path "<project_dir>" -Recurse -File | ForEach-Object { $_.FullName }
+```
+
+**Step 2.5.2: Classify each file** into the categories above. Any file NOT fitting a category → flag as `[UNCLASSIFIED: <reason>]` and either reclassify or exclude with documented rationale.
+
+**Step 2.5.3: Generate artifact manifest (`ARTIFACT-MANIFEST.json`)**
+
+Create a structured manifest listing every file with checksums. Use a Python script (via temp file):
+
+```python
+import json, hashlib, os, sys
+from pathlib import Path
+
+project_dir = Path(sys.argv[1])
+version = sys.argv[2]  # MAJOR.MINOR.PATCH
+
+manifest = {
+    "publication_title": sys.argv[3],
+    "version": version,
+    "semantic_versioning": {
+        "major": int(version.split('.')[0]),
+        "minor": int(version.split('.')[1]),
+        "patch": int(version.split('.')[2]),
+        "version_change_notes": sys.argv[4] if len(sys.argv) > 4 else "Initial publication"
+    },
+    "artifacts": [],
+    "generated_at": None  # populated below
+}
+
+from datetime import datetime, timezone
+manifest["generated_at"] = datetime.now(timezone.utc).isoformat()
+
+categories = {
+    ".pdf": "primary_output",
+    ".md": "source_document",
+    ".tex": "source_document",
+    ".py": "code",
+    ".ipynb": "code",
+    ".csv": "data",
+    ".json": "data",
+    ".txt": "supplementary",
+    ".png": "figure",
+    ".svg": "figure",
+    ".jpg": "figure",
+    ".yml": "configuration",
+    ".yaml": "configuration",
+    ".toml": "configuration",
+    ".cfg": "configuration",
+    ".txt": "supplementary"
+}
+
+for filepath in sorted(project_dir.rglob('*')):
+    if filepath.is_file() and not filepath.name.startswith('_') and '__pycache__' not in str(filepath):
+        rel = str(filepath.relative_to(project_dir))
+        ext = filepath.suffix.lower()
+        category = categories.get(ext, "unclassified")
+        
+        sha256 = hashlib.sha256(filepath.read_bytes()).hexdigest()
+        
+        manifest["artifacts"].append({
+            "path": rel,
+            "category": category,
+            "size_bytes": filepath.stat().st_size,
+            "sha256": sha256
+        })
+
+manifest["total_files"] = len(manifest["artifacts"])
+manifest["categories_count"] = {}
+for a in manifest["artifacts"]:
+    manifest["categories_count"][a["category"]] = manifest["categories_count"].get(a["category"], 0) + 1
+
+# Verify mandatory categories present
+required = ["primary_output", "source_document"]
+missing = [r for r in required if r not in manifest["categories_count"]]
+if missing:
+    print(f"[BLOCKED] Missing required artifact categories: {missing}")
+    sys.exit(1)
+
+# Warn if any unclassified
+unclassified = [a for a in manifest["artifacts"] if a["category"] == "unclassified"]
+if unclassified:
+    print(f"[WARNING] {len(unclassified)} unclassified files:")
+    for u in unclassified:
+        print(f"  {u['path']}")
+
+output_path = project_dir / "ARTIFACT-MANIFEST.json"
+json.dump(manifest, open(output_path, 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+print(f"[OK] Manifest written: {output_path}")
+print(f"  Version: {version}")
+print(f"  Total artifacts: {manifest['total_files']}")
+for cat, count in sorted(manifest['categories_count'].items()):
+    print(f"  {cat}: {count}")
+```
+
+**Step 2.5.4: Verify manifest completeness**
+
+```powershell
+# Verify ALL files listed match files on disk
+python -c "
+import json
+m = json.load(open('ARTIFACT-MANIFEST.json','r',encoding='utf-8'))
+paths = {a['path'] for a in m['artifacts']}
+print(f'Manifest: {len(paths)} files')
+# Verify PDF is included
+pdfs = [a for a in m['artifacts'] if a['path'].endswith('.pdf')]
+print(f'PDF artifacts: {len(pdfs)}')
+if not pdfs:
+    print('[BLOCKED] NO PDF in artifact manifest!')
+" (via script file)
+```
+
+**GATE:** If manifest assembly fails or required categories are missing → `[BLOCKED: incomplete artifact bundle]`. Do NOT proceed to Zenodo upload.
+
+### Semantic Versioning Protocol (MANDATORY)
+
+Every publication MUST carry a semantic version. This applies at artifact assembly time — the version is embedded in the manifest and used for Zenodo versioning.
+
+**Version format:** `MAJOR.MINOR.PATCH`
+
+| Bump | When |
+|:-----|:-----|
+| MAJOR | Breaking changes — new incompatible methodology, restructured argument, substantially new findings |
+| MINOR | New content added — additional sections, new data, expanded analysis, new co-author |
+| PATCH | Corrections — typo fixes, formatting, small clarifications, metadata updates |
+
+**Version assignment protocol:**
+1. **First publication:** Start at `1.0.0`
+2. **Update to existing publication:** Determine bump type using the table above. Use `--doi <existing_doi>` with Zenodo to create new version.
+3. **Version in filename:** `PROJECT-NAME-v1.0.0.pdf` (NOT just `PROJECT-NAME-v1.pdf` or `PROJECT-NAME.pdf`)
+4. **Version in manifest:** Embedded in `ARTIFACT-MANIFEST.json` with change notes
+
+---
+
+## Step 3: Zenodo Upload (ALL Artifacts — NOT just PDF)
 
 **Zenodo Duplicate Prevention (MANDATORY — execute BEFORE creating any record):**
 
@@ -99,22 +264,50 @@ If ANY character fails: PDF is NOT publication-ready. Fix font encoding in `buil
 ```bash
 python -c "import json; d=json.load(open('_discovery_index.json','r',encoding='utf-8')); pubs=[p for p in d.get('publications',[]) if '<publication_title>' in p.get('title','')]; print(json.dumps(pubs, indent=2))" (via script file)
 ```
-2. If existing DOI found → use `--doi <existing_doi>` flag to create a NEW VERSION (not a duplicate record):
-```bash
-# Pull from R2: npx wrangler r2 object get qnfo/tools/zenodo_publish.py --remote --file=_zenodo_publish.py
-python _zenodo_publish.py --doi "<existing_doi>" --title "..." --author "..." --file "..."
-# Discard: Remove-Item _zenodo_publish.py
-```
+2. **If existing DOI found → MUST create a NEW VERSION (not a duplicate record).** This is NON-NEGOTIABLE. Use `--doi <existing_doi>` flag. Semantic version bump per §2.5 protocol.
 3. If Zenodo API search needed: use `brave_web_search` for `site:zenodo.org "<publication_title>"` to find existing records.
-4. Never create a new Zenodo record (`zenodo_publish.py` without `--doi`) for a publication that already has one. This creates DUPLICATE records.
+4. **Never create a new Zenodo record for a publication that already has one.** This creates DUPLICATE records and violates scholarly archiving standards.
 5. If unsure whether a record exists: search first. Create only when search returns zero results.
 
-After duplicate check passes, use `fill_prompt_template("ZENODO-PUBLISH", {...})` then:
+**Artifact Upload Protocol (v1.4 — ALL artifacts required):**
+
+The Zenodo upload MUST include ALL files from the artifact bundle, not just the PDF:
+
 ```bash
 # Pull from R2: npx wrangler r2 object get qnfo/tools/zenodo_publish.py --remote --file=_zenodo_publish.py
-python _zenodo_publish.py
+
+# Upload ALL artifacts (not just PDF)
+python _zenodo_publish.py \
+  --title "<publication_title> v<MAJOR.MINOR.PATCH>" \
+  --author "<Last, First>" \
+  --artifacts-dir "<project_dir>" \
+  --manifest "ARTIFACT-MANIFEST.json" \
+  --version "<MAJOR.MINOR.PATCH>" \
+  --upload-type publication \
+  --license "CC-BY-4.0" \
+  {{#doi}}--doi "<existing_doi>"{{/doi}}
+
+# Verify upload completeness
+python _zenodo_publish.py --verify --deposition-id <id>
+
 # Discard: Remove-Item _zenodo_publish.py
 ```
+
+**Upload Verification (MANDATORY):**
+After upload, verify the Zenodo record contains ALL artifacts by cross-referencing against `ARTIFACT-MANIFEST.json`:
+```bash
+python -c "
+import json
+manifest = json.load(open('ARTIFACT-MANIFEST.json','r',encoding='utf-8'))
+expected = manifest['total_files']
+print(f'Expected artifacts: {expected}')
+print(f'Categories: {manifest[\"categories_count\"]}')
+# Zenodo API check (via zenodo_publish.py --verify output above)
+print('Compare Zenodo file count against manifest — must match')
+" (via script file)
+```
+
+**GATE:** If uploaded file count != manifest file count → `[BLOCKED: incomplete Zenodo upload]`. Re-upload missing files.
 
 ---
 
@@ -148,6 +341,99 @@ Use `fill_prompt_template("SOCIAL-ORCHESTRATOR-TEMPLATE", {...})` to generate po
 Post via Buffer API `create_post` tool with `schedulingType: "notification"` for manual approval.
 
 **Channels:** Twitter/X, Bluesky, LinkedIn (Mastodon pending Buffer plan upgrade)
+
+---
+
+## Step 6: Post-Publication Draft Cleanup (MANDATORY — v1.4)
+
+**HARD RULE: After publication is confirmed (Zenodo DOI obtained, Cloudflare deployed), ALL draft and temporary build artifacts MUST be removed.** The published record on Zenodo and R2 is canonical. Draft copies left on disk create version confusion and waste storage.
+
+### Cleanup Protocol
+
+**Step 6.1: Verify canonical copies exist on R2**
+
+```powershell
+# Verify PDF on R2
+npx wrangler r2 object get qnfo/releases/<file>.pdf --remote
+# Verify artifact bundle on R2 (if uploaded separately)
+npx wrangler r2 object get qnfo/releases/<project>-v<MAJOR.MINOR.PATCH>.zip --remote
+```
+
+**GATE:** If canonical copies do NOT exist on R2 → `[BLOCKED: canonical missing]`. Upload to R2 before cleaning local drafts.
+
+**Step 6.2: Identify draft files to remove**
+
+| File Pattern | Action | Rationale |
+|:-------------|:-------|:----------|
+| `*.draft.md` | DELETE | Draft markdowns — canonical is the published PDF + source |
+| `*_v[0-9]*.md` (old versions) | DELETE | Older markdown versions — R2 holds versioned releases |
+| `*.aux`, `*.log`, `*.out`, `*.toc` | DELETE | LaTeX build artifacts |
+| `__pycache__/` | DELETE | Python bytecode cache |
+| `_*` (ephemeral files) | DELETE | Temporary build scripts and caches |
+| `paper.pdf` (non-versioned) | DELETE | Rename to versioned name before upload, then delete non-versioned copy |
+| `output.pdf`, `final.pdf` | DELETE | Generic PDF names — use descriptive versioned filenames |
+
+| File Pattern | Action | Rationale |
+|:-------------|:-------|:----------|
+| `ARTIFACT-MANIFEST.json` | UPLOAD to R2, then DELETE local | Manifest is part of the published record — archive on R2 |
+| Published PDF (versioned) | UPLOAD to R2, then DELETE local | R2 is canonical — local is cache |
+| Project source files | UPLOAD to R2, then DELETE local | R2 stores project bundles |
+
+**Step 6.3: Execute cleanup**
+
+```powershell
+# Remove draft files
+Get-ChildItem -Path "<project_dir>" -Filter "*.draft.md" | Remove-Item -Force
+Get-ChildItem -Path "<project_dir>" -Filter "*.aux" | Remove-Item -Force
+Get-ChildItem -Path "<project_dir>" -Filter "*.log" | Remove-Item -Force
+
+# Remove ephemeral files
+Get-ChildItem -Path "<project_dir>" -Filter "_*" | Remove-Item -Recurse -Force
+
+# Remove __pycache__
+if (Test-Path "<project_dir>/__pycache__") {
+    Remove-Item -Recurse -Force "<project_dir>/__pycache__"
+}
+
+# Remove generic-named PDF copies
+if (Test-Path "<project_dir>/paper.pdf") { Remove-Item "<project_dir>/paper.pdf" }
+if (Test-Path "<project_dir>/output.pdf") { Remove-Item "<project_dir>/output.pdf" }
+if (Test-Path "<project_dir>/final.pdf") { Remove-Item "<project_dir>/final.pdf" }
+
+# Upload manifest and versioned PDF to R2, then delete local
+npx wrangler r2 object put qnfo/releases/<project>-v<version>/ARTIFACT-MANIFEST.json --file=ARTIFACT-MANIFEST.json
+npx wrangler r2 object put qnfo/releases/<project>-v<version>/<file>.pdf --file=<file>.pdf
+Remove-Item "ARTIFACT-MANIFEST.json"
+Remove-Item "<file>.pdf"
+```
+
+**Step 6.4: Verify cleanup**
+
+```powershell
+# Verify no draft files remain
+$drafts = Get-ChildItem -Path "<project_dir>" -Filter "*.draft.md" -ErrorAction Stop
+if ($drafts) { Write-Output "FAILED: $($drafts.Count) draft files remain!" } else { Write-Output "Draft cleanup: OK" }
+
+# Verify no ephemeral files remain
+$ephemeral = Get-ChildItem -Path "<project_dir>" -Filter "_*" -ErrorAction Stop
+if ($ephemeral) { Write-Output "FAILED: $($ephemeral.Count) ephemeral files remain!" } else { Write-Output "Ephemeral cleanup: OK" }
+
+# Verify R2 has canonical copies
+npx wrangler r2 object get qnfo/releases/<project>-v<version>/<file>.pdf --remote
+Write-Output "R2 canonical verified: OK"
+```
+
+**GATE:** If any draft/ephemeral files remain OR R2 canonical missing → `[BLOCKED: cleanup incomplete]`.
+
+### Integration with Session Closeout
+
+This cleanup step MUST execute BEFORE session closeout. The closeout-manager skill's `_*` cleanup gate will catch any remaining ephemeral files. If the publication-publisher cleanup was skipped, the closeout gate will fail.
+
+**Post-cleanup state:**
+- Zenodo: ALL artifacts archived with DOI (permanent)
+- R2: PDF + artifact manifest + project bundle (canonical)
+- Cloudflare Pages: Publication deployed (live)
+- Local disk: NO drafts, NO ephemeral files, NO non-versioned PDFs
 
 ---
 

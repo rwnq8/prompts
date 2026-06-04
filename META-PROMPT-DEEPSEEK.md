@@ -626,6 +626,14 @@ The #1 thin-client failure mode: agents download files from R2 "just in case" an
 ## 7. PUBLICATION QUALITY GATES
 [Quality standards for documents intended for external readers]
 
+### Artifact Completeness Gate (MANDATORY -- v6.3)
+
+Every generated prompt that handles publication or Zenodo workflows MUST require:
+1. **ALL project artifacts uploaded to Zenodo** -- PDF, source code, data files, README, supplementary materials, configs. NEVER just the final PDF.
+2. **Semantic versioning** -- MAJOR.MINOR.PATCH format for every publication (new or updated). Updates use `--doi` for new versions, never duplicate records.
+3. **Post-publication draft cleanup** -- all temporary build artifacts, draft markdowns, and ephemeral files removed after publication. R2 canonical copy verified before deletion.
+4. **Artifact manifest** -- `ARTIFACT-MANIFEST.json` with SHA-256 checksums for every file uploaded to Zenodo.
+
 ### Publication Language Gate (MANDATORY before declaring "publication-ready")
 
 Execute a Python scan for ALL of the following categories.
@@ -966,6 +974,7 @@ The template is at `templates/KAIZEN-AUTONOMOUS-UPDATE.md`.
 | Version | Date | Changes |
 |:--------|:-----|:--------|
 | **v6.3** | 2026-06-04 | **Aggressive JIT Enforcement:** Added JIT (Just-In-Time) Protocol to template §6 — HARD ENFORCEMENT of pull→use→discard cycle. Session-start orphan scan mandatory. Session-end cleanup gate mandatory. `_` prefix required for ALL ephemeral files. Bulk-download banned. `-ErrorAction SilentlyContinue` removed from closeout-manager. Updated DEFAULT.md v3.23, QWAV-DEFAULT.md v3.23, closeout-manager SKILL.md. Root cause: 3,937 orphaned files in projects/ directory from agents pulling and never cleaning up. |
+| **v6.3** | 2026-06-04 | **Artifact Completeness & Draft Cleanup:** All generated prompts must now enforce: (a) Zenodo uploads include ALL project artifacts (not just PDF), (b) semantic versioning (MAJOR.MINOR.PATCH) for all publications, (c) post-publication draft cleanup. Updated publication-publisher skill v1.3->v1.4, ZENODO-PUBLISH template v1.0->v1.1, QWAV-DEFAULT v3.23->v3.24, closeout-manager v2.1->v2.2. Added Artifact Completeness Gate to template. |
 | **v6.2** | 2026-06-03 | **Tool Ephemeral Rewrite:** All 20 `G:\My Drive\tools\` references replaced with ephemeral `_<name>.py` pull-execute-discard pattern. Tools canonical on R2 (`qnfo/tools/`), never persist locally. Project/Archive paths annotated. Deploy and kaizen code blocks include R2 pull/discard steps. |
 | **v6.1** | 2026-06-03 | **Thin-Client Architecture Rewrite:** Replaced file-server PERMANENT/EPHEMERAL/EXTERNAL classification with R2-CANONICAL/IMPORT-SURFACE/EPHEMERAL-CACHE in the prompt output template (§5 §6). Cloudflare R2 is the computer — local disk is the terminal. Git Protocol scoped to import surface only. Discovery Index emphasized as ONLY discovery mechanism. Tool paths fixed: `tools/xxx.py` → `_xxx.py`. |
 | **v6.0** | 2026-06-02 | **Full Research Integration:** All 19 industry design patterns now required in generated prompts. Formal publication published (DOI: 10.5281/zenodo.20511028, Pages: deep.qwav.tech/papers/). Three-agent architecture complete: DEFAULT v3.20, QWAV v3.20, META-PROMPT v6.0 — all with Priority Stack, Persona Lock, Format Negotiation, HALT.txt, and Self-Evaluation Rubric. prompt-audit skill deployed for self-assessment. Publication pipeline: Zenodo DOI + Cloudflare Pages + R2. |

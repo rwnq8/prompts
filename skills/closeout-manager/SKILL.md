@@ -1,9 +1,9 @@
 ---
 name: closeout-manager
-description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, archive operations, and handoff documentation. Auto-executes at session end without user prompting.
-version: "2.1"
+description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, archive operations, draft artifact cleanup, and handoff documentation. Auto-executes at session end without user prompting.
+version: "2.2"
 ---
-# CLOSEOUT MANAGER SKILL — v2.1
+# CLOSEOUT MANAGER SKILL — v2.2
 
 > **AUTONOMOUS skill.** Do NOT wait for user to say "TERMINATE." Detect completion and auto-initiate closeout.
 > Source: `CLOSEOUT-CHECKLIST.md` + DEFAULT.md §10 + QWAV-DEFAULT.md close-out checklist
@@ -194,13 +194,42 @@ Write-Output "Orphan scan: CLEAN"
 if (Test-Path "__pycache__") { Remove-Item -Recurse -Force "__pycache__"; Write-Output "CLEANED: __pycache__" }
 ```
 
-**Step 9.3: Project file cleanup (outside import-surface)**
+**Step 9.3: Publication draft artifact cleanup (v2.2 — MANDATORY for publication sessions)**
+
+If this session involved ANY publication activity (PDF generation, Zenodo upload, Cloudflare deploy), execute the following:
+
+```bash
+# Remove draft markdowns
+Get-ChildItem -Recurse -Filter "*.draft.md" | Remove-Item -Force
+# Remove generic-named PDFs (non-versioned)
+@('paper.pdf', 'final.pdf', 'output.pdf') | ForEach-Object {
+    if (Test-Path $_) { Remove-Item $_ -Force; Write-Output "CLEANED: $_" }
+}
+# Remove LaTeX build artifacts
+Get-ChildItem -Recurse -Include @('*.aux', '*.log', '*.out', '*.toc', '*.bbl', '*.blg') | Remove-Item -Force
+# Remove artifact manifests (should be on R2)
+if (Test-Path "ARTIFACT-MANIFEST.json") {
+    Write-Output "WARNING: ARTIFACT-MANIFEST.json still present — should be on R2"
+    Remove-Item "ARTIFACT-MANIFEST.json" -Force
+}
+# Verify no build artifacts remain
+$draft_remaining = Get-ChildItem -Recurse -Include @('*.draft.md', 'paper.pdf', 'final.pdf', 'output.pdf', '*.aux', '*.log') -ErrorAction SilentlyContinue
+if ($draft_remaining) {
+    Write-Output "FAILED: Draft artifacts remain: $($draft_remaining -join ', ')"
+    exit 1
+}
+Write-Output "Draft artifact cleanup: CLEAN"
+```
+
+**GATE:** If ANY draft artifacts remain OR R2 does not contain canonical copies → `[BLOCKED: cleanup incomplete]`. Session closeout cannot proceed. Upload to R2 first, then re-run cleanup.
+
+**Step 9.4: Project file cleanup (outside import-surface)**
 - If any project files were pulled from R2 during the session (e.g., in `G:\My Drive\projects\`, `G:\My Drive\QWAV\`):
   - If modified: re-upload to R2 FIRST, then delete local copy
   - If unmodified: delete local copy immediately (they're stale caches)
 - The goal: ZERO project files persist locally between sessions
 
-**Step 9.4: Final verification**
+**Step 9.5: Final verification**
 ```bash
 $remaining = Get-ChildItem -Recurse -File -Name | Where-Object { 
     $_ -match '^_' -and $_ -notmatch '^skills\\' -and $_ -notmatch '^templates\\' -and $_ -notmatch '^agents\\' -and $_ -notmatch '^config\\' -and $_ -notmatch '^audit\\'
