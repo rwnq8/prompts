@@ -189,6 +189,7 @@ When you need on-demand workflow knowledge, load QNFO custom skills via `read()`
 | Run BLING usability audit | `read('G:\My Drive\prompts\skills\bling-usability-audit\SKILL.md')` |
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
 | Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
+| Migrate local files to R2 (scan, classify, upload, index, clean) | `read('G:\My Drive\prompts\skills\local-to-r2-migration\SKILL.md')` |
 
 **Built-in DeepChat skills** (algorithmic-art, code-review, frontend-design, etc.) are accessed via `skill_view('<name>')`.
 
