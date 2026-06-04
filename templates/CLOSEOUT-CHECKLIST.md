@@ -100,9 +100,13 @@ Every item must be verified and marked `[x]` before the session ends. `[!]` = bl
 
 ---
 
-## PHASE F: CLEANUP & FINAL STATE
+## PHASE F: CLEANUP & FINAL STATE — JIT ENFORCEMENT
 
-- [ ] **All temp files deleted:** `Remove-Item` all `_*.py`, `_*.txt`, and other temporary artifacts
+**HARD RULE:** This machine is a thin client. The ONLY files that persist locally are the import surface (`G:\My Drive\prompts\`). Everything else MUST be cleaned up.
+
+- [ ] **Orphan `_*` files scan and removal:** `Get-ChildItem -File -Name | Where-Object { $_ -match '^_' } | ForEach-Object { Remove-Item $_ }` — verify with `Test-Path` that ZERO `_*` files remain
+- [ ] **Python cache cleanup:** `if (Test-Path "__pycache__") { Remove-Item -Recurse -Force "__pycache__" }`
+- [ ] **All temp files deleted:** `Remove-Item` all `_*.py`, `_*.txt`, and other temporary artifacts. Verify with `Test-Path` — do NOT use `-ErrorAction SilentlyContinue`
 - [ ] **Working tree clean:** `git status --porcelain` returns empty (re-verified after cleanup)
 - [ ] **QWAV-DEFAULT.md unstaged:** If QWAV-DEFAULT.md or DEFAULT.md was inadvertently modified (check `git diff --name-only`) (line endings, stash artifacts), restore with `git checkout`
 - [ ] **Only main branch exists:** `git branch` shows `* main` as the only local branch

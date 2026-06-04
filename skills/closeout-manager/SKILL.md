@@ -176,13 +176,38 @@ npx wrangler r2 object put qnfo/audit/state/<project>.json --file=<local-state-f
 Move-Item -Path "<project>" -Destination "G:\My Drive\Archive\projects\YYYY\MM\<name>\"
 ```
 
-### 9. Clean Up Temporary Files
+### 9. Clean Up Temporary Files — AGGRESSIVE JIT ENFORCEMENT
 
-Remove temporary fix scripts and work files:
+**HARD RULE:** This machine is a thin client. The ONLY files that persist locally are the import surface (`G:\My Drive\prompts\`). Everything else MUST be cleaned up at session closeout. Never use `-ErrorAction SilentlyContinue` — verify every deletion with `Test-Path`.
+
+**Step 9.1: Orphan `_*` file scan and removal**
 ```bash
-Remove-Item "G:\My Drive\QWAV_fix_*.py" -ErrorAction SilentlyContinue
-Remove-Item "G:\My Drive\QWAV_temp_*" -ErrorAction SilentlyContinue
+Get-ChildItem -File -Name | Where-Object { $_ -match '^_' } | ForEach-Object { Remove-Item $_; Write-Output "CLEANED: $_" }
+# VERIFY: No _* files remain
+$orphans = Get-ChildItem -File -Name | Where-Object { $_ -match '^_' }
+if ($orphans) { Write-Output "FAILED: Orphans remain: $orphans"; exit 1 }
+Write-Output "Orphan scan: CLEAN"
 ```
+
+**Step 9.2: Python cache cleanup**
+```bash
+if (Test-Path "__pycache__") { Remove-Item -Recurse -Force "__pycache__"; Write-Output "CLEANED: __pycache__" }
+```
+
+**Step 9.3: Project file cleanup (outside import-surface)**
+- If any project files were pulled from R2 during the session (e.g., in `G:\My Drive\projects\`, `G:\My Drive\QWAV\`):
+  - If modified: re-upload to R2 FIRST, then delete local copy
+  - If unmodified: delete local copy immediately (they're stale caches)
+- The goal: ZERO project files persist locally between sessions
+
+**Step 9.4: Final verification**
+```bash
+$remaining = Get-ChildItem -Recurse -File -Name | Where-Object { 
+    $_ -match '^_' -and $_ -notmatch '^skills\\' -and $_ -notmatch '^templates\\' -and $_ -notmatch '^agents\\' -and $_ -notmatch '^config\\' -and $_ -notmatch '^audit\\'
+}
+if ($remaining) { Write-Output "WARNING: Non-import-surface files detected: $remaining" }
+```
+Only `G:\My Drive\prompts\` files should remain. Everything else is clutter.
 
 ### 10. Final Verification — Full Closeout Checklist
 
