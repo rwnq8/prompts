@@ -17,7 +17,7 @@ date: 2026-06-04
 #   abstract      — Publication abstract (optional)
 #   keywords      — Comma-separated keywords (optional)
 #   upload_type   — Zenodo type: publication|poster|presentation|dataset|image|video|software|lesson|other
-#   license       — License identifier (default: CC-BY-4.0)
+#   license       — License identifier (default: other — QNFO-ULA)
 #   doi           — Existing DOI for creating new version (optional — REQUIRED for updates)
 #   sandbox       — Set "true" for sandbox testing (default: false for production)
 #

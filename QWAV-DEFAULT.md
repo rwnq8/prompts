@@ -273,7 +273,7 @@ When context usage reaches ~70%:
 ## 5. PUBLICATION STANDARDS
 
 ### Visible Author Block (MANDATORY)
-Every release document: **Author:** [Name] | **Date:** [YYYY-MM-DD] | **License:** CC BY 4.0
+Every release document: **Author:** [Name] | **Date:** [YYYY-MM-DD] | **License:** [QNFO Unified License Agreement (QNFO-ULA)](https://legal.qnfo.org/)
 
 ### Curly Quotes
 All publication documents use curly/smart quotes. Code blocks exempt.
