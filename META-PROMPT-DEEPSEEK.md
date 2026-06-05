@@ -74,7 +74,7 @@ Before taking any action, ask:
 | Asset | Canonical Path | Deploys To |
 |:------|:---------------|:-----------|
 | Skills | `skills/<name>/SKILL.md` | `%APPDATA%\DeepChat\skills\<name>\SKILL.md` |
-| DeepChat config | `config/mcp-settings.json`, `config/acp_agents.json`, `config/model-config.json` | `%APPDATA%\DeepChat\` |
+| DeepChat config | `config/mcp-settings.json`, `config/acp_agents.json`, `config/model-config.json` | ⚠️ DEPRECATED — DeepChat manages these internally and overwrites deployed copies. Do NOT deploy config files. |
 
 **What must be imported via DeepChat UI (DeepChat manages these as internal state):**
 | Asset | Import File | How |
@@ -87,7 +87,7 @@ Before taking any action, ask:
 
 ```bash
 # Pull deploy tool from R2: npx wrangler r2 object get qnfo/tools/deploy.py --remote --file=_deploy.py
-python _deploy.py              # Deploy skills + configs
+python _deploy.py              # Deploy skills ONLY (configs are DeepChat-managed)
 python _deploy.py --dry-run    # Preview changes
 # Discard: Remove-Item _deploy.py
 ```
@@ -928,7 +928,7 @@ Before committing ANY change that modifies the Discovery Index, HANDOFF template
 
 3. **CONCURRENT MODIFICATION CHECK:** If you're editing a file that another agent session may also be editing (QWAV-DEFAULT.md, Discovery Index), check `git log -1 -- <file>` to confirm the last commit was yours, not another agent's. If another agent modified the file since your last pull, re-integrate their changes before committing.
 
-4. **DEPLOY DRY-RUN:** Pull from R2 (`npx wrangler r2 object get qnfo/tools/deploy.py --remote --file=_deploy.py`) then `python _deploy.py --dry-run`. Verify only the skills/config files you intended to change are listed as WOULD_UPDATE. Unexpected changes indicate drift. System prompts and templates are NOT synced — they must be imported via DeepChat UI.
+4. **DEPLOY DRY-RUN:** Pull from R2 (`npx wrangler r2 object get qnfo/tools/deploy.py --remote --file=_deploy.py`) then `python _deploy.py --dry-run`. Verify only the skill files you intended to change are listed as WOULD_UPDATE. Unexpected changes indicate drift. System prompts and templates are NOT synced — they must be imported via DeepChat UI. Config files are DeepChat-managed and NOT deployed.
 
 **VIOLATION INDICATORS:** If `git log --oneline -3` shows two consecutive commits modifying the same files with the second described as "fix path," "fix reference," or "fix wrong," you shipped broken state and had to undo/redo. The gate was skipped.
 
@@ -969,9 +969,9 @@ python _kaizen_engine.py --audit --apply
 ### 8.5.3 Auto-Deployment Pipeline
 
 When prompts are updated by the Kaizen Engine:
-1. `_deploy.py` syncs skills and configs to the DeepChat runtime
+1. `_deploy.py` syncs skills to the DeepChat runtime (configs are DeepChat-managed, not deployed)
 2. System prompts and templates must be imported via DeepChat UI (deploy.py cannot write to DeepChat's internal state files)
-3. No manual user intervention required for skills/configs; manual import required for prompts/templates
+3. No manual user intervention required for skills; manual import required for prompts/templates
 
 ### 8.5.4 What You (Prompt Generator) Must Do
 
