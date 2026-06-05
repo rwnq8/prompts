@@ -20,7 +20,13 @@ reportlab. Renders mathematical expressions using matplotlib's mathtext parser.
 **v1.2:** HTML-to-PDF fallback for complex documents.
 **v1.1:** Math rendering via matplotlib mathtext.
 
-**Replaces:** `templates/PDF-BUILDER-TEMPLATE.md` (deprecated — v1.1, 2026-06-03).
+**⚠️ RECOMMENDED WORKFLOW:** For publications with math, tables, or professional formatting,
+use the **HTML + papers.css + MathJax** pipeline first:
+1. Convert `.md` → `.html` with `md_to_html.py` (uses `papers.css` for professional academic styling)
+2. Deploy HTML to Cloudflare Pages
+3. Build PDF from HTML via playwright/weasyprint for download
+This HTML-first approach handles ALL LaTeX commands (including `\bmod`, `\operatorname`,
+`\square`) and markdown tables correctly. The PDF builder is a fallback for simple documents.
 
 ---
 
