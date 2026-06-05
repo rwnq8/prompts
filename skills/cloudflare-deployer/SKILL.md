@@ -1,10 +1,10 @@
 ---
 name: cloudflare-deployer
 description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Sandboxes. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
-version: "1.1"
+version: "1.2"
 ---
 
-# CLOUDFLARE DEPLOYER SKILL — v1.1
+# CLOUDFLARE DEPLOYER SKILL — v1.2
 
 > **On-demand skill.** Load via `skill_view('cloudflare-deployer')` for all Cloudflare operations.
 > Source: `templates/CLOUDFLARE-DEPLOYMENT.md` v2.1 + QWAV-DEFAULT.md §0.6.5-0.6.7
@@ -80,6 +80,36 @@ npx wrangler pages deployment rollback --project-name <name>
 
 **Active Projects:** qwav (deep.qwav.tech), prompts-wiki, qnfo-archive (archive.qnfo.org),
 quantum-laws-of-form (laws.qnfo.org), qlof-primer (primer.qwav.tech), +11 more.
+
+### Post-Deploy MathJax Verification (MANDATORY for Publication Pages)
+
+After deploying ANY publication page to Cloudflare Pages, verify MathJax is correctly configured:
+
+```bash
+python -c "
+import urllib.request, sys
+url = sys.argv[1]
+html = urllib.request.urlopen(url).read().decode('utf-8')
+config_pos = html.find('window.MathJax')
+script_pos = html.find('MathJax-script')
+if config_pos == -1:
+    print(f'[BLOCKED] No MathJax config found on {url}')
+    sys.exit(1)
+if script_pos == -1:
+    print(f'[BLOCKED] No MathJax script found on {url}')
+    sys.exit(1)
+if config_pos > script_pos:
+    print(f'[BLOCKED] MathJax config AFTER script on {url} — math WILL NOT render.')
+    print(f'  Config pos: {config_pos}, Script pos: {script_pos}')
+    sys.exit(1)
+print(f'[OK] MathJax correctly configured on {url}')
+print(f'  Config pos: {config_pos}, Script pos: {script_pos}')
+" (via script file) <deployed-url>
+```
+
+**CRITICAL:** The `window.MathJax` configuration MUST come BEFORE the `<script id="MathJax-script">` tag. If config is after the script, MathJax initializes without macros and math will NOT render. This is the #1 cause of "MathJax isn't rendering."
+
+For the canonical MathJax configuration, see `templates/MATHJAX-CONFIG.md` and `templates/HTML-PUBLICATION-PAGE.md`.
 
 ---
 

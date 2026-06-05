@@ -1,7 +1,7 @@
 ---
 template: CLOUDFLARE-DEPLOYMENT
-version: "2.1"
-date: 2026-06-03
+version: "2.2"
+date: 2026-06-05
 parameters:
   - name: action
     type: string
@@ -155,6 +155,38 @@ wrangler pages deployment list --project-name {{project_name}}
 curl.exe -sI https://{{project_name}}.pages.dev | Select-String "HTTP"
 # MUST return: HTTP/1.1 200 OK
 ```
+
+### 1.3.1 MathJax Verification (MANDATORY for Publication Pages)
+
+After deploying any publication page with mathematical content, verify MathJax is correctly configured on the live URL:
+
+```bash
+python -c "
+import urllib.request, sys
+url = 'https://{{project_name}}.pages.dev'
+html = urllib.request.urlopen(url).read().decode('utf-8')
+config_pos = html.find('window.MathJax')
+script_pos = html.find('MathJax-script')
+if config_pos == -1:
+    print(f'[BLOCKED] No MathJax config found on {url}')
+    sys.exit(1)
+if script_pos == -1:
+    print(f'[BLOCKED] No MathJax script found on {url}')
+    sys.exit(1)
+if config_pos > script_pos:
+    print(f'[BLOCKED] MathJax config AFTER script on {url} — math WILL NOT render.')
+    print(f'  Config pos: {config_pos}, Script pos: {script_pos}')
+    sys.exit(1)
+print(f'[OK] MathJax correctly configured: config@{config_pos}, script@{script_pos}')
+" (via script file)
+```
+
+**CRITICAL:** The `window.MathJax` configuration MUST come BEFORE `<script id="MathJax-script">`. If config is after the script, MathJax initializes without macros and math will NOT render. This is the #1 cause of "MathJax isn't rendering."
+
+For publication pages, also verify:
+- HTML is generated from canonical Markdown (not hand-coded) via `HTML-PUBLICATION-PAGE` template
+- All `$...$` and `$$...$$` delimiters from the Markdown source are preserved in the HTML
+- QNFO standard macros (blackboard bold, calligraphic, Greek) are in the MathJax config
 
 ### 1.4 Custom Domain — See Section 7
 

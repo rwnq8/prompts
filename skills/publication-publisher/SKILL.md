@@ -1,10 +1,10 @@
 ---
 name: publication-publisher
 description: End-to-end publication workflow — formatting, PDF building, complete artifact bundling, Zenodo upload (with semantic versioning), Cloudflare deployment, social media orchestration, and post-publication draft cleanup. Use when publishing papers, reports, or other documents.
-version: "1.4"
+version: "1.5"
 ---
 
-# PUBLICATION PUBLISHER SKILL — v1.4
+# PUBLICATION PUBLISHER SKILL — v1.5
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
 > Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `pdf-builder` skill
@@ -319,6 +319,65 @@ print('Compare Zenodo file count against manifest — must match')
 - [ ] Verify the target deployment uses `--project-name qwav` (NEVER a new project)
 - [ ] Verify the publication deploys to a subdirectory path: `/papers/<kebab-case-title>/`
 - [ ] Verify no duplicate R2 artifact already exists at `qnfo/releases/YYYY/MM/<file>.pdf`
+- [ ] **Verify HTML is generated from canonical Markdown** (see §4.1 below) — NEVER hand-code publication HTML
+- [ ] **Verify MathJax config is BEFORE script tag** — `window.MathJax` config MUST precede `<script id="MathJax-script">` in `index.html`. If config comes after, math WILL NOT render.
+
+### 4.1 HTML Generation from Canonical Markdown (MANDATORY)
+
+**HARD RULE: ALL publication HTML pages MUST be generated from canonical Markdown.** HTML is a derived output format, not a content source. Use the `HTML-PUBLICATION-PAGE` template:
+
+```
+fill_prompt_template("HTML-PUBLICATION-PAGE", {
+  "title": "<publication_title>",
+  "author": "<Author Name (Affiliation)>",
+  "date": "<YYYY-MM-DD>",
+  "doi": "<10.5281/zenodo.XXXXXXXX>",
+  "description": "<one-sentence description>",
+  "stylesheet_path": "stylesheets/papers.css",
+  "canonical_md_path": "<path/to/paper.md>",
+  "extra_macros": "{...}"  // optional publication-specific macros
+})
+```
+
+The template generates `index.html` from `paper.md` with:
+- Correct MathJax config-before-script ordering
+- QNFO standard macros (blackboard bold, calligraphic, Greek shortcuts)
+- Publication metadata (citation_* meta tags)
+- Responsive viewport
+- GA4 integration (if measurement ID provided)
+
+### 4.2 MathJax Config Order Verification (MANDATORY)
+
+Before deploying, verify MathJax config ordering in `index.html`:
+
+```bash
+python -c "
+import sys
+with open('index.html', 'r', encoding='utf-8') as f:
+    html = f.read()
+config_pos = html.find('window.MathJax')
+script_pos = html.find('MathJax-script')
+if config_pos == -1:
+    print('[BLOCKED] No MathJax config found in index.html!')
+    sys.exit(1)
+if script_pos == -1:
+    print('[BLOCKED] No MathJax script found in index.html!')
+    sys.exit(1)
+if config_pos > script_pos:
+    print('[BLOCKED] MathJax config AFTER script! Math WILL NOT render.')
+    print('  Config at pos {}, Script at pos {}'.format(config_pos, script_pos))
+    print('  FIX: Move MathJax config <script> BEFORE MathJax-script <script>')
+    sys.exit(1)
+print('[OK] MathJax config correctly placed BEFORE script.')
+print('  Config at pos {}, Script at pos {}'.format(config_pos, script_pos))
+" (via script file)
+```
+
+**GATE:** If config is AFTER script → `[BLOCKED: MathJax order]`. Fix `index.html` BEFORE deploying. This is the #1 cause of "MathJax isn't rendering."
+
+For the canonical MathJax configuration, see `templates/MATHJAX-CONFIG.md`.
+
+### 4.3 Deploy
 
 ```bash
 # Deploy to Cloudflare Pages
@@ -494,8 +553,8 @@ DO NOT attempt publication without these scripts.
 
 ---
 
-*publication-publisher skill v1.4 — Load on-demand via skill_view()*
+*publication-publisher skill v1.5 — Load on-demand via skill_view(). HTML pages MUST be generated from canonical Markdown with MathJax config BEFORE script.*
 
 ---
 
-*publication-publisher v1.4 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
+*publication-publisher v1.5 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\publication-publisher\\SKILL.md'). Not accessible via skill_view().*
