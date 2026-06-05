@@ -45,8 +45,9 @@ Fill the `KAIZEN-AUTONOMOUS-UPDATE` template using `fill_prompt_template`. The t
 | **3. Skills** | Version headers, tool docs, read-based loading patterns | Versioned skills |
 | **4. Agent Configs** | Tool lists, subagent slots, system prompt references | Updated configs |
 | **5. Subagent Prompts** | Research Integrity, DoD criteria, anti-patterns | Updated subagents |
-| **6. Deploy & Commit** | Dry-run, deploy, git commit with verification | Deployed + committed |
+| **6. Deploy & Commit** | Dry-run, deploy skills + hooks, git commit with verification | Deployed + committed |
 | **7. R2 Upload** | Kaizen report to R2, Discovery Index update, cleanup | Audit trail |
+| **8. Hooks & Scheduled Tasks** | Verify hook scripts deployed, scheduled tasks registered | Hook health report |
 
 ## Comprehensive Audit Script
 
