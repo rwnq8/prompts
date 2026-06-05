@@ -17,22 +17,33 @@ A pre-response hook that programmatically checks whether the agent has pending e
 ### Impact
 The 2026-06-04 failure test case: 19/24 user messages (79%) were EXECUTE/RESUME/PROCEED/HANDOFF demands. Every response had ZERO tool invocations. The agent self-diagnosed the planning spiral but couldn't break out of it because "thinking about executing" is not "executing."
 
-### Mitigation (Partial)
-- **execution-guard skill** — Priority 0 prompt-level guard with self-diagnostic
-- **execution_audit.py** — Post-hoc analysis detects failures after the fact
-- **Kaizen pattern detection** — Flags sessions with high plan:execution ratios
-- **Closeout execution ratio gate** — Blocks closeout when tasks unexecuted
+### Mitigation (RESOLVED — DeepChat Hooks)
+
+**DeepChat supports lifecycle hooks on 8 events.** We now deploy:
+
+| Hook Event | What It Does |
+|:-----------|:-------------|
+| **SessionStart** | Initialize audit trail, create `_session_meta.json` with tool_count=0 |
+| **PostToolUse** | Log every tool invocation — ground-truth execution counter |
+| **ToolUseFailure** | Track failures, detect 3x same tool+error → anti-loop alert |
+| **SessionEnd** | Compute execution_ratio, tool_count, failure_count, severity automatically |
+
+**Unlike prompt-level instructions, these hooks execute as code-level commands and cannot be ignored by the LLM.** The SessionEnd hook provides ground-truth execution statistics that feed the Kaizen engine and closeout audit.
+
+**Setup:** See `HOOKS-REFERENCE.md`. Command: `python "G:\My Drive\prompts\hooks\deepchat_hooks.py" {{event}} {{conversationId}}`
 
 ### Feature Request for DeepChat
-Add a `preResponseHook` configuration that allows specifying a script (Python/Node) to run before every agent response. The hook would receive:
-- The current `update_plan` state
+Add a **PreResponse hook** that fires before the agent's response is delivered to the user. This hook would receive:
 - The pending response text
 - Tool invocation history for the session
+- The current `update_plan` state (via stdin JSON or environment variable)
 
 The hook could then:
-- Block text generation if tasks are pending
-- Append `[AUTO-CONTINUE]` tags
-- Flag banned words before they reach the user
+- **Block** text generation if tasks are pending (exit code 1 → DeepChat suppresses response)
+- **Append** `[AUTO-CONTINUE]` tags before delivery
+- **Flag** banned words before they reach the user
+
+This would close the gap between prompt-level guards and code-level enforcement.
 
 ---
 
@@ -49,10 +60,13 @@ A mechanism to periodically poll the R2 backlog for new tasks and auto-trigger e
 ### Impact
 The user must manually type EXECUTE/RESUME/PROCEED to trigger the next task. Between user messages, the system is idle even when tasks are known to be pending.
 
-### Mitigation (Partial)
-- AUTONOMOUS CONTINUATION PROTOCOL (§0.10) — Makes execution the default state
-- POST-TOOL hook (§10) — Polls task register after every tool invocation
-- Continuation signal — Signals `[AUTO-CONTINUE]` to indicate more work needed
+### Mitigation (RESOLVED — DeepChat Hooks)
+
+**DeepChat lifecycle hooks now provide scheduled execution at SessionStart and SessionEnd.** The SessionStart hook initializes audit tracking and can pull the R2 backlog for pending tasks. The SessionEnd hook runs cleanup and computes execution statistics.
+
+**These are code-level triggers, not prompt-level.** The LLM cannot ignore them.
+
+**Setup:** See `HOOKS-REFERENCE.md`. Both hooks use the same dispatcher: `python hooks/deepchat_hooks.py {{event}} {{conversationId}}`
 
 ### Feature Request for DeepChat
 Add a `sessionHook` configuration that supports:
@@ -109,10 +123,10 @@ The execution-guard skill description includes trigger conditions for "session s
 
 | Gap | Severity | Mitigation Status |
 |:----|:---------|:------------------|
-| Response Interception Hooks | CRITICAL | Partial — execution-guard skill (prompt-level) |
-| Scheduled/Background Polling | HIGH | Partial — AUTONOMOUS CONTINUATION + POST-TOOL hook |
-| Programmatic Tool Invocation | MEDIUM | None — requires DeepChat API |
-| Per-Session Execution Audit | MEDIUM | Implemented — execution_audit.py + Kaizen |
+| Response Interception Hooks | CRITICAL | PARTIAL — DeepChat hooks (PostToolUse) provide execution tracking; cannot block responses |
+| Scheduled/Background Polling | HIGH | RESOLVED — DeepChat SessionStart + SessionEnd hooks provide lifecycle automation |
+| Programmatic Tool Invocation | MEDIUM | None — requires DeepChat API; hooks observe but cannot inject tools |
+| Per-Session Execution Audit | MEDIUM | RESOLVED — SessionEnd hook computes execution_ratio and severity automatically |
 | Auto-Pin Skills | LOW | Manual pinning required |
 
 ---

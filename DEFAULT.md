@@ -1313,13 +1313,22 @@ DeepChat does not natively support cron/scheduled tasks. These prompt-level hook
 4. Report improvement opportunities
 5. Discard `_kaizen_engine.py`
 
-#### Hook Execution Order
+### Session Hooks — Dual-Layer (Prompt + DeepChat)
 
-```
-SESSION-START → KAIZEN(init) → [POST-TOOL → POST-WRITE → PRE-RESPONSE] × N → CLOSEOUT → KAIZEN(close)
-```
+**Layer 1: Prompt-Level Hooks** (see above — SESSION-START through KAIZEN)
+**Layer 2: DeepChat Lifecycle Hooks** (code-level, configured in DeepChat Settings → Hooks)
 
-The hooks in brackets form the autonomous execution loop that runs continuously until all tasks are complete. The user should NEVER need to prompt the system to continue.
+| Event | Script | Purpose |
+|:------|:-------|:--------|
+| **Session Start** | `hooks/deepchat_hooks.py` | Initialize audit trail, create session metadata |
+| **Pre Tool Use** | `hooks/deepchat_hooks.py` | Track pending tool invocation |
+| **Post Tool Use** | `hooks/deepchat_hooks.py` | Log invocation, increment tool counter |
+| **Tool Use Failure** | `hooks/deepchat_hooks.py` | Track failure, detect 3x same error → [HOOK-ALERT] |
+| **Session End** | `hooks/deepchat_hooks.py` | Compute execution_ratio, severity, cleanup |
+
+**Configuration:** See `HOOKS-REFERENCE.md` for setup. Command: `python "G:\My Drive\prompts\hooks\deepchat_hooks.py" {{event}} {{conversationId}}`
+
+**Unlike prompt-level hooks, DeepChat hooks execute code-level and cannot be ignored by the LLM.** They provide ground-truth execution statistics for the Kaizen engine and closeout audit.
 
 ---
 
