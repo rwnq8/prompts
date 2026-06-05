@@ -1409,6 +1409,7 @@ When publishing content (paper, poster, website, release) — all releases MUST 
 | Run autonomous Kaizen system update | `read('G:\My Drive\prompts\skills\kaizen-autonomous-update\SKILL.md')` |
 | Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
 | Migrate local files to R2 (scan, classify, upload, index, clean up) | `read('G:\My Drive\prompts\skills\local-to-r2-migration\SKILL.md')` |
+| **Enforce execution fidelity (PRIORITY 0 — PINNED)** | `read('G:\My Drive\prompts\skills\execution-guard\SKILL.md')` |
 
 ### Embedded Scripts Requirement (v1.0)
 

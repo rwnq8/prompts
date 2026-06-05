@@ -815,6 +815,7 @@ EXPECTED OUTPUT: [format, structure, scope]
 | Query QNFO Knowledge Graph (due diligence, impact analysis) | `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` |
 | Migrate local files to R2 (scan, classify, upload, index, clean up) | `read('G:\My Drive\prompts\skills\local-to-r2-migration\SKILL.md')` |
 | Audit system prompts, skills, templates (self-assessment) | `read('G:\My Drive\prompts\skills\prompt-audit\SKILL.md')` |
+| **Enforce execution fidelity (PRIORITY 0 — PINNED)** | `read('G:\My Drive\prompts\skills\execution-guard\SKILL.md')` |
 
 **Loading protocol:**
 1. **Verify file exists:** `Test-Path "G:\My Drive\prompts\skills\<name>\SKILL.md"`

@@ -79,6 +79,36 @@ e. **Unfinished items:** Any planned-but-unexecuted item is a BLOCKER. Either ex
 
 **GATE:** If ANY planned task is unexecuted without documentation → closeout is BLOCKED. Fix before proceeding.
 
+### 2.1 Execution Ratio Audit (v1.0 — MANDATORY at Every Closeout)
+
+**The #1 undetected failure mode: sessions where the agent produced text but never invoked tools.** This audit catches planning spirals before they go unnoticed.
+
+#### Procedure
+
+1. **Estimate plan:execution ratio** from the session:
+   - Count tool invocations (write, exec, edit, search, deploy, git commit)
+   - Count total responses (including thinking blocks)
+   - ratio = tools / (tools + text-only responses)
+
+2. **Enforce ratio thresholds:**
+   - ratio >= 0.5: PASS — proceed with closeout
+   - ratio 0.3–0.5: WARN — closeout allowed but flag `[EXECUTION-RATIO-WARN]` in audit trail
+   - ratio < 0.3: FAIL — closeout BLOCKED. Execute remaining tasks or escalate to user.
+
+3. **Run `execution_audit.py`** if a conversation export is available:
+   ```bash
+   python _execution_audit.py --latest --json
+   ```
+   (Pull from R2 first: `npx wrangler r2 object get qnfo/tools/execution_audit.py --remote --file=_execution_audit.py`)
+
+4. **Report in audit trail:**
+   ```
+   [EXECUTION-AUDIT: ratio=X/T, tools=Y, text-only=Z, severity=PASS|WARN|FAIL]
+   ```
+
+#### GATE
+If ratio < 0.3 → closeout BLOCKED. The session did not execute enough. Fix before closing.
+
 ### 3. Project Handoff Initialization (MANDATORY — Projects Directory)
 
 Verify and update handoff documents in `G:\My Drive\projects\`:
@@ -295,4 +325,4 @@ fill_prompt_template("HANDOFF", {type: "Program->Project", scope: "...", ...})
 
 ---
 
-*closeout-manager v1.0 — QNFO custom skill. Load via read('G:\\My Drive\\prompts\\skills\\closeout-manager\\SKILL.md'). Not accessible via skill_view().*
+*closeout-manager v2.3 — AUTONOMOUS. Detects completion and auto-initiates. Execution ratio audit gate at closeout.*
