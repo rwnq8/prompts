@@ -3,7 +3,7 @@
 deepchat_hooks.py — DeepChat Lifecycle Hook Dispatcher (v1.0)
 
 DESIGNED FOR: DeepChat Hook configuration UI
-  Command: python "G:\My Drive\prompts\hooks\deepchat_hooks.py" {{event}} {{conversationId}}
+  Command: python "G:/My Drive/prompts/hooks/deepchat_hooks.py" {{event}} {{conversationId}}
   Events: ALL 8 lifecycle events recommended
   Stdin: JSON payload from DeepChat
 
