@@ -1,8 +1,7 @@
 ---
-
 name: github-manager
 
-description: DEPRECATED  ARCHIVED (2026-06-01). GitHub fully deprecated per ADR-001. All PM is Cloudflare-native (R2, D1, Workers, Pages). This skill retained for historical reference only. Do NOT use for new operations.
+description: DEPRECATED -- ARCHIVED (2026-06-01). GitHub fully deprecated per ADR-001. All PM is Cloudflare-native (R2, D1, Workers, Pages). This skill retained for historical reference only. Do NOT use for new operations.
 
 version: "1.0"
 
