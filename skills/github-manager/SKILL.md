@@ -315,7 +315,7 @@ If QNFO org is flagged/blocked:
 
 | Decision logging | R2 `qnfo/audit/decisions/DECISION-LOG.md` |
 
-| Release artifacts | R2 `qnfo/releases/` |
+| Release artifacts | R2 `qnfo/releases/YYYY/MM/` |
 
 | Deployment tracking | R2 `qnfo/deployments/` |
 

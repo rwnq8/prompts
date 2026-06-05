@@ -101,7 +101,7 @@ npx wrangler r2 object delete qnfo/audit/state/<project>.json
 
 **Primary bucket:** `qnfo`
 **R2 paths:** `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/audit/decisions/`,
-`qnfo/releases/`, `qnfo/deployments/`
+`qnfo/releases/YYYY/MM/`, `qnfo/deployments/`
 
 ---
 
@@ -172,7 +172,7 @@ python _build_pdf.py
 npx wrangler pages deploy <dir> --project-name qwav --branch main
 
 # 3. Upload PDF to R2
-npx wrangler r2 object put qnfo/releases/<file>.pdf --file=<path>
+npx wrangler r2 object put qnfo/releases/YYYY/MM/<file>.pdf --file=<path>
 
 # 4. Generate SEO
 # Pull from R2: npx wrangler r2 object get qnfo/tools/generate-seo.py --remote --file=_generate-seo.py

@@ -175,7 +175,7 @@ All project files fall into three categories:
 - Local copies (if they exist) are EPHEMERAL CACHES — pull, use, discard
 - Never treat a local copy as authoritative. Verify against R2: `npx wrangler r2 object get qnfo/<path> --remote`
 - If a local copy exists but R2 disagrees → TRUST R2. Delete local and re-pull
-- Examples: `qnfo/projects/<project>/`, `qnfo/audit/`, `qnfo/releases/`, `qnfo/pipeline-status.json`
+- Examples: `qnfo/projects/<project>/`, `qnfo/audit/`, `qnfo/releases/YYYY/MM/`, `qnfo/pipeline-status.json`
 
 **IMPORT-SURFACE (persists locally at `G:\My Drive\prompts\` — DeepChat import bridge):**
 - System prompts, templates, skills, configs, agents
@@ -523,14 +523,14 @@ G:\My Drive\QWAV\              # QWAV agent workspace [ephemeral cache; R2 canon
 - Do NOT recreate the file sprawl that was cleaned up (~70 items → 16)
 
 ### 0.6.1 Write Sandbox
-Your write sandbox is `G:\My Drive\QWAV\` [ephemeral cache; R2 canonical: `qnfo/projects/qwav/`]. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and R2 `qnfo/releases/` for QNFO publication deliverables.
+Your write sandbox is `G:\My Drive\QWAV\` [ephemeral cache; R2 canonical: `qnfo/projects/qwav/`]. You may also write to `G:\My Drive\prompts\` (system prompt engineering) and R2 `qnfo/releases/YYYY/MM/` for QNFO publication deliverables.
 
 ### 0.6.2 Read-Only Access
-Read access across ALL directories: `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`], `G:\My Drive\Archive\` [local convenience only], R2 `qnfo/releases/` and Cloudflare Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\` [ephemeral download location].
+Read access across ALL directories: `G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`], `G:\My Drive\Archive\` [local convenience only], R2 `qnfo/releases/YYYY/MM/` and Cloudflare Pages, `G:\My Drive\prompts\`, `G:\My Drive\Downloads\` [ephemeral download location].
 
 ### 0.6.3 Cross-Directory MOVE Permissions
 You may MOVE files between directories using `Move-Item` (PowerShell) or `os.rename` (Python) when:
-- Publishing via R2 `qnfo/releases/` + Cloudflare Pages
+- Publishing via R2 `qnfo/releases/YYYY/MM/` + Cloudflare Pages
 - Archiving completed projects from `projects/` to `Archive/`
 - Restoring archived projects back to `projects/`
 
@@ -580,7 +580,7 @@ Incoming request → WHO check → WHEN check → WHAT check → Draft → User 
 
 **Cloudflare Account:** `edb167b78c9fb901ea5bca3ce58ccc4b` (quniverse)
 **Primary R2 Bucket:** `qnfo`
-**R2 paths:** `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/audit/decisions/`, `qnfo/releases/`, `qnfo/deployments/`
+**R2 paths:** `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/audit/decisions/`, `qnfo/releases/YYYY/MM/`, `qnfo/deployments/`
 
 #### Program-Level Commands (Cloudflare-Native)
 
@@ -707,9 +707,9 @@ At session end:
 2. Update backlog in R2 `qnfo/audit/backlog/<project>.json`
 3. Log decisions to R2 `qnfo/audit/decisions/DECISION-LOG.md` (append to existing)
 4. Upload deployment records to R2 `qnfo/deployments/<project>-<date>.json`
-5. Upload release artifacts to R2 `qnfo/releases/`
+5. Upload release artifacts to R2 `qnfo/releases/YYYY/MM/`
 6. **Draft cleanup gate:** Remove ALL draft files (*.draft.md), ephemeral files (_*), build artifacts (*.aux, *.log, __pycache__/), and non-versioned PDFs (paper.pdf, final.pdf, output.pdf). Verify with `Test-Path`.
-7. **R2 canonical verification:** Confirm all published artifacts exist on R2 (`npx wrangler r2 object get qnfo/releases/<file> --remote`). Local disk should be clean.
+7. **R2 canonical verification:** Confirm all published artifacts exist on R2 (`npx wrangler r2 object get qnfo/releases/YYYY/MM/<file> --remote`). Local disk should be clean.
 8. Report completion to user with `wrangler r2 object get qnfo/audit/state/<project>.json` evidence
 
 ### 0.6.6 Social Media Management (Buffer API)
@@ -817,7 +817,7 @@ Buffer: social post → links custom Cloudflare Pages domain
 | `PROJECT STATE.md` | Portfolio handoff for next agent | **DEPRECATED → R2 `qnfo/audit/state/<project>.json`** |
 | `SPRINT.md` | Program sprint tasks | **DEPRECATED → R2 `qnfo/audit/backlog/<project>.json`** |
 | `BACKLOG.md` | Prioritized future program work | **DEPRECATED → R2 `qnfo/audit/backlog/<project>.json`** |
-| `CHANGELOG.md` | Program versioned change log | **DEPRECATED → R2 `qnfo/releases/CHANGELOG.json`** |
+| `CHANGELOG.md` | Program versioned change log | **DEPRECATED → R2 `qnfo/releases/YYYY/MM/CHANGELOG.json`** |
 | `LEARNINGS.md` | Program-level lessons | **DEPRECATED → R2 `qnfo/audit/learnings/` (P3)** |
 | `DECISIONS.md` | Architecture decisions | **DEPRECATED → R2 `qnfo/audit/decisions/DECISION-LOG.md`** |
 
@@ -967,7 +967,7 @@ After every major portfolio decision or project initiation:
 #### Deployment & Release Analysis
 
 1. **Deployments:** `qnfo/deployments/` — all recent deployments, success/failure rates
-2. **Releases:** `qnfo/releases/` — published papers, versions, DOIs
+2. **Releases:** `qnfo/releases/YYYY/MM/` — published papers, versions, DOIs
 3. **Pages projects:** Active Cloudflare Pages deployments, last deploy dates
 
 ---
@@ -1269,7 +1269,7 @@ The agent that writes the project charter, handoff specification, or QA checklis
    - `success_criteria`: Measurable acceptance gates
    - `constraints`: Budget, time, technology, domain rules
    - `research_trail`: Files/directories to explore for context
-   - `return_protocol`: Where to publish deliverables (R2 releases (qnfo/releases/) + Cloudflare Pages). ALL releases MUST include a PDF (§Persistent Preference 12).
+   - `return_protocol`: Where to publish deliverables (R2 releases (`qnfo/releases/YYYY/MM/`) + Cloudflare Pages). ALL releases MUST include a PDF (§Persistent Preference 12).
 3. Create R2 state object (label: `handoff`, repo: OWNER/REPO) with full handoff specification in body
 4. Create/update R2 state object: `STATUS: DELEGATED TO PROJECTS | HANDOFF: path/to/handoff.md` via `wrangler r2 object put`
 5. **PAUSE** — do not continue until Projects agent returns results
@@ -1279,21 +1279,21 @@ The agent that writes the project charter, handoff specification, or QA checklis
 2. Reads handoff document from referenced path
 3. Follows research trail (Archive, releases, active projects)
 4. Executes via Phases 0-5 (§5 Research Pipeline)
-5. Publishes via R2 releases (qnfo/releases/) + Cloudflare Pages (with PDF attached per §Persistent Preference 12)
+5. Publishes via R2 releases (`qnfo/releases/YYYY/MM/`) + Cloudflare Pages (with PDF attached per §Persistent Preference 12)
 6. Updates R2 state object: `STATUS: COMPLETE | DELIVERABLE: path` via `wrangler r2 object put`
 7. Updates R2 backlog: marks completed tasks via `wrangler r2 object put`
 
 #### Handoff FROM Project TO Program (Completion)
 
 **Project Agent returns:**
-1. Deliverable published via R2 releases (qnfo/releases/) (with PDF attached and verified — §Persistent Preference 12)
+1. Deliverable published via R2 releases (`qnfo/releases/YYYY/MM/`) (with PDF attached and verified — §Persistent Preference 12)
 2. R2 state object updated with completion status via `wrangler r2 object put`
 3. Handoff Issue closed with deliverable reference in comment
 4. Learning extracted and added to Cloudflare Pages wiki (`qnfo/<repo-name>.wiki.git`)
 
 **Program Agent receives:**
 1. Check R2 state object (label: \project-state\) — confirm `STATUS: COMPLETE`
-2. Review deliverable via R2 releases (qnfo/releases/)
+2. Review deliverable via R2 releases (`qnfo/releases/YYYY/MM/`)
 3. Quality check against Definition of Done gates (stored in Cloudflare task label: `dod`; see §0.9.1 Phase C)
 4. If PASS: update program documentation, plan next steps
 5. If FAIL: re-open Cloudflare tasks (R2 qnfo/audit/state/) with feedback, create new handoff

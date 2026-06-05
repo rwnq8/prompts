@@ -29,7 +29,7 @@ npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_
 | **Project States** | `qnfo/audit/state/*.json` | ALL active projects — cross-project dependencies |
 | **Project Backlogs** | `qnfo/audit/backlog/*.json` | ALL — check for tasks touching same resources |
 | **Cloudflare D1** | `qnfo-graph`, `qnfo-audit` | Row counts, table schemas, task statuses |
-| **R2 Assets** | `qnfo/releases/`, `qnfo/deployments/` | Related publications, deployments |
+| **R2 Assets** | `qnfo/releases/YYYY/MM/`, `qnfo/deployments/` | Related publications, deployments |
 
 ### 0.3 Infrastructure State Verification (ANTI-DUPLICATION)
 

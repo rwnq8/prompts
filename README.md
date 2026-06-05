@@ -84,7 +84,7 @@
 ```
 prompts\
 ├── README.md                     ← YOU ARE HERE (human reference)
-├── CHANGELOG.md                  ← DEPRECATED — use Cloudflare R2 releases (qnfo/releases/)
+├── CHANGELOG.md                  ← DEPRECATED — use Cloudflare R2 releases (`qnfo/releases/YYYY/MM/`)
 │
 ├── META-PROMPT-DEEPSEEK.md       ← THE FACTORY: generates all system prompts
 ├── DEFAULT.md                    ← System prompt for Projects agent

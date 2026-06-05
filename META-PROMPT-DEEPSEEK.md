@@ -611,7 +611,7 @@ All project files fall into three categories:
 - Local copies (if they exist) are EPHEMERAL CACHES — pull, use, discard
 - Never treat a local copy as authoritative. Verify against R2: `npx wrangler r2 object get qnfo/<path> --remote`
 - If a local copy exists but R2 disagrees → TRUST R2. Delete local and re-pull
-- Examples: `qnfo/projects/<project>/`, `qnfo/audit/`, `qnfo/releases/`, `qnfo/pipeline-status.json`
+- Examples: `qnfo/projects/<project>/`, `qnfo/audit/`, `qnfo/releases/YYYY/MM/`, `qnfo/pipeline-status.json`
 
 **IMPORT-SURFACE (persists locally at `G:\My Drive\prompts\` — DeepChat import bridge):**
 - System prompts, templates, skills, configs, agents
@@ -624,7 +624,7 @@ All project files fall into three categories:
 - PROJECT STATE.md → R2 `qnfo/audit/state/<project>.json`
 - SPRINT.md → R2 `qnfo/audit/backlog/<project>.json`
 - BACKLOG.md → R2 `qnfo/audit/backlog/<project>.json`
-- CHANGELOG.md → R2 `qnfo/releases/`
+- CHANGELOG.md → R2 `qnfo/releases/YYYY/MM/CHANGELOG.json`
 - LEARNINGS.md → R2 `qnfo/audit/learnings/`
 - DECISIONS.md → R2 `qnfo/audit/decisions/DECISION-LOG.md`
 Do NOT include these in generated prompts.
@@ -777,7 +777,7 @@ curl -X POST https://audit-worker.DOMAIN/api/events -d \'{"action":"COMMENT",...
 
 #### Releases (Replaces CHANGELOG.md)
 ```bash
-# Publish to R2: wrangler r2 object put qnfo/releases/v1.0.0/RELEASE.md
+# Publish to R2: wrangler r2 object put qnfo/releases/2026/06/<project>-v1.0.0.md --file=<path> --remote
 ```
 
 #### Discovery Index Update (MANDATORY — every session close-out)
@@ -805,7 +805,7 @@ If the index is missing: rebuild from R2 enumeration + local filesystem and uplo
 | `qnfo/audit/backlog/<project>.json` | Project backlog | Task creation/completion |
 | `qnfo/audit/decisions/DECISION-LOG.md` | Architectural decisions | New decisions |
 | `qnfo/audit/learnings/` | Cross-project learnings | Pattern discovery |
-| `qnfo/releases/<project>/` | Published artifacts | Publication |
+| `qnfo/releases/YYYY/MM/` | Published artifacts (year/month subdirectories) | Publication |
 | `qnfo/deployments/` | Deployment records | Deploy events |
 | `qnfo/archive/<project>/` | Archived project snapshots | Project archival |
 
@@ -815,7 +815,7 @@ If the index is missing: rebuild from R2 enumeration + local filesystem and uplo
 | PROJECT STATE.md | R2 `qnfo/audit/state/<project>.json` |
 | SPRINT.md | R2 `qnfo/audit/backlog/<project>.json` |
 | BACKLOG.md | R2 `qnfo/audit/backlog/<project>.json` |
-| CHANGELOG.md | R2 `qnfo/releases/` |
+| CHANGELOG.md | R2 `qnfo/releases/YYYY/MM/CHANGELOG.json` |
 | LEARNINGS.md | R2 `qnfo/audit/learnings/` |
 | DECISIONS.md | R2 `qnfo/audit/decisions/DECISION-LOG.md` |
 

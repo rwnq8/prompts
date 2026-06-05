@@ -64,7 +64,7 @@ Skip this section if classified C or W.
 | Definition of Done | Section in R2 state file or PROJECT-CHARTER.md | Documented in charter |
 | Decision Log | R2 object (`qnfo/audit/decisions/DECISION-LOG.md`) | Append to local copy → upload to R2 |
 | Code Archive | R2 object (`qnfo/code/<name>.bundle`) | `git bundle create` → `npx wrangler r2 object put` |
-| Releases | R2 object (`qnfo/releases/`) + Cloudflare Pages | `npx wrangler r2 object put` → `npx wrangler pages deploy` |
+| Releases | R2 object (`qnfo/releases/YYYY/MM/`) + Cloudflare Pages | `npx wrangler r2 object put` → `npx wrangler pages deploy` |
 
 | If LARGE | If SMALL |
 |:---------|:---------|

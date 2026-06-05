@@ -154,7 +154,7 @@ Before beginning any significant work, the agent MUST:
       "status": "active|archived|complete",
       "r2_state": "qnfo/audit/state/<project>.json",
       "r2_backlog": "qnfo/audit/backlog/<project>.json",
-      "r2_releases": "qnfo/releases/<project>/",
+      "r2_releases": "qnfo/releases/YYYY/MM/",
       "pages_url": "deep.qwav.tech/<path>/",
       "local_path": "G:/My Drive/projects/<project>/",
       "archive_path": "G:/My Drive/Archive/<project>/",
@@ -172,7 +172,7 @@ Before beginning any significant work, the agent MUST:
   "publications": {
     "<pub-name>": {
       "project": "<parent-project>",
-      "r2_path": "qnfo/releases/<project>/<file>",
+      "r2_path": "qnfo/releases/YYYY/MM/<file>",
       "pages_url": "deep.qwav.tech/<path>/",
       "zenodo_doi": "10.5281/zenodo.xxxxx",
       "topics": ["tag1"],
@@ -231,7 +231,7 @@ npx wrangler r2 object put qnfo/discovery/index.json --file=_updated_index.json 
 If `qnfo/discovery/index.json` is missing or corrupt:
 
 1. **Rebuild from Cloudflare sources:**
-   - Enumerate R2 objects: check `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/releases/`, `qnfo/archive/`
+   - Enumerate R2 objects: check `qnfo/audit/state/`, `qnfo/audit/backlog/`, `qnfo/releases/YYYY/MM/`, `qnfo/archive/`
    - Enumerate local: `G:\My Drive\projects\`, `G:\My Drive\Archive\`
    - Build fresh index and upload to `qnfo/discovery/index.json`
 

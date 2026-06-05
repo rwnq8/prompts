@@ -318,14 +318,14 @@ print('Compare Zenodo file count against manifest — must match')
 ### Pre-Deploy Checklist
 - [ ] Verify the target deployment uses `--project-name qwav` (NEVER a new project)
 - [ ] Verify the publication deploys to a subdirectory path: `/papers/<kebab-case-title>/`
-- [ ] Verify no duplicate R2 artifact already exists at `qnfo/releases/<file>.pdf`
+- [ ] Verify no duplicate R2 artifact already exists at `qnfo/releases/YYYY/MM/<file>.pdf`
 
 ```bash
 # Deploy to Cloudflare Pages
 npx wrangler pages deploy <dir> --project-name qwav --branch main
 
 # Upload PDF to R2
-npx wrangler r2 object put qnfo/releases/<file>.pdf --file=<path>
+npx wrangler r2 object put qnfo/releases/YYYY/MM/<file>.pdf --file=<path>
 
 # Generate SEO files
 # Pull from R2: npx wrangler r2 object get qnfo/tools/generate-seo.py --remote --file=_generate-seo.py
@@ -354,9 +354,9 @@ Post via Buffer API `create_post` tool with `schedulingType: "notification"` for
 
 ```powershell
 # Verify PDF on R2
-npx wrangler r2 object get qnfo/releases/<file>.pdf --remote
+npx wrangler r2 object get qnfo/releases/YYYY/MM/<file>.pdf --remote
 # Verify artifact bundle on R2 (if uploaded separately)
-npx wrangler r2 object get qnfo/releases/<project>-v<MAJOR.MINOR.PATCH>.zip --remote
+npx wrangler r2 object get qnfo/releases/YYYY/MM/<project>-v<MAJOR.MINOR.PATCH>.zip --remote
 ```
 
 **GATE:** If canonical copies do NOT exist on R2 → `[BLOCKED: canonical missing]`. Upload to R2 before cleaning local drafts.
@@ -401,8 +401,8 @@ if (Test-Path "<project_dir>/output.pdf") { Remove-Item "<project_dir>/output.pd
 if (Test-Path "<project_dir>/final.pdf") { Remove-Item "<project_dir>/final.pdf" }
 
 # Upload manifest and versioned PDF to R2, then delete local
-npx wrangler r2 object put qnfo/releases/<project>-v<version>/ARTIFACT-MANIFEST.json --file=ARTIFACT-MANIFEST.json
-npx wrangler r2 object put qnfo/releases/<project>-v<version>/<file>.pdf --file=<file>.pdf
+npx wrangler r2 object put qnfo/releases/YYYY/MM/<project>-v<version>/ARTIFACT-MANIFEST.json --file=ARTIFACT-MANIFEST.json
+npx wrangler r2 object put qnfo/releases/YYYY/MM/<project>-v<version>/<file>.pdf --file=<file>.pdf
 Remove-Item "ARTIFACT-MANIFEST.json"
 Remove-Item "<file>.pdf"
 ```
@@ -419,7 +419,7 @@ $ephemeral = Get-ChildItem -Path "<project_dir>" -Filter "_*" -ErrorAction Stop
 if ($ephemeral) { Write-Output "FAILED: $($ephemeral.Count) ephemeral files remain!" } else { Write-Output "Ephemeral cleanup: OK" }
 
 # Verify R2 has canonical copies
-npx wrangler r2 object get qnfo/releases/<project>-v<version>/<file>.pdf --remote
+npx wrangler r2 object get qnfo/releases/YYYY/MM/<project>-v<version>/<file>.pdf --remote
 Write-Output "R2 canonical verified: OK"
 ```
 

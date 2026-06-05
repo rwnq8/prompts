@@ -12,7 +12,7 @@
 | **System Prompt** | `DEFAULT.md` — paste ENTIRE contents into DeepChat Settings > Agents > Projects > System Prompt |
 | **Write Sandbox** | `G:\My Drive\projects\<name>\` — one project subdirectory per session |
 | **Read Scope** | ALL directories |
-| **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\<name>\`, `R2 releases (qnfo/releases/) + Cloudflare Pages` |
+| **MOVE Destinations** | `G:\My Drive\Archive\projects\YYYY\MM\<name>\`, `R2 releases (qnfo/releases/YYYY/MM/) + Cloudflare Pages` |
 
 ---
 
@@ -151,7 +151,7 @@ When the Kaizen engine detects 5+ unapplied improvements or user triggers "UPDAT
 
 1. Close-out checklist (DEFAULT.md SS12): archive, PDF, R2 release
 2. Verify all commits: `git log -1 --oneline`
-3. Upload releases to R2 (qnfo/releases/) + Cloudflare Pages
+3. Upload releases to R2 (`qnfo/releases/YYYY/MM/`) + Cloudflare Pages
 4. Trigger SOCIAL-ORCHESTRATOR if publication occurred
 5. Update R2 state (qnfo/audit/state/<project>.json) with final status
 6. AUTO-CONTINUE to next project

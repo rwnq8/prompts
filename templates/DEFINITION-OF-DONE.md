@@ -67,9 +67,9 @@ These gates apply regardless of task type. No exemption. Every `[x]` must refere
 - [ ] Reader testing: 2 rounds minimum, no truncation gaps (§3.1)
 - [ ] Curly quotes, YAML, author block per §11
 - [ ] `[DOI-PENDING]` replaced with actual DOI
-- [ ] PDF uploaded to R2: `npx wrangler r2 object put qnfo/releases/<project>/<version>/paper.pdf --file=<path> --remote`
+- [ ] PDF uploaded to R2: `npx wrangler r2 object put qnfo/releases/YYYY/MM/<project>-v<version>.pdf --file=<path> --remote`
 - [ ] Release registered in Discovery Index with version, DOI, R2 path, and publication date
-- [ ] PDF presence verified with `npx wrangler r2 object get qnfo/releases/<project>/<version>/paper.pdf --remote`
+- [ ] PDF presence verified with `npx wrangler r2 object get qnfo/releases/YYYY/MM/<project>-v<version>.pdf --remote`
 - [ ] Markdown source also uploaded to R2 same path for archival completeness
 - [ ] Human review (G4) completed
 - [ ] File committed

@@ -730,7 +730,7 @@ Use `read('G:\My Drive\prompts\skills\knowledge-graph\SKILL.md')` for automated 
 ### 3.3 Discovery Index Fallback
 
 If `qnfo/discovery/index.json` does not exist or is corrupt:
-1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/`, `qnfo/archive/`), local projects (`G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`]), Archive (`G:\My Drive\Archive\` [local convenience only])
+1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/YYYY/MM/`, `qnfo/archive/`), local projects (`G:\My Drive\projects\` [ephemeral cache; R2 canonical: `qnfo/projects/`]), Archive (`G:\My Drive\Archive\` [local convenience only])
 2. Build fresh index and upload to `qnfo/discovery/index.json`
 3. Flag session as `[DISCOVERY-REBUILT]` — this is a system recovery action
 
@@ -1055,7 +1055,7 @@ All project files fall into three categories:
 - Local copies (if they exist) are EPHEMERAL CACHES — pull, use, discard
 - Never treat a local copy as authoritative. Verify against R2: `npx wrangler r2 object get qnfo/<path> --remote`
 - If a local copy exists but R2 disagrees → TRUST R2. Delete local and re-pull
-- Examples: `qnfo/projects/<project>/`, `qnfo/audit/`, `qnfo/releases/`, `qnfo/pipeline-status.json`
+- Examples: `qnfo/projects/<project>/`, `qnfo/audit/`, `qnfo/releases/YYYY/MM/`, `qnfo/pipeline-status.json`
 
 **IMPORT-SURFACE (persists locally at `G:\My Drive\prompts\` — DeepChat import bridge):**
 - System prompts (DEFAULT.md, QWAV-DEFAULT.md), templates, skills, configs, agents
@@ -1251,7 +1251,7 @@ At every session close-out, AFTER standard close-out steps:
 
 5. Run `fill_prompt_template("CLOSEOUT-CHECKLIST", {"topic": "<session>"})` — verify ALL phases A-I pass
 6. Archive to G:\My Drive\Archive\projects\YYYY\MM\<name>\ [local convenience only]
-7. R2 `qnfo/releases/` artifact upload (Cloudflare-native)
+7. R2 `qnfo/releases/YYYY/MM/` artifact upload (Cloudflare-native)
 8. Present clean closeout summary — do NOT ask for confirmation, just deliver it
 
 ### Session Hooks Infrastructure (v1.0 — Autonomous Workflow Engine)

@@ -12,7 +12,7 @@
 | **System Prompt** | `QWAV-DEFAULT.md` — Fork of `DEFAULT.md` with SS0.9 Strategy Program Manager role boundary |
 | **Write Sandbox** | `G:\My Drive\QWAV\` — active since 2026-05-11 |
 | **Read Scope** | ALL directories |
-| **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `R2 releases (qnfo/releases/) + Cloudflare Pages` |
+| **MOVE Destinations** | `G:\My Drive\Archive\QWAV\`, `R2 releases (qnfo/releases/YYYY/MM/) + Cloudflare Pages` |
 
 **Design note:** QWAV-DEFAULT.md is forked from DEFAULT.md. Only difference is SS0.9: QWAV is Strategy Program Manager (coordinates, delegates); Projects is Project Executor (receives handoffs, executes). Separation by chat thread, write boundary, AND prompt role definition.
 
@@ -86,7 +86,7 @@ For anti-patterns and failure recovery: agent instruction files in G:\My Drive\p
 
 - All quantitative claims > Python only (Rule 2)
 - All math > LaTeX (Rule 6)
-- Due diligence must search QWAV/, Archive/QWAV/, R2 releases (qnfo/releases/)
+- Due diligence must search QWAV/, Archive/QWAV/, R2 releases (`qnfo/releases/YYYY/MM/`)
 - Publication: Visible Author Block, curly quotes, descriptive filenames, R2 releases + Cloudflare Pages
 
 ---
