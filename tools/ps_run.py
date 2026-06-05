@@ -1,51 +1,74 @@
 #!/usr/bin/env python3
 """
-ps_run.py — Safe Python Script Execution Wrapper (v1.0)
+ps_run.py — Safe Python Script Execution Bridge for PowerShell (v1.0)
 
-Eliminates PowerShell/Python string mangling by enforcing file-based execution.
-All agents MUST use this instead of `python -c "..."` which has a 100% failure rate.
+Solves the PowerShell-Python quoting boundary problem that makes `python -c "..."`
+unreliable. PowerShell intercepts <, >, $, {, }, (), |, backticks and nested quotes
+BEFORE Python receives them.
 
-Usage:
-    python tools/ps_run.py --script tools/migration_scanner.py -- --scan "G:/My Drive/projects" --output report.json
-    python tools/ps_run.py --script _upload.py -- arg1 arg2
+Usage (from PowerShell):
+    python ps_run.py script.py arg1 arg2          # Run a script with args
+    python ps_run.py -c "print('hello')"          # Inline code (careful — use -c for trivial)
+    python ps_run.py --stdin < script.py          # Read script from stdin
 
-Canonical: G:/My Drive/prompts/tools/ps_run.py
-R2: qnfo/tools/ps_run.py
-
-This tool exists because 40% of all tool calls in the 2026-06-04 session failed
-due to PowerShell mangling inline Python strings. Never use `python -c` again.
+This tool is the ONLY safe way to call Python from PowerShell when the code contains
+special characters common in Python (f-strings, comparisons, dict literals, etc.).
 """
 
-import argparse
-import subprocess
 import sys
 import os
+import subprocess
+import tempfile
 
-
-def main():
-    parser = argparse.ArgumentParser(
-        description='Safe Python script execution — bypasses PowerShell string mangling',
-        epilog='NEVER use python -c "..." from PowerShell. Always use this wrapper.'
-    )
-    parser.add_argument('--script', required=True, help='Path to Python script to execute')
-    parser.add_argument('args', nargs='*', help='Arguments to pass to the script (after --)')
-
-    # Parse known args, pass remainder to script
-    parsed, script_args = parser.parse_known_args()
-
-    script_path = parsed.script
+def run_file(script_path, args):
+    """Execute a Python script file with given arguments."""
     if not os.path.exists(script_path):
-        print(f'ERROR: Script not found: {script_path}', file=sys.stderr)
+        print(f"[ERROR] Script not found: {script_path}")
         sys.exit(1)
-
-    # Build command
-    cmd = [sys.executable, script_path] + parsed.args
-
-    print(f'[ps_run] Executing: {" ".join(cmd)}', file=sys.stderr)
-
-    result = subprocess.run(cmd)
+    
+    cmd = [sys.executable, script_path] + list(args)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    sys.stdout.write(result.stdout)
+    sys.stderr.write(result.stderr)
     sys.exit(result.returncode)
 
+def run_inline(code):
+    """Execute inline Python code safely."""
+    # Write to temp file to avoid PowerShell quoting issues
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as f:
+        f.write(code)
+        temp_path = f.name
+    
+    try:
+        result = subprocess.run([sys.executable, temp_path], capture_output=True, text=True)
+        sys.stdout.write(result.stdout)
+        sys.stderr.write(result.stderr)
+        sys.exit(result.returncode)
+    finally:
+        os.unlink(temp_path)
 
-if __name__ == '__main__':
+def run_stdin():
+    """Execute Python code from stdin."""
+    code = sys.stdin.read()
+    if code.strip():
+        run_inline(code)
+    else:
+        print("[ERROR] No code provided on stdin")
+        sys.exit(1)
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python ps_run.py <script.py> [args...]")
+        print("       python ps_run.py -c '<code>'")
+        print("       python ps_run.py --stdin < script.py")
+        sys.exit(1)
+    
+    if sys.argv[1] == '-c' and len(sys.argv) > 2:
+        run_inline(sys.argv[2])
+    elif sys.argv[1] == '--stdin':
+        run_stdin()
+    else:
+        run_file(sys.argv[1], sys.argv[2:])
+
+if __name__ == "__main__":
     main()
