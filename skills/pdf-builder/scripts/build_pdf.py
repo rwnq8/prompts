@@ -982,7 +982,7 @@ def build_pdf(input_path, output_path, title=None, author=None, date_str=None, s
         
         # License note
         flowables.append(Paragraph(
-            '<i>License: CC BY 4.0 &bull; Published via QNFO Research Infrastructure</i>',
+            '<i>License: QNFO Unified License Agreement (QNFO-ULA) &bull; https://legal.qnfo.org/</i>',
             ParagraphStyle('LicenseNote', parent=styles['BodyText'],
                           fontSize=9, alignment=TA_CENTER, textColor=grey)
         ))

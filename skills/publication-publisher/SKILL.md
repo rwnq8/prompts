@@ -45,7 +45,7 @@ read('G:\My Drive\prompts\skills\publication-publisher\SKILL.md')
 ### Visible Author Block (MANDATORY)
 Every release document must start with:
 ```
-**Author:** Rowan Quni-Gudzinas | **Date:** YYYY-MM-DD | **License:** CC BY 4.0
+**Author:** Rowan Quni-Gudzinas | **Date:** YYYY-MM-DD | **License:** QNFO Unified License Agreement (QNFO-ULA)
 ```
 
 ### Curly Quotes
@@ -115,7 +115,7 @@ If ANY character fails: PDF is NOT publication-ready. Fix font encoding in `buil
 | **Supplementary Materials** | YES (if any) | Appendices, extended proofs, additional figures |
 | **README** | YES | Project overview, reproduction instructions, build commands |
 | **Configuration** | YES | Requirements files, environment specs, build configs |
-| **License** | YES | CC BY 4.0 or project-specific license file |
+| **License** | YES | QNFO Unified License Agreement (QNFO-ULA) — see https://legal.qnfo.org/ |
 
 ### Artifact Bundle Assembly Protocol
 
@@ -284,7 +284,7 @@ python _zenodo_publish.py \
   --manifest "ARTIFACT-MANIFEST.json" \
   --version "<MAJOR.MINOR.PATCH>" \
   --upload-type publication \
-  --license "CC-BY-4.0" \
+  --license "other" \
   {{#doi}}--doi "<existing_doi>"{{/doi}}
 
 # Verify upload completeness

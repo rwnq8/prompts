@@ -65,7 +65,7 @@ metadata. The frontmatter is NOT rendered in the PDF output.
 title: "My Research Paper"
 author: "Rowan Quni-Gudzinas (QNFO/QWAV)"
 date: "2026-06-05"
-license: "CC BY 4.0"
+license: "QNFO Unified License Agreement (QNFO-ULA)"
 abstract: >
   This is the abstract. It can span multiple lines
   using YAML folded block scalar syntax (>).
