@@ -7,7 +7,7 @@ version: "1.2"
 # PDF BUILDER SKILL — v1.3
 
 > **Bundled skill.** All scripts and references are self-contained in this skill directory.
-> Deployed via `_deploy.py` to `%APPDATA%\DeepChat\skills\pdf-builder\`.
+> Deployed via `_deploy.py` to `%USERPROFILE%\.deepchat\skills\pdf-builder\` (DeepChat runtime directory).
 
 ---
 
