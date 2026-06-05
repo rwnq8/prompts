@@ -21,6 +21,8 @@ Usage:
   python _deploy.py --skills-only  # Deploy only skills
   python _deploy.py --config-only  # DEPRECATED - Deploy only configs
 
+v2.2 -- 2026-06-05: Text-normalized hash comparison for .md/.json files (prevents
+                    false WOULD_UPDATE from git core.autocrlf line-ending churn).
 v2.1 -- 2026-06-05: Fixed target path (DeepChat reads from .deepchat, not AppData).
                     Extended to deploy ALL skill files (scripts, references, etc.).
 v2.0 -- 2026-06-02: Removed system prompt and template sync (DeepChat UI only).
@@ -72,6 +74,20 @@ def hash_file_binary(path):
     """Hash a file by its binary content (handles any file type)."""
     with open(path, "rb") as f:
         return hashlib.sha256(f.read()).hexdigest()
+
+def hash_text_normalized(path):
+    """Hash a text file by its content, normalizing line endings to \n.
+    
+    Prevents false-positive WOULD_UPDATE from git's core.autocrlf 
+    converting \n <-> \r\n in canonical files after deployment.
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        text = f.read()
+    # Normalize all line endings to \n
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+TEXT_EXTENSIONS = {".md", ".json", ".txt", ".html", ".css", ".js", ".yaml", ".yml", ".toml"}
 
 def read_file(path):
     if not path.exists():
@@ -159,9 +175,16 @@ def deploy_skills(dry_run=False):
             deployed_path = deployed_dir / rel_path
 
             if deployed_path.exists():
-                # Compare by binary hash
-                canon_hash = hash_file_binary(canonical_path)
-                depl_hash = hash_file_binary(deployed_path)
+                # Compare by text-normalized hash for text files (prevents
+                # false-positive WOULD_UPDATE from git line-ending churn).
+                # Use binary hash for everything else.
+                ext = deployed_path.suffix.lower()
+                if ext in TEXT_EXTENSIONS:
+                    canon_hash = hash_text_normalized(canonical_path)
+                    depl_hash = hash_text_normalized(deployed_path)
+                else:
+                    canon_hash = hash_file_binary(canonical_path)
+                    depl_hash = hash_file_binary(deployed_path)
                 if canon_hash == depl_hash:
                     file_actions.append((rel_path, "skip"))
                 else:
