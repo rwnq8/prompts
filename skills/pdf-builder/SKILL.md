@@ -4,7 +4,7 @@ description: Build publication-quality PDFs from Markdown files with math render
 version: "1.2"
 ---
 
-# PDF BUILDER SKILL — v1.2
+# PDF BUILDER SKILL — v1.3
 
 > **Bundled skill.** All scripts and references are self-contained in this skill directory.
 > Deployed via `_deploy.py` to `%APPDATA%\DeepChat\skills\pdf-builder\`.
@@ -16,6 +16,10 @@ version: "1.2"
 Convert Markdown (`.md`) or HTML (`.html`) files to publication-quality PDFs using
 reportlab. Renders mathematical expressions using matplotlib's mathtext parser.
 
+**v1.3 (2026-06-05):** YAML frontmatter handling + publication stylesheet system.
+**v1.2:** HTML-to-PDF fallback for complex documents.
+**v1.1:** Math rendering via matplotlib mathtext.
+
 **Replaces:** `templates/PDF-BUILDER-TEMPLATE.md` (deprecated — v1.1, 2026-06-03).
 
 ---
@@ -23,18 +27,63 @@ reportlab. Renders mathematical expressions using matplotlib's mathtext parser.
 ## Quick Start
 
 ```bash
-# Pull canonical from R2 if bundled copy is stale:
-# npx wrangler r2 object get qnfo/tools/build_pdf.py --remote --file=_build_pdf.py
-
-# Execute (use bundled copy):
+# Basic build (auto-detects YAML frontmatter for title/author/date/abstract)
 python "G:\My Drive\prompts\skills\pdf-builder\scripts\build_pdf.py" --input paper.md --output paper.pdf
 
-# With title override:
+# With publication stylesheet
+python "G:\My Drive\prompts\skills\pdf-builder\scripts\build_pdf.py" --input paper.md --output paper.pdf \
+  --stylesheet "G:\My Drive\prompts\skills\pdf-builder\references\publication-stylesheet.json"
+
+# With title override (overrides YAML frontmatter)
 python "G:\My Drive\prompts\skills\pdf-builder\scripts\build_pdf.py" --input paper.md --output paper.pdf --title "My Paper" --author "Name" --date "2026-06-03"
 
 # Skip math rendering (Unicode fallback):
 python "G:\My Drive\prompts\skills\pdf-builder\scripts\build_pdf.py" --input paper.md --output paper.pdf --no-math
 ```
+
+### YAML Frontmatter Support (v1.3)
+
+Build_pdf.py now automatically strips YAML frontmatter from markdown files and extracts
+metadata. The frontmatter is NOT rendered in the PDF output.
+
+**Extracted fields:**
+- `title` — Publication title (auto-detected, overridable via `--title` CLI arg)
+- `author` — Author name(s)
+- `date` — Publication date (YYYY-MM-DD)
+- `abstract` — Abstract text (styled in a grey box on the title page)
+- `license` — License identifier
+
+**Example frontmatter:**
+```yaml
+---
+title: "My Research Paper"
+author: "Rowan Quni-Gudzinas (QNFO/QWAV)"
+date: "2026-06-05"
+license: "CC BY 4.0"
+abstract: >
+  This is the abstract. It can span multiple lines
+  using YAML folded block scalar syntax (>).
+---
+```
+
+### Publication Stylesheet (v1.3)
+
+For consistent professional formatting across all QNFO publications, use the stylesheet:
+
+```bash
+python build_pdf.py --input paper.md --output paper.pdf \
+  --stylesheet references/publication-stylesheet.json
+```
+
+The stylesheet (`references/publication-stylesheet.json`) defines typography, colors,
+spacing, and layout for:
+- Title page (title font, abstract box styling, license footer)
+- Headings (H1-H4 hierarchy)
+- Body text (font, size, leading, justification)
+- Code blocks (font, background color)
+- Page layout (margins, header line, page numbers)
+
+Override any style by editing the JSON — no code changes needed.
 
 ---
 
@@ -186,7 +235,8 @@ execution path. It is also backed up to R2 at `qnfo/tools/build_pdf.py`.
 | File | Purpose |
 |:-----|:--------|
 | `references/math-rendering.md` | Math rendering limitations, LaTeX→Unicode table, troubleshooting |
-| `scripts/build_pdf.py` | The bundled PDF builder script (v1.1) |
+| `references/publication-stylesheet.json` | Centralized publication styles (typography, layout, colors) |
+| `scripts/build_pdf.py` | The bundled PDF builder script (v1.3 with YAML frontmatter + stylesheet support) |
 
 ---
 
@@ -319,4 +369,4 @@ document containing tables, `\bmod`, `\operatorname`, or complex nested LaTeX.
 
 ---
 
-*pdf-builder v1.2 — Bundled skill with math rendering + HTML-to-PDF fallback for complex documents. Tested 2026-06-04: CDP Page.printToPDF not available — replaced with playwright/weasyprint/wkhtmltopdf.*
+*pdf-builder v1.3 — YAML frontmatter stripping + abstract extraction + publication stylesheet system. Tested 2026-06-05.*

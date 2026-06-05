@@ -1,0 +1,149 @@
+{
+  "_schema": "qnfo-publication-stylesheet-v1.0",
+  "_description": "Centralized publication styles for QNFO/QWAV papers. Use by build_pdf.py for consistent professional formatting across all publications.",
+  "_last_modified": "2026-06-05",
+
+  "page": {
+    "size": "A4",
+    "margin_top_cm": 2.0,
+    "margin_bottom_cm": 2.0,
+    "margin_left_cm": 2.5,
+    "margin_right_cm": 2.5,
+    "header_line": true,
+    "header_line_color": "#999999",
+    "header_line_thickness": 0.3,
+    "page_number_format": "— {n} —",
+    "page_number_font_size": 8,
+    "page_number_color": "#999999"
+  },
+
+  "title_page": {
+    "top_spacing_inches": 1.5,
+    "rule_width_percent": 60,
+    "rule_thickness": 1,
+    "rule_color": "#000000",
+    "rule_space_before_inches": 0.3,
+    "rule_space_after_inches": 0.3,
+    "license_text": "License: CC BY 4.0 \u2022 Published via QNFO Research Infrastructure",
+    "license_font_size": 9,
+    "license_color": "#999999"
+  },
+
+  "typography": {
+    "title": {
+      "font_family": "sans_bold",
+      "font_size": 20,
+      "leading": 26,
+      "space_after": 6,
+      "alignment": "CENTER",
+      "color": "#000000"
+    },
+    "author": {
+      "font_family": "sans",
+      "font_size": 12,
+      "leading": 16,
+      "space_after": 24,
+      "alignment": "CENTER",
+      "color": "#666666"
+    },
+    "abstract_label": {
+      "font_family": "sans_bold",
+      "font_size": 10,
+      "leading": 14,
+      "space_before": 4,
+      "space_after": 2,
+      "color": "#000000",
+      "text": "Abstract"
+    },
+    "abstract_body": {
+      "font_family": "sans",
+      "font_size": 9.5,
+      "leading": 14.5,
+      "alignment": "JUSTIFY",
+      "left_indent": 12,
+      "right_indent": 12,
+      "space_before": 2,
+      "space_after": 4,
+      "background_color": "#f7f7f7",
+      "border_padding": 8
+    },
+    "heading1": {
+      "font_family": "sans_bold",
+      "font_size": 16,
+      "leading": 22,
+      "space_before": 18,
+      "space_after": 8,
+      "color": "#000000"
+    },
+    "heading2": {
+      "font_family": "sans_bold",
+      "font_size": 14,
+      "leading": 19,
+      "space_before": 14,
+      "space_after": 6,
+      "color": "#000000"
+    },
+    "heading3": {
+      "font_family": "sans_italic",
+      "font_size": 12,
+      "leading": 16,
+      "space_before": 10,
+      "space_after": 4,
+      "color": "#000000"
+    },
+    "heading4": {
+      "font_family": "sans_italic",
+      "font_size": 11,
+      "leading": 14,
+      "space_before": 8,
+      "space_after": 3,
+      "color": "#000000"
+    },
+    "body": {
+      "font_family": "sans",
+      "font_size": 10,
+      "leading": 15,
+      "space_before": 2,
+      "space_after": 8,
+      "alignment": "JUSTIFY",
+      "color": "#000000"
+    },
+    "code": {
+      "font_family": "Courier",
+      "font_size": 8,
+      "leading": 10,
+      "left_indent": 12,
+      "right_indent": 12,
+      "space_before": 6,
+      "space_after": 6,
+      "background_color": "#f5f5f5"
+    },
+    "bullet": {
+      "font_family": "sans",
+      "font_size": 10,
+      "leading": 15,
+      "left_indent": 20,
+      "bullet_indent": 10,
+      "space_before": 1,
+      "space_after": 4
+    }
+  },
+
+  "math": {
+    "rendering_engine": "matplotlib_mathtext",
+    "inline_font_size": 10,
+    "display_font_size": 12,
+    "dpi": 150,
+    "fallback_to_unicode": true,
+    "known_unsupported_commands": [
+      "\\bmod", "\\operatorname", "\\begin{align}", "\\begin{cases}",
+      "\\bm", "\\tag", "\\label", "\\ref"
+    ]
+  },
+
+  "tables": {
+    "supported": false,
+    "alternative": "HTML-to-PDF via playwright/weasyprint",
+    "note": "Markdown tables are NOT rendered by the reportlab pipeline. Use HTML-to-PDF for documents containing tables."
+  }
+}

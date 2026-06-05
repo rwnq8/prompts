@@ -16,6 +16,7 @@ import re
 import sys
 import os
 import io
+import json
 import textwrap
 import tempfile
 import atexit
@@ -99,6 +100,102 @@ FONT_MAPPING = _discover_and_register_fonts()
 
 def _font(name):
     return FONT_MAPPING.get(name, name)
+
+
+# ═══════════════════════════════════════════════════════════════
+# YAML FRONTMATTER HANDLING (v1.2 — 2026-06-05)
+# ═══════════════════════════════════════════════════════════════
+
+def strip_yaml_frontmatter(text):
+    """Strip YAML frontmatter (--- delimited) from markdown text.
+    
+    Returns (metadata_dict, content_text).
+    Handles multi-line values (YAML '>' and '|' blocks), quoted strings,
+    and nested mappings. Falls back gracefully if PyYAML is unavailable.
+    """
+    if not text.startswith('---'):
+        return {}, text
+    
+    # Find the closing ---
+    end = text.find('\n---', 3)
+    if end == -1:
+        end = text.find('---', 3)
+        if end == -1:
+            return {}, text
+    
+    yaml_text = text[3:end].strip()
+    content = text[end:].strip()
+    # Remove the closing --- line
+    if content.startswith('---'):
+        content = content[3:].strip()
+    
+    # Try PyYAML first (handles complex YAML correctly)
+    try:
+        import yaml as pyyaml
+        metadata = pyyaml.safe_load(yaml_text)
+        if isinstance(metadata, dict):
+            return metadata, content
+    except ImportError:
+        pass
+    except Exception:
+        pass
+    
+    # Fallback: simple regex-based YAML parser
+    metadata = {}
+    current_key = None
+    current_value = []
+    fold_mode = None  # None, 'literal', 'folded', or 'quoted'
+    
+    for line in yaml_text.split('\n'):
+        stripped = line.strip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        
+        # Check for key: value (at root level — no indentation)
+        if ':' in line and not line.startswith(' ') and not line.startswith('\t'):
+            # Save previous key
+            if current_key:
+                val = '\n'.join(current_value).strip()
+                if fold_mode == 'folded':
+                    val = ' '.join(val.split())  # Fold newlines to spaces (YAML >)
+                metadata[current_key] = val.strip('"').strip("'")
+            
+            key, _, value = line.partition(':')
+            current_key = key.strip()
+            value = value.strip()
+            
+            if value in ('>', '|'):
+                fold_mode = 'literal' if value == '|' else 'folded'
+                current_value = []
+            elif value.startswith('"') and value.endswith('"'):
+                metadata[current_key] = value[1:-1]
+                current_key = None
+                current_value = []
+            elif value.startswith("'") and value.endswith("'"):
+                metadata[current_key] = value[1:-1]
+                current_key = None
+                current_value = []
+            elif value:
+                metadata[current_key] = value.strip('"').strip("'")
+                current_key = None
+                current_value = []
+            else:
+                # Key with no value — might be a mapping start
+                current_value = []
+        else:
+            # Continuation of previous value
+            if current_key:
+                current_value.append(stripped)
+    
+    # Save last key
+    if current_key and current_value:
+        val = '\n'.join(current_value).strip()
+        if fold_mode == 'folded':
+            val = ' '.join(val.split())
+        metadata[current_key] = val.strip('"').strip("'")
+    
+    return metadata, content
+
 
 # --- Markdown to reportlab flowables ---
 try:
@@ -786,7 +883,7 @@ def add_header_footer(canvas, doc):
     canvas.restoreState()
 
 
-def build_pdf(input_path, output_path, title=None, author=None, date_str=None):
+def build_pdf(input_path, output_path, title=None, author=None, date_str=None, stylesheet=None):
     """Main PDF builder. Converts input .md or .html to PDF."""
     input_path = Path(input_path)
     output_path = Path(output_path)
@@ -806,14 +903,52 @@ def build_pdf(input_path, output_path, title=None, author=None, date_str=None):
               f"Regenerate the source file to prevent this warning in future builds.",
               file=sys.stderr)
 
+    # --- YAML frontmatter stripping (v1.2) ---
+    frontmatter, content_text = strip_yaml_frontmatter(text)
+    if frontmatter:
+        print(f"[FRONTMATTER] Extracted {len(frontmatter)} metadata fields from YAML frontmatter")
+        # Use frontmatter as fallback for CLI args
+        if not title and 'title' in frontmatter:
+            title = frontmatter['title'].strip('"').strip("'")
+        if not author and 'author' in frontmatter:
+            author = frontmatter['author'].strip('"').strip("'")
+        if not date_str and 'date' in frontmatter:
+            date_str = frontmatter['date'].strip('"').strip("'")
+        abstract = frontmatter.get('abstract', '').strip()
+        if abstract:
+            print(f"[FRONTMATTER] Abstract extracted ({len(abstract)} chars)")
+    else:
+        content_text = text  # No frontmatter found
+        abstract = ''
+
     styles = build_styles()
+    
+    # Merge stylesheet overrides if provided (v1.2)
+    if stylesheet:
+        typo = stylesheet.get('typography', {})
+        for style_name, overrides in typo.items():
+            if style_name in styles:
+                # Update existing style properties
+                s = styles[style_name]
+                if 'font_size' in overrides:
+                    s.fontSize = overrides['font_size']
+                if 'leading' in overrides:
+                    s.leading = overrides['leading']
+                if 'space_before' in overrides:
+                    s.spaceBefore = overrides['space_before']
+                if 'space_after' in overrides:
+                    s.spaceAfter = overrides['space_after']
+                if 'alignment' in overrides:
+                    align_map = {'LEFT': 0, 'CENTER': 1, 'RIGHT': 2, 'JUSTIFY': 4}
+                    s.alignment = align_map.get(overrides['alignment'], 0)
+        print(f"[STYLESHEET] Merged style overrides")
 
     # Build flowables list
     flowables = []
 
     # Title page
     if title:
-        flowables.append(Spacer(1, 2 * inch))
+        flowables.append(Spacer(1, 1.5 * inch))
         flowables.append(Paragraph(title, styles['Title']))
         if author or date_str:
             author_line = []
@@ -822,25 +957,46 @@ def build_pdf(input_path, output_path, title=None, author=None, date_str=None):
             if date_str:
                 author_line.append(date_str)
             flowables.append(Paragraph(' | '.join(author_line), styles['Author']))
-        flowables.append(Spacer(1, 0.5 * inch))
+        flowables.append(Spacer(1, 0.3 * inch))
         flowables.append(HRFlowable(width="60%", thickness=1, color=black))
         flowables.append(Spacer(1, 0.3 * inch))
+        
+        # Abstract block (v1.2 — extracted from YAML frontmatter)
+        if abstract:
+            # Abstract label
+            flowables.append(Paragraph('<b>Abstract</b>', 
+                ParagraphStyle('AbstractLabel', parent=styles['BodyText'],
+                              fontSize=10, leading=14, spaceBefore=4, spaceAfter=2,
+                              textColor=black)))
+            # Abstract body in grey box
+            abstract_style = ParagraphStyle(
+                'AbstractBody', parent=styles['BodyText'],
+                fontSize=9.5, leading=14.5, alignment=TA_JUSTIFY,
+                leftIndent=12, rightIndent=12,
+                spaceBefore=2, spaceAfter=4,
+                borderPadding=8,
+                backColor='#f7f7f7'
+            )
+            flowables.append(Paragraph(abstract, abstract_style))
+            flowables.append(Spacer(1, 0.3 * inch))
+        
+        # License note
         flowables.append(Paragraph(
-            '<i>License: CC BY 4.0 • Published via QNFO Research Infrastructure</i>',
+            '<i>License: CC BY 4.0 &bull; Published via QNFO Research Infrastructure</i>',
             ParagraphStyle('LicenseNote', parent=styles['BodyText'],
                           fontSize=9, alignment=TA_CENTER, textColor=grey)
         ))
         flowables.append(PageBreak())
 
-    # Parse and append content
+    # Parse and append content — use content_text (YAML stripped)
     suffix = input_path.suffix.lower()
     if suffix == '.md':
-        content_flowables = md_to_plain_flowables(text, styles)
+        content_flowables = md_to_plain_flowables(content_text, styles)
     elif suffix in ('.html', '.htm'):
-        content_flowables = html_to_flowables(text, styles)
+        content_flowables = html_to_flowables(content_text, styles)
     else:
         content_flowables = []
-        for para in text.split('\n\n'):
+        for para in content_text.split('\n\n'):
             if para.strip():
                 content_flowables.append(Paragraph(para.strip(), styles['BodyText']))
 
@@ -881,6 +1037,8 @@ def main():
                         help='Scan input for literal \\uXXXX escape sequences and report (no PDF build)')
     parser.add_argument('--fix-unicode', action='store_true',
                         help='Auto-correct \\uXXXX sequences in the source file IN PLACE')
+    parser.add_argument('--stylesheet', '-s',
+                        help='Path to publication stylesheet JSON (default: built-in styles)')
     parser.add_argument('--no-math', action='store_true',
                         help='Skip math rendering — convert LaTeX to Unicode approximations instead')
     args = parser.parse_args()
@@ -889,6 +1047,17 @@ def main():
 
     if _MATH_NO_RENDER:
         print("[MATH] Math rendering DISABLED (--no-math). Using Unicode approximations.")
+
+    # Load stylesheet if provided
+    stylesheet = None
+    if args.stylesheet:
+        stylesheet_path = Path(args.stylesheet)
+        if stylesheet_path.exists():
+            with open(stylesheet_path, 'r', encoding='utf-8') as f:
+                stylesheet = json.load(f)
+            print(f"[STYLESHEET] Loaded from {args.stylesheet}")
+        else:
+            print(f"[STYLESHEET] WARNING: Stylesheet not found: {args.stylesheet}")
 
     input_path = Path(args.input)
 
@@ -925,15 +1094,23 @@ def main():
             print(f"[OK] No Unicode escape sequences found in {input_path.name}")
         sys.exit(0)
 
-    # Auto-detect title from first H1 in markdown
+    # Auto-detect title: prefer YAML frontmatter, fall back to first H1
     title = args.title
     if not title:
         try:
             text = input_path.read_text(encoding='utf-8')
             text, _, _ = sanitize_unicode_escapes(text, source_label=input_path.name)
-            m = re.search(r'^#\s+(.+)$', text, re.MULTILINE)
-            if m:
-                title = m.group(1).strip()
+            # Try YAML frontmatter first
+            frontmatter, _ = strip_yaml_frontmatter(text)
+            if frontmatter and 'title' in frontmatter:
+                title = frontmatter['title'].strip('"').strip("'")
+                print(f"[TITLE] Using title from YAML frontmatter: {title}")
+            else:
+                # Fall back to first H1
+                m = re.search(r'^#\s+(.+)$', text, re.MULTILINE)
+                if m:
+                    title = m.group(1).strip()
+                    print(f"[TITLE] Using title from first H1: {title}")
         except Exception:
             pass
 
@@ -943,7 +1120,7 @@ def main():
 
     date_str = args.date or datetime.now().strftime('%Y-%m-%d')
 
-    build_pdf(args.input, args.output, title=title, author=args.author, date_str=date_str)
+    build_pdf(args.input, args.output, title=title, author=args.author, date_str=date_str, stylesheet=stylesheet)
 
 
 if __name__ == '__main__':
